@@ -33,20 +33,13 @@
 	<!-- SqlSessionFactory -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<!-- <property name="mapperLocations" value="classpath*:com/esemip/dao/*.xml" 
-			/> -->
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
-	</bean>
-
-	<!-- Mybatis sql session -->
-	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
-		<constructor-arg index="0" ref="sqlSessionFactory" />
 	</bean>
 
 	<!-- Mybatis mapper scanner, scans for java mapper -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="com.esemip.dao" />
-		<property name="sqlSessionTemplateBeanName" value="sqlSession" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
 	</bean>
 
 </beans>
