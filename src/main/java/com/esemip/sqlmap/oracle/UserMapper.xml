@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.esemip.dao.TestDao">
+	<resultMap id="UserResultMap" type="com.esemip.entity.User">
+		<id column="user_id" jdbcType="INTEGER" property="userId" />
+		<result column="user_name" jdbcType="VARCHAR" property="userName" />
+		<result column="user_code" jdbcType="VARCHAR" property="userCode" />
+	</resultMap>
+
+	<select id="testQuery" resultMap="UserResultMap">
+		SELECT * FROM sc_user
+	</select>
+</mapper>

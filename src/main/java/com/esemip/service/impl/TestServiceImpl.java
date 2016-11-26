@@ -15,6 +15,7 @@ public class TestServiceImpl implements TestService {
 	@Autowired
 	private TestDao dao;
 
+	@Override
 	public String testQuery() throws Exception {
 		List<User> users = dao.testQuery();
 		String res = "";

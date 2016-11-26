@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sample.dao.ISampleDao">
+	<resultMap id="SampleResultMap" type="com.sample.entity.Sample">
+		<id column="user_id" jdbcType="INTEGER" property="userId" />
+		<result column="user_name" jdbcType="VARCHAR" property="userName" />
+		<result column="user_code" jdbcType="VARCHAR" property="userCode" />
+	</resultMap>
+
+	<select id="querySamples" resultMap="SampleResultMap">
+		SELECT * FROM sc_user
+	</select>
+</mapper>

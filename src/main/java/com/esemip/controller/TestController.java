@@ -1,7 +1,6 @@
 package com.esemip.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.esemip.entity.User;
 import com.esemip.service.TestService;
 
 @Controller
@@ -28,13 +26,6 @@ public class TestController {
 	public String toIndex(HttpServletRequest request, Model model) throws Exception {
 		String result = testService.testQuery();
 		model.addAttribute("user", result);
-		return "showUser";
-	}
-
-	@RequestMapping("/showUser2")
-	public String showUser(HttpServletRequest request, Model model) throws Exception {
-		List<User> users = testService.queryUsers();
-		model.addAttribute("users", users);
 		return "showUser";
 	}
 

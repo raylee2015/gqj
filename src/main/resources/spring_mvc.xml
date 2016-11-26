@@ -10,7 +10,7 @@
                         http://www.springframework.org/schema/mvc    
                         http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 	<!-- 自动扫描该包，使SpringMVC认为包下用了@controller注解的类是控制器 -->
-	<context:component-scan base-package="com.esemip.controller" />
+	<context:component-scan base-package="com.*" />
 	<!--避免IE执行AJAX时，返回JSON出现下载文件 -->
 	<bean id="mappingJacksonHttpMessageConverter"
 		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
@@ -45,7 +45,13 @@
 	<!-- 针对freemarker的视图配置 -->
 	<bean id="freemarkerConfig"
 		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-		<property name="templateLoaderPath" value="/WEB-INF/view/" />
+		<!-- <property name="templateLoaderPath" value="/WEB-INF/sample/" /> -->
+		<property name="templateLoaderPaths">
+			<list>
+				<value>/WEB-INF/view/</value>
+				<value>/WEB-INF/sample/</value>
+			</list>
+		</property>
 		<property name="defaultEncoding" value="utf-8" />
 		<property name="freemarkerSettings">
 			<props>
