@@ -2,11 +2,34 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" type="text/css"
+	href="../jquery-easyui-1.5/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css"
+	href="../jquery-easyui-1.5/themes/icon.css">
+<link rel="stylesheet" type="text/css"
+	href="../jquery-easyui-1.5/demo/demo.css">
+<script type="text/javascript" src="../jquery-easyui-1.5/jquery.min.js"></script>
+<script type="text/javascript"
+	src="../jquery-easyui-1.5/jquery.easyui.min.js"></script>
+<script type="text/javascript">
+	
+</script>
 </head>
 <body>
-	<#list samples as sample> ${sample.userId}, ${sample.userName},
-	${sample.userCode}
-	<br></#list>
+	<h2>Basic DataGrid</h2>
+	<p>The DataGrid is created from markup, no JavaScript code needed.</p>
+	<div style="margin: 20px 0;"></div>
 
+	<table class="easyui-datagrid" title="Basic DataGrid"
+		style="width: 700px; height: 250px"
+		data-options="singleSelect:true,collapsible:true,url:'sampleTestList.do',method:'get'">
+		<thead>
+			<tr>
+				<th data-options="field:'userId',width:80">userId</th>
+				<th data-options="field:'userName',width:100">userName</th>
+				<th data-options="field:'userCode',width:80,align:'right'">userCode</th>
+			</tr>
+		</thead>
+	</table>
 </body>
 </html>
