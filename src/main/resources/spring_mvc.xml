@@ -55,6 +55,7 @@
 			<list>
 				<value>/WEB-INF/view/</value>
 				<value>/WEB-INF/sample/</value>
+				<value>/WEB-INF/base/admin/</value>
 			</list>
 		</property>
 		<property name="defaultEncoding" value="utf-8" />

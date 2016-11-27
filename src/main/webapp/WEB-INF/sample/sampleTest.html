@@ -12,24 +12,38 @@
 <script type="text/javascript"
 	src="../jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript">
-	
+	function addTab(title, url) {
+		if ($('#tt').tabs('exists', title)) {
+			$('#tt').tabs('select', title);
+		} else {
+			var content = '<iframe scrolling="auto" frameborder="0"  src="'
+					+ url + '" style="width:100%;height:100%;"></iframe>';
+			$('#tt').tabs('add', {
+				title : title,
+				content : content,
+				closable : true
+			});
+		}
+	}
 </script>
 </head>
 <body>
-	<h2>Basic DataGrid</h2>
-	<p>The DataGrid is created from markup, no JavaScript code needed.</p>
-	<div style="margin: 20px 0;"></div>
+	<div class="easyui-layout" style="width: 1024px; height: 768px;">
+		<div region="west" split="true" title="导航栏"
+			style="width: 200px; height: 100%;">
+			<ul>
+				<li><a href="javascript:void(0)"
+					onclick="addTab('百度','http://www.baidu.com')">百度</a></li>
+				<li><a href="javascript:void(0)"
+					onclick="addTab('用户管理','index.do')">用户管理</a></li>
+			</ul>
+		</div>
+		<div id="content" region="center" style="width: 100%; height: 100%;">
+			<div id="tt" class="easyui-tabs" style="width: 100%; height: 100%;">
+				<div title="首页" style="width: 100%; height: 100%;"></div>
+			</div>
+		</div>
+	</div>
 
-	<table class="easyui-datagrid" title="Basic DataGrid"
-		style="width: 700px; height: 250px"
-		data-options="singleSelect:true,collapsible:true,url:'sampleTestList.do',method:'get'">
-		<thead>
-			<tr>
-				<th data-options="field:'userId',width:80">userId</th>
-				<th data-options="field:'userName',width:100">userName</th>
-				<th data-options="field:'userCode',width:80,align:'right'">userCode</th>
-			</tr>
-		</thead>
-	</table>
 </body>
 </html>
