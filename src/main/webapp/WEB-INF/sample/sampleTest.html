@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 </head>
 <body>
-<#list users as user> ${user.userName} </#list>
+	<#list samples as sample> ${sample.userId}, ${sample.userName},
+	${sample.userCode}
+	<br></#list>
 
 </body>
 </html>

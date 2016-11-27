@@ -1,15 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sample.dao.ISampleDao">
 	<resultMap id="SampleResultMap" type="com.sample.entity.Sample">
-		<id column="user_id" jdbcType="INTEGER" property="userId" />
-		<result column="user_name" jdbcType="VARCHAR" property="userName" />
-		<result column="user_code" jdbcType="VARCHAR" property="userCode" />
+		<id column="USER_ID" jdbcType="DECIMAL" property="userId" />
+		<result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+		<result column="USER_CODE" jdbcType="VARCHAR" property="userCode" />
 	</resultMap>
-
-	<select id="querySamples" resultMap="SampleResultMap">
-		SELECT * FROM sc_user
+	<sql id="All_Column">
+		USER_ID, USER_NAME, USER_CODE
+	</sql>
+	<select id="selectSamplesForList" resultMap="SampleResultMap">
+		select *
+		<!-- <include refid="All_Column" /> -->
+		from SC_USER u
+		<!-- <where> -->
+		<!-- <if test="userName!=null and userName!='' "> -->
+		<!-- u.user_name like CONCAT(CONCAT('%', #{userName, -->
+		<!-- jdbcType=VARCHAR}),'%') -->
+		<!-- </if> -->
+		<!-- <if test="userCode != null and userCode != '' "> -->
+		<!-- AND u.user_code = #{userCode, jdbcType=VARCHAR} -->
+		<!-- </if> -->
+		<!-- </where> -->
 	</select>
+
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="SampleResultMap">
+		select
+		<include refid="All_Column" />
+		from SC_USER
+		where USER_ID = #{userId,jdbcType=DECIMAL}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from
+		SC_USER
+		where USER_ID = #{userId,jdbcType=DECIMAL}
+	</delete>
+	<insert id="insert" parameterType="com.sample.entity.Sample">
+		insert into SC_USER (USER_ID,
+		USER_NAME, USER_CODE
+		)
+		values (#{userId,jdbcType=DECIMAL},
+		#{userName,jdbcType=VARCHAR},
+		#{userCode,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.sample.entity.Sample">
+		insert into SC_USER
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				USER_ID,
+			</if>
+			<if test="userName != null">
+				USER_NAME,
+			</if>
+			<if test="userCode != null">
+				USER_CODE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				#{userId,jdbcType=DECIMAL},
+			</if>
+			<if test="userName != null">
+				#{userName,jdbcType=VARCHAR},
+			</if>
+			<if test="userCode != null">
+				#{userCode,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.sample.entity.Sample">
+		update SC_USER
+		<set>
+			<if test="userName != null">
+				USER_NAME = #{userName,jdbcType=VARCHAR},
+			</if>
+			<if test="userCode != null">
+				USER_CODE = #{userCode,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where USER_ID = #{userId,jdbcType=DECIMAL}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.sample.entity.Sample">
+		update SC_USER
+		set
+		USER_NAME = #{userName,jdbcType=VARCHAR},
+		USER_CODE =
+		#{userCode,jdbcType=VARCHAR}
+		where USER_ID = #{userId,jdbcType=DECIMAL}
+	</update>
 </mapper>

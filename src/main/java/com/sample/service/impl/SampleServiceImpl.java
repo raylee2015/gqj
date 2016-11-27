@@ -16,8 +16,7 @@ public class SampleServiceImpl implements ISampleService {
 	private ISampleDao dao;
 
 	@Override
-	public List<Sample> queryUsers() {
-		List<Sample> users = dao.querySamples();
-		return users;
+	public List<Sample> querySamples() {
+		return dao.selectSamplesForList();
 	}
 }

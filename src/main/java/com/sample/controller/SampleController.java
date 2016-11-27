@@ -24,8 +24,8 @@ public class SampleController {
 
 	@RequestMapping("/sampleTest")
 	public String sampleTest(HttpServletRequest request, Model model) throws Exception {
-		List<Sample> samples = sampleService.queryUsers();
-		model.addAttribute("users", samples);
-		return "showUser";
+		List<Sample> samples = sampleService.querySamples();
+		model.addAttribute("samples", samples);
+		return "sampleTest";
 	}
 }
