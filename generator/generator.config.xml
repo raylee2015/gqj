@@ -12,32 +12,33 @@
 		</commentGenerator>
 		<!--数据库链接地址账号密码 -->
 		<jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver"
-			connectionURL="jdbc:oracle:thin:@127.0.0.1:1521:scdata" userId="ybsy"
+			connectionURL="jdbc:oracle:thin:@172.16.1.189:1521:scdata" userId="ybsy"
 			password="ybsy2269">
 		</jdbcConnection>
 		<javaTypeResolver>
 			<property name="forceBigDecimals" value="false" />
 		</javaTypeResolver>
 		<!--生成Model类存放位置 -->
-		<javaModelGenerator targetPackage="com.sample.entity"
+		<javaModelGenerator targetPackage="com.base.admin.entity"
 			targetProject="../src/main/java">
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
 		<!--生成映射文件存放位置 -->
-		<sqlMapGenerator targetPackage="com.sample.sqlmap.oracle"
+		<sqlMapGenerator targetPackage="com.base.admin.sqlmap.oracle"
 			targetProject="../src/main/java">
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
 		<!--生成Dao类存放位置 -->
 		<javaClientGenerator type="XMLMAPPER"
-			targetPackage="com.sample.dao" targetProject="../src/main/java">
+			targetPackage="com.base.admin.dao" targetProject="../src/main/java">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
 		<!--生成对应表及类名 -->
-		<table tableName="sc_user" domainObjectName="User"
-			enableCountByExample="false" enableUpdateByExample="false"
-			enableDeleteByExample="false" enableSelectByExample="false"
-			selectByExampleQueryId="false"></table>
+		<table tableName="BASE_DEPT" domainObjectName="Dept"
+		enableSelectByExample="false"
+		enableDeleteByExample="false"
+enableCountByExample="false" enableUpdateByExample="false"
+		></table>
 	</context>
 </generatorConfiguration>
