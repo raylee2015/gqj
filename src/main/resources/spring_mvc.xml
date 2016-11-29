@@ -61,7 +61,7 @@
 		<property name="defaultEncoding" value="utf-8" />
 		<property name="freemarkerSettings">
 			<props>
-				<prop key="template_update_delay">0</prop>
+				<prop key="template_update_delay">1</prop>
 				<prop key="locale">zh_CN</prop>
 				<prop key="datetime_format">yyyy-MM-dd</prop>
 				<prop key="date_format">yyyy-MM-dd</prop>

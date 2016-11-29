@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
@@ -33,8 +34,20 @@ public class DeptController {
 
 	@RequestMapping("/deptList.do")
 	@ResponseBody
-	public Map<String, Object> selectDeptsForGrid(
-			HttpServletResponse request, HttpServletResponse response)
+	/**
+	 * 分页查询部门列表
+	 * 
+	 * @param page
+	 *            页数
+	 * @param rows
+	 *            显示行数
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Object> selectDeptsForGrid(int page, int rows,
+			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		List<Dept> depts = deptService.selectDeptsForList(null);
 		int count = deptService.selectCountOfDeptsForPage(null);
@@ -46,7 +59,7 @@ public class DeptController {
 
 	@RequestMapping("/deptTree.do")
 	@ResponseBody
-	public void selectDeptsForTree(HttpServletResponse request,
+	public void selectDeptsForTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		response.setHeader("Pragma", "No-cache");
 		response.setHeader("Cache-Control", "no-cache");

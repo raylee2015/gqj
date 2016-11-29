@@ -14,11 +14,33 @@
 	src="${base}/jquery-easyui-1.5/jquery.min.js"></script>
 <script type="text/javascript"
 	src="${base}/jquery-easyui-1.5/jquery.easyui.min.js"></script>
+<script type="text/javascript"
+	src="${base}/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript">
-	
+	function editColumnformatter(val, row) {
+		var btn = '<a class="easyui-linkbutton" iconCls="icon-edit" onclick="editRow(\''
+				+ row.deptId
+				+ '\',\''
+				+ row.deptName
+				+ '\')" href="javascript:void(0)">编辑</a>';
+		return btn;
+	}
+
+	$(function() {
+		//init();
+	});
+
+	function openEditUI(data) {
+		$('#editUI').window('open');
+	}
+
+	function closeEditUI() {
+		$('#editUI').window('close');
+	}
 </script>
 </head>
 <body>
+	<!-- 列表页面 -->
 	<div class="easyui-layout" data-options="fit:true">
 		<div data-options="region:'west',collapsible:false"
 			style="width: 200px;">
@@ -26,17 +48,53 @@
 				data-options="url:'deptTree.do',method:'get',animate:true,lines:true"></ul>
 		</div>
 		<div data-options="region:'center'">
-			<table class="easyui-datagrid" title="部门列表"
-				data-options="singleSelect:true,collapsible:true,url:'deptList.do',method:'get',fit:true">
+			<table id="datagrid" class="easyui-datagrid" title="部门列表"
+				rownumbers="true" toolbar="#toolbar" idField="dept_id"
+				pagination="true" pageSize="30"
+				data-options="url:'deptList.do',method:'get',fit:true,">
 				<thead>
 					<tr>
+						<th field="ck" checkbox="true"></th>
+						<th field="op" formatter="editColumnformatter">操作</th>
 						<th data-options="field:'deptName',width:100">部门名称</th>
 						<th data-options="field:'deptSort',width:80,align:'right'">排序号</th>
 					</tr>
 				</thead>
 			</table>
+			<div id="toolbar">
+				<a href="#" class="easyui-linkbutton" iconCls="icon-add"
+					plain="true" onclick="openEditUI()">添加</a> <a href="#"
+					class="easyui-linkbutton" iconCls="icon-remove" plain="true"
+					onclick="destroyUser()">删除</a>
+			</div>
 		</div>
 	</div>
 
+	<!--  详细界面 -->
+	<div id="editUI" class="easyui-window" title="添加部门" closed="true"
+		data-options="iconCls:'icon-save'"
+		style="width: 400px; height: 125px; padding: 5px;">
+		<div class="easyui-layout" data-options="fit:true">
+			<div data-options="region:'north',fit:true,border:false">
+				<form id="form" method="post" style="width: 100%;">
+					<table width="100%">
+						<tr>
+							<td width="22%">部门名称:</td>
+							<td><input class="easyui-textbox"
+								data-options="prompt:'部门名称',validType:'length[3,10]'"
+								style="width: 100%; height: 32px"></td>
+						</tr>
+					</table>
+				</form>
+			</div>
+			<div data-options="region:'south',border:false"
+				style="text-align: right; height: 30px">
+				<a class="easyui-linkbutton" data-options="iconCls:'icon-ok'"
+					href="javascript:void(0)" onclick="javascript:alert('ok')">保存</a> <a
+					class="easyui-linkbutton" data-options="iconCls:'icon-cancel'"
+					href="javascript:void(0)" onclick="closeEditUI()">关闭</a>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
