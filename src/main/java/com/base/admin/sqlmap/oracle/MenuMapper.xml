@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.base.admin.dao.IMenuMapper">
+	<resultMap id="BaseResultMap" type="com.base.admin.entity.Menu">
+		<id column="MENU_ID" jdbcType="DECIMAL" property="menuId" />
+		<result column="UP_MENU_ID" jdbcType="DECIMAL" property="upMenuId" />
+		<result column="MENU_NAME" jdbcType="VARCHAR" property="menuName" />
+		<result column="MENU_LEVEL" jdbcType="CHAR" property="menuLevel" />
+		<result column="MENU_URL" jdbcType="VARCHAR" property="menuUrl" />
+		<result column="MENU_ICON" jdbcType="VARCHAR" property="menuIcon" />
+		<result column="MENU_SORT" jdbcType="DECIMAL" property="menuSort" />
+		<result column="MENU_EXT_CODE" jdbcType="VARCHAR" property="menuExtCode" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		MENU_ID, UP_MENU_ID, MENU_NAME, MENU_LEVEL, MENU_URL,
+		MENU_ICON, MENU_SORT,
+		MENU_EXT_CODE
+	</sql>
+	<select id="selectMenusForList" parameterType="com.base.admin.entity.Menu"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from BASE_MENU
+		<where>
+			<if test="upMenuId != null">
+				UP_MENU_ID = #{upMenuId}
+			</if>
+			<if test="menuName != null">
+				AND MENU_NAME like '%$menuName%'
+			</if>
+		</where>
+	</select>
+	<select id="selectMenusForPage" parameterType="com.base.admin.entity.Menu"
+		resultMap="BaseResultMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from BASE_MENU
+		<where>
+			<if test="upMenuId != null">
+				UP_MENU_ID = #{upMenuId}
+			</if>
+			<if test="menuName != null">
+				AND MENU_NAME like '%$menuName%'
+			</if>
+		</where>
+		order by menu_id
+		) A WHERE ROWNUM<![CDATA[<=]]>($currPage$*$pageSize$)
+		) WHERE num<![CDATA[>=]]>
+		(1+($currPage$-1)*$pageSize$)
+	</select>
+	<select id="selectCountOfMenusForPage" parameterType="com.base.admin.entity.Menu"
+		resultType="java.lang.Integer">
+		select count(t.menu_id) from BASE_MENU t
+		<where>
+			<if test="upMenuId != null">
+				UP_MENU_ID = #{upMenuId}
+			</if>
+			<if test="menuName != null">
+				AND MENU_NAME like '%$menuName%'
+			</if>
+		</where>
+	</select>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from BASE_MENU
+		where MENU_ID = #{menuId,jdbcType=DECIMAL}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from
+		BASE_MENU
+		where MENU_ID = #{menuId,jdbcType=DECIMAL}
+	</delete>
+	<insert id="insert" parameterType="com.base.admin.entity.Menu">
+		insert into BASE_MENU
+		(MENU_ID, UP_MENU_ID, MENU_NAME,
+		MENU_LEVEL, MENU_URL, MENU_ICON,
+		MENU_SORT, MENU_EXT_CODE)
+		values (BASE_MENU_SEQ.nextval(),
+		#{upMenuId,jdbcType=DECIMAL},
+		#{menuName,jdbcType=VARCHAR},
+		#{menuLevel,jdbcType=CHAR}, #{menuUrl,jdbcType=VARCHAR},
+		#{menuIcon,jdbcType=VARCHAR},
+		#{menuSort,jdbcType=DECIMAL},
+		#{menuExtCode,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.base.admin.entity.Menu">
+		insert into BASE_MENU
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="menuId != null">
+				MENU_ID,
+			</if>
+			<if test="upMenuId != null">
+				UP_MENU_ID,
+			</if>
+			<if test="menuName != null">
+				MENU_NAME,
+			</if>
+			<if test="menuLevel != null">
+				MENU_LEVEL,
+			</if>
+			<if test="menuUrl != null">
+				MENU_URL,
+			</if>
+			<if test="menuIcon != null">
+				MENU_ICON,
+			</if>
+			<if test="menuSort != null">
+				MENU_SORT,
+			</if>
+			<if test="menuExtCode != null">
+				MENU_EXT_CODE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="menuId != null">
+				#{menuId,jdbcType=DECIMAL},
+			</if>
+			<if test="upMenuId != null">
+				#{upMenuId,jdbcType=DECIMAL},
+			</if>
+			<if test="menuName != null">
+				#{menuName,jdbcType=VARCHAR},
+			</if>
+			<if test="menuLevel != null">
+				#{menuLevel,jdbcType=CHAR},
+			</if>
+			<if test="menuUrl != null">
+				#{menuUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="menuIcon != null">
+				#{menuIcon,jdbcType=VARCHAR},
+			</if>
+			<if test="menuSort != null">
+				#{menuSort,jdbcType=DECIMAL},
+			</if>
+			<if test="menuExtCode != null">
+				#{menuExtCode,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.base.admin.entity.Menu">
+		update BASE_MENU
+		<set>
+			<if test="upMenuId != null">
+				UP_MENU_ID = #{upMenuId,jdbcType=DECIMAL},
+			</if>
+			<if test="menuName != null">
+				MENU_NAME = #{menuName,jdbcType=VARCHAR},
+			</if>
+			<if test="menuLevel != null">
+				MENU_LEVEL = #{menuLevel,jdbcType=CHAR},
+			</if>
+			<if test="menuUrl != null">
+				MENU_URL = #{menuUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="menuIcon != null">
+				MENU_ICON = #{menuIcon,jdbcType=VARCHAR},
+			</if>
+			<if test="menuSort != null">
+				MENU_SORT = #{menuSort,jdbcType=DECIMAL},
+			</if>
+			<if test="menuExtCode != null">
+				MENU_EXT_CODE = #{menuExtCode,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where MENU_ID = #{menuId,jdbcType=DECIMAL}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.base.admin.entity.Menu">
+		update BASE_MENU
+		set UP_MENU_ID = #{upMenuId,jdbcType=DECIMAL},
+		MENU_NAME =
+		#{menuName,jdbcType=VARCHAR},
+		MENU_LEVEL = #{menuLevel,jdbcType=CHAR},
+		MENU_URL = #{menuUrl,jdbcType=VARCHAR},
+		MENU_ICON =
+		#{menuIcon,jdbcType=VARCHAR},
+		MENU_SORT = #{menuSort,jdbcType=DECIMAL},
+		MENU_EXT_CODE = #{menuExtCode,jdbcType=VARCHAR}
+		where MENU_ID =
+		#{menuId,jdbcType=DECIMAL}
+	</update>
+</mapper>
