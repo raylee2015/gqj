@@ -48,7 +48,7 @@
 				<ul>
 					<#list menus as menu> <#if menu.menuId != 0>
 					<li><a href="javascript:void(0)"
-						onclick="addTab('${menu.menuName}','<#if menu.menuUrl??>${menu.menuUrl}</#if>')">
+						onclick="addTab('${menu.menuName}','<#if menu.menuUrl??>${base}${menu.menuUrl}</#if>')">
 							${menu.menuName}</a></li></#if> </#list>
 					<li><a href="javascript:void(0)"
 						onclick="addTab('用户信息管理','${base}/base/admin/user/index.do')">用户信息管理</a></li>

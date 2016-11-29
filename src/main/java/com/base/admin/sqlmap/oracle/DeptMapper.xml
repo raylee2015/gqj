@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.base.admin.dao.DeptMapper">
+	<resultMap id="BaseResultMap" type="com.base.admin.entity.Dept">
+		<id column="DEPT_ID" jdbcType="DECIMAL" property="deptId" />
+		<result column="UP_DEPT_ID" jdbcType="DECIMAL" property="upDeptId" />
+		<result column="DEPT_NAME" jdbcType="VARCHAR" property="deptName" />
+		<result column="DEPT_TYPE" jdbcType="CHAR" property="deptType" />
+		<result column="DEPT_SORT" jdbcType="DECIMAL" property="deptSort" />
+		<result column="DEPT_INNER_CODE" jdbcType="VARCHAR" property="deptInnerCode" />
+		<result column="DEPT_INNER_NAME" jdbcType="VARCHAR" property="deptInnerName" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		DEPT_ID, UP_DEPT_ID, DEPT_NAME, DEPT_TYPE, DEPT_SORT,
+		DEPT_INNER_CODE,
+		DEPT_INNER_NAME
+	</sql>
+	<select id="selectDeptsForTree" resultType="java.util.HashMap">
+		select dept_id as id
+		,dept_name as text,dept_inner_code,up_dept_id
+		from BASE_DEPT
+	</select>
+	<select id="selectDeptsForList" parameterType="com.base.admin.entity.Dept"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from BASE_DEPT
+		<where>
+			<if test="upDeptId != null">
+				UP_DEPT_ID = #{upDeptId}
+			</if>
+			<if test="deptName != null">
+				AND DEPT_NAME like '%$deptName%'
+			</if>
+		</where>
+	</select>
+	<select id="selectDeptsForPage" parameterType="com.base.admin.entity.Dept"
+		resultMap="BaseResultMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from BASE_DEPT
+		<where>
+			<if test="upDeptId != null">
+				UP_DEPT_ID = #{upDeptId}
+			</if>
+			<if test="deptName != null">
+				AND DEPT_NAME like '%$deptName%'
+			</if>
+		</where>
+		order by dept_id
+		) A WHERE ROWNUM<![CDATA[<=]]>($currPage$*$pageSize$)
+		) WHERE num<![CDATA[>=]]>
+		(1+($currPage$-1)*$pageSize$)
+	</select>
+	<select id="selectCountOfDeptsForPage" parameterType="com.base.admin.entity.Dept"
+		resultType="java.lang.Integer">
+		select count(t.dept_id) from BASE_DEPT t
+		<where>
+			<if test="upDeptId != null">
+				UP_DEPT_ID = #{upDeptId}
+			</if>
+			<if test="deptName != null">
+				AND DEPT_NAME like '%$deptName%'
+			</if>
+		</where>
+	</select>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from BASE_DEPT
+		where DEPT_ID = #{deptId,jdbcType=DECIMAL}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from
+		BASE_DEPT
+		where DEPT_ID = #{deptId,jdbcType=DECIMAL}
+	</delete>
+	<insert id="insert" parameterType="com.base.admin.entity.Dept">
+		insert into BASE_DEPT
+		(DEPT_ID, UP_DEPT_ID, DEPT_NAME,
+		DEPT_TYPE, DEPT_SORT, DEPT_INNER_CODE,
+		DEPT_INNER_NAME)
+		values (#{deptId,jdbcType=DECIMAL},
+		#{upDeptId,jdbcType=DECIMAL},
+		#{deptName,jdbcType=VARCHAR},
+		#{deptType,jdbcType=CHAR}, #{deptSort,jdbcType=DECIMAL},
+		#{deptInnerCode,jdbcType=VARCHAR},
+		#{deptInnerName,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.base.admin.entity.Dept">
+		insert into BASE_DEPT
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="deptId != null">
+				DEPT_ID,
+			</if>
+			<if test="upDeptId != null">
+				UP_DEPT_ID,
+			</if>
+			<if test="deptName != null">
+				DEPT_NAME,
+			</if>
+			<if test="deptType != null">
+				DEPT_TYPE,
+			</if>
+			<if test="deptSort != null">
+				DEPT_SORT,
+			</if>
+			<if test="deptInnerCode != null">
+				DEPT_INNER_CODE,
+			</if>
+			<if test="deptInnerName != null">
+				DEPT_INNER_NAME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="deptId != null">
+				#{deptId,jdbcType=DECIMAL},
+			</if>
+			<if test="upDeptId != null">
+				#{upDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="deptName != null">
+				#{deptName,jdbcType=VARCHAR},
+			</if>
+			<if test="deptType != null">
+				#{deptType,jdbcType=CHAR},
+			</if>
+			<if test="deptSort != null">
+				#{deptSort,jdbcType=DECIMAL},
+			</if>
+			<if test="deptInnerCode != null">
+				#{deptInnerCode,jdbcType=VARCHAR},
+			</if>
+			<if test="deptInnerName != null">
+				#{deptInnerName,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.base.admin.entity.Dept">
+		update BASE_DEPT
+		<set>
+			<if test="upDeptId != null">
+				UP_DEPT_ID = #{upDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="deptName != null">
+				DEPT_NAME = #{deptName,jdbcType=VARCHAR},
+			</if>
+			<if test="deptType != null">
+				DEPT_TYPE = #{deptType,jdbcType=CHAR},
+			</if>
+			<if test="deptSort != null">
+				DEPT_SORT = #{deptSort,jdbcType=DECIMAL},
+			</if>
+			<if test="deptInnerCode != null">
+				DEPT_INNER_CODE = #{deptInnerCode,jdbcType=VARCHAR},
+			</if>
+			<if test="deptInnerName != null">
+				DEPT_INNER_NAME = #{deptInnerName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where DEPT_ID = #{deptId,jdbcType=DECIMAL}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.base.admin.entity.Dept">
+		update BASE_DEPT
+		set UP_DEPT_ID = #{upDeptId,jdbcType=DECIMAL},
+		DEPT_NAME =
+		#{deptName,jdbcType=VARCHAR},
+		DEPT_TYPE = #{deptType,jdbcType=CHAR},
+		DEPT_SORT = #{deptSort,jdbcType=DECIMAL},
+		DEPT_INNER_CODE =
+		#{deptInnerCode,jdbcType=VARCHAR},
+		DEPT_INNER_NAME =
+		#{deptInnerName,jdbcType=VARCHAR}
+		where DEPT_ID =
+		#{deptId,jdbcType=DECIMAL}
+	</update>
+</mapper>

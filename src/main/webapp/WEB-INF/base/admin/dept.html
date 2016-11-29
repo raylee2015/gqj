@@ -1,0 +1,42 @@
+<#assign base=request.contextPath />
+<!DOCTYPE html>
+<html>
+<head>
+<base id="base" href="${base}">
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css"
+	href="${base}/jquery-easyui-1.5/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css"
+	href="${base}/jquery-easyui-1.5/themes/icon.css">
+<link rel="stylesheet" type="text/css"
+	href="${base}/jquery-easyui-1.5/demo/demo.css">
+<script type="text/javascript"
+	src="${base}/jquery-easyui-1.5/jquery.min.js"></script>
+<script type="text/javascript"
+	src="${base}/jquery-easyui-1.5/jquery.easyui.min.js"></script>
+<script type="text/javascript">
+	
+</script>
+</head>
+<body>
+	<div class="easyui-layout" data-options="fit:true">
+		<div data-options="region:'west',collapsible:false"
+			style="width: 200px;">
+			<ul class="easyui-tree"
+				data-options="url:'deptTree.do',method:'get',animate:true,lines:true"></ul>
+		</div>
+		<div data-options="region:'center'">
+			<table class="easyui-datagrid" title="部门列表"
+				data-options="singleSelect:true,collapsible:true,url:'deptList.do',method:'get',fit:true">
+				<thead>
+					<tr>
+						<th data-options="field:'deptName',width:100">部门名称</th>
+						<th data-options="field:'deptSort',width:80,align:'right'">排序号</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+
+</body>
+</html>
