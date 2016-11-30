@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.base.admin.entity.Dept;
 import com.base.admin.service.IDeptService;
@@ -25,14 +27,14 @@ public class DeptController {
 			.getLogger(DeptController.class);
 
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
-	public String toIndex() {
-		return "dept";
+	public ModelAndView toIndex() {
+		return new ModelAndView("/base/admin/dept");
 	}
 
 	@Autowired
 	private IDeptService deptService;
 
-	@RequestMapping("/deptPage.do")
+	@RequestMapping("/queryDeptPage.do")
 	@ResponseBody
 	/**
 	 * 分页查询部门列表
@@ -46,9 +48,9 @@ public class DeptController {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String, Object> selectDeptsForGrid(int page, int rows,
+	public Map<String, Object> queryDeptPage(int page, int rows,
 			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+					throws Exception {
 		Dept dept = new Dept();
 		dept.setCurrPage(page);
 		dept.setPageSize(rows);
@@ -61,13 +63,10 @@ public class DeptController {
 		return map;
 	}
 
-	@RequestMapping("/deptTree.do")
+	@RequestMapping("/queryDeptTree.do")
 	@ResponseBody
-	public void selectDeptsForTree(HttpServletRequest request,
+	public void queryDeptTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.setHeader("Pragma", "No-cache");
-		response.setHeader("Cache-Control", "no-cache");
-		response.setCharacterEncoding("UTF-8");
 		response.getWriter()
 				.print(deptService.selectDeptsForTree().toLowerCase());
 		response.getWriter().flush();
@@ -76,21 +75,70 @@ public class DeptController {
 
 	@RequestMapping("/addNewDept.do")
 	@ResponseBody
-	public Map<String, Object> addNewDept(String deptName,
+	public Map<String, Object> addNewDept(
+			@RequestParam("DEPT_NAME") String deptName,
+			@RequestParam("DEPT_SORT") long deptSort,
+			@RequestParam("UP_DEPT_ID") long upDeptId,
 			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+					throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("success", false);
-		map.put("msg", "false");
+		Dept dept = new Dept();
+		dept.setDeptId(-1l);
+		dept.setDeptName(deptName);
+		dept.setDeptSort(deptSort);
+		dept.setUpDeptId(upDeptId);
+		int bool = deptService.insertSelective(dept);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
 		return map;
 	}
 
-	@RequestMapping("/updateNewDept.do")
+	@RequestMapping("/updateDept.do")
 	@ResponseBody
-	public Map<String, Object> updateNewDept(String deptName,
+	public Map<String, Object> updateDept(
+			@RequestParam("DEPT_ID") long deptId,
+			@RequestParam("DEPT_NAME") String deptName,
+			@RequestParam("DEPT_SORT") long deptSort,
+			@RequestParam("UP_DEPT_ID") long upDeptId,
 			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+					throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
+		Dept dept = new Dept();
+		dept.setDeptId(deptId);
+		dept.setDeptName(deptName);
+		dept.setDeptSort(deptSort);
+		dept.setUpDeptId(upDeptId);
+		int bool = deptService.updateByPrimaryKeySelective(dept);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
+	}
+	
+	@RequestMapping("/delDepts.do")
+	@ResponseBody
+	public Map<String, Object> delDepts(
+			@RequestParam("DEPT_IDS") String deptIds,
+			HttpServletRequest request, HttpServletResponse response)
+					throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = deptService.deleteByPrimaryKeys(deptIds);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "删除失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "删除成功");
+		}
 		return map;
 	}
 

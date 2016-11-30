@@ -79,6 +79,11 @@
 		BASE_DEPT
 		where DEPT_ID = #{deptId,jdbcType=DECIMAL}
 	</delete>
+	<delete id="deleteByPrimaryKeys" parameterType="java.lang.String">
+		delete from
+		BASE_DEPT
+		where DEPT_ID in (${deptIds,jdbcType=VARCHAR})
+	</delete>
 	<insert id="insert" parameterType="com.base.admin.entity.Dept">
 		insert into BASE_DEPT
 		(DEPT_ID, UP_DEPT_ID, DEPT_NAME,

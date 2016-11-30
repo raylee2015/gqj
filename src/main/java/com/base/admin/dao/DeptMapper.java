@@ -6,6 +6,8 @@ import java.util.Map;
 import com.base.admin.entity.Dept;
 
 public interface DeptMapper {
+	int deleteByPrimaryKeys(String deptIds);
+
 	int deleteByPrimaryKey(Long deptId);
 
 	int insert(Dept dept);

@@ -32,8 +32,7 @@ public class DeptServiceImpl implements IDeptService {
 
 	@Override
 	public int insertSelective(Dept dept) {
-		// TODO Auto-generated method stub
-		return 0;
+		return deptMapper.insertSelective(dept);
 	}
 
 	@Override
@@ -44,8 +43,7 @@ public class DeptServiceImpl implements IDeptService {
 
 	@Override
 	public int updateByPrimaryKeySelective(Dept dept) {
-		// TODO Auto-generated method stub
-		return 0;
+		return deptMapper.updateByPrimaryKeySelective(dept);
 	}
 
 	@Override
@@ -78,6 +76,21 @@ public class DeptServiceImpl implements IDeptService {
 				.list2Tree(deptArr, -1, "id", "up_dept_id", "children")
 				.toString();
 		return tree;
+	}
+
+	/*
+	 * (非 Javadoc) <p>Title: deleteByPrimaryKeys</p> <p>Description: </p>
+	 * 
+	 * @param deptIds
+	 * 
+	 * @return
+	 * 
+	 * @see
+	 * com.base.admin.service.IDeptService#deleteByPrimaryKeys(java.lang.String)
+	 */
+	@Override
+	public int deleteByPrimaryKeys(String deptIds) {
+		return deptMapper.deleteByPrimaryKeys(deptIds);
 	}
 
 }

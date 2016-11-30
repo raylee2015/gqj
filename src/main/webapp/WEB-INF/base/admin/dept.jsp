@@ -1,21 +1,29 @@
-<#assign base=request.contextPath />
-<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%
+	String contextPath = request.getContextPath();
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<base id="base" href="${base}">
-<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
 <link rel="stylesheet" type="text/css"
-	href="${base}/jquery-easyui-1.5/themes/default/easyui.css">
+	href="<%=contextPath%>/jquery-easyui-1.5/themes/default/easyui.css">
 <link rel="stylesheet" type="text/css"
-	href="${base}/jquery-easyui-1.5/themes/icon.css">
+	href="<%=contextPath%>/jquery-easyui-1.5/themes/icon.css">
 <link rel="stylesheet" type="text/css"
-	href="${base}/jquery-easyui-1.5/demo/demo.css">
+	href="<%=contextPath%>/jquery-easyui-1.5/demo/demo.css">
 <script type="text/javascript"
-	src="${base}/jquery-easyui-1.5/jquery.min.js"></script>
+	src="<%=contextPath%>/jquery-easyui-1.5/jquery.min.js"></script>
 <script type="text/javascript"
-	src="${base}/jquery-easyui-1.5/jquery.easyui.min.js"></script>
+	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
-	src="${base}/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
+	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript">
 	//记录新增或者修改的方法
 	var url;
@@ -30,7 +38,7 @@
 	//设置上级部门树的数据源
 	function setComboTreeDataProvider() {
 		var deptTreeNodes = $('#deptTree').tree('getRoots');
-		$('#upDeptNameComboTree').combotree('loadData', deptTreeNodes);
+		$('#upDeptComboTree').combotree('loadData', deptTreeNodes);
 	}
 
 	//打开编辑窗口
@@ -39,36 +47,38 @@
 			$('#editUI').window('open');
 			$('#form').form('clear');
 			setComboTreeDataProvider();
+			$('#upDeptComboTree').combotree('setValue', 0);
 			url = 'addNewDept.do';
 		} else if (opType == 'edit') {
 			var rowData = $('#datagrid').datagrid('getData').rows[rowIndex];
 			$('#editUI').window('open');
 			$('#form').form('load', rowData);
-			$('#upDeptNameComboTree')
-					.combotree('setValues', rowData.UP_DEPT_NAME);
-			url = 'updateNewDept.do?deptId=' + rowData.DEPT_ID;
+			$('#upDeptComboTree').combotree('setValue', rowData.UP_DEPT_ID);
+			$('#upDeptComboTree').combotree('setText', rowData.UP_DEPT_NAME);
+			url = 'updateDept.do?DEPT_ID=' + rowData.DEPT_ID;
 		}
 	}
 
 	//保存数据
-	function saveDept() {
+	function save() {
 		$('#form').form('submit', {
 			url : url,
-			onSubmit : function() {
+			onSubmit : function(param) {
 				return $(this).form('validate');
 			},
 			success : function(result) {
 				var result = eval('(' + result + ')');
 				if (result.success) {
 					$('#editUI').window('close'); // close the window
-					$('#datagrid').datagrid('reload'); // reload the user data
+					$('#datagrid').datagrid('reload'); // reload the datagrid
+					$('#deptTree').tree('reload'); // reload the tree
 					$.messager.show({
-						title : '添加成功',
+						title : '保存成功',
 						msg : result.msg
 					});
 				} else {
 					$.messager.show({
-						title : 'Error',
+						title : '保存成功',
 						msg : result.msg
 					});
 				}
@@ -76,23 +86,67 @@
 		});
 	}
 
+	function refresh() {
+		$('#datagrid').datagrid('reload');
+	}
+
 	//关闭编辑窗口
 	function closeEditUI() {
 		$('#editUI').window('close');
 	}
+
+	//删除
+	function del() {
+		var rowDatas = $('#datagrid').datagrid('getSelections');
+		alert(rowDatas.length);
+		var deptIds = '';
+		for (var i = 0; i < rowDatas.length; i++) {
+			var dept = rowDatas[i];
+			deptIds += dept.DEPT_ID + ',';
+		}
+		deptIds = deptIds.substring(0, deptIds.length - 1);
+		if (deptIds.length > 0) {
+			$.messager.confirm('Confirm', '是否删除所选记录?', function(r) {
+				if (r) {
+					$.post('delDepts.do', {
+						DEPT_IDS : deptIds
+					}, function(result) {
+						if (result.success) {
+							$('#datagrid').datagrid('reload'); // reload the datagrid
+							$('#deptTree').tree('reload'); // reload the tree
+							$.messager.show({
+								title : '删除成功',
+								msg : result.msg
+							});
+						} else {
+							$.messager.show({ // show error message
+								title : '删除失败',
+								msg : result.errorMsg
+							});
+						}
+					}, 'json');
+				}
+			});
+		}
+	}
+
+	$.ajaxSetup({
+		cache : false
+	//关闭AJAX相应的缓存
+	});
 </script>
 </head>
 <body>
 	<!-- 列表页面 -->
 	<div class="easyui-layout" data-options="fit:true">
 		<div region="west" ,collapsible="false" style="width: 200px;">
-			<ul id="deptTree" class="easyui-tree" url="deptTree.do" method="get"
-				animate="true" lines="true"></ul>
+			<ul id="deptTree" class="easyui-tree" url="queryDeptTree.do"
+				method="get" animate="true" lines="true"></ul>
 		</div>
 		<div region="center">
 			<table id="datagrid" class="easyui-datagrid" rownumbers="true"
 				toolbar="#toolbar" idField="DEPT_ID" pagination="true" pageSize="30"
-				checkOnSelect="false" url="deptPage.do" method="get" fit="true">
+				checkOnSelect="false" url="queryDeptPage.do" method="get" fit="true">
 				<thead>
 					<tr>
 						<th field="ck" checkbox="true"></th>
@@ -105,10 +159,12 @@
 				</thead>
 			</table>
 			<div id="toolbar">
-				<a href="#" class="easyui-linkbutton" iconCls="icon-add"
-					plain="true" onclick="openEditUI('add')">添加</a> <a href="#"
+				<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
+					plain="true" onclick="refresh()">刷新</a> <a href="#"
+					class="easyui-linkbutton" iconCls="icon-add" plain="true"
+					onclick="openEditUI('add')">添加</a> <a href="#"
 					class="easyui-linkbutton" iconCls="icon-remove" plain="true"
-					onclick="destroyUser()">删除</a>
+					onclick="del()">删除</a>
 			</div>
 		</div>
 	</div>
@@ -123,7 +179,7 @@
 					<table width="100%">
 						<tr>
 							<td width="22%">上级部门:</td>
-							<td><input id="upDeptNameComboTree" name="upDeptName"
+							<td><input id="upDeptComboTree" name="UP_DEPT_ID"
 								class="easyui-combotree" data-options="required:true"
 								style="width: 100%; height: 32px"></td>
 						</tr>
@@ -145,7 +201,7 @@
 			<div region="south" border="false"
 				style="text-align: right; height: 30px">
 				<a class="easyui-linkbutton" iconCls="icon-ok"
-					href="javascript:void(0)" onclick="saveDept()">保存</a> <a
+					href="javascript:void(0)" onclick="save()">保存</a> <a
 					class="easyui-linkbutton" iconCls="icon-cancel"
 					href="javascript:void(0)" onclick="closeEditUI()">关闭</a>
 			</div>
