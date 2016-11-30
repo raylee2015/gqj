@@ -21,7 +21,7 @@
 		from BASE_DEPT
 	</select>
 	<select id="selectDeptsForList" parameterType="com.base.admin.entity.Dept"
-		resultMap="BaseResultMap">
+		resultType="java.util.HashMap">
 		select
 		<include refid="Base_Column_List" />
 		from BASE_DEPT
@@ -35,11 +35,13 @@
 		</where>
 	</select>
 	<select id="selectDeptsForPage" parameterType="com.base.admin.entity.Dept"
-		resultMap="BaseResultMap">
+		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
-		select
-		<include refid="Base_Column_List" />
-		from BASE_DEPT
+		select DEPT_ID,
+		UP_DEPT_ID, DEPT_NAME, DEPT_TYPE, DEPT_SORT,
+		DEPT_INNER_CODE,
+		DEPT_INNER_NAME,UP_DEPT_NAME
+		from VIEW_BASE_DEPT
 		<where>
 			<if test="upDeptId != null">
 				UP_DEPT_ID = #{upDeptId}
@@ -49,9 +51,9 @@
 			</if>
 		</where>
 		order by dept_id
-		) A WHERE ROWNUM<![CDATA[<=]]>($currPage$*$pageSize$)
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
 		) WHERE num<![CDATA[>=]]>
-		(1+($currPage$-1)*$pageSize$)
+		(1+(${currPage}-1)*${pageSize})
 	</select>
 	<select id="selectCountOfDeptsForPage" parameterType="com.base.admin.entity.Dept"
 		resultType="java.lang.Integer">
@@ -82,7 +84,7 @@
 		(DEPT_ID, UP_DEPT_ID, DEPT_NAME,
 		DEPT_TYPE, DEPT_SORT, DEPT_INNER_CODE,
 		DEPT_INNER_NAME)
-		values (#{deptId,jdbcType=DECIMAL},
+		values (BASE_DEPT_SEQ.nextval,
 		#{upDeptId,jdbcType=DECIMAL},
 		#{deptName,jdbcType=VARCHAR},
 		#{deptType,jdbcType=CHAR}, #{deptSort,jdbcType=DECIMAL},
@@ -116,7 +118,7 @@
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="deptId != null">
-				#{deptId,jdbcType=DECIMAL},
+				BASE_DEPT_SEQ.nextval,
 			</if>
 			<if test="upDeptId != null">
 				#{upDeptId,jdbcType=DECIMAL},

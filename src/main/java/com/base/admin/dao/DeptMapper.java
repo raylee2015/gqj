@@ -8,21 +8,21 @@ import com.base.admin.entity.Dept;
 public interface DeptMapper {
 	int deleteByPrimaryKey(Long deptId);
 
-	int insert(Dept record);
+	int insert(Dept dept);
 
-	int insertSelective(Dept record);
+	int insertSelective(Dept dept);
 
 	Dept selectByPrimaryKey(Long deptId);
 
-	int updateByPrimaryKeySelective(Dept record);
+	int updateByPrimaryKeySelective(Dept dept);
 
-	int updateByPrimaryKey(Dept record);
+	int updateByPrimaryKey(Dept dept);
 
 	List<Dept> selectDeptsForList(Dept dept);
 
 	List<Map<Object, Object>> selectDeptsForTree();
 
-	List<Dept> selectDeptsForPage(Dept dept);
+	List<Map<String, Object>> selectDeptsForPage(Dept dept);
 
 	int selectCountOfDeptsForPage(Dept dept);
 }

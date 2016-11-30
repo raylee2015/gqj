@@ -2,26 +2,6 @@ package com.base.admin.entity;
 
 public class Menu {
 
-	private int currPage;
-
-	private int pageSize;
-
-	public int getCurrPage() {
-		return currPage;
-	}
-
-	public void setCurrPage(int currPage) {
-		this.currPage = currPage;
-	}
-
-	public int getPageSize() {
-		return pageSize;
-	}
-
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
-	}
-
 	private Long menuId;
 
 	private Long upMenuId;
@@ -99,6 +79,7 @@ public class Menu {
 	}
 
 	public void setMenuExtCode(String menuExtCode) {
-		this.menuExtCode = menuExtCode == null ? null : menuExtCode.trim();
+		this.menuExtCode = menuExtCode == null ? null
+				: menuExtCode.trim();
 	}
 }

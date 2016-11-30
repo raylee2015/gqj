@@ -27,8 +27,7 @@ public class DeptServiceImpl implements IDeptService {
 
 	@Override
 	public int insert(Dept dept) {
-		// TODO Auto-generated method stub
-		return 0;
+		return deptMapper.insert(dept);
 	}
 
 	@Override
@@ -61,7 +60,7 @@ public class DeptServiceImpl implements IDeptService {
 	}
 
 	@Override
-	public List<Dept> selectDeptsForPage(Dept dept) {
+	public List<Map<String, Object>> selectDeptsForPage(Dept dept) {
 		return deptMapper.selectDeptsForPage(dept);
 	}
 

@@ -32,7 +32,7 @@ public class DeptController {
 	@Autowired
 	private IDeptService deptService;
 
-	@RequestMapping("/deptList.do")
+	@RequestMapping("/deptPage.do")
 	@ResponseBody
 	/**
 	 * 分页查询部门列表
@@ -49,8 +49,12 @@ public class DeptController {
 	public Map<String, Object> selectDeptsForGrid(int page, int rows,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		List<Dept> depts = deptService.selectDeptsForList(null);
-		int count = deptService.selectCountOfDeptsForPage(null);
+		Dept dept = new Dept();
+		dept.setCurrPage(page);
+		dept.setPageSize(rows);
+		List<Map<String, Object>> depts = deptService
+				.selectDeptsForPage(dept);
+		int count = deptService.selectCountOfDeptsForPage(dept);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", depts);
 		map.put("total", count);
@@ -68,6 +72,26 @@ public class DeptController {
 				.print(deptService.selectDeptsForTree().toLowerCase());
 		response.getWriter().flush();
 		response.getWriter().close();
+	}
+
+	@RequestMapping("/addNewDept.do")
+	@ResponseBody
+	public Map<String, Object> addNewDept(String deptName,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("success", false);
+		map.put("msg", "false");
+		return map;
+	}
+
+	@RequestMapping("/updateNewDept.do")
+	@ResponseBody
+	public Map<String, Object> updateNewDept(String deptName,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		return map;
 	}
 
 }
