@@ -38,24 +38,26 @@
 	//设置上级部门树的数据源
 	function setDeptTreeDataProvider() {
 		var deptTreeNodes = $('#deptTree').tree('getRoots');
-		$('#upDeptComboTree').combotree('loadData', deptTreeNodes);
+		$('#userDeptComboTree').combotree('loadData', deptTreeNodes);
 	}
 
 	//打开编辑窗口
 	function openEditUI(opType, rowIndex) {
+		setDeptTreeDataProvider();
 		if (opType == 'add') {
 			$('#editUI').window('open');
 			$('#form').form('clear');
 			setDeptTreeDataProvider();
-			$('#upDeptComboTree').combotree('setValue', 0);
-			url = 'addNewDept.do';
+			$('#userDeptComboTree').combotree('setValue', 0);
+			url = 'addNewUser.do';
 		} else if (opType == 'edit') {
 			var rowData = $('#datagrid').datagrid('getData').rows[rowIndex];
 			$('#editUI').window('open');
 			$('#form').form('load', rowData);
-			$('#upDeptComboTree').combotree('setValue', rowData.UP_DEPT_ID);
-			$('#upDeptComboTree').combotree('setText', rowData.UP_DEPT_NAME);
-			url = 'updateDept.do?DEPT_ID=' + rowData.DEPT_ID;
+			$('#userDeptComboTree').combotree('setValue', rowData.USER_DEPT_ID);
+			$('#userDeptComboTree')
+					.combotree('setText', rowData.USER_DEPT_NAME);
+			url = 'updateUser.do?USER_ID=' + rowData.USER_ID;
 		}
 	}
 
@@ -71,7 +73,6 @@
 				if (result.success) {
 					$('#editUI').window('close'); // close the window
 					$('#datagrid').datagrid('reload'); // reload the datagrid
-					$('#deptTree').tree('reload'); // reload the tree
 					$.messager.show({
 						title : '保存成功',
 						msg : result.msg
@@ -102,21 +103,20 @@
 			alert('请选择记录');
 			return;
 		}
-		var deptIds = '';
+		var ids = '';
 		for (var i = 0; i < rowDatas.length; i++) {
-			var dept = rowDatas[i];
-			deptIds += dept.DEPT_INNER_CODE + ',';
+			var item = rowDatas[i];
+			ids += item.USER_ID + ',';
 		}
-		deptIds = deptIds.substring(0, deptIds.length - 1);
-		if (deptIds.length > 0) {
+		ids = ids.substring(0, ids.length - 1);
+		if (ids.length > 0) {
 			$.messager.confirm('确认', '是否删除所选记录?', function(r) {
 				if (r) {
-					$.post('delDepts.do', {
-						DEPT_IDS : deptIds
+					$.post('delUsers.do', {
+						USER_IDS : ids
 					}, function(result) {
 						if (result.success) {
 							$('#datagrid').datagrid('reload'); // reload the datagrid
-							$('#deptTree').tree('reload'); // reload the tree
 							$.messager.show({
 								title : '删除成功',
 								msg : result.msg
@@ -133,34 +133,11 @@
 		}
 	}
 
-	//更新级联数据
-	function updataInnerData() {
-		$.messager.confirm('确认', '是否更新级联数据?', function(r) {
-			if (r) {
-				$.post('updataInnerData.do', {}, function(result) {
-					if (result.success) {
-						$('#datagrid').datagrid('reload'); // reload the datagrid
-						$('#deptTree').tree('reload'); // reload the tree
-						$.messager.show({
-							title : '更新级联数据成功',
-							msg : result.msg
-						});
-					} else {
-						$.messager.show({ // show error message
-							title : '更新级联数据失败',
-							msg : result.errorMsg
-						});
-					}
-				}, 'json');
-			}
-		});
-	}
-
 	//查询
-	function queryForPage(deptInnerCode) {
-		$.post('queryDeptPage.do',
+	function queryForPage(userDeptId) {
+		$.post('queryUserPage.do',
 				{
-					deptInnerCode : deptInnerCode,
+					userDeptId : userDeptId,
 					keyWord : $('#keyWordTextInput').textbox('getValue'),
 					page : 1,
 					rows : $('#datagrid').datagrid('getPager').data(
@@ -179,7 +156,7 @@
 	function queryDeptPageWithTree() {
 		$('#deptTree').tree({
 			onClick : function(node) {
-				queryForPage(node.dept_inner_code); // 在用户点击的时候提示
+				queryForPage(node.id); // 在用户点击的时候提示
 			}
 		});
 	}
@@ -215,17 +192,18 @@
 		</div>
 		<div region="center">
 			<table id="datagrid" class="easyui-datagrid" rownumbers="true"
-				toolbar="#toolbar" idField="DEPT_ID" pagination="true" pageSize="30"
-				pageNumber="1" checkOnSelect="false" url="queryDeptPage.do"
+				toolbar="#toolbar" idField="USER_ID" pagination="true" pageSize="30"
+				pageNumber="1" checkOnSelect="false" url="queryUserPage.do"
 				method="get" fit="true">
 				<thead>
 					<tr>
 						<th field="ck" checkbox="true"></th>
 						<th field="op" formatter="editColumnFormatter">操作</th>
-						<th field="DEPT_NAME" width="100">部门名称</th>
-						<th field="UP_DEPT_NAME" width="100">上级部门</th>
-						<th field="DEPT_INNER_NAME" width="200">部门级联</th>
-						<th field="DEPT_SORT" width="80">排序号</th>
+						<th field="USER_NAME" width="100">用户名称</th>
+						<th field="USER_CODE" width="100">用户编号</th>
+						<th field="USER_DEPT_NAME" width="100">所属部门</th>
+						<th field="USER_PHONE" width="100">手机号码</th>
+						<th field="USER_SORT" width="80">排序号</th>
 					</tr>
 				</thead>
 			</table>
@@ -236,12 +214,11 @@
 						class="easyui-linkbutton" iconCls="icon-add" plain="true"
 						onclick="openEditUI('add')">添加</a> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
-						onclick="del()">删除</a> <a href="#" class="easyui-linkbutton"
-						iconCls="icon-reload" plain="true" onclick="updataInnerData()">更新级联数据</a>
+						onclick="del()">删除</a>
 				</div>
 				<div>
 					<input id="keyWordTextInput" class="easyui-textbox"
-						data-options="prompt:'部门名称',validType:'length[0,50]'"
+						data-options="prompt:'用户名称',validType:'length[0,10]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
 						onclick="queryForPage('')">查询</a>
@@ -252,28 +229,40 @@
 	</div>
 
 	<!--  详细界面 -->
-	<div id="editUI" class="easyui-window" title="添加部门" closed="true"
+	<div id="editUI" class="easyui-window" title="添加用户" closed="true"
 		data-options="iconCls:'icon-save'"
-		style="width: 400px; height: 190px; padding: 5px;">
+		style="width: 400px; height: 260px; padding: 5px;">
 		<div class="easyui-layout" data-options="fit:true">
 			<div region="north" fit="true" border="false">
 				<form id="form" method="post" style="width: 100%;">
 					<table width="100%">
 						<tr>
-							<td width="22%">上级部门:</td>
-							<td><input id="upDeptComboTree" name="UP_DEPT_ID"
-								class="easyui-combotree" data-options="required:true"
+							<td width="22%">所属部门:</td>
+							<td><input id="userDeptComboTree" class="easyui-combotree"
+								name="USER_DEPT_ID" data-options="required:true"
 								style="width: 100%; height: 32px"></td>
 						</tr>
 						<tr>
-							<td width="22%">部门名称:</td>
-							<td><input name="DEPT_NAME" class="easyui-textbox"
-								data-options="prompt:'部门名称',required:true,validType:'length[3,10]'"
+							<td width="22%">用户名称:</td>
+							<td><input name="USER_NAME" class="easyui-textbox"
+								data-options="prompt:'用户名称',required:true,validType:'length[3,10]'"
 								style="width: 100%; height: 32px"></td>
+						</tr>
+						<tr>
+							<td width="22%">用户编号:</td>
+							<td><input name="USER_CODE" class="easyui-textbox"
+								data-options="prompt:'用户编号',required:true,validType:'length[3,10]'"
+								style="width: 100%; height: 32px"></td>
+						</tr>
+						<tr>
+							<td width="22%">手机号码:</td>
+							<td><input name="USER_PHONE" type="text"
+								class="easyui-numberbox" style="width: 100%; height: 32px"
+								data-options="precision:0,prompt:'手机号码',required:true,validType:'length[11,11]'" /></td>
 						</tr>
 						<tr>
 							<td width="22%">排序号:</td>
-							<td><input name="DEPT_SORT" type="text"
+							<td><input name="USER_SORT" type="text"
 								class="easyui-numberbox" style="width: 100%; height: 32px"
 								data-options="min:0,max:99,precision:0,prompt:'排序号',required:true,validType:'length[0,2]'" /></td>
 						</tr>

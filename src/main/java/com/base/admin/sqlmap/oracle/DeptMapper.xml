@@ -52,7 +52,7 @@
 		<if test="keyWord != null">
 			AND DEPT_NAME like '%${keyWord}%'
 		</if>
-		order by dept_id
+		order by DEPT_SORT,dept_id
 		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
 		) WHERE num<![CDATA[>=]]>
 		(1+(${currPage}-1)*${pageSize})

@@ -1,52 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.base.admin.dao.IUserDao">
-	<resultMap id="UserResultMap" type="com.base.admin.entity.User">
+<mapper namespace="com.base.admin.dao.UserMapper">
+	<resultMap id="BaseResultMap" type="com.base.admin.entity.User">
 		<id column="USER_ID" jdbcType="DECIMAL" property="userId" />
 		<result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
 		<result column="USER_CODE" jdbcType="VARCHAR" property="userCode" />
+		<result column="USER_DEPT_ID" jdbcType="DECIMAL" property="userDeptId" />
+		<result column="USER_PHONE" jdbcType="VARCHAR" property="userPhone" />
+		<result column="USER_SORT" jdbcType="VARCHAR" property="userSort" />
 	</resultMap>
-	<sql id="All_Column">
-		USER_ID, USER_NAME, USER_CODE
+	<sql id="Base_Column_List">
+		USER_ID, USER_NAME, USER_CODE, USER_DEPT_ID, USER_PHONE,
+		USER_SORT
 	</sql>
-	<select id="selectSamplesForList" resultMap="UserResultMap">
-		select
-		<include refid="All_Column" />
-		from SC_USER u
-		<!-- <where> -->
-		<!-- <if test="userName!=null and userName!='' "> -->
-		<!-- u.user_name like CONCAT(CONCAT('%', #{userName, -->
-		<!-- jdbcType=VARCHAR}),'%') -->
-		<!-- </if> -->
-		<!-- <if test="userCode != null and userCode != '' "> -->
-		<!-- AND u.user_code = #{userCode, jdbcType=VARCHAR} -->
-		<!-- </if> -->
-		<!-- </where> -->
+	<select id="selectUsersForPage" parameterType="com.base.admin.entity.User"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select USER_ID, USER_NAME,
+		USER_CODE, USER_DEPT_ID, USER_PHONE, USER_SORT,USER_DEPT_NAME
+		from
+		VIEW_BASE_USER
+		<where>
+			<if test="userDeptId != null and userDeptId !=''">
+				and USER_DEPT_ID = #{userDeptId}
+			</if>
+			<if test="keyWord != null">
+				AND (USER_NAME like '%${keyWord}%' OR USER_CODE like
+				'%${keyWord}%')
+			</if>
+		</where>
+		order by USER_SORT,USER_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
 	</select>
-
-	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
-		resultMap="UserResultMap">
-		select
-		<include refid="All_Column" />
-		from SC_USER
-		where USER_ID = #{userId,jdbcType=DECIMAL}
+	<select id="selectCountOfUsersForPage" parameterType="com.base.admin.entity.User"
+		resultType="java.lang.Integer">
+		select COUNT(1)
+		from
+		VIEW_BASE_USER
+		<where>
+			<if test="userDeptId != null and userDeptId !=''">
+				and USER_DEPT_ID = #{userDeptId}
+			</if>
+			<if test="keyWord != null">
+				AND (USER_NAME like '%${keyWord}%' OR USER_CODE like
+				'%${keyWord}%')
+			</if>
+		</where>
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		delete from
-		SC_USER
+		BASE_USER
 		where USER_ID = #{userId,jdbcType=DECIMAL}
 	</delete>
-	<insert id="insert" parameterType="com.sample.entity.Sample">
-		insert into SC_USER (USER_ID,
-		USER_NAME, USER_CODE
+	<delete id="deleteByPrimaryKeys">
+		delete from
+		BASE_USER
+		where USER_ID in
+		<foreach item="userId" index="index" collection="array" open="("
+			separator="," close=")">
+			#{userId}
+		</foreach>
+	</delete>
+	<insert id="insert" parameterType="com.base.admin.entity.User">
+		insert into BASE_USER
+		(USER_ID, USER_NAME, USER_CODE,
+		USER_DEPT_ID, USER_PHONE, USER_SORT
 		)
-		values (#{userId,jdbcType=DECIMAL},
-		#{userName,jdbcType=VARCHAR},
-		#{userCode,jdbcType=VARCHAR}
+		values (BASE_USER_SEQ.nextval, #{userName,jdbcType=VARCHAR},
+		#{userCode,jdbcType=VARCHAR},
+		#{userDeptId,jdbcType=DECIMAL},
+		#{userPhone,jdbcType=VARCHAR}, #{userSort,jdbcType=VARCHAR}
 		)
 	</insert>
-	<insert id="insertSelective" parameterType="com.sample.entity.Sample">
-		insert into SC_USER
+	<insert id="insertSelective" parameterType="com.base.admin.entity.User">
+		insert into BASE_USER
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="userId != null">
 				USER_ID,
@@ -57,10 +86,19 @@
 			<if test="userCode != null">
 				USER_CODE,
 			</if>
+			<if test="userDeptId != null">
+				USER_DEPT_ID,
+			</if>
+			<if test="userPhone != null">
+				USER_PHONE,
+			</if>
+			<if test="userSort != null">
+				USER_SORT,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="userId != null">
-				#{userId,jdbcType=DECIMAL},
+				BASE_USER_SEQ.nextval,
 			</if>
 			<if test="userName != null">
 				#{userName,jdbcType=VARCHAR},
@@ -68,10 +106,19 @@
 			<if test="userCode != null">
 				#{userCode,jdbcType=VARCHAR},
 			</if>
+			<if test="userDeptId != null">
+				#{userDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="userPhone != null">
+				#{userPhone,jdbcType=VARCHAR},
+			</if>
+			<if test="userSort != null">
+				#{userSort,jdbcType=VARCHAR},
+			</if>
 		</trim>
 	</insert>
-	<update id="updateByPrimaryKeySelective" parameterType="com.sample.entity.Sample">
-		update SC_USER
+	<update id="updateByPrimaryKeySelective" parameterType="com.base.admin.entity.User">
+		update BASE_USER
 		<set>
 			<if test="userName != null">
 				USER_NAME = #{userName,jdbcType=VARCHAR},
@@ -79,15 +126,28 @@
 			<if test="userCode != null">
 				USER_CODE = #{userCode,jdbcType=VARCHAR},
 			</if>
+			<if test="userDeptId != null">
+				USER_DEPT_ID = #{userDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="userPhone != null">
+				USER_PHONE = #{userPhone,jdbcType=VARCHAR},
+			</if>
+			<if test="userSort != null">
+				USER_SORT = #{userSort,jdbcType=VARCHAR},
+			</if>
 		</set>
 		where USER_ID = #{userId,jdbcType=DECIMAL}
 	</update>
-	<update id="updateByPrimaryKey" parameterType="com.sample.entity.Sample">
-		update SC_USER
-		set
-		USER_NAME = #{userName,jdbcType=VARCHAR},
+	<update id="updateByPrimaryKey" parameterType="com.base.admin.entity.User">
+		update BASE_USER
+		set USER_NAME = #{userName,jdbcType=VARCHAR},
 		USER_CODE =
-		#{userCode,jdbcType=VARCHAR}
+		#{userCode,jdbcType=VARCHAR},
+		USER_DEPT_ID =
+		#{userDeptId,jdbcType=DECIMAL},
+		USER_PHONE =
+		#{userPhone,jdbcType=VARCHAR},
+		USER_SORT = #{userSort,jdbcType=VARCHAR}
 		where USER_ID = #{userId,jdbcType=DECIMAL}
 	</update>
 </mapper>
