@@ -89,8 +89,13 @@ public class DeptServiceImpl implements IDeptService {
 	 * com.base.admin.service.IDeptService#deleteByPrimaryKeys(java.lang.String)
 	 */
 	@Override
-	public int deleteByPrimaryKeys(String deptIds) {
+	public int deleteByPrimaryKeys(String[] deptIds) {
 		return deptMapper.deleteByPrimaryKeys(deptIds);
+	}
+
+	@Override
+	public int updataInnerData() {
+		return deptMapper.updataInnerData();
 	}
 
 }

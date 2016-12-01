@@ -30,7 +30,7 @@
 				UP_DEPT_ID = #{upDeptId}
 			</if>
 			<if test="deptName != null">
-				AND DEPT_NAME like '%$deptName%'
+				AND DEPT_NAME like CONCAT('%','${deptName}','%' )
 			</if>
 		</where>
 	</select>
@@ -40,16 +40,18 @@
 		select DEPT_ID,
 		UP_DEPT_ID, DEPT_NAME, DEPT_TYPE, DEPT_SORT,
 		DEPT_INNER_CODE,
-		DEPT_INNER_NAME,UP_DEPT_NAME
+		DEPT_INNER_NAME,UP_DEPT_NAME,VIEW_DEPT_INNER_NAME,VIEW_DEPT_INNER_CODE
 		from VIEW_BASE_DEPT
-		<where>
-			<if test="upDeptId != null">
-				UP_DEPT_ID = #{upDeptId}
-			</if>
-			<if test="deptName != null">
-				AND DEPT_NAME like '%$deptName%'
-			</if>
-		</where>
+		where dept_id!=0
+		<if test="upDeptId != null">
+			and UP_DEPT_ID = #{upDeptId}
+		</if>
+		<if test="deptInnerCode != null and deptInnerCode!=''">
+			and DEPT_ID IN (${deptInnerCode})
+		</if>
+		<if test="keyWord != null">
+			AND DEPT_NAME like '%${keyWord}%'
+		</if>
 		order by dept_id
 		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
 		) WHERE num<![CDATA[>=]]>
@@ -58,14 +60,16 @@
 	<select id="selectCountOfDeptsForPage" parameterType="com.base.admin.entity.Dept"
 		resultType="java.lang.Integer">
 		select count(t.dept_id) from BASE_DEPT t
-		<where>
-			<if test="upDeptId != null">
-				UP_DEPT_ID = #{upDeptId}
-			</if>
-			<if test="deptName != null">
-				AND DEPT_NAME like '%$deptName%'
-			</if>
-		</where>
+		where dept_id!=0
+		<if test="upDeptId != null">
+			and UP_DEPT_ID = #{upDeptId}
+		</if>
+		<if test="deptInnerCode != null and deptInnerCode!=''">
+			and DEPT_ID IN (${deptInnerCode})
+		</if>
+		<if test="keyWord != null">
+			AND DEPT_NAME like '%${keyWord}%'
+		</if>
 	</select>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
@@ -79,10 +83,15 @@
 		BASE_DEPT
 		where DEPT_ID = #{deptId,jdbcType=DECIMAL}
 	</delete>
-	<delete id="deleteByPrimaryKeys" parameterType="java.lang.String">
+	<delete id="deleteByPrimaryKeys">
 		delete from
 		BASE_DEPT
-		where DEPT_ID in (${deptIds,jdbcType=VARCHAR})
+		where
+		DEPT_ID in
+		<foreach item="deptId" index="index" collection="array" open="("
+			separator="," close=")">
+			#{deptId}
+		</foreach>
 	</delete>
 	<insert id="insert" parameterType="com.base.admin.entity.Dept">
 		insert into BASE_DEPT
@@ -182,5 +191,13 @@
 		#{deptInnerName,jdbcType=VARCHAR}
 		where DEPT_ID =
 		#{deptId,jdbcType=DECIMAL}
+	</update>
+	<update id="updataInnerData">
+		update base_dept d set d.dept_inner_code=(select
+		v.view_dept_inner_code from view_base_dept v where
+		v.DEPT_ID=d.dept_id),
+		d.dept_inner_name=(select v.view_dept_inner_name
+		from view_base_dept v where
+		v.DEPT_ID=d.dept_id)
 	</update>
 </mapper>

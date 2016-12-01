@@ -6,7 +6,7 @@ import java.util.Map;
 import com.base.admin.entity.Dept;
 
 public interface IDeptService {
-	int deleteByPrimaryKeys(String deptIds);
+	int deleteByPrimaryKeys(String[] deptIds);
 
 	int deleteByPrimaryKey(Long deptId);
 
@@ -27,4 +27,6 @@ public interface IDeptService {
 	List<Map<String, Object>> selectDeptsForPage(Dept dept);
 
 	int selectCountOfDeptsForPage(Dept dept);
+
+	int updataInnerData();
 }

@@ -98,15 +98,18 @@
 	//删除
 	function del() {
 		var rowDatas = $('#datagrid').datagrid('getSelections');
-		alert(rowDatas.length);
+		if (rowDatas.length == 0) {
+			alert('请选择记录');
+			return;
+		}
 		var deptIds = '';
 		for (var i = 0; i < rowDatas.length; i++) {
 			var dept = rowDatas[i];
-			deptIds += dept.DEPT_ID + ',';
+			deptIds += dept.DEPT_INNER_CODE + ',';
 		}
 		deptIds = deptIds.substring(0, deptIds.length - 1);
 		if (deptIds.length > 0) {
-			$.messager.confirm('Confirm', '是否删除所选记录?', function(r) {
+			$.messager.confirm('确认', '是否删除所选记录?', function(r) {
 				if (r) {
 					$.post('delDepts.do', {
 						DEPT_IDS : deptIds
@@ -130,9 +133,75 @@
 		}
 	}
 
+	//更新级联数据
+	function updataInnerData() {
+		$.messager.confirm('确认', '是否更新级联数据?', function(r) {
+			if (r) {
+				$.post('updataInnerData.do', {}, function(result) {
+					if (result.success) {
+						$('#datagrid').datagrid('reload'); // reload the datagrid
+						$('#deptTree').tree('reload'); // reload the tree
+						$.messager.show({
+							title : '更新级联数据成功',
+							msg : result.msg
+						});
+					} else {
+						$.messager.show({ // show error message
+							title : '更新级联数据失败',
+							msg : result.errorMsg
+						});
+					}
+				}, 'json');
+			}
+		});
+	}
+
+	//查询
+	function queryForPage(deptInnerCode) {
+		$.post('queryDeptPage.do',
+				{
+					deptInnerCode : deptInnerCode,
+					keyWord : $('#keyWordTextInput').textbox('getValue'),
+					page : 1,
+					rows : $('#datagrid').datagrid('getPager').data(
+							"pagination").options.pageSize
+				}, function(result) {
+					$('#datagrid').datagrid('loadData', result.rows);
+				}, 'json');
+	}
+
+	//关闭AJAX相应的缓存
 	$.ajaxSetup({
 		cache : false
-	//关闭AJAX相应的缓存
+	});
+
+	//点击树查询
+	function queryDeptPageWithTree() {
+		$('#deptTree').tree({
+			onClick : function(node) {
+				queryForPage(node.dept_inner_code); // 在用户点击的时候提示
+			}
+		});
+	}
+
+	//初始化
+	function init() {
+		registerKeyPressForTextInput();
+	}
+
+	//注册按下回车的事件
+	function registerKeyPressForTextInput() {
+		var keyWordTextInput = $('#keyWordTextInput');
+		keyWordTextInput.textbox('textbox').bind('keypress', function(e) {
+			if (e.keyCode == 13) {
+				queryForPage();
+			}
+		});
+	}
+
+	//页面加载完
+	$(document).ready(function() {
+		init();
 	});
 </script>
 </head>
@@ -141,12 +210,14 @@
 	<div class="easyui-layout" data-options="fit:true">
 		<div region="west" ,collapsible="false" style="width: 200px;">
 			<ul id="deptTree" class="easyui-tree" url="queryDeptTree.do"
-				method="get" animate="true" lines="true"></ul>
+				onClick="queryDeptPageWithTree()" method="get" animate="true"
+				lines="true"></ul>
 		</div>
 		<div region="center">
 			<table id="datagrid" class="easyui-datagrid" rownumbers="true"
 				toolbar="#toolbar" idField="DEPT_ID" pagination="true" pageSize="30"
-				checkOnSelect="false" url="queryDeptPage.do" method="get" fit="true">
+				pageNumber="1" checkOnSelect="false" url="queryDeptPage.do"
+				method="get" fit="true">
 				<thead>
 					<tr>
 						<th field="ck" checkbox="true"></th>
@@ -159,12 +230,23 @@
 				</thead>
 			</table>
 			<div id="toolbar">
-				<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
-					plain="true" onclick="refresh()">刷新</a> <a href="#"
-					class="easyui-linkbutton" iconCls="icon-add" plain="true"
-					onclick="openEditUI('add')">添加</a> <a href="#"
-					class="easyui-linkbutton" iconCls="icon-remove" plain="true"
-					onclick="del()">删除</a>
+				<div>
+					<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
+						plain="true" onclick="refresh()">刷新</a> <a href="#"
+						class="easyui-linkbutton" iconCls="icon-add" plain="true"
+						onclick="openEditUI('add')">添加</a> <a href="#"
+						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
+						onclick="del()">删除</a> <a href="#" class="easyui-linkbutton"
+						iconCls="icon-reload" plain="true" onclick="updataInnerData()">更新级联数据</a>
+				</div>
+				<div>
+					<input id="keyWordTextInput" class="easyui-textbox"
+						data-options="prompt:'部门名称',validType:'length[0,50]'"
+						style="width: 200px"> <a href="#"
+						class="easyui-linkbutton" iconCls="icon-search"
+						onclick="queryForPage('')">查询</a>
+				</div>
+
 			</div>
 		</div>
 	</div>

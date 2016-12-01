@@ -26,6 +26,11 @@ public class DeptController {
 	public static final Logger LOGGER = Logger
 			.getLogger(DeptController.class);
 
+	/**
+	 * 跳转到部门管理首页
+	 * 
+	 * @return
+	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
 		return new ModelAndView("/base/admin/dept");
@@ -34,8 +39,6 @@ public class DeptController {
 	@Autowired
 	private IDeptService deptService;
 
-	@RequestMapping("/queryDeptPage.do")
-	@ResponseBody
 	/**
 	 * 分页查询部门列表
 	 * 
@@ -43,17 +46,26 @@ public class DeptController {
 	 *            页数
 	 * @param rows
 	 *            显示行数
+	 * @param keyWord
+	 *            关键字
 	 * @param request
 	 * @param response
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String, Object> queryDeptPage(int page, int rows,
-			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+	@RequestMapping("/queryDeptPage.do")
+	@ResponseBody
+	public Map<String, Object> queryDeptPage(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String deptInnerCode = request.getParameter("deptInnerCode");
+		String keyWord = request.getParameter("keyWord");
 		Dept dept = new Dept();
-		dept.setCurrPage(page);
-		dept.setPageSize(rows);
+		dept.setCurrPage(Integer.parseInt(page));
+		dept.setPageSize(Integer.parseInt(rows));
+		dept.setDeptInnerCode(deptInnerCode);
+		dept.setKeyWord(keyWord);
 		List<Map<String, Object>> depts = deptService
 				.selectDeptsForPage(dept);
 		int count = deptService.selectCountOfDeptsForPage(dept);
@@ -63,6 +75,13 @@ public class DeptController {
 		return map;
 	}
 
+	/**
+	 * 查询部门树
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
 	@RequestMapping("/queryDeptTree.do")
 	@ResponseBody
 	public void queryDeptTree(HttpServletRequest request,
@@ -73,6 +92,20 @@ public class DeptController {
 		response.getWriter().close();
 	}
 
+	/**
+	 * 添加部门信息
+	 * 
+	 * @param deptName
+	 *            部门名称
+	 * @param deptSort
+	 *            部门排序号
+	 * @param upDeptId
+	 *            上级部门id
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping("/addNewDept.do")
 	@ResponseBody
 	public Map<String, Object> addNewDept(
@@ -80,7 +113,7 @@ public class DeptController {
 			@RequestParam("DEPT_SORT") long deptSort,
 			@RequestParam("UP_DEPT_ID") long upDeptId,
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Dept dept = new Dept();
 		dept.setDeptId(-1l);
@@ -98,6 +131,22 @@ public class DeptController {
 		return map;
 	}
 
+	/**
+	 * 更新部门信息
+	 * 
+	 * @param deptId
+	 *            部门id
+	 * @param deptName
+	 *            部门名称
+	 * @param deptSort
+	 *            部门排序号
+	 * @param upDeptId
+	 *            上级部门id
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping("/updateDept.do")
 	@ResponseBody
 	public Map<String, Object> updateDept(
@@ -106,7 +155,7 @@ public class DeptController {
 			@RequestParam("DEPT_SORT") long deptSort,
 			@RequestParam("UP_DEPT_ID") long upDeptId,
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Dept dept = new Dept();
 		dept.setDeptId(deptId);
@@ -123,21 +172,56 @@ public class DeptController {
 		}
 		return map;
 	}
-	
+
+	/**
+	 * 删除部门
+	 * 
+	 * @param deptIds
+	 *            部门id串
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping("/delDepts.do")
 	@ResponseBody
 	public Map<String, Object> delDepts(
-			@RequestParam("DEPT_IDS") String deptIds,
+			@RequestParam(value = "DEPT_IDS") String deptIds,
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
-		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = deptService.deleteByPrimaryKeys(deptIds);
+			throws Exception {
+		Map<String, Object> map = new HashMap<>();
+		int bool = deptService.deleteByPrimaryKeys(deptIds.split(","));
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");
 		} else {
 			map.put("success", true);
 			map.put("msg", "删除成功");
+		}
+		return map;
+	}
+
+	/**
+	 * 更新级联数据
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/updataInnerData.do")
+	@ResponseBody
+	public Map<String, Object> updataInnerData(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = deptService.updataInnerData();
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "更新级联数据失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "更新级联数据成功");
 		}
 		return map;
 	}
