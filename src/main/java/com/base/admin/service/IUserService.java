@@ -12,16 +12,8 @@ public interface IUserService {
 
 	int selectCountOfUsersForPage(User user);
 
-	int deleteByPrimaryKey(Long userId);
-
-	int insert(User user);
-
 	int insertSelective(User user);
 
-	User selectByPrimaryKey(Long userId);
-
 	int updateByPrimaryKeySelective(User user);
-
-	int updateByPrimaryKey(User user);
 
 }

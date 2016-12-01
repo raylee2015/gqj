@@ -71,18 +71,6 @@
 			AND DEPT_NAME like '%${keyWord}%'
 		</if>
 	</select>
-	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
-		resultMap="BaseResultMap">
-		select
-		<include refid="Base_Column_List" />
-		from BASE_DEPT
-		where DEPT_ID = #{deptId,jdbcType=DECIMAL}
-	</select>
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from
-		BASE_DEPT
-		where DEPT_ID = #{deptId,jdbcType=DECIMAL}
-	</delete>
 	<delete id="deleteByPrimaryKeys">
 		delete from
 		BASE_DEPT
@@ -93,18 +81,6 @@
 			#{deptId}
 		</foreach>
 	</delete>
-	<insert id="insert" parameterType="com.base.admin.entity.Dept">
-		insert into BASE_DEPT
-		(DEPT_ID, UP_DEPT_ID, DEPT_NAME,
-		DEPT_TYPE, DEPT_SORT, DEPT_INNER_CODE,
-		DEPT_INNER_NAME)
-		values (BASE_DEPT_SEQ.nextval,
-		#{upDeptId,jdbcType=DECIMAL},
-		#{deptName,jdbcType=VARCHAR},
-		#{deptType,jdbcType=CHAR}, #{deptSort,jdbcType=DECIMAL},
-		#{deptInnerCode,jdbcType=VARCHAR},
-		#{deptInnerName,jdbcType=VARCHAR})
-	</insert>
 	<insert id="insertSelective" parameterType="com.base.admin.entity.Dept">
 		insert into BASE_DEPT
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -177,20 +153,6 @@
 			</if>
 		</set>
 		where DEPT_ID = #{deptId,jdbcType=DECIMAL}
-	</update>
-	<update id="updateByPrimaryKey" parameterType="com.base.admin.entity.Dept">
-		update BASE_DEPT
-		set UP_DEPT_ID = #{upDeptId,jdbcType=DECIMAL},
-		DEPT_NAME =
-		#{deptName,jdbcType=VARCHAR},
-		DEPT_TYPE = #{deptType,jdbcType=CHAR},
-		DEPT_SORT = #{deptSort,jdbcType=DECIMAL},
-		DEPT_INNER_CODE =
-		#{deptInnerCode,jdbcType=VARCHAR},
-		DEPT_INNER_NAME =
-		#{deptInnerName,jdbcType=VARCHAR}
-		where DEPT_ID =
-		#{deptId,jdbcType=DECIMAL}
 	</update>
 	<update id="updataInnerData">
 		update base_dept d set d.dept_inner_code=(select

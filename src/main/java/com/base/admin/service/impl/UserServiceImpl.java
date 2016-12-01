@@ -65,38 +65,6 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	/*
-	 * (非 Javadoc) <p>Title: deleteByPrimaryKey</p> <p>Description: </p>
-	 * 
-	 * @param userId
-	 * 
-	 * @return
-	 * 
-	 * @see
-	 * com.base.admin.service.IUserService#deleteByPrimaryKey(java.lang.Long)
-	 */
-	@Override
-	public int deleteByPrimaryKey(Long userId) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/*
-	 * (非 Javadoc) <p>Title: insert</p> <p>Description: </p>
-	 * 
-	 * @param user
-	 * 
-	 * @return
-	 * 
-	 * @see
-	 * com.base.admin.service.IUserService#insert(com.base.admin.entity.User)
-	 */
-	@Override
-	public int insert(User user) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/*
 	 * (非 Javadoc) <p>Title: insertSelective</p> <p>Description: </p>
 	 * 
 	 * @param user
@@ -110,22 +78,6 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public int insertSelective(User user) {
 		return userMapper.insertSelective(user);
-	}
-
-	/*
-	 * (非 Javadoc) <p>Title: selectByPrimaryKey</p> <p>Description: </p>
-	 * 
-	 * @param userId
-	 * 
-	 * @return
-	 * 
-	 * @see
-	 * com.base.admin.service.IUserService#selectByPrimaryKey(java.lang.Long)
-	 */
-	@Override
-	public User selectByPrimaryKey(Long userId) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/*
@@ -143,23 +95,6 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public int updateByPrimaryKeySelective(User user) {
 		return userMapper.updateByPrimaryKeySelective(user);
-	}
-
-	/*
-	 * (非 Javadoc) <p>Title: updateByPrimaryKey</p> <p>Description: </p>
-	 * 
-	 * @param user
-	 * 
-	 * @return
-	 * 
-	 * @see
-	 * com.base.admin.service.IUserService#updateByPrimaryKey(com.base.admin.
-	 * entity.User)
-	 */
-	@Override
-	public int updateByPrimaryKey(User user) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 }

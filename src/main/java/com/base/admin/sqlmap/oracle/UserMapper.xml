@@ -49,11 +49,6 @@
 			</if>
 		</where>
 	</select>
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from
-		BASE_USER
-		where USER_ID = #{userId,jdbcType=DECIMAL}
-	</delete>
 	<delete id="deleteByPrimaryKeys">
 		delete from
 		BASE_USER
@@ -63,17 +58,6 @@
 			#{userId}
 		</foreach>
 	</delete>
-	<insert id="insert" parameterType="com.base.admin.entity.User">
-		insert into BASE_USER
-		(USER_ID, USER_NAME, USER_CODE,
-		USER_DEPT_ID, USER_PHONE, USER_SORT
-		)
-		values (BASE_USER_SEQ.nextval, #{userName,jdbcType=VARCHAR},
-		#{userCode,jdbcType=VARCHAR},
-		#{userDeptId,jdbcType=DECIMAL},
-		#{userPhone,jdbcType=VARCHAR}, #{userSort,jdbcType=VARCHAR}
-		)
-	</insert>
 	<insert id="insertSelective" parameterType="com.base.admin.entity.User">
 		insert into BASE_USER
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -136,18 +120,6 @@
 				USER_SORT = #{userSort,jdbcType=VARCHAR},
 			</if>
 		</set>
-		where USER_ID = #{userId,jdbcType=DECIMAL}
-	</update>
-	<update id="updateByPrimaryKey" parameterType="com.base.admin.entity.User">
-		update BASE_USER
-		set USER_NAME = #{userName,jdbcType=VARCHAR},
-		USER_CODE =
-		#{userCode,jdbcType=VARCHAR},
-		USER_DEPT_ID =
-		#{userDeptId,jdbcType=DECIMAL},
-		USER_PHONE =
-		#{userPhone,jdbcType=VARCHAR},
-		USER_SORT = #{userSort,jdbcType=VARCHAR}
 		where USER_ID = #{userId,jdbcType=DECIMAL}
 	</update>
 </mapper>
