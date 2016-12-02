@@ -95,10 +95,22 @@ public class UserController {
 
 	/**
 	 * 
-	 * 添加用户信息 @param userName 用户名称 @param userCode 用户编号 @param userPhone
-	 * 手机号码 @param userSort 排序号 @param userDeptId 所属部门 @param request @param
-	 * response @return @throws Exception 设定文件 @return Map
-	 * <String,Object> 返回类型 @throws
+	 * 添加用户信息
+	 * 
+	 * @param userName
+	 *            用户名称
+	 * @param userCode
+	 *            用户编号
+	 * @param userPhone
+	 *            手机号码
+	 * @param userSort
+	 *            排序号
+	 * @param userDeptId
+	 *            所属部门
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 * @return Map <String,Object> 返回类型
 	 */
 	@RequestMapping("/addNewUser.do")
 	@ResponseBody
@@ -109,10 +121,11 @@ public class UserController {
 			@RequestParam("USER_SORT") String userSort,
 			@RequestParam("USER_DEPT_ID") long userDeptId,
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		User user = new User();
 		user.setUserId(-1l);
+		user.setUserPassWord(BaseUtil.initUserPassWord());// 每个用户初始密码是123456
 		user.setUserName(userName);
 		user.setUserCode(userCode);
 		user.setUserPhone(userPhone);
@@ -130,9 +143,26 @@ public class UserController {
 	}
 
 	/**
-	 * 更新用户信息 @param userName @param userCode @param userPhone @param
-	 * userSort @param userDeptId @param request @param response @return @throws
-	 * Exception 设定文件 @return Map<String,Object> 返回类型 @throws
+	 * @Description 更新用户信息
+	 * @Author RayLee
+	 * @Version 1.0
+	 * @date 2016年12月2日
+	 * @param userId
+	 *            用户id
+	 * @param userName
+	 *            用户名称
+	 * @param userCode
+	 *            用户编号
+	 * @param userPhone
+	 *            手机号码
+	 * @param userSort
+	 *            排序号
+	 * @param userDeptId
+	 *            用户所属部门
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
 	 */
 	@RequestMapping("/updateUser.do")
 	@ResponseBody
@@ -144,7 +174,7 @@ public class UserController {
 			@RequestParam("USER_SORT") String userSort,
 			@RequestParam("USER_DEPT_ID") long userDeptId,
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		User user = new User();
 		user.setUserId(userId);
@@ -153,13 +183,45 @@ public class UserController {
 		user.setUserPhone(userPhone);
 		user.setUserSort(userSort);
 		user.setUserDeptId(userDeptId);
-		int bool = userService.updateByPrimaryKeySelective(user);
+		int bool = userService.updateByPrimaryKeysSelective(user);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
 		} else {
 			map.put("success", true);
 			map.put("msg", "保存成功");
+		}
+		return map;
+	}
+
+	/**
+	 * @Description 初始化用户密码
+	 * @Author RayLee
+	 * @Version 1.0
+	 * @date 2016年12月2日
+	 * @param userIds
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/initUserPassWord.do")
+	@ResponseBody
+	public Map<String, Object> initUserPassWord(
+			@RequestParam(value = "USER_IDS") String userIds,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		User user = new User();
+		user.setIds(userIds);
+		user.setUserPassWord(BaseUtil.initUserPassWord());
+		int bool = userService.updateByPrimaryKeysSelective(user);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "初始化出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "初始化成功");
 		}
 		return map;
 	}
@@ -179,7 +241,7 @@ public class UserController {
 	public Map<String, Object> delDepts(
 			@RequestParam(value = "USER_IDS") String userIds,
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
 		Map<String, Object> map = new HashMap<>();
 		int bool = userService.deleteByPrimaryKeys(userIds.split(","));
 		if (bool == 0) {

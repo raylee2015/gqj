@@ -11,13 +11,14 @@
 	</resultMap>
 	<sql id="Base_Column_List">
 		USER_ID, USER_NAME, USER_CODE, USER_DEPT_ID, USER_PHONE,
-		USER_SORT
+		USER_SORT,USER_PASS_WORD
 	</sql>
 	<select id="selectUsersForPage" parameterType="com.base.admin.entity.User"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select USER_ID, USER_NAME,
-		USER_CODE, USER_DEPT_ID, USER_PHONE, USER_SORT,USER_DEPT_NAME
+		USER_CODE, USER_DEPT_ID, USER_PHONE,
+		USER_SORT,USER_DEPT_NAME,USER_PASS_WORD
 		from
 		VIEW_BASE_USER
 		<where>
@@ -79,6 +80,9 @@
 			<if test="userSort != null">
 				USER_SORT,
 			</if>
+			<if test="userPassWord != null">
+				USER_PASS_WORD,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="userId != null">
@@ -99,9 +103,12 @@
 			<if test="userSort != null">
 				#{userSort,jdbcType=VARCHAR},
 			</if>
+			<if test="userPassWord != null">
+				#{userPassWord,jdbcType=VARCHAR},
+			</if>
 		</trim>
 	</insert>
-	<update id="updateByPrimaryKeySelective" parameterType="com.base.admin.entity.User">
+	<update id="updateByPrimaryKeysSelective" parameterType="com.base.admin.entity.User">
 		update BASE_USER
 		<set>
 			<if test="userName != null">
@@ -119,7 +126,17 @@
 			<if test="userSort != null">
 				USER_SORT = #{userSort,jdbcType=VARCHAR},
 			</if>
+			<if test="userPassWord != null">
+				USER_PASS_WORD=#{userPassWord,jdbcType=VARCHAR},
+			</if>
 		</set>
-		where USER_ID = #{userId,jdbcType=DECIMAL}
+		<where>
+			<if test="userId != null and userId !=''">
+				USER_ID = #{userId,jdbcType=DECIMAL}
+			</if>
+			<if test="ids != null and ids !=''">
+				USER_ID in (${ids})
+			</if>
+		</where>
 	</update>
 </mapper>

@@ -100,7 +100,7 @@
 	function del() {
 		var rowDatas = $('#datagrid').datagrid('getSelections');
 		if (rowDatas.length == 0) {
-			alert('请选择记录');
+			alert('请选择用户');
 			return;
 		}
 		var ids = '';
@@ -110,7 +110,7 @@
 		}
 		ids = ids.substring(0, ids.length - 1);
 		if (ids.length > 0) {
-			$.messager.confirm('确认', '是否删除所选记录?', function(r) {
+			$.messager.confirm('确认', '是否删除所选用户?', function(r) {
 				if (r) {
 					$.post('delUsers.do', {
 						USER_IDS : ids
@@ -124,6 +124,45 @@
 						} else {
 							$.messager.show({ // show error message
 								title : '删除失败',
+								msg : result.errorMsg
+							});
+						}
+					}, 'json');
+				}
+			});
+		}
+	}
+
+	//初始化用户密码
+	function initUserPassWord() {
+		var rowDatas = $('#datagrid').datagrid('getSelections');
+		if (rowDatas.length == 0) {
+			alert('请选择用户');
+			return;
+		}
+		var ids = '';
+		for (var i = 0; i < rowDatas.length; i++) {
+			var item = rowDatas[i];
+			ids += item.USER_ID + ',';
+		}
+		ids = ids.substring(0, ids.length - 1);
+		if (ids.length > 0) {
+			$.messager.confirm('确认', '是否初始化所选用户密码?', function(r) {
+				if (r) {
+					$.post('initUserPassWord.do', {
+						USER_IDS : ids
+					}, function(result) {
+						if (result.success) {
+							$('#datagrid').datagrid('unselectAll');
+							$('#datagrid').datagrid('uncheckAll');
+							$('#datagrid').datagrid('reload'); // reload the datagrid
+							$.messager.show({
+								title : '初始化成功',
+								msg : result.msg
+							});
+						} else {
+							$.messager.show({ // show error message
+								title : '初始化失败',
 								msg : result.errorMsg
 							});
 						}
@@ -214,7 +253,8 @@
 						class="easyui-linkbutton" iconCls="icon-add" plain="true"
 						onclick="openEditUI('add')">添加</a> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
-						onclick="del()">删除</a>
+						onclick="del()">删除</a><a href="#" class="easyui-linkbutton"
+						iconCls="icon-reload" plain="true" onclick="initUserPassWord()">初始化密码</a>
 				</div>
 				<div>
 					<input id="keyWordTextInput" class="easyui-textbox"

@@ -190,7 +190,9 @@ public class DeptController {
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		Map<String, Object> map = new HashMap<>();
-		int bool = deptService.deleteByPrimaryKeys(deptIds.split(","));
+		Dept dept = new Dept();
+		dept.setIds(deptIds);
+		int bool = deptService.deleteByPrimaryKeys(dept);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");

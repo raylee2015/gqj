@@ -99,17 +99,22 @@
 	function del() {
 		var rowDatas = $('#datagrid').datagrid('getSelections');
 		if (rowDatas.length == 0) {
-			alert('请选择记录');
+			alert('请选择部门');
 			return;
 		}
 		var deptIds = '';
 		for (var i = 0; i < rowDatas.length; i++) {
 			var dept = rowDatas[i];
-			deptIds += dept.DEPT_INNER_CODE + ',';
+			if (typeof (dept.DEPT_INNER_CODE) != 'undefined') {
+				deptIds += dept.DEPT_INNER_CODE + ',';
+			} else {
+				alert('请先更新级联数据');
+				break;
+			}
 		}
 		deptIds = deptIds.substring(0, deptIds.length - 1);
 		if (deptIds.length > 0) {
-			$.messager.confirm('确认', '是否删除所选记录?', function(r) {
+			$.messager.confirm('确认', '是否删除所选部门及其下属部门?', function(r) {
 				if (r) {
 					$.post('delDepts.do', {
 						DEPT_IDS : deptIds

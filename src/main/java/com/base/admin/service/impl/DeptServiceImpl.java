@@ -19,12 +19,10 @@ public class DeptServiceImpl implements IDeptService {
 	@Autowired
 	private DeptMapper deptMapper;
 
-
 	@Override
 	public int insertSelective(Dept dept) {
 		return deptMapper.insertSelective(dept);
 	}
-
 
 	@Override
 	public int updateByPrimaryKeySelective(Dept dept) {
@@ -68,8 +66,8 @@ public class DeptServiceImpl implements IDeptService {
 	 * com.base.admin.service.IDeptService#deleteByPrimaryKeys(java.lang.String)
 	 */
 	@Override
-	public int deleteByPrimaryKeys(String[] deptIds) {
-		return deptMapper.deleteByPrimaryKeys(deptIds);
+	public int deleteByPrimaryKeys(Dept dept) {
+		return deptMapper.deleteByPrimaryKeys(dept);
 	}
 
 	@Override

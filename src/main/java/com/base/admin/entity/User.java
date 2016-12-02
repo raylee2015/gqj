@@ -1,63 +1,73 @@
 package com.base.admin.entity;
 
-public class User extends Base{
-    private Long userId;
+public class User extends Base {
+	private String userCode;
 
-    private String userName;
+	private Long userDeptId;
 
-    private String userCode;
+	private Long userId;
 
-    private Long userDeptId;
+	private String userName;
 
-    private String userPhone;
+	private String userPassWord;
 
-    private String userSort;
+	private String userPhone;
 
-    public Long getUserId() {
-        return userId;
-    }
+	private String userSort;
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+	public String getUserCode() {
+		return userCode;
+	}
 
-    public String getUserName() {
-        return userName;
-    }
+	public Long getUserDeptId() {
+		return userDeptId;
+	}
 
-    public void setUserName(String userName) {
-        this.userName = userName == null ? null : userName.trim();
-    }
+	public Long getUserId() {
+		return userId;
+	}
 
-    public String getUserCode() {
-        return userCode;
-    }
+	public String getUserName() {
+		return userName;
+	}
 
-    public void setUserCode(String userCode) {
-        this.userCode = userCode == null ? null : userCode.trim();
-    }
+	public String getUserPassWord() {
+		return userPassWord;
+	}
 
-    public Long getUserDeptId() {
-        return userDeptId;
-    }
+	public String getUserPhone() {
+		return userPhone;
+	}
 
-    public void setUserDeptId(Long userDeptId) {
-        this.userDeptId = userDeptId;
-    }
+	public String getUserSort() {
+		return userSort;
+	}
 
-    public String getUserPhone() {
-        return userPhone;
-    }
+	public void setUserCode(String userCode) {
+		this.userCode = userCode == null ? null : userCode.trim();
+	}
 
-    public void setUserPhone(String userPhone) {
-        this.userPhone = userPhone == null ? null : userPhone.trim();
-    }
+	public void setUserDeptId(Long userDeptId) {
+		this.userDeptId = userDeptId;
+	}
 
-    public String getUserSort() {
-        return userSort;
-    }
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 
-    public void setUserSort(String userSort) {
-        this.userSort = userSort == null ? null : userSort.trim();
-    }
+	public void setUserName(String userName) {
+		this.userName = userName == null ? null : userName.trim();
+	}
+
+	public void setUserPassWord(String userPassWord) {
+		this.userPassWord = userPassWord;
+	}
+
+	public void setUserPhone(String userPhone) {
+		this.userPhone = userPhone == null ? null : userPhone.trim();
+	}
+
+	public void setUserSort(String userSort) {
+		this.userSort = userSort == null ? null : userSort.trim();
+	}
 }

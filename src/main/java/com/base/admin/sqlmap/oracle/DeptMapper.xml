@@ -71,15 +71,11 @@
 			AND DEPT_NAME like '%${keyWord}%'
 		</if>
 	</select>
-	<delete id="deleteByPrimaryKeys">
+	<delete id="deleteByPrimaryKeys" parameterType="com.base.admin.entity.Dept">
 		delete from
 		BASE_DEPT
 		where
-		DEPT_ID in
-		<foreach item="deptId" index="index" collection="array" open="("
-			separator="," close=")">
-			#{deptId}
-		</foreach>
+		DEPT_ID in (${ids})
 	</delete>
 	<insert id="insertSelective" parameterType="com.base.admin.entity.Dept">
 		insert into BASE_DEPT

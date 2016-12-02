@@ -93,8 +93,9 @@ public class UserServiceImpl implements IUserService {
 	 * admin.entity.User)
 	 */
 	@Override
-	public int updateByPrimaryKeySelective(User user) {
-		return userMapper.updateByPrimaryKeySelective(user);
+	public int updateByPrimaryKeysSelective(User user) {
+		return userMapper.updateByPrimaryKeysSelective(user);
 	}
+
 
 }
