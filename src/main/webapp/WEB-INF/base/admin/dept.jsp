@@ -208,7 +208,7 @@
 <body>
 	<!-- 列表页面 -->
 	<div class="easyui-layout" data-options="fit:true">
-		<div region="west" ,collapsible="false" style="width: 200px;">
+		<div region="west" collapsible="false" style="width: 200px;">
 			<ul id="deptTree" class="easyui-tree" url="queryDeptTree.do"
 				onClick="queryDeptPageWithTree()" method="get" animate="true"
 				lines="true"></ul>
