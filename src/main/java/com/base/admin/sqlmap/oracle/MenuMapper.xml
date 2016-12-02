@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.base.admin.dao.IMenuMapper">
+<mapper namespace="com.base.admin.dao.MenuMapper">
 	<resultMap id="BaseResultMap" type="com.base.admin.entity.Menu">
 		<id column="MENU_ID" jdbcType="DECIMAL" property="menuId" />
 		<result column="UP_MENU_ID" jdbcType="DECIMAL" property="upMenuId" />
@@ -13,79 +13,47 @@
 	</resultMap>
 	<sql id="Base_Column_List">
 		MENU_ID, UP_MENU_ID, MENU_NAME, MENU_LEVEL, MENU_URL,
-		MENU_ICON, MENU_SORT,
-		MENU_EXT_CODE
+		MENU_SORT,MENU_EXT_CODE
 	</sql>
-	<select id="selectMenusForList" parameterType="com.base.admin.entity.Menu"
-		resultMap="BaseResultMap">
-		select
-		<include refid="Base_Column_List" />
+	<select id="selectMenusForTree" resultType="java.util.HashMap">
+		select menu_id as id
+		,menu_name as text,up_menu_id
 		from BASE_MENU
-		<where>
-			<if test="upMenuId != null">
-				UP_MENU_ID = #{upMenuId}
-			</if>
-			<if test="menuName != null">
-				AND MENU_NAME like '%$menuName%'
-			</if>
-		</where>
 	</select>
 	<select id="selectMenusForPage" parameterType="com.base.admin.entity.Menu"
-		resultMap="BaseResultMap">
+		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select
 		<include refid="Base_Column_List" />
 		from BASE_MENU
-		<where>
-			<if test="upMenuId != null">
-				UP_MENU_ID = #{upMenuId}
-			</if>
-			<if test="menuName != null">
-				AND MENU_NAME like '%$menuName%'
-			</if>
-		</where>
-		order by menu_id
-		) A WHERE ROWNUM<![CDATA[<=]]>($currPage$*$pageSize$)
+		where menu_id!=0
+		<if test="upMenuId != null">
+			and UP_MENU_ID = #{upMenuId}
+		</if>
+		<if test="keyWord != null">
+			AND MENU_NAME like '%${keyWord}%'
+		</if>
+		order by MENU_SORT,MENU_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
 		) WHERE num<![CDATA[>=]]>
-		(1+($currPage$-1)*$pageSize$)
+		(1+(${currPage}-1)*${pageSize})
 	</select>
 	<select id="selectCountOfMenusForPage" parameterType="com.base.admin.entity.Menu"
 		resultType="java.lang.Integer">
 		select count(t.menu_id) from BASE_MENU t
-		<where>
-			<if test="upMenuId != null">
-				UP_MENU_ID = #{upMenuId}
-			</if>
-			<if test="menuName != null">
-				AND MENU_NAME like '%$menuName%'
-			</if>
-		</where>
+		where menu_id!=0
+		<if test="upMenuId != null">
+			and UP_MENU_ID = #{upMenuId}
+		</if>
+		<if test="keyWord != null">
+			AND MENU_NAME like '%${keyWord}%'
+		</if>
 	</select>
-	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
-		resultMap="BaseResultMap">
-		select
-		<include refid="Base_Column_List" />
-		from BASE_MENU
-		where MENU_ID = #{menuId,jdbcType=DECIMAL}
-	</select>
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+	<delete id="deleteByPrimaryKeys" parameterType="com.base.admin.entity.Menu">
 		delete from
 		BASE_MENU
-		where MENU_ID = #{menuId,jdbcType=DECIMAL}
+		where MENU_ID in (${menuId})
 	</delete>
-	<insert id="insert" parameterType="com.base.admin.entity.Menu">
-		insert into BASE_MENU
-		(MENU_ID, UP_MENU_ID, MENU_NAME,
-		MENU_LEVEL, MENU_URL, MENU_ICON,
-		MENU_SORT, MENU_EXT_CODE)
-		values (BASE_MENU_SEQ.nextval(),
-		#{upMenuId,jdbcType=DECIMAL},
-		#{menuName,jdbcType=VARCHAR},
-		#{menuLevel,jdbcType=CHAR}, #{menuUrl,jdbcType=VARCHAR},
-		#{menuIcon,jdbcType=VARCHAR},
-		#{menuSort,jdbcType=DECIMAL},
-		#{menuExtCode,jdbcType=VARCHAR})
-	</insert>
 	<insert id="insertSelective" parameterType="com.base.admin.entity.Menu">
 		insert into BASE_MENU
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -116,7 +84,7 @@
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="menuId != null">
-				#{menuId,jdbcType=DECIMAL},
+				BASE_MENU_SEQ.nextval,
 			</if>
 			<if test="upMenuId != null">
 				#{upMenuId,jdbcType=DECIMAL},
@@ -167,19 +135,5 @@
 			</if>
 		</set>
 		where MENU_ID = #{menuId,jdbcType=DECIMAL}
-	</update>
-	<update id="updateByPrimaryKey" parameterType="com.base.admin.entity.Menu">
-		update BASE_MENU
-		set UP_MENU_ID = #{upMenuId,jdbcType=DECIMAL},
-		MENU_NAME =
-		#{menuName,jdbcType=VARCHAR},
-		MENU_LEVEL = #{menuLevel,jdbcType=CHAR},
-		MENU_URL = #{menuUrl,jdbcType=VARCHAR},
-		MENU_ICON =
-		#{menuIcon,jdbcType=VARCHAR},
-		MENU_SORT = #{menuSort,jdbcType=DECIMAL},
-		MENU_EXT_CODE = #{menuExtCode,jdbcType=VARCHAR}
-		where MENU_ID =
-		#{menuId,jdbcType=DECIMAL}
 	</update>
 </mapper>

@@ -1,7 +1,6 @@
 package com.base.admin.entity;
 
-public class Menu {
-
+public class Menu extends Base {
 	private Long menuId;
 
 	private Long upMenuId;

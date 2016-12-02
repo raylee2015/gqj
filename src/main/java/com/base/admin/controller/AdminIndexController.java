@@ -18,7 +18,8 @@ import com.base.admin.service.IMenuService;
 @RequestMapping("/base/admin")
 public class AdminIndexController {
 
-	public static final Logger LOGGER = Logger.getLogger(AdminIndexController.class);
+	public static final Logger LOGGER = Logger
+			.getLogger(AdminIndexController.class);
 
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public String toIndex(HttpServletRequest request, Model model) {
@@ -30,6 +31,6 @@ public class AdminIndexController {
 	private IMenuService menuService;
 
 	private List<Menu> selectMenusForList() {
-		return menuService.selectMenusForList(null);
+		return null;
 	}
 }

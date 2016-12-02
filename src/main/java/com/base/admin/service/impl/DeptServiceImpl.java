@@ -19,42 +19,6 @@ public class DeptServiceImpl implements IDeptService {
 	@Autowired
 	private DeptMapper deptMapper;
 
-	@Override
-	public int insertSelective(Dept dept) {
-		return deptMapper.insertSelective(dept);
-	}
-
-	@Override
-	public int updateByPrimaryKeySelective(Dept dept) {
-		return deptMapper.updateByPrimaryKeySelective(dept);
-	}
-
-	@Override
-	public List<Dept> selectDeptsForList(Dept dept) {
-		return deptMapper.selectDeptsForList(dept);
-	}
-
-	@Override
-	public List<Map<String, Object>> selectDeptsForPage(Dept dept) {
-		return deptMapper.selectDeptsForPage(dept);
-	}
-
-	@Override
-	public int selectCountOfDeptsForPage(Dept dept) {
-		return deptMapper.selectCountOfDeptsForPage(dept);
-	}
-
-	@Override
-	public String selectDeptsForTree() {
-		List<Map<Object, Object>> depts = deptMapper
-				.selectDeptsForTree();
-		JSONArray deptArr = JSONArray.fromObject(depts);
-		String tree = BaseUtil
-				.list2Tree(deptArr, -1, "id", "up_dept_id", "children")
-				.toString();
-		return tree;
-	}
-
 	/*
 	 * (非 Javadoc) <p>Title: deleteByPrimaryKeys</p> <p>Description: </p>
 	 * 
@@ -71,8 +35,44 @@ public class DeptServiceImpl implements IDeptService {
 	}
 
 	@Override
+	public int insertSelective(Dept dept) {
+		return deptMapper.insertSelective(dept);
+	}
+
+	@Override
+	public int selectCountOfDeptsForPage(Dept dept) {
+		return deptMapper.selectCountOfDeptsForPage(dept);
+	}
+
+	@Override
+	public List<Dept> selectDeptsForList(Dept dept) {
+		return deptMapper.selectDeptsForList(dept);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectDeptsForPage(Dept dept) {
+		return deptMapper.selectDeptsForPage(dept);
+	}
+
+	@Override
+	public String selectDeptsForTree() {
+		List<Map<Object, Object>> depts = deptMapper
+				.selectDeptsForTree();
+		JSONArray deptArr = JSONArray.fromObject(depts);
+		String tree = BaseUtil
+				.list2Tree(deptArr, -1, "id", "up_dept_id", "children")
+				.toString();
+		return tree;
+	}
+
+	@Override
 	public int updataInnerData() {
 		return deptMapper.updataInnerData();
+	}
+
+	@Override
+	public int updateByPrimaryKeySelective(Dept dept) {
+		return deptMapper.updateByPrimaryKeySelective(dept);
 	}
 
 }
