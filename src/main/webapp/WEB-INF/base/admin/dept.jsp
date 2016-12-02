@@ -133,6 +133,9 @@
 							});
 						}
 					}, 'json');
+				}else{
+					$('#datagrid').datagrid('unselectAll');
+					$('#datagrid').datagrid('uncheckAll');
 				}
 			});
 		}
