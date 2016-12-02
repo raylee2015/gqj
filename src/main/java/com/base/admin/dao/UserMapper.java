@@ -1,11 +1,11 @@
-package com.base.admin.service;
+package com.base.admin.dao;
 
 import java.util.List;
 import java.util.Map;
 
 import com.base.admin.entity.User;
 
-public interface IUserService {
+public interface UserMapper {
 	int deleteByPrimaryKeys(String[] userIds);
 
 	List<Map<String, Object>> selectUsersForPage(User user);

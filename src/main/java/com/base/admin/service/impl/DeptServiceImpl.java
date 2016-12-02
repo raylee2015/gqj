@@ -19,37 +19,16 @@ public class DeptServiceImpl implements IDeptService {
 	@Autowired
 	private DeptMapper deptMapper;
 
-	@Override
-	public int deleteByPrimaryKey(Long deptId) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int insert(Dept dept) {
-		return deptMapper.insert(dept);
-	}
 
 	@Override
 	public int insertSelective(Dept dept) {
 		return deptMapper.insertSelective(dept);
 	}
 
-	@Override
-	public Dept selectByPrimaryKey(Long deptId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public int updateByPrimaryKeySelective(Dept dept) {
 		return deptMapper.updateByPrimaryKeySelective(dept);
-	}
-
-	@Override
-	public int updateByPrimaryKey(Dept dept) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override
