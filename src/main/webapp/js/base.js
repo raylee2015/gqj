@@ -124,8 +124,7 @@ function showMessage(title, messaeg) {
 }
 
 // 根据所选记录获取id串
-function getIdsOfSelectedItems(columnNameForCheck, columnNameForPost,
-		tipsForChecked) {
+function getIdsOfSelectedItems(columnNameForCheck, tipsForChecked) {
 	var rowDatas = $('#datagrid').datagrid('getSelections');
 	var ids = '';
 	for (var i = 0; i < rowDatas.length; i++) {

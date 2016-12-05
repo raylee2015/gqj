@@ -45,8 +45,7 @@
 
 	//删除
 	function delDepts() {
-		var ids = getIdsOfSelectedItems('DEPT_INNER_CODE', 'DEPT_IDS',
-				'请先更新级联数据');
+		var ids = getIdsOfSelectedItems('DEPT_INNER_CODE', '请先更新级联数据');
 		var params = {
 			DEPT_IDS : ids
 		};

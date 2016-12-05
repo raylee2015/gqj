@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.base.admin.dao.DictionaryMapper">
+	<resultMap id="BaseResultMap" type="com.base.admin.entity.Dictionary">
+		<id column="DIC_ID" jdbcType="DECIMAL" property="dicId" />
+		<result column="DIC_CODE" jdbcType="VARCHAR" property="dicCode" />
+		<result column="DIC_NAME" jdbcType="VARCHAR" property="dicName" />
+		<result column="DIC_VALUE" jdbcType="VARCHAR" property="dicValue" />
+		<result column="DIC_SORT" jdbcType="DECIMAL" property="dicSort" />
+		<result column="MENU_ID" jdbcType="DECIMAL" property="menuId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		DIC_ID, DIC_CODE, DIC_NAME, DIC_VALUE, DIC_SORT, MENU_ID
+	</sql>
+	<select id="selectDictionarysForList" parameterType="com.base.admin.entity.Dictionary"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from BASE_DICTIONARY
+		<where>
+			<if test="dicCode != null and dicCode != ''">
+				AND DIC_NAME=#{dicCode}
+			</if>
+		</where>
+	</select>
+	<select id="selectDictionarysForPage" parameterType="com.base.admin.entity.Dictionary"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from BASE_DICTIONARY
+		<where>
+			<if test="keyWord != null">
+				AND (DIC_NAME like '%${keyWord}%' or DIC_CODE like
+				'%${keyWord}%')
+			</if>
+		</where>
+		order by DICTIONARY_SORT,dept_id
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfDictionarysForPage" parameterType="com.base.admin.entity.Dictionary"
+		resultType="java.lang.Integer">
+		select count(t.dept_id) from BASE_DICTIONARY t
+		<where>
+			<if test="keyWord != null">
+				AND (DIC_NAME like '%${keyWord}%' or DIC_CODE like
+				'%${keyWord}%')
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="com.base.admin.entity.Dictionary">
+		delete from
+		BASE_DICTIONARY
+		where
+		DIC_ID in (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.base.admin.entity.Dictionary">
+		insert into BASE_DICTIONARY
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="dicId != null">
+				DIC_ID,
+			</if>
+			<if test="dicCode != null">
+				DIC_CODE,
+			</if>
+			<if test="dicName != null">
+				DIC_NAME,
+			</if>
+			<if test="dicValue != null">
+				DIC_VALUE,
+			</if>
+			<if test="dicSort != null">
+				DIC_SORT,
+			</if>
+			<if test="menuId != null">
+				MENU_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="dicId != null">
+				BASE_DICTIONARY_SEQ.nextval,
+			</if>
+			<if test="dicCode != null">
+				#{dicCode,jdbcType=VARCHAR},
+			</if>
+			<if test="dicName != null">
+				#{dicName,jdbcType=VARCHAR},
+			</if>
+			<if test="dicValue != null">
+				#{dicValue,jdbcType=VARCHAR},
+			</if>
+			<if test="dicSort != null">
+				#{dicSort,jdbcType=DECIMAL},
+			</if>
+			<if test="menuId != null">
+				#{menuId,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.base.admin.entity.Dictionary">
+		update BASE_DICTIONARY
+		<set>
+			<if test="dicCode != null">
+				DIC_CODE = #{dicCode,jdbcType=VARCHAR},
+			</if>
+			<if test="dicName != null">
+				DIC_NAME = #{dicName,jdbcType=VARCHAR},
+			</if>
+			<if test="dicValue != null">
+				DIC_VALUE = #{dicValue,jdbcType=VARCHAR},
+			</if>
+			<if test="dicSort != null">
+				DIC_SORT = #{dicSort,jdbcType=DECIMAL},
+			</if>
+			<if test="menuId != null">
+				MENU_ID = #{menuId,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where DIC_ID = #{dicId,jdbcType=DECIMAL}
+	</update>
+</mapper>

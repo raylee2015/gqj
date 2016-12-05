@@ -31,59 +31,64 @@
 
 	//打开编辑窗口
 	function openAddUI() {
-		openAddDataUI2(true);
-		setTextBoxValue('userIdTextBox', -1);
-		url = 'addNewUser.do';
+		openAddDataUI1();
+		setTextBoxValue('dictionaryIdTextBox', -1);
+		url = 'addNewDictionary.do';
 	}
 
 	//打开编辑窗口
 	function openEditUI(opType, rowIndex) {
 		var rowData = $('#datagrid').datagrid('getData').rows[rowIndex];
-		openEditDataUI2(rowData, true, 'USER_DEPT_ID', 'USER_DEPT_NAME');
-		url = 'updateUser.do';
+		openEditDataUI1(rowData);
+		url = 'updateDictionary.do';
 	}
 
 	//删除
-	function delUsers() {
-		var ids = getIdsOfSelectedItems('USER_ID', '所选用户信息出现错误，请联系系统管理员');
+	function delDictionarys() {
+		var ids = getIdsOfSelectedItems('DIC_INNER_CODE', 'DIC_IDS', '请先更新级联数据');
 		var params = {
-			USER_IDS : ids
+			DIC_IDS : ids
 		};
-		del(params, "请选择用户", '是否删除所选用户?', 'delUsers.do', true);
+		del(params, "请选择部门", '是否删除所选部门及其下属部门?', 'delDictionarys.do', true);
+	}
+
+	//更新级联数据
+	function updateInnerData() {
+		$.messager.confirm('确认', '是否更新级联数据?', function(r) {
+			if (r) {
+				$.post('updateInnerData.do', {}, function(result) {
+					if (result.success) {
+						$('#datagrid').datagrid('reload'); // reload the datagrid
+						$('#tree').tree('reload'); // reload the tree
+						showMessage('更新级联数据成功', result.msg);
+					} else {
+						showMessage('更新级联数据失败', result.msg);
+					}
+				}, 'json');
+			}
+		});
 	}
 
 	// 保存数据
-	function saveUser() {
+	function saveDictionary() {
 		var params = {
-			USER_ID : getTextBoxValue('userIdTextBox'),
-			USER_NAME : getTextBoxValue('userNameTextBox'),
-			USER_CODE : getTextBoxValue('userCodeTextBox'),
-			USER_PHONE : getTextBoxValue('userPhoneTextBox'),
-			USER_SORT : getTextBoxValue('userSortTextBox'),
-			USER_DEPT_ID : getComboTreeValue('comboTree')
+			DIC_ID : getTextBoxValue('dictionaryIdTextBox'),
+			DIC_NAME : getTextBoxValue('dictionaryNameTextBox'),
+			DIC_SORT : getTextBoxValue('dictionarySortTextBox'),
+			UP_DIC_ID : getComboTreeValue('comboTree')
 		};
 		save1(params, url, true);
 	}
 
-	//初始化用户密码
-	function initUserPassWord() {
-		var ids = getIdsOfSelectedItems('USER_ID', 'USER_IDS', '');
-		var params = {
-			USER_IDS : ids
-		};
-		shwoConfirm(params, "请选择用户", '是否初始化所选用户密码?', 'initUserPassWord.do',
-				true);
-	}
-
 	//查询
-	function queryForPage(userDeptId) {
+	function queryForPage(dictionaryInnerCode) {
 		var params = {
-			USER_DEPT_ID : userDeptId,
+			dictionaryInnerCode : dictionaryInnerCode,
 			keyWord : $('#keyWordTextInput').textbox('getValue'),
 			page : 1,
 			rows : $('#datagrid').datagrid('getPager').data("pagination").options.pageSize
 		};
-		query(params, 'queryUserPage.do');
+		query(params, 'queryDictionaryPage.do');
 	}
 
 	//页面加载完
@@ -96,9 +101,9 @@
 	//初始化树
 	function initTree() {
 		$('#tree').tree({
-			url : 'queryDeptTree.do',
+			url : 'queryDictionaryTree.do',
 			onClick : function(node) {
-				queryForPage(node.id); // 在用户点击的时候提示
+				queryForPage(node.dictionary_inner_code); // 在用户点击的时候提示
 			},
 			onLoadError : function(arguments) {
 				eval(errorCodeForQuery);
@@ -109,8 +114,8 @@
 	//初始化列表元素
 	function initDataGrid() {
 		$('#datagrid').datagrid({
-			url : 'queryUserPage.do',
-			idField : 'USER_ID',
+			url : 'queryDictionaryPage.do',
+			idField : 'DIC_ID',
 			columns : [ [ {
 				field : 'ck',
 				checkbox : true
@@ -119,23 +124,19 @@
 				title : '操作',
 				formatter : editColumnFormatter
 			}, {
-				field : 'USER_NAME',
-				title : '用户名称',
+				field : 'DIC_NAME',
+				title : '部门名称',
 				width : 100,
 			}, {
-				field : 'USER_CODE',
-				title : '用户编号',
+				field : 'UP_DIC_NAME',
+				title : '上级部门',
 				width : 100,
 			}, {
-				field : 'USER_DEPT_NAME',
-				title : '所属部门',
-				width : 100,
+				field : 'DIC_INNER_NAME',
+				title : '部门级联',
+				width : 250,
 			}, {
-				field : 'USER_PHONE',
-				title : '手机号码',
-				width : 100,
-			}, {
-				field : 'USER_SORT',
+				field : 'DIC_SORT',
 				title : '排序号',
 				width : 100,
 			} ] ],
@@ -149,7 +150,7 @@
 <body>
 	<!-- 列表页面 -->
 	<div class="easyui-layout" data-options="fit:true">
-		<div region="west" ,collapsible="false" style="width: 200px;">
+		<div region="west" collapsible="false" style="width: 200px;">
 			<ul id="tree" class="easyui-tree" method="get" animate="true"
 				lines="true"></ul>
 		</div>
@@ -164,13 +165,13 @@
 						plain="true" onclick="refresh()">刷新</a> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-add" plain="true"
 						onclick="openAddUI()">添加</a> <a href="#" class="easyui-linkbutton"
-						iconCls="icon-remove" plain="true" onclick="delUsers()">删除</a><a
-						href="#" class="easyui-linkbutton" iconCls="icon-reload"
-						plain="true" onclick="initUserPassWord()">初始化密码</a>
+						iconCls="icon-remove" plain="true" onclick="delDictionarys()">删除</a>
+					<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
+						plain="true" onclick="updateInnerData()">更新级联数据</a>
 				</div>
 				<div>
 					<input id="keyWordTextInput" class="easyui-textbox"
-						data-options="prompt:'用户名称',validType:'length[0,10]'"
+						data-options="prompt:'部门名称',validType:'length[0,50]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
 						onclick="queryForPage('')">查询</a>
@@ -181,47 +182,35 @@
 	</div>
 
 	<!--  详细界面 -->
-	<div id="editUI" class="easyui-window" title="添加用户" closed="true"
+	<div id="editUI" class="easyui-window" title="添加部门" closed="true"
 		data-options="iconCls:'icon-save'"
-		style="width: 400px; height: 260px; padding: 5px;">
+		style="width: 400px; height: 190px; padding: 5px;">
 		<div class="easyui-layout" data-options="fit:true">
 			<div region="north" fit="true" border="false">
 				<form id="form" method="post" style="width: 100%;">
 					<div style="display: none">
-						<input id="userIdTextBox" name="USER_ID" class="easyui-textbox" />
+						<input id="dictionaryIdTextBox" name="DIC_ID"
+							class="easyui-textbox" />
 					</div>
 					<table width="100%">
 						<tr>
-							<td width="22%">所属部门:</td>
-							<td><input id="comboTree" class="easyui-combotree"
-								name="USER_DEPT_ID" data-options="required:true"
+							<td width="22%">上级部门:</td>
+							<td><input id="comboTree" name="UP_DIC_ID"
+								class="easyui-combotree" data-options="required:true"
 								style="width: 100%; height: 32px"></td>
 						</tr>
 						<tr>
-							<td width="22%">用户名称:</td>
-							<td><input id="userNameTextBox" name="USER_NAME"
+							<td width="22%">部门名称:</td>
+							<td><input id="dictionaryNameTextBox" name="DIC_NAME"
 								class="easyui-textbox"
-								data-options="prompt:'用户名称',required:true,validType:'length[3,10]'"
-								style="width: 100%; height: 32px"></td>
-						</tr>
-						<tr>
-							<td width="22%">用户编号:</td>
-							<td><input id="userCodeTextBox" name="USER_CODE"
-								class="easyui-textbox"
-								data-options="prompt:'用户编号',required:true,validType:'length[3,10]'"
-								style="width: 100%; height: 32px"></td>
-						</tr>
-						<tr>
-							<td width="22%">手机号码:</td>
-							<td><input id="userPhoneTextBox" name="USER_PHONE"
-								type="text" class="easyui-numberbox"
-								style="width: 100%; height: 32px"
-								data-options="precision:0,prompt:'手机号码',required:true,validType:'length[11,11]'" /></td>
+								data-options="prompt:'部门名称',required:true,validType:'length[3,10]'"
+								style="width: 100%; height: 32px" /></td>
 						</tr>
 						<tr>
 							<td width="22%">排序号:</td>
-							<td><input id="userSortTextBox" name="USER_SORT" type="text"
-								class="easyui-numberbox" style="width: 100%; height: 32px"
+							<td><input id="dictionarySortTextBox" name="DIC_SORT"
+								type="text" class="easyui-numberbox"
+								style="width: 100%; height: 32px"
 								data-options="min:0,max:99,precision:0,prompt:'排序号',required:true,validType:'length[0,2]'" /></td>
 						</tr>
 					</table>
@@ -230,7 +219,7 @@
 			<div region="south" border="false"
 				style="text-align: right; height: 30px">
 				<a class="easyui-linkbutton" iconCls="icon-ok"
-					href="javascript:void(0)" onclick="saveUser()">保存</a> <a
+					href="javascript:void(0)" onclick="saveDictionary()">保存</a> <a
 					class="easyui-linkbutton" iconCls="icon-cancel"
 					href="javascript:void(0)" onclick="closeEditUI()">关闭</a>
 			</div>
