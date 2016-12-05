@@ -208,9 +208,9 @@ public class DeptController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/updataInnerData.do")
+	@RequestMapping("/updateInnerData.do")
 	@ResponseBody
-	public Map<String, Object> updataInnerData(
+	public Map<String, Object> updateInnerData(
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();

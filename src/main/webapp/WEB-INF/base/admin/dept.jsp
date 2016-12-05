@@ -54,10 +54,10 @@
 	}
 
 	//更新级联数据
-	function updataInnerData() {
+	function updateInnerData() {
 		$.messager.confirm('确认', '是否更新级联数据?', function(r) {
 			if (r) {
-				$.post('updataInnerData.do', {}, function(result) {
+				$.post('updateInnerData.do', {}, function(result) {
 					if (result.success) {
 						$('#datagrid').datagrid('reload'); // reload the datagrid
 						$('#tree').tree('reload'); // reload the tree
@@ -168,7 +168,7 @@
 						onclick="openAddUI()">添加</a> <a href="#" class="easyui-linkbutton"
 						iconCls="icon-remove" plain="true" onclick="delDepts()">删除</a> <a
 						href="#" class="easyui-linkbutton" iconCls="icon-reload"
-						plain="true" onclick="updataInnerData()">更新级联数据</a>
+						plain="true" onclick="updateInnerData()">更新级联数据</a>
 				</div>
 				<div>
 					<input id="keyWordTextInput" class="easyui-textbox"
