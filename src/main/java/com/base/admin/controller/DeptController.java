@@ -12,12 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.base.admin.entity.Dept;
 import com.base.admin.service.IDeptService;
+import com.base.util.BaseUtil;
 
 @Controller
 @RequestMapping("/base/admin/dept")
@@ -108,18 +108,17 @@ public class DeptController {
 	 */
 	@RequestMapping("/addNewDept.do")
 	@ResponseBody
-	public Map<String, Object> addNewDept(
-			@RequestParam("DEPT_NAME") String deptName,
-			@RequestParam("DEPT_SORT") long deptSort,
-			@RequestParam("UP_DEPT_ID") long upDeptId,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Map<String, Object> addNewDept(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String deptName = request.getParameter("DEPT_NAME");
+		String deptSort = request.getParameter("DEPT_SORT");
+		String upDeptId = request.getParameter("UP_DEPT_ID");
 		Map<String, Object> map = new HashMap<String, Object>();
 		Dept dept = new Dept();
 		dept.setDeptId(-1l);
 		dept.setDeptName(deptName);
-		dept.setDeptSort(deptSort);
-		dept.setUpDeptId(upDeptId);
+		dept.setDeptSort(BaseUtil.strToLong(deptSort));
+		dept.setUpDeptId(BaseUtil.strToLong(upDeptId));
 		int bool = deptService.insertSelective(dept);
 		if (bool == 0) {
 			map.put("success", false);
@@ -149,19 +148,18 @@ public class DeptController {
 	 */
 	@RequestMapping("/updateDept.do")
 	@ResponseBody
-	public Map<String, Object> updateDept(
-			@RequestParam("DEPT_ID") long deptId,
-			@RequestParam("DEPT_NAME") String deptName,
-			@RequestParam("DEPT_SORT") long deptSort,
-			@RequestParam("UP_DEPT_ID") long upDeptId,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Map<String, Object> updateDept(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String deptId = request.getParameter("DEPT_ID");
+		String deptName = request.getParameter("DEPT_NAME");
+		String deptSort = request.getParameter("DEPT_SORT");
+		String upDeptId = request.getParameter("UP_DEPT_ID");
 		Map<String, Object> map = new HashMap<String, Object>();
 		Dept dept = new Dept();
-		dept.setDeptId(deptId);
+		dept.setDeptId(BaseUtil.strToLong(deptId));
 		dept.setDeptName(deptName);
-		dept.setDeptSort(deptSort);
-		dept.setUpDeptId(upDeptId);
+		dept.setDeptSort(BaseUtil.strToLong(deptSort));
+		dept.setUpDeptId(BaseUtil.strToLong(upDeptId));
 		int bool = deptService.updateByPrimaryKeySelective(dept);
 		if (bool == 0) {
 			map.put("success", false);
@@ -185,10 +183,9 @@ public class DeptController {
 	 */
 	@RequestMapping("/delDepts.do")
 	@ResponseBody
-	public Map<String, Object> delDepts(
-			@RequestParam(value = "DEPT_IDS") String deptIds,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Map<String, Object> delDepts(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String deptIds = request.getParameter("DEPT_IDS");
 		Map<String, Object> map = new HashMap<>();
 		Dept dept = new Dept();
 		dept.setIds(deptIds);
