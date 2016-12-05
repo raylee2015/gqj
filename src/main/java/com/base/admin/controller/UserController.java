@@ -60,7 +60,7 @@ public class UserController {
 			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		String userDeptId = request.getParameter("userDeptId");
+		String userDeptId = request.getParameter("USER_DEPT_ID");
 		String keyWord = request.getParameter("keyWord");
 		User user = new User();
 		user.setCurrPage(BaseUtil.strToInt(page));

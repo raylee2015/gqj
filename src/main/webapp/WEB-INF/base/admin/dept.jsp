@@ -40,7 +40,7 @@
 	function openEditUI(opType, rowIndex) {
 		var rowData = $('#datagrid').datagrid('getData').rows[rowIndex];
 		openEditDataUI2(rowData, true, 'UP_DEPT_ID', 'UP_DEPT_NAME');
-		url = 'updateDept.do?DEPT_ID=' + rowData.DEPT_ID;
+		url = 'updateDept.do';
 	}
 
 	//删除

@@ -56,11 +56,8 @@ function ajaxFunction(params, url, successFunction, errorFunction, haveTree) {
 function successFunctionForSave(result, haveTree) {
 	var title = '';
 	if (result.success) {
-		$('#editUI').window('close'); // close the window
-		$('#datagrid').datagrid('reload'); // reload the datagrid
-		if (haveTree) {
-			$('#tree').tree('reload'); // reload the tree
-		}
+		closeEditUI();
+		reloadData(haveTree);
 		title = '保存成功';
 	} else {
 		title = '保存失败';
@@ -81,7 +78,7 @@ function save2(params, urlForSave, successFunction, errorFunction, haveTree) {
 
 // 重载表格的数据
 function refresh() {
-	$('#datagrid').datagrid('reload');
+	reloadDataGrid();
 }
 
 // 关闭编辑窗口
@@ -157,22 +154,46 @@ function checkSelectedItems(tipsForUnSelected) {
 
 // 删除成功之后的方法
 function successFunctionForDel(result, haveTree) {
+	reloadData(haveTree);
+}
+
+// 确认成功之后的方法
+function successFunctionForConfirm(result, haveTree) {
+	showMessage("初始化成功", result.msg);
+	reloadData(haveTree);
+}
+
+function reloadData(haveTree) {
 	// reload the datagrid
-	$('#datagrid').datagrid('reload');
+	reloadDataGrid();
 	if (haveTree) {
 		// reload the tree
-		$('#tree').tree('reload');
+		reloadTree();
 	}
+}
+
+function reloadDataGrid() {
+	$('#datagrid').datagrid('reload');
+}
+
+function reloadTree() {
+	$('#tree').tree('reload');
 }
 
 // 删除
 function del(params, tipsForUnSelected, tipsForDelete, urlForDelete, haveTree) {
+	shwoConfirm(params, tipsForUnSelected, tipsForDelete, urlForDelete,
+			haveTree);
+}
+
+// 确认
+function shwoConfirm(params, tipsForUnSelected, tipsForConfirm, urlForConfirm,
+		haveTree) {
 	if (checkSelectedItems(tipsForUnSelected)) {
-		$.messager.confirm('确认', tipsForDelete, function(r) {
+		$.messager.confirm('确认', tipsForConfirm, function(r) {
 			if (r) {
-				ajaxFunction(params, urlForDelete, successFunctionForDel,
+				ajaxFunction(params, urlForConfirm, successFunctionForConfirm,
 						errorFunctionForOption, haveTree);
-			} else {
 				$('#datagrid').datagrid('unselectAll');
 				$('#datagrid').datagrid('uncheckAll');
 			}
