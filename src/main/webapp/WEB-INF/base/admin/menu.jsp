@@ -113,7 +113,11 @@
 		$('#tree').tree({
 			url : 'queryMenuTree.do',
 			onClick : function(node) {
-				queryForPage(node.menu_inner_code); // 在菜单点击的时候提示
+				if (typeof (node.menu_inner_code) == 'undefined') {
+					alert('请关联菜单');
+				} else {
+					queryForPage(node.menu_inner_code); // 在菜单点击的时候提示
+				}
 			},
 			onLoadError : function(arguments) {
 				eval(errorCodeForQuery);

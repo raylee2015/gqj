@@ -12,7 +12,7 @@
 		</commentGenerator>
 		<!--数据库链接地址账号密码 -->
 		<jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver"
-			connectionURL="jdbc:oracle:thin:@172.16.1.189:1521:scdata" userId="ybsy"
+			connectionURL="jdbc:oracle:thin:@127.0.0.1:1521:scdata" userId="ybsy"
 			password="ybsy2269">
 		</jdbcConnection>
 		<javaTypeResolver>
@@ -35,7 +35,7 @@
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
 		<!--生成对应表及类名 -->
-		<table tableName="BASE_DICTIONARY" domainObjectName="Dictionary"
+		<table tableName="BASE_ROLE" domainObjectName="Role"
 		enableSelectByExample="false"
 		enableDeleteByExample="false"
 enableCountByExample="false" enableUpdateByExample="false"
