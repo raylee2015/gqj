@@ -27,18 +27,111 @@ public class MenuController {
 	public static final Logger LOGGER = Logger
 			.getLogger(MenuController.class);
 
-	/**
-	 * 跳转到菜单管理首页
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
-	public ModelAndView toIndex() {
-		return new ModelAndView("/base/admin/menu");
-	}
+	@Autowired
+	private IDictionaryService dictionaryService;
 
 	@Autowired
 	private IMenuService menuService;
+
+	/**
+	 * @Description 添加菜单信息
+	 * @Author RayLee
+	 * @Version 1.0
+	 * @date 2016年12月2日
+	 * @param menuName
+	 *            菜单名称
+	 * @param menuLevel
+	 *            菜单级别（0根节点;1子系统;2菜单模块;3菜单项;4扩展权限）
+	 * @param menuUrl
+	 *            菜单连接
+	 * @param menuSort
+	 *            菜单排序号
+	 * @param upMenuId
+	 *            菜单父id
+	 * @param menuExtCode
+	 *            扩展权限代码
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/addNewMenu.do")
+	@ResponseBody
+	public Map<String, Object> addNewMenu(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String menuName = request.getParameter("MENU_NAME");
+		String menuLevel = request.getParameter("MENU_LEVEL");
+		String menuUrl = request.getParameter("MENU_URL");
+		String menuSort = request.getParameter("MENU_SORT");
+		String upMenuId = request.getParameter("UP_MENU_ID");
+		String menuExtCode = request.getParameter("MENU_EXT_CODE");
+		String menuInnerCode = request.getParameter("MENU_INNER_CODE");
+		Menu menu = new Menu();
+		menu.setMenuId(-1l);
+		menu.setMenuUrl(menuUrl);
+		menu.setMenuLevel(menuLevel);
+		menu.setMenuName(menuName);
+		menu.setMenuSort(BaseUtil.strToLong(menuSort));
+		menu.setUpMenuId(BaseUtil.strToLong(upMenuId));
+		menu.setMenuExtCode(menuExtCode);
+		menu.setMenuInnerCode(menuInnerCode);
+		int bool = menuService.insertSelective(menu);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
+	}
+
+	/**
+	 * 删除菜单
+	 * 
+	 * @param menuIds
+	 *            菜单id串
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/delMenus.do")
+	@ResponseBody
+	public Map<String, Object> delMenus(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String menuIds = request.getParameter("MENU_IDS");
+		Map<String, Object> map = new HashMap<>();
+		Menu menu = new Menu();
+		menu.setIds(menuIds);
+		int bool = menuService.deleteByPrimaryKeys(menu);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "删除失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "删除成功");
+		}
+		return map;
+	}
+
+	/**
+	 * 查询菜单级别下拉列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryMenuLevelDropList.do")
+	@ResponseBody
+	public void queryMenuLevelDropList(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter().print(dictionaryService
+				.getDictionarysByDicCode("MENU_LEVEL"));
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
 
 	/**
 	 * 分页查询菜单列表
@@ -93,76 +186,37 @@ public class MenuController {
 		response.getWriter().close();
 	}
 
-	@Autowired
-	private IDictionaryService dictionaryService;
-
 	/**
-	 * 查询菜单级别下拉列表
+	 * 跳转到菜单管理首页
 	 * 
-	 * @param request
-	 * @param response
-	 * @throws Exception
+	 * @return
 	 */
-	@RequestMapping("/queryMenuLevelDropList.do")
-	@ResponseBody
-	public void queryMenuLevelDropList(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		response.getWriter().print(dictionaryService
-				.getDictionarysByDicCode("MENU_LEVEL"));
-		response.getWriter().flush();
-		response.getWriter().close();
+	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
+	public ModelAndView toIndex() {
+		return new ModelAndView("/base/admin/menu");
 	}
 
 	/**
-	 * @Description 添加菜单信息
-	 * @Author RayLee
-	 * @Version 1.0
-	 * @date 2016年12月2日
-	 * @param menuName
-	 *            菜单名称
-	 * @param menuLevel
-	 *            菜单级别（0根节点;1子系统;2菜单模块;3菜单项;4扩展权限）
-	 * @param menuUrl
-	 *            菜单连接
-	 * @param menuSort
-	 *            菜单排序号
-	 * @param upMenuId
-	 *            菜单父id
-	 * @param menuExtCode
-	 *            扩展权限代码
+	 * 更新级联数据
+	 * 
 	 * @param request
 	 * @param response
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/addNewMenu.do")
+	@RequestMapping("/updateInnerData.do")
 	@ResponseBody
-	public Map<String, Object> addNewMenu(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public Map<String, Object> updateInnerData(
+			HttpServletRequest request, HttpServletResponse response)
+					throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
-		String menuName = request.getParameter("MENU_NAME");
-		String menuLevel = request.getParameter("MENU_LEVEL");
-		String menuUrl = request.getParameter("MENU_URL");
-		String menuSort = request.getParameter("MENU_SORT");
-		String upMenuId = request.getParameter("UP_MENU_ID");
-		String menuExtCode = request.getParameter("MENU_EXT_CODE");
-		String menuInnerCode = request.getParameter("MENU_INNER_CODE");
-		Menu menu = new Menu();
-		menu.setMenuId(-1l);
-		menu.setMenuUrl(menuUrl);
-		menu.setMenuLevel(menuLevel);
-		menu.setMenuName(menuName);
-		menu.setMenuSort(BaseUtil.strToLong(menuSort));
-		menu.setUpMenuId(BaseUtil.strToLong(upMenuId));
-		menu.setMenuExtCode(menuExtCode);
-		menu.setMenuInnerCode(menuInnerCode);
-		int bool = menuService.insertSelective(menu);
+		int bool = menuService.updataInnerData();
 		if (bool == 0) {
 			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
+			map.put("msg", "更新级联数据失败，请联系管理员");
 		} else {
 			map.put("success", true);
-			map.put("msg", "保存成功");
+			map.put("msg", "更新级联数据成功");
 		}
 		return map;
 	}
@@ -220,60 +274,6 @@ public class MenuController {
 		} else {
 			map.put("success", true);
 			map.put("msg", "保存成功");
-		}
-		return map;
-	}
-
-	/**
-	 * 删除菜单
-	 * 
-	 * @param menuIds
-	 *            菜单id串
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/delMenus.do")
-	@ResponseBody
-	public Map<String, Object> delMenus(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String menuIds = request.getParameter("MENU_IDS");
-		Map<String, Object> map = new HashMap<>();
-		Menu menu = new Menu();
-		menu.setIds(menuIds);
-		int bool = menuService.deleteByPrimaryKeys(menu);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
-		return map;
-	}
-	
-	/**
-	 * 更新级联数据
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/updateInnerData.do")
-	@ResponseBody
-	public Map<String, Object> updateInnerData(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = menuService.updataInnerData();
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "更新级联数据失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "更新级联数据成功");
 		}
 		return map;
 	}

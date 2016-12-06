@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.base.admin.dao.RoleMapper">
+	<resultMap id="BaseResultMap" type="com.base.admin.entity.Role">
+		<id column="ROLE_ID" jdbcType="DECIMAL" property="roleId" />
+		<result column="MENU_ID" jdbcType="DECIMAL" property="menuId" />
+		<result column="ROLE_NAME" jdbcType="VARCHAR" property="roleName" />
+		<result column="ROLE_SORT" jdbcType="DECIMAL" property="roleSort" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ROLE_ID, MENU_ID, ROLE_NAME, ROLE_SORT,MENU_NAME
+	</sql>
+	<select id="selectRolesForPage" parameterType="com.base.admin.entity.Role"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_BASE_ROLE
+		<where>
+			<if test="menuId != null and menuId != ''">
+				AND MENU_ID =#{menuId}
+			</if>
+			<if test="keyWord != null">
+				AND ROLE_NAME like '%${keyWord}%'
+			</if>
+		</where>
+		order by ROLE_SORT,ROLE_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfRolesForPage" parameterType="com.base.admin.entity.Role"
+		resultType="java.lang.Integer">
+		select count(t.ROLE_ID) from BASE_ROLE t
+		<where>
+			<if test="menuId != null and menuId != ''">
+				AND MENU_ID =#{menuId}
+			</if>
+			<if test="keyWord != null">
+				AND ROLE_NAME like '%${keyWord}%'
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="java.lang.Long">
+		delete from
+		BASE_ROLE
+		where ROLE_ID in (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.base.admin.entity.Role">
+		insert into BASE_ROLE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="roleId != null">
+				ROLE_ID,
+			</if>
+			<if test="menuId != null">
+				MENU_ID,
+			</if>
+			<if test="roleName != null">
+				ROLE_NAME,
+			</if>
+			<if test="roleSort != null">
+				ROLE_SORT,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="roleId != null">
+				BASE_ROLE_SEQ.nextval,
+			</if>
+			<if test="menuId != null">
+				#{menuId,jdbcType=DECIMAL},
+			</if>
+			<if test="roleName != null">
+				#{roleName,jdbcType=VARCHAR},
+			</if>
+			<if test="roleSort != null">
+				#{roleSort,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.base.admin.entity.Role">
+		update BASE_ROLE
+		<set>
+			<if test="menuId != null">
+				MENU_ID = #{menuId,jdbcType=DECIMAL},
+			</if>
+			<if test="roleName != null">
+				ROLE_NAME = #{roleName,jdbcType=VARCHAR},
+			</if>
+			<if test="roleSort != null">
+				ROLE_SORT = #{roleSort,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where ROLE_ID = #{roleId,jdbcType=DECIMAL}
+	</update>
+</mapper>
