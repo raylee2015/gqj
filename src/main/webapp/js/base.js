@@ -247,14 +247,11 @@ function openEditDataUI2(rowData, haveTree, columnNameOfcomboTreeValue,
 		columnNameOfcomboTreeText) {
 	if (haveTree) {
 		setComboTreeDataProvider();
-	}
-	$('#editUI').window('open');
-	$('#form').form('load', rowData);
-	alert("end load");
-	if (haveTree) {
 		$('#comboTree').combotree('setValue',
 				eval('rowData.' + columnNameOfcomboTreeValue));
 		$('#comboTree').combotree('setText',
 				eval('rowData.' + columnNameOfcomboTreeText));
 	}
+	$('#form').form('load', rowData);
+	$('#editUI').window('open');
 }

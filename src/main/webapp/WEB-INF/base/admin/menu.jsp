@@ -250,7 +250,7 @@
 						</tr>
 						<tr>
 							<td width="30%">扩展权限代码:</td>
-							<td><input id="menuExtCodeTextBox" name="MENU_SORT"
+							<td><input id="menuExtCodeTextBox" name="MENU_EXT_CODE"
 								type="text" class="easyui-textbox"
 								style="width: 100%; height: 32px"
 								data-options="prompt:'扩展权限代码',required:true,validType:'length[0,25]'" /></td>
