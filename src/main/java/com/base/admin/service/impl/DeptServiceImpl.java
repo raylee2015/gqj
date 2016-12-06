@@ -59,10 +59,11 @@ public class DeptServiceImpl implements IDeptService {
 		List<Map<Object, Object>> depts = deptMapper
 				.selectDeptsForTree();
 		JSONArray deptArr = JSONArray.fromObject(depts);
+		// 返回是必须全是小写
 		String tree = BaseUtil
 				.list2Tree(deptArr, -1, "id", "up_dept_id", "children")
-				.toString();
-		return tree;
+				.toString().toLowerCase();
+		return tree.toLowerCase();
 	}
 
 	@Override

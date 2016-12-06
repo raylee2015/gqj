@@ -1,60 +1,70 @@
 package com.base.admin.entity;
 
 public class Dictionary extends Base {
+	private String dicCode;
+
 	private Long dicId;
 
-	private String dicCode;
+	private String dicLabel;
 
 	private String dicName;
 
-	private String dicValue;
-
 	private Long dicSort;
 
+	private String dicValue;
+
 	private Long menuId;
-
-	public Long getDicId() {
-		return dicId;
-	}
-
-	public void setDicId(Long dicId) {
-		this.dicId = dicId;
-	}
 
 	public String getDicCode() {
 		return dicCode;
 	}
 
-	public void setDicCode(String dicCode) {
-		this.dicCode = dicCode == null ? null : dicCode.trim();
+	public Long getDicId() {
+		return dicId;
+	}
+
+	public String getDicLabel() {
+		return dicLabel;
 	}
 
 	public String getDicName() {
 		return dicName;
 	}
 
-	public void setDicName(String dicName) {
-		this.dicName = dicName == null ? null : dicName.trim();
+	public Long getDicSort() {
+		return dicSort;
 	}
 
 	public String getDicValue() {
 		return dicValue;
 	}
 
-	public void setDicValue(String dicValue) {
-		this.dicValue = dicValue == null ? null : dicValue.trim();
+	public Long getMenuId() {
+		return menuId;
 	}
 
-	public Long getDicSort() {
-		return dicSort;
+	public void setDicCode(String dicCode) {
+		this.dicCode = dicCode == null ? null : dicCode.trim();
+	}
+
+	public void setDicId(Long dicId) {
+		this.dicId = dicId;
+	}
+
+	public void setDicLabel(String dicLabel) {
+		this.dicLabel = dicLabel;
+	}
+
+	public void setDicName(String dicName) {
+		this.dicName = dicName == null ? null : dicName.trim();
 	}
 
 	public void setDicSort(Long dicSort) {
 		this.dicSort = dicSort;
 	}
 
-	public Long getMenuId() {
-		return menuId;
+	public void setDicValue(String dicValue) {
+		this.dicValue = dicValue == null ? null : dicValue.trim();
 	}
 
 	public void setMenuId(Long menuId) {

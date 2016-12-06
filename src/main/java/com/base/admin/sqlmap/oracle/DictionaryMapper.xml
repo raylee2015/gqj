@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.base.admin.dao.DictionaryMapper">
+	<cache eviction="LRU" size="512" readOnly="true" />
 	<resultMap id="BaseResultMap" type="com.base.admin.entity.Dictionary">
 		<id column="DIC_ID" jdbcType="DECIMAL" property="dicId" />
 		<result column="DIC_CODE" jdbcType="VARCHAR" property="dicCode" />
@@ -10,43 +11,61 @@
 		<result column="MENU_ID" jdbcType="DECIMAL" property="menuId" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		DIC_ID, DIC_CODE, DIC_NAME, DIC_VALUE, DIC_SORT, MENU_ID
+		DIC_ID, DIC_CODE, DIC_NAME, DIC_VALUE,DIC_LABEL, DIC_SORT,
+		MENU_ID,MENU_NAME
 	</sql>
+	<select id="selectDictionarysForCache" resultType="java.util.HashMap">
+		select
+		DIC_CODE,DIC_VALUE AS ID,DIC_LABEL AS TEXT
+		from
+		BASE_DICTIONARY
+		ORDER BY
+		DIC_CODE,DIC_SORT,DIC_ID
+	</select>
 	<select id="selectDictionarysForList" parameterType="com.base.admin.entity.Dictionary"
-		resultType="java.util.HashMap">
+		useCache="false" resultType="java.util.HashMap">
 		select
 		<include refid="Base_Column_List" />
-		from BASE_DICTIONARY
+		from VIEW_BASE_DICTIONARY
 		<where>
 			<if test="dicCode != null and dicCode != ''">
-				AND DIC_NAME=#{dicCode}
+				AND DIC_CODE=#{dicCode}
+			</if>
+			<if test="dicValue != null and dicValue != ''">
+				AND DIC_VALUE=#{dicValue}
 			</if>
 		</where>
 	</select>
 	<select id="selectDictionarysForPage" parameterType="com.base.admin.entity.Dictionary"
-		resultType="java.util.HashMap">
+		useCache="false" resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select
 		<include refid="Base_Column_List" />
-		from BASE_DICTIONARY
+		from VIEW_BASE_DICTIONARY
 		<where>
 			<if test="keyWord != null">
 				AND (DIC_NAME like '%${keyWord}%' or DIC_CODE like
 				'%${keyWord}%')
 			</if>
+			<if test="menuId != null and menuId != ''">
+				AND MENU_ID=#{menuId}
+			</if>
 		</where>
-		order by DICTIONARY_SORT,dept_id
+		order by DIC_SORT,DIC_ID
 		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
 		) WHERE num<![CDATA[>=]]>
 		(1+(${currPage}-1)*${pageSize})
 	</select>
 	<select id="selectCountOfDictionarysForPage" parameterType="com.base.admin.entity.Dictionary"
-		resultType="java.lang.Integer">
-		select count(t.dept_id) from BASE_DICTIONARY t
+		useCache="false" resultType="java.lang.Integer">
+		select count(t.DIC_ID) from VIEW_BASE_DICTIONARY t
 		<where>
 			<if test="keyWord != null">
 				AND (DIC_NAME like '%${keyWord}%' or DIC_CODE like
 				'%${keyWord}%')
+			</if>
+			<if test="menuId != null and menuId != ''">
+				AND MENU_ID=#{menuId}
 			</if>
 		</where>
 	</select>
@@ -77,6 +96,9 @@
 			<if test="menuId != null">
 				MENU_ID,
 			</if>
+			<if test="dicLabel != null">
+				DIC_LABEL,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="dicId != null">
@@ -97,6 +119,9 @@
 			<if test="menuId != null">
 				#{menuId,jdbcType=DECIMAL},
 			</if>
+			<if test="dicLabel != null">
+				#{dicLabel,jdbcType=DECIMAL},
+			</if>
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.base.admin.entity.Dictionary">
@@ -116,6 +141,9 @@
 			</if>
 			<if test="menuId != null">
 				MENU_ID = #{menuId,jdbcType=DECIMAL},
+			</if>
+			<if test="dicLabel != null">
+				DIC_LABEL = #{dicLabel,jdbcType=DECIMAL},
 			</if>
 		</set>
 		where DIC_ID = #{dicId,jdbcType=DECIMAL}

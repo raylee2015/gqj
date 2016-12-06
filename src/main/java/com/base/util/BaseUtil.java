@@ -64,7 +64,7 @@ public class BaseUtil {
 	 * @return
 	 */
 	public static Integer strToInt(String param) {
-		if (param != null) {
+		if (param != null && param != "") {
 			return Integer.parseInt(param);
 		} else {
 			return null;
@@ -81,7 +81,7 @@ public class BaseUtil {
 	 * @return
 	 */
 	public static Long strToLong(String param) {
-		if (param != null) {
+		if (param != null && param != "") {
 			return Long.parseLong(param);
 		} else {
 			return null;

@@ -31,7 +31,7 @@
 
 	//打开编辑窗口
 	function openAddUI() {
-		openAddDataUI1();
+		openAddDataUI2(true);
 		setTextBoxValue('dictionaryIdTextBox', -1);
 		url = 'addNewDictionary.do';
 	}
@@ -39,51 +39,37 @@
 	//打开编辑窗口
 	function openEditUI(opType, rowIndex) {
 		var rowData = $('#datagrid').datagrid('getData').rows[rowIndex];
-		openEditDataUI1(rowData);
+		openEditDataUI2(rowData, true, 'MENU_ID', 'MENU_NAME');
 		url = 'updateDictionary.do';
 	}
 
 	//删除
 	function delDictionarys() {
-		var ids = getIdsOfSelectedItems('DIC_INNER_CODE', 'DIC_IDS', '请先更新级联数据');
+		var ids = getIdsOfSelectedItems('DIC_ID', '数据存在异常，请联系系统管理员');
 		var params = {
 			DIC_IDS : ids
 		};
-		del(params, "请选择部门", '是否删除所选部门及其下属部门?', 'delDictionarys.do', true);
-	}
-
-	//更新级联数据
-	function updateInnerData() {
-		$.messager.confirm('确认', '是否更新级联数据?', function(r) {
-			if (r) {
-				$.post('updateInnerData.do', {}, function(result) {
-					if (result.success) {
-						$('#datagrid').datagrid('reload'); // reload the datagrid
-						$('#tree').tree('reload'); // reload the tree
-						showMessage('更新级联数据成功', result.msg);
-					} else {
-						showMessage('更新级联数据失败', result.msg);
-					}
-				}, 'json');
-			}
-		});
+		del(params, "请选择记录", '是否删除所选记录?', 'delDictionarys.do', true);
 	}
 
 	// 保存数据
 	function saveDictionary() {
 		var params = {
 			DIC_ID : getTextBoxValue('dictionaryIdTextBox'),
+			DIC_CODE : getTextBoxValue('dictionaryCodeTextBox'),
 			DIC_NAME : getTextBoxValue('dictionaryNameTextBox'),
+			DIC_VALUE : getTextBoxValue('dictionaryValueTextBox'),
+			DIC_LABEL : getTextBoxValue('dictionaryLabelTextBox'),
 			DIC_SORT : getTextBoxValue('dictionarySortTextBox'),
-			UP_DIC_ID : getComboTreeValue('comboTree')
+			MENU_ID : getComboTreeValue('comboTree')
 		};
 		save1(params, url, true);
 	}
 
 	//查询
-	function queryForPage(dictionaryInnerCode) {
+	function queryForPage(menuId) {
 		var params = {
-			dictionaryInnerCode : dictionaryInnerCode,
+			MENU_ID : menuId,
 			keyWord : $('#keyWordTextInput').textbox('getValue'),
 			page : 1,
 			rows : $('#datagrid').datagrid('getPager').data("pagination").options.pageSize
@@ -101,9 +87,9 @@
 	//初始化树
 	function initTree() {
 		$('#tree').tree({
-			url : 'queryDictionaryTree.do',
+			url : 'queryMenuTree.do',
 			onClick : function(node) {
-				queryForPage(node.dictionary_inner_code); // 在用户点击的时候提示
+				queryForPage(node.id); // 在用户点击的时候提示
 			},
 			onLoadError : function(arguments) {
 				eval(errorCodeForQuery);
@@ -124,17 +110,21 @@
 				title : '操作',
 				formatter : editColumnFormatter
 			}, {
+				field : 'DIC_CODE',
+				title : '字典代码',
+				width : 100,
+			}, {
 				field : 'DIC_NAME',
-				title : '部门名称',
+				title : '字典名称',
 				width : 100,
 			}, {
-				field : 'UP_DIC_NAME',
-				title : '上级部门',
+				field : 'DIC_VALUE',
+				title : '字典值',
 				width : 100,
 			}, {
-				field : 'DIC_INNER_NAME',
-				title : '部门级联',
-				width : 250,
+				field : 'DIC_LABEL',
+				title : '字典含义',
+				width : 100,
 			}, {
 				field : 'DIC_SORT',
 				title : '排序号',
@@ -145,6 +135,12 @@
 			}
 		});
 	}
+
+	//测试缓存
+	//function testCache() {
+	//var params = {};
+	//query(params, 'selectDictionarysForCache.do');
+	//}
 </script>
 </head>
 <body>
@@ -166,12 +162,12 @@
 						class="easyui-linkbutton" iconCls="icon-add" plain="true"
 						onclick="openAddUI()">添加</a> <a href="#" class="easyui-linkbutton"
 						iconCls="icon-remove" plain="true" onclick="delDictionarys()">删除</a>
-					<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
-						plain="true" onclick="updateInnerData()">更新级联数据</a>
+					<!-- 					<a href="#" class="easyui-linkbutton" iconCls="icon-reload" -->
+					<!-- 						plain="true" onclick="testCache()">测试缓存</a> -->
 				</div>
 				<div>
 					<input id="keyWordTextInput" class="easyui-textbox"
-						data-options="prompt:'部门名称',validType:'length[0,50]'"
+						data-options="prompt:'字典名称',validType:'length[0,50]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
 						onclick="queryForPage('')">查询</a>
@@ -182,9 +178,9 @@
 	</div>
 
 	<!--  详细界面 -->
-	<div id="editUI" class="easyui-window" title="添加部门" closed="true"
+	<div id="editUI" class="easyui-window" title="添加字典" closed="true"
 		data-options="iconCls:'icon-save'"
-		style="width: 400px; height: 190px; padding: 5px;">
+		style="width: 450px; height: 300px; padding: 5px;">
 		<div class="easyui-layout" data-options="fit:true">
 			<div region="north" fit="true" border="false">
 				<form id="form" method="post" style="width: 100%;">
@@ -194,16 +190,37 @@
 					</div>
 					<table width="100%">
 						<tr>
-							<td width="22%">上级部门:</td>
-							<td><input id="comboTree" name="UP_DIC_ID"
+							<td width="22%">所属系统:</td>
+							<td><input id="comboTree" name="MENU_ID"
 								class="easyui-combotree" data-options="required:true"
 								style="width: 100%; height: 32px"></td>
 						</tr>
 						<tr>
-							<td width="22%">部门名称:</td>
+							<td width="22%">字典代号:</td>
+							<td><input id="dictionaryCodeTextBox" name="DIC_CODE"
+								class="easyui-textbox"
+								data-options="prompt:'字典代号',required:true,validType:'length[0,25]'"
+								style="width: 100%; height: 32px" /></td>
+						</tr>
+						<tr>
+							<td width="22%">字典名称:</td>
 							<td><input id="dictionaryNameTextBox" name="DIC_NAME"
 								class="easyui-textbox"
-								data-options="prompt:'部门名称',required:true,validType:'length[3,10]'"
+								data-options="prompt:'字典名称',required:true,validType:'length[0,25]'"
+								style="width: 100%; height: 32px" /></td>
+						</tr>
+						<tr>
+							<td width="22%">字典值:</td>
+							<td><input id="dictionaryValueTextBox" name="DIC_VALUE"
+								class="easyui-textbox"
+								data-options="prompt:'字典值',required:true,validType:'length[0,25]'"
+								style="width: 100%; height: 32px" /></td>
+						</tr>
+						<tr>
+							<td width="22%">字典含义:</td>
+							<td><input id="dictionaryLabelTextBox" name="DIC_LABEL"
+								class="easyui-textbox"
+								data-options="prompt:'字典含义',required:true,validType:'length[0,25]'"
 								style="width: 100%; height: 32px" /></td>
 						</tr>
 						<tr>

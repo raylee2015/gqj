@@ -12,7 +12,7 @@ public interface IMenuService {
 
 	int updateByPrimaryKeySelective(Menu menu);
 
-	String selectMenusForTree();
+	String selectMenusForTree(Menu menu);
 
 	List<Map<String, Object>> selectMenusForPage(Menu menu);
 

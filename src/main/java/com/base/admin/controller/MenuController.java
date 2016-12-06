@@ -84,8 +84,8 @@ public class MenuController {
 	@ResponseBody
 	public void queryMenuTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter()
-				.print(menuService.selectMenusForTree().toLowerCase());
+		response.getWriter().print(menuService
+				.selectMenusForTree(new Menu()).toLowerCase());
 		response.getWriter().flush();
 		response.getWriter().close();
 	}

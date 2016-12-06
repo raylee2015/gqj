@@ -15,10 +15,17 @@
 		MENU_ID, UP_MENU_ID, MENU_NAME, MENU_LEVEL, MENU_URL,
 		MENU_SORT,MENU_EXT_CODE
 	</sql>
-	<select id="selectMenusForTree" resultType="java.util.HashMap">
+	<select id="selectMenusForTree" parameterType="com.base.admin.entity.Menu"
+		resultType="java.util.HashMap">
 		select menu_id as id
 		,menu_name as text,up_menu_id
 		from BASE_MENU
+		<where>
+			<if test="menuLevel !=null">
+				menu_level=#{menuLevel} OR MENU_ID=0
+			</if>
+		</where>
+		ORDER BY MENU_ID
 	</select>
 	<select id="selectMenusForPage" parameterType="com.base.admin.entity.Menu"
 		resultType="java.util.HashMap">

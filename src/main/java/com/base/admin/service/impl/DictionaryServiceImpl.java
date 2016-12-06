@@ -1,5 +1,7 @@
 package com.base.admin.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +35,24 @@ public class DictionaryServiceImpl implements IDictionaryService {
 	}
 
 	@Override
-	public int insertSelective(Dictionary dictionary) {
-		return dictionaryMapper.insertSelective(dictionary);
+	public Map<String, Object> insertSelective(Dictionary dictionary) {
+		Map<String, Object> result = new HashMap<>();
+		if (selectDictionarysForList(dictionary).size() > 0) {
+			result.put("success", false);
+			result.put("msg", "系统已经存在同样的字典代码与字典值");
+		} else {
+			int resultOfInsert = dictionaryMapper
+					.insertSelective(dictionary);
+			if (resultOfInsert == 0) {
+				result.put("success", false);
+				result.put("msg", "保存失败，请联系系统管理员");
+			} else {
+				result.put("success", true);
+				result.put("msg", "保存成功");
+			}
+
+		}
+		return result;
 	}
 
 	@Override
@@ -58,6 +76,28 @@ public class DictionaryServiceImpl implements IDictionaryService {
 	@Override
 	public int updateByPrimaryKeySelective(Dictionary dictionary) {
 		return dictionaryMapper.updateByPrimaryKeySelective(dictionary);
+	}
+
+	@Override
+	public Map<String, List<Map<String, Object>>> selectDictionarysForCache() {
+		List<Map<String, Object>> dicList = dictionaryMapper
+				.selectDictionarysForCache();
+		Map<String, List<Map<String, Object>>> result = new HashMap<>();
+		for (int i = 0; i < dicList.size(); i++) {
+			Map<String, Object> item = dicList.get(i);
+			String dicCode = item.get("DIC_CODE").toString();
+			if (result.containsKey(dicCode)) {
+				List<Map<String, Object>> listOfResult = result
+						.get(dicCode);
+				listOfResult.add(item);
+				result.put(dicCode, listOfResult);
+			} else {
+				List<Map<String, Object>> newList = new ArrayList<>();
+				newList.add(item);
+				result.put(dicCode, newList);
+			}
+		}
+		return result;
 	}
 
 }

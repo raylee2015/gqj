@@ -14,6 +14,8 @@ public interface DictionaryMapper {
 
 	List<Dictionary> selectDictionarysForList(Dictionary dictionary);
 
+	List<Map<String, Object>> selectDictionarysForCache();
+
 	List<Map<String, Object>> selectDictionarysForPage(
 			Dictionary dictionary);
 

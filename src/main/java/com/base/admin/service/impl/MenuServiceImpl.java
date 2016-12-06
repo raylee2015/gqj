@@ -40,13 +40,13 @@ public class MenuServiceImpl implements IMenuService {
 	}
 
 	@Override
-	public String selectMenusForTree() {
+	public String selectMenusForTree(Menu menu) {
 		List<Map<Object, Object>> menus = menuMapper
-				.selectMenusForTree();
+				.selectMenusForTree(menu);
 		JSONArray menuArr = JSONArray.fromObject(menus);
 		String tree = BaseUtil
 				.list2Tree(menuArr, -1, "id", "up_menu_id", "children")
-				.toString();
+				.toString().toLowerCase();
 		return tree;
 	}
 
