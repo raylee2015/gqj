@@ -17,4 +17,6 @@ public interface IMenuService {
 	List<Map<String, Object>> selectMenusForPage(Menu menu);
 
 	int selectCountOfMenusForPage(Menu menu);
+
+	int updataInnerData();
 }

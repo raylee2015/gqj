@@ -54,19 +54,8 @@
 
 	//更新级联数据
 	function updateInnerData() {
-		$.messager.confirm('确认', '是否更新级联数据?', function(r) {
-			if (r) {
-				$.post('updateInnerData.do', {}, function(result) {
-					if (result.success) {
-						$('#datagrid').datagrid('reload'); // reload the datagrid
-						$('#tree').tree('reload'); // reload the tree
-						showMessage('更新级联数据成功', result.msg);
-					} else {
-						showMessage('更新级联数据失败', result.msg);
-					}
-				}, 'json');
-			}
-		});
+		var params = {};
+		shwoConfirm(params, '是否更新级联数据?', 'updateInnerData.do', true);
 	}
 
 	// 保存数据

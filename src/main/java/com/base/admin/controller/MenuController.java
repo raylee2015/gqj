@@ -12,12 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.base.admin.entity.Menu;
+import com.base.admin.service.IDictionaryService;
 import com.base.admin.service.IMenuService;
+import com.base.util.BaseUtil;
 
 @Controller
 @RequestMapping("/base/admin/menu")
@@ -59,8 +60,10 @@ public class MenuController {
 			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
+		String menuInnerCode = request.getParameter("menuInnerCode");
 		String keyWord = request.getParameter("keyWord");
 		Menu menu = new Menu();
+		menu.setMenuInnerCode(menuInnerCode);
 		menu.setCurrPage(Integer.parseInt(page));
 		menu.setPageSize(Integer.parseInt(rows));
 		menu.setKeyWord(keyWord);
@@ -90,6 +93,26 @@ public class MenuController {
 		response.getWriter().close();
 	}
 
+	@Autowired
+	private IDictionaryService dictionaryService;
+
+	/**
+	 * 查询菜单级别下拉列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryMenuLevelDropList.do")
+	@ResponseBody
+	public void queryMenuLevelDropList(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter().print(dictionaryService
+				.getDictionarysByDicCode("MENU_LEVEL"));
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
+
 	/**
 	 * @Description 添加菜单信息
 	 * @Author RayLee
@@ -114,24 +137,25 @@ public class MenuController {
 	 */
 	@RequestMapping("/addNewMenu.do")
 	@ResponseBody
-	public Map<String, Object> addNewMenu(
-			@RequestParam("MENU_NAME") String menuName,
-			@RequestParam("MENU_LEVEL") String menuLevel,
-			@RequestParam("MENU_URL") String menuUrl,
-			@RequestParam("MENU_SORT") long menuSort,
-			@RequestParam("UP_MENU_ID") long upMenuId,
-			@RequestParam("MENU_EXT_CODE") String menuExtCode,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Map<String, Object> addNewMenu(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
+		String menuName = request.getParameter("MENU_NAME");
+		String menuLevel = request.getParameter("MENU_LEVEL");
+		String menuUrl = request.getParameter("MENU_URL");
+		String menuSort = request.getParameter("MENU_SORT");
+		String upMenuId = request.getParameter("UP_MENU_ID");
+		String menuExtCode = request.getParameter("MENU_EXT_CODE");
+		String menuInnerCode = request.getParameter("MENU_INNER_CODE");
 		Menu menu = new Menu();
 		menu.setMenuId(-1l);
 		menu.setMenuUrl(menuUrl);
 		menu.setMenuLevel(menuLevel);
 		menu.setMenuName(menuName);
-		menu.setMenuSort(menuSort);
-		menu.setUpMenuId(upMenuId);
+		menu.setMenuSort(BaseUtil.strToLong(menuSort));
+		menu.setUpMenuId(BaseUtil.strToLong(upMenuId));
 		menu.setMenuExtCode(menuExtCode);
+		menu.setMenuInnerCode(menuInnerCode);
 		int bool = menuService.insertSelective(menu);
 		if (bool == 0) {
 			map.put("success", false);
@@ -169,25 +193,26 @@ public class MenuController {
 	 */
 	@RequestMapping("/updateMenu.do")
 	@ResponseBody
-	public Map<String, Object> updateMenu(
-			@RequestParam("MENU_ID") long menuId,
-			@RequestParam("MENU_NAME") String menuName,
-			@RequestParam("MENU_LEVEL") String menuLevel,
-			@RequestParam("MENU_URL") String menuUrl,
-			@RequestParam("MENU_SORT") long menuSort,
-			@RequestParam("UP_MENU_ID") long upMenuId,
-			@RequestParam("MENU_EXT_CODE") String menuExtCode,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Map<String, Object> updateMenu(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String menuId = request.getParameter("MENU_ID");
+		String menuName = request.getParameter("MENU_NAME");
+		String menuLevel = request.getParameter("MENU_LEVEL");
+		String menuUrl = request.getParameter("MENU_URL");
+		String menuSort = request.getParameter("MENU_SORT");
+		String upMenuId = request.getParameter("UP_MENU_ID");
+		String menuExtCode = request.getParameter("MENU_EXT_CODE");
+		String menuInnerCode = request.getParameter("MENU_INNER_CODE");
 		Map<String, Object> map = new HashMap<String, Object>();
 		Menu menu = new Menu();
-		menu.setMenuId(menuId);
+		menu.setMenuId(BaseUtil.strToLong(menuId));
 		menu.setMenuUrl(menuUrl);
 		menu.setMenuLevel(menuLevel);
 		menu.setMenuName(menuName);
-		menu.setMenuSort(menuSort);
-		menu.setUpMenuId(upMenuId);
+		menu.setMenuSort(BaseUtil.strToLong(menuSort));
+		menu.setUpMenuId(BaseUtil.strToLong(upMenuId));
 		menu.setMenuExtCode(menuExtCode);
+		menu.setMenuInnerCode(menuInnerCode);
 		int bool = menuService.updateByPrimaryKeySelective(menu);
 		if (bool == 0) {
 			map.put("success", false);
@@ -211,10 +236,9 @@ public class MenuController {
 	 */
 	@RequestMapping("/delMenus.do")
 	@ResponseBody
-	public Map<String, Object> delMenus(
-			@RequestParam(value = "MENU_IDS") String menuIds,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Map<String, Object> delMenus(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String menuIds = request.getParameter("MENU_IDS");
 		Map<String, Object> map = new HashMap<>();
 		Menu menu = new Menu();
 		menu.setIds(menuIds);
@@ -225,6 +249,31 @@ public class MenuController {
 		} else {
 			map.put("success", true);
 			map.put("msg", "删除成功");
+		}
+		return map;
+	}
+	
+	/**
+	 * 更新级联数据
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/updateInnerData.do")
+	@ResponseBody
+	public Map<String, Object> updateInnerData(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = menuService.updataInnerData();
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "更新级联数据失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "更新级联数据成功");
 		}
 		return map;
 	}

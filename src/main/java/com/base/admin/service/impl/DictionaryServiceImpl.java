@@ -12,6 +12,8 @@ import com.base.admin.dao.DictionaryMapper;
 import com.base.admin.entity.Dictionary;
 import com.base.admin.service.IDictionaryService;
 
+import net.sf.json.JSONArray;
+
 @Service
 public class DictionaryServiceImpl implements IDictionaryService {
 
@@ -96,6 +98,17 @@ public class DictionaryServiceImpl implements IDictionaryService {
 				newList.add(item);
 				result.put(dicCode, newList);
 			}
+		}
+		return result;
+	}
+
+	@Override
+	public String getDictionarysByDicCode(String dicCode) {
+		List<Map<String, Object>> list = selectDictionarysForCache()
+				.get(dicCode);
+		String result = "";
+		if (list != null && list.size() != 0) {
+			result = JSONArray.fromObject(list).toString();
 		}
 		return result;
 	}

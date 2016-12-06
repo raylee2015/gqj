@@ -12,14 +12,28 @@ package com.base.admin.entity;
  */
 public class Base {
 
+	/**
+	 * 分页查询参数
+	 */
 	private int currPage;
 
+	/**
+	 * 参数是需要id串的时候
+	 */
 	private String ids;
 
+	/**
+	 */
 	private String[] innerCodes;
 
+	/**
+	 * 关键字查询参数
+	 */
 	private String keyWord;
 
+	/**
+	 * 分页查询参数
+	 */
 	private int pageSize;
 
 	public int getCurrPage() {

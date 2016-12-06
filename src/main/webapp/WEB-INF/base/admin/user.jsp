@@ -71,7 +71,7 @@
 		var params = {
 			USER_IDS : ids
 		};
-		shwoConfirm(params, "请选择用户", '是否初始化所选用户密码?', 'initUserPassWord.do',
+		getDataAndDo(params, "请选择用户", '是否初始化所选用户密码?', 'initUserPassWord.do',
 				true);
 	}
 

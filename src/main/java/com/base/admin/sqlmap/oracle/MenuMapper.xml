@@ -10,16 +10,18 @@
 		<result column="MENU_ICON" jdbcType="VARCHAR" property="menuIcon" />
 		<result column="MENU_SORT" jdbcType="DECIMAL" property="menuSort" />
 		<result column="MENU_EXT_CODE" jdbcType="VARCHAR" property="menuExtCode" />
+		<result column="MENU_INNER_CODE" jdbcType="VARCHAR" property="menuInnerCode" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		MENU_ID, UP_MENU_ID, MENU_NAME, MENU_LEVEL, MENU_URL,
-		MENU_SORT,MENU_EXT_CODE
+		MENU_SORT,MENU_EXT_CODE,MENU_LEVEL_NAME
 	</sql>
 	<select id="selectMenusForTree" parameterType="com.base.admin.entity.Menu"
 		resultType="java.util.HashMap">
 		select menu_id as id
-		,menu_name as text,up_menu_id
-		from BASE_MENU
+		,menu_name as text,up_menu_id,menu_inner_code
+		from
+		BASE_MENU
 		<where>
 			<if test="menuLevel !=null">
 				menu_level=#{menuLevel} OR MENU_ID=0
@@ -32,13 +34,16 @@
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select
 		<include refid="Base_Column_List" />
-		from BASE_MENU
+		from VIEW_BASE_MENU
 		where menu_id!=0
 		<if test="upMenuId != null">
 			and UP_MENU_ID = #{upMenuId}
 		</if>
 		<if test="keyWord != null">
 			AND MENU_NAME like '%${keyWord}%'
+		</if>
+		<if test="menuInnerCode != null">
+			AND MENU_ID IN (${menuInnerCode})
 		</if>
 		order by MENU_SORT,MENU_ID
 		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
@@ -47,7 +52,7 @@
 	</select>
 	<select id="selectCountOfMenusForPage" parameterType="com.base.admin.entity.Menu"
 		resultType="java.lang.Integer">
-		select count(t.menu_id) from BASE_MENU t
+		select count(t.menu_id) from VIEW_BASE_MENU t
 		where menu_id!=0
 		<if test="upMenuId != null">
 			and UP_MENU_ID = #{upMenuId}
@@ -55,11 +60,14 @@
 		<if test="keyWord != null">
 			AND MENU_NAME like '%${keyWord}%'
 		</if>
+		<if test="menuInnerCode != null">
+			AND MENU_ID IN (${menuInnerCode})
+		</if>
 	</select>
 	<delete id="deleteByPrimaryKeys" parameterType="com.base.admin.entity.Menu">
 		delete from
 		BASE_MENU
-		where MENU_ID in (${menuId})
+		where MENU_ID in (${ids})
 	</delete>
 	<insert id="insertSelective" parameterType="com.base.admin.entity.Menu">
 		insert into BASE_MENU
@@ -78,9 +86,6 @@
 			</if>
 			<if test="menuUrl != null">
 				MENU_URL,
-			</if>
-			<if test="menuIcon != null">
-				MENU_ICON,
 			</if>
 			<if test="menuSort != null">
 				MENU_SORT,
@@ -105,9 +110,6 @@
 			<if test="menuUrl != null">
 				#{menuUrl,jdbcType=VARCHAR},
 			</if>
-			<if test="menuIcon != null">
-				#{menuIcon,jdbcType=VARCHAR},
-			</if>
 			<if test="menuSort != null">
 				#{menuSort,jdbcType=DECIMAL},
 			</if>
@@ -131,9 +133,6 @@
 			<if test="menuUrl != null">
 				MENU_URL = #{menuUrl,jdbcType=VARCHAR},
 			</if>
-			<if test="menuIcon != null">
-				MENU_ICON = #{menuIcon,jdbcType=VARCHAR},
-			</if>
 			<if test="menuSort != null">
 				MENU_SORT = #{menuSort,jdbcType=DECIMAL},
 			</if>
@@ -143,4 +142,12 @@
 		</set>
 		where MENU_ID = #{menuId,jdbcType=DECIMAL}
 	</update>
+
+	<update id="updataInnerData">
+		update base_menu m set
+		m.menu_inner_code=(select
+		v.view_menu_inner_code from view_base_menu v where
+		v.menu_id=m.menu_id)
+	</update>
+
 </mapper>

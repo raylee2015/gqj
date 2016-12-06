@@ -21,4 +21,6 @@ public interface IDictionaryService {
 
 	int selectCountOfDictionarysForPage(Dictionary dictionary);
 
+	String getDictionarysByDicCode(String dicCode);
+
 }

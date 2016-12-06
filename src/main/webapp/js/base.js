@@ -11,6 +11,12 @@ function editColumnFormatter(fieldValue, rowData, rowIndex) {
 	return btn;
 }
 
+// 获取ComboBox里面的值
+function getComboBoxValue(comboBoxId) {
+	var comboBox = eval('$(\'#' + comboBoxId + '\')');
+	return comboBox.combobox('getValue');
+}
+
 // 获取COMBOTREE里面的值
 function getComboTreeValue(comboTreeId) {
 	var comboTree = eval('$(\'#' + comboTreeId + '\')');
@@ -132,6 +138,7 @@ function getIdsOfSelectedItems(columnNameForCheck, tipsForChecked) {
 		if (typeof (eval('item.' + columnNameForCheck)) != 'undefined') {
 			ids += eval('item.' + columnNameForCheck) + ',';
 		} else {
+			// 当需要获取的数据为空时，将提示失败
 			alert(tipsForChecked);
 			break;
 		}
@@ -158,7 +165,7 @@ function successFunctionForDel(result, haveTree) {
 
 // 确认成功之后的方法
 function successFunctionForConfirm(result, haveTree) {
-	showMessage("初始化成功", result.msg);
+	showMessage(result.msg, result.msg);
 	reloadData(haveTree);
 }
 
@@ -173,6 +180,8 @@ function reloadData(haveTree) {
 
 function reloadDataGrid() {
 	$('#datagrid').datagrid('reload');
+	$('#datagrid').datagrid('unselectAll');
+	$('#datagrid').datagrid('uncheckAll');
 }
 
 function reloadTree() {
@@ -181,23 +190,25 @@ function reloadTree() {
 
 // 删除
 function del(params, tipsForUnSelected, tipsForDelete, urlForDelete, haveTree) {
-	shwoConfirm(params, tipsForUnSelected, tipsForDelete, urlForDelete,
+	getDataAndDo(params, tipsForUnSelected, tipsForDelete, urlForDelete,
 			haveTree);
 }
 
-// 确认
-function shwoConfirm(params, tipsForUnSelected, tipsForConfirm, urlForConfirm,
-		haveTree) {
+// 获取记录，然后进行操作
+function getDataAndDo(params, tipsForUnSelected, tipsForDo, urlForDo, haveTree) {
 	if (checkSelectedItems(tipsForUnSelected)) {
-		$.messager.confirm('确认', tipsForConfirm, function(r) {
-			if (r) {
-				ajaxFunction(params, urlForConfirm, successFunctionForConfirm,
-						errorFunctionForOption, haveTree);
-				$('#datagrid').datagrid('unselectAll');
-				$('#datagrid').datagrid('uncheckAll');
-			}
-		});
+		shwoConfirm(params, tipsForDo, urlForDo, haveTree);
 	}
+}
+
+// 确认
+function shwoConfirm(params, tipsForConfirm, urlForConfirm, haveTree) {
+	$.messager.confirm('确认', tipsForConfirm, function(r) {
+		if (r) {
+			ajaxFunction(params, urlForConfirm, successFunctionForConfirm,
+					errorFunctionForOption, haveTree);
+		}
+	});
 }
 
 // 翻页查询
@@ -234,10 +245,13 @@ function openEditDataUI1(rowData) {
 // 打开编辑窗口
 function openEditDataUI2(rowData, haveTree, columnNameOfcomboTreeValue,
 		columnNameOfcomboTreeText) {
-	$('#editUI').window('open');
-	$('#form').form('load', rowData);
 	if (haveTree) {
 		setComboTreeDataProvider();
+	}
+	$('#editUI').window('open');
+	$('#form').form('load', rowData);
+	alert("end load");
+	if (haveTree) {
 		$('#comboTree').combotree('setValue',
 				eval('rowData.' + columnNameOfcomboTreeValue));
 		$('#comboTree').combotree('setText',

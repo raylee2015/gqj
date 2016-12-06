@@ -52,7 +52,12 @@ public class MenuServiceImpl implements IMenuService {
 
 	@Override
 	public int updateByPrimaryKeySelective(Menu menu) {
-		return updateByPrimaryKeySelective(menu);
+		return menuMapper.updateByPrimaryKeySelective(menu);
+	}
+
+	@Override
+	public int updataInnerData() {
+		return menuMapper.updataInnerData();
 	}
 
 }
