@@ -21,6 +21,7 @@ import com.base.admin.service.IMenuService;
 import com.base.admin.service.IRoleService;
 import com.base.util.BaseUtil;
 
+@Deprecated
 @Controller
 @RequestMapping("/base/admin/role")
 public class RoleController {

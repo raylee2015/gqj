@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.base.admin.entity.Role;
-
+@Deprecated
 public interface RoleMapper {
 
 	int deleteByPrimaryKeys(Role role);

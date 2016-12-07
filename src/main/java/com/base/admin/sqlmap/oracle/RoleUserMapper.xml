@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- @Deprecated -->
+<mapper namespace="com.base.admin.dao.RoleUserMapper">
+	<resultMap id="BaseResultMap" type="com.base.admin.entity.RoleUser">
+		<id column="ROLE_ID" jdbcType="DECIMAL" property="roleId" />
+		<id column="USER_ID" jdbcType="DECIMAL" property="userId" />
+	</resultMap>
+	<select id="selectByPrimaryKey" parameterType="com.base.admin.entity.RoleUser"
+		resultType="java.lang.Integer">
+		select count(1)
+		from BASE_ROLE_USER
+		<where>
+			<if test="roleID!=null and roleId!=''">
+				ROLE_ID = #{roleId,jdbcType=DECIMAL}
+			</if>
+			<if test="userId!=null and userId!=''">
+				USER_ID = #{userId,jdbcType=DECIMAL}
+			</if>
+		</where>
+	</select>
+	<select id="queryRoles" resultType="java.util.HashMap">
+		SELECT MENU_ID AS
+		ID,MENU_NAME AS TEXT,UP_MENU_ID,0 AS
+		ROLE_TYPE FROM BASE_MENU
+		UNION
+		SELECT 'R'||ROLE_ID AS ID,ROLE_NAME AS TEXT, MENU_ID AS UP_MENU_ID, 1 AS
+		ROLE_TYPE FROM BASE_ROLE
+	</select>
+	<select id="queryUnSelectedUsers" parameterType="com.base.admin.entity.RoleUser"
+		resultType="com.base.admin.entity.User">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		SELECT * FROM BASE_USER
+		WHERE USER_ID IN (
+		SELECT USER_ID FROM BASE_USER
+		MINUS
+		SELECT USER_ID
+		FROM BASE_ROLE_USER
+		WHERE ROLE_ID=#{roleId})
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="queryCountOfUnSelectedUsers" parameterType="com.base.admin.entity.RoleUser"
+		resultType="java.lang.Integer">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		SELECT count(1) FROM
+		BASE_USER
+		WHERE USER_ID IN (
+		SELECT USER_ID FROM BASE_USER
+		MINUS
+		SELECT
+		USER_ID
+		FROM BASE_ROLE_USER
+		WHERE ROLE_ID=#{roleId})
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="querySelectedUsers" parameterType="com.base.admin.entity.RoleUser"
+		resultType="com.base.admin.entity.User">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		SELECT U.* FROM
+		BASE_ROLE_USER RU
+		LEFT JOIN BASE_USER U ON U.USER_ID = RU.USER_ID
+		WHERE
+		ROLE_ID=#{roleId}
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="queryCountOfSelectedUsers" parameterType="com.base.admin.entity.RoleUser"
+		resultType="java.lang.Integer">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		SELECT count(1) FROM
+		BASE_ROLE_USER RU
+		LEFT JOIN BASE_USER U ON U.USER_ID = RU.USER_ID
+		WHERE
+		ROLE_ID=#{roleId}
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="com.base.admin.entity.RoleUser">
+		delete from BASE_ROLE_USER
+		<where>
+			<if test="roleID!=null and roleId!=''">
+				ROLE_ID = #{roleId,jdbcType=DECIMAL}
+			</if>
+			<if test="ids!=null and ids!=''">
+				USER_ID in (${ids})
+			</if>
+		</where>
+	</delete>
+	<insert id="insert" parameterType="com.base.admin.entity.RoleUser">
+		insert into BASE_ROLE_USER
+		(ROLE_ID, USER_ID)
+		values (#{roleId,jdbcType=DECIMAL},
+		#{userId,jdbcType=DECIMAL})
+	</insert>
+</mapper>

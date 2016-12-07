@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.base.admin.dao.RoleMapper;
 import com.base.admin.entity.Role;
 import com.base.admin.service.IRoleService;
-
+@Deprecated
 @Service
 public class RoleServiceImpl implements IRoleService {
 
