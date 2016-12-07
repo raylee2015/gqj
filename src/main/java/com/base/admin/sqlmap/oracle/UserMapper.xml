@@ -8,17 +8,20 @@
 		<result column="USER_DEPT_ID" jdbcType="DECIMAL" property="userDeptId" />
 		<result column="USER_PHONE" jdbcType="VARCHAR" property="userPhone" />
 		<result column="USER_SORT" jdbcType="VARCHAR" property="userSort" />
+		<result column="USER_LOCK_FLAG" jdbcType="VARCHAR" property="userLockFlag" />
+		<result column="USER_USE_FLAG" jdbcType="VARCHAR" property="userUseFlag" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		USER_ID, USER_NAME, USER_CODE, USER_DEPT_ID, USER_PHONE,
-		USER_SORT,USER_PASS_WORD
+		USER_SORT,USER_PASS_WORD,USER_LOCK_FLAG,USER_USE_FLAG
 	</sql>
 	<select id="selectUsersForPage" parameterType="com.base.admin.entity.User"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select USER_ID, USER_NAME,
 		USER_CODE, USER_DEPT_ID, USER_PHONE,
-		USER_SORT,USER_DEPT_NAME,USER_PASS_WORD
+		USER_SORT,USER_DEPT_NAME,USER_PASS_WORD,USER_LOCK_FLAG,USER_USE_FLAG,
+		USER_LOCK_FLAG_NAME,USER_USE_FLAG_NAME
 		from
 		VIEW_BASE_USER
 		<where>
@@ -83,6 +86,12 @@
 			<if test="userPassWord != null">
 				USER_PASS_WORD,
 			</if>
+			<if test="userLockFlag != null">
+				USER_LOCK_FLAG,
+			</if>
+			<if test="userUseFlag != null">
+				USER_USE_FLAG,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="userId != null">
@@ -106,6 +115,12 @@
 			<if test="userPassWord != null">
 				#{userPassWord,jdbcType=VARCHAR},
 			</if>
+			<if test="userLockFlag != null">
+				#{userLockFlag,jdbcType=VARCHAR},
+			</if>
+			<if test="userUseFlag != null">
+				#{userUseFlag,jdbcType=VARCHAR},
+			</if>
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeysSelective" parameterType="com.base.admin.entity.User">
@@ -128,6 +143,12 @@
 			</if>
 			<if test="userPassWord != null">
 				USER_PASS_WORD=#{userPassWord,jdbcType=VARCHAR},
+			</if>
+			<if test="userLockFlag != null">
+				USER_LOCK_FLAG=#{userLockFlag,jdbcType=VARCHAR},
+			</if>
+			<if test="userUseFlag != null">
+				USER_USE_FLAG=#{userUseFlag,jdbcType=VARCHAR},
 			</if>
 		</set>
 		<where>

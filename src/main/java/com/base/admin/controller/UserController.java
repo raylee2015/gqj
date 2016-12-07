@@ -12,11 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.base.admin.entity.User;
+import com.base.admin.service.IDictionaryService;
 import com.base.admin.service.IUserService;
 import com.base.util.BaseUtil;
 
@@ -77,6 +77,43 @@ public class UserController {
 	}
 
 	@Autowired
+	private IDictionaryService dictionaryService;
+
+	/**
+	 * 查询下拉列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryUserLockFlagDropList.do")
+	@ResponseBody
+	public void queryUserLockFlagDropList(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter().print(
+				dictionaryService.getDictionarysByDicCode("YESORNO"));
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
+
+	/**
+	 * 查询下拉列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryUserUseFlagDropList.do")
+	@ResponseBody
+	public void queryUserUseFlagDropList(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter().print(
+				dictionaryService.getDictionarysByDicCode("YESORNO"));
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
+
+	@Autowired
 	private DeptController deptController;
 
 	/**
@@ -94,19 +131,8 @@ public class UserController {
 	}
 
 	/**
-	 * 
 	 * 添加用户信息
 	 * 
-	 * @param userName
-	 *            用户名称
-	 * @param userCode
-	 *            用户编号
-	 * @param userPhone
-	 *            手机号码
-	 * @param userSort
-	 *            排序号
-	 * @param userDeptId
-	 *            所属部门
 	 * @param request
 	 * @param response
 	 * @throws Exception
@@ -114,14 +140,15 @@ public class UserController {
 	 */
 	@RequestMapping("/addNewUser.do")
 	@ResponseBody
-	public Map<String, Object> addNewUser(
-			@RequestParam("USER_NAME") String userName,
-			@RequestParam("USER_CODE") String userCode,
-			@RequestParam("USER_PHONE") String userPhone,
-			@RequestParam("USER_SORT") String userSort,
-			@RequestParam("USER_DEPT_ID") long userDeptId,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Map<String, Object> addNewUser(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String userName = request.getParameter("USER_NAME");
+		String userCode = request.getParameter("USER_CODE");
+		String userPhone = request.getParameter("USER_PHONE");
+		String userSort = request.getParameter("USER_SORT");
+		String userDeptId = request.getParameter("USER_DEPT_ID");
+		String userLockFlag = request.getParameter("USER_LOCK_FLAG");
+		String userUseFlag = request.getParameter("USER_USE_FLAG");
 		Map<String, Object> map = new HashMap<String, Object>();
 		User user = new User();
 		user.setUserId(-1l);
@@ -130,7 +157,9 @@ public class UserController {
 		user.setUserCode(userCode);
 		user.setUserPhone(userPhone);
 		user.setUserSort(userSort);
-		user.setUserDeptId(userDeptId);
+		user.setUserDeptId(BaseUtil.strToLong(userDeptId));
+		user.setUserLockFlag(userLockFlag);
+		user.setUserUseFlag(userUseFlag);
 		int bool = userService.insertSelective(user);
 		if (bool == 0) {
 			map.put("success", false);
@@ -147,18 +176,6 @@ public class UserController {
 	 * @Author RayLee
 	 * @Version 1.0
 	 * @date 2016年12月2日
-	 * @param userId
-	 *            用户id
-	 * @param userName
-	 *            用户名称
-	 * @param userCode
-	 *            用户编号
-	 * @param userPhone
-	 *            手机号码
-	 * @param userSort
-	 *            排序号
-	 * @param userDeptId
-	 *            用户所属部门
 	 * @param request
 	 * @param response
 	 * @return
@@ -166,23 +183,26 @@ public class UserController {
 	 */
 	@RequestMapping("/updateUser.do")
 	@ResponseBody
-	public Map<String, Object> updateDept(
-			@RequestParam("USER_ID") long userId,
-			@RequestParam("USER_NAME") String userName,
-			@RequestParam("USER_CODE") String userCode,
-			@RequestParam("USER_PHONE") String userPhone,
-			@RequestParam("USER_SORT") String userSort,
-			@RequestParam("USER_DEPT_ID") long userDeptId,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Map<String, Object> updateDept(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String userId = request.getParameter("USER_ID");
+		String userName = request.getParameter("USER_NAME");
+		String userCode = request.getParameter("USER_CODE");
+		String userPhone = request.getParameter("USER_PHONE");
+		String userSort = request.getParameter("USER_SORT");
+		String userDeptId = request.getParameter("USER_DEPT_ID");
+		String userLockFlag = request.getParameter("USER_LOCK_FLAG");
+		String userUseFlag = request.getParameter("USER_USE_FLAG");
 		Map<String, Object> map = new HashMap<String, Object>();
 		User user = new User();
-		user.setUserId(userId);
+		user.setUserId(BaseUtil.strToLong(userId));
 		user.setUserName(userName);
 		user.setUserCode(userCode);
 		user.setUserPhone(userPhone);
 		user.setUserSort(userSort);
-		user.setUserDeptId(userDeptId);
+		user.setUserDeptId(BaseUtil.strToLong(userDeptId));
+		user.setUserLockFlag(userLockFlag);
+		user.setUserUseFlag(userUseFlag);
 		int bool = userService.updateByPrimaryKeysSelective(user);
 		if (bool == 0) {
 			map.put("success", false);
@@ -208,9 +228,9 @@ public class UserController {
 	@RequestMapping("/initUserPassWord.do")
 	@ResponseBody
 	public Map<String, Object> initUserPassWord(
-			@RequestParam(value = "USER_IDS") String userIds,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
+		String userIds = request.getParameter("USER_IDS");
 		Map<String, Object> map = new HashMap<String, Object>();
 		User user = new User();
 		user.setIds(userIds);
@@ -238,10 +258,9 @@ public class UserController {
 	 */
 	@RequestMapping("/delUsers.do")
 	@ResponseBody
-	public Map<String, Object> delDepts(
-			@RequestParam(value = "USER_IDS") String userIds,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Map<String, Object> delDepts(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String userIds = request.getParameter("USER_IDS");
 		Map<String, Object> map = new HashMap<>();
 		int bool = userService.deleteByPrimaryKeys(userIds.split(","));
 		if (bool == 0) {

@@ -91,7 +91,31 @@
 		initDocument();
 		initDataGrid();
 		initTree();
+		initUserUseFlagComboBox();
+		initUserLockFlagComboBox()
 	});
+
+	function initUserUseFlagComboBox() {
+		$('#userUseFlagComboBox').combobox({
+			valueField : 'ID',
+			textField : 'TEXT',
+			require : true,
+			panelHeight : 'auto',
+			prompt : '是否在用',
+			url : 'queryUserUseFlagDropList.do'
+		});
+	}
+
+	function initUserLockFlagComboBox() {
+		$('#userLockFlagComboBox').combobox({
+			valueField : 'ID',
+			textField : 'TEXT',
+			require : true,
+			panelHeight : 'auto',
+			prompt : '是否被锁',
+			url : 'queryUserLockFlagDropList.do'
+		});
+	}
 
 	//初始化树
 	function initTree() {
@@ -133,6 +157,14 @@
 			}, {
 				field : 'USER_PHONE',
 				title : '手机号码',
+				width : 100,
+			}, {
+				field : 'USER_LOCK_FLAG_NAME',
+				title : '是否被锁',
+				width : 100,
+			}, {
+				field : 'USER_USE_FLAG_NAME',
+				title : '是否在用',
 				width : 100,
 			}, {
 				field : 'USER_SORT',
@@ -183,7 +215,7 @@
 	<!--  详细界面 -->
 	<div id="editUI" class="easyui-window" title="添加用户" closed="true"
 		data-options="iconCls:'icon-save'"
-		style="width: 400px; height: 260px; padding: 5px;">
+		style="width: 450px; height: 330px; padding: 5px;">
 		<div class="easyui-layout" data-options="fit:true">
 			<div region="north" fit="true" border="false">
 				<form id="form" method="post" style="width: 100%;">
@@ -192,34 +224,44 @@
 					</div>
 					<table width="100%">
 						<tr>
-							<td width="22%">所属部门:</td>
+							<td width="25%">所属部门:</td>
 							<td><input id="comboTree" class="easyui-combotree"
 								name="USER_DEPT_ID" data-options="required:true"
 								style="width: 100%; height: 32px"></td>
 						</tr>
 						<tr>
-							<td width="22%">用户名称:</td>
+							<td width="25%">用户名称:</td>
 							<td><input id="userNameTextBox" name="USER_NAME"
 								class="easyui-textbox"
-								data-options="prompt:'用户名称',required:true,validType:'length[3,10]'"
+								data-options="prompt:'用户名称',required:true,validType:'length[0,10]'"
 								style="width: 100%; height: 32px"></td>
 						</tr>
 						<tr>
-							<td width="22%">用户编号:</td>
+							<td width="25%">用户编号:</td>
 							<td><input id="userCodeTextBox" name="USER_CODE"
 								class="easyui-textbox"
-								data-options="prompt:'用户编号',required:true,validType:'length[3,10]'"
+								data-options="prompt:'用户编号',required:true,validType:'length[4,10]'"
 								style="width: 100%; height: 32px"></td>
 						</tr>
 						<tr>
-							<td width="22%">手机号码:</td>
+							<td width="25%">手机号码:</td>
 							<td><input id="userPhoneTextBox" name="USER_PHONE"
 								type="text" class="easyui-numberbox"
 								style="width: 100%; height: 32px"
 								data-options="precision:0,prompt:'手机号码',required:true,validType:'length[11,11]'" /></td>
 						</tr>
 						<tr>
-							<td width="22%">排序号:</td>
+							<td width="30%">是否在用:</td>
+							<td><input id="userUseFlagComboBox" name="USER_USE_FLAG"
+								class="easyui-combobox" style="width: 100%; height: 32px"></td>
+						</tr>
+						<tr>
+							<td width="30%">是否锁定:</td>
+							<td><input id="userLockFlagComboBox" name="USER_LOCK_FLAG"
+								class="easyui-combobox" style="width: 100%; height: 32px"></td>
+						</tr>
+						<tr>
+							<td width="25%">排序号:</td>
 							<td><input id="userSortTextBox" name="USER_SORT" type="text"
 								class="easyui-numberbox" style="width: 100%; height: 32px"
 								data-options="min:0,max:99,precision:0,prompt:'排序号',required:true,validType:'length[0,2]'" /></td>
