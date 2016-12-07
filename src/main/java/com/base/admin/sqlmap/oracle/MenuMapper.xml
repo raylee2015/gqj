@@ -27,7 +27,7 @@
 				menu_level=#{menuLevel} OR MENU_ID=0
 			</if>
 		</where>
-		ORDER BY MENU_ID
+		ORDER BY MENU_SORT,MENU_ID
 	</select>
 	<select id="selectMenusForPage" parameterType="com.base.admin.entity.Menu"
 		resultType="java.util.HashMap">

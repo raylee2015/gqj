@@ -12,8 +12,6 @@ public class Dept extends Base {
 
 	private Long deptSort;
 
-	private String deptType;
-
 	private Long upDeptId;
 
 	public Long getDeptId() {
@@ -34,10 +32,6 @@ public class Dept extends Base {
 
 	public Long getDeptSort() {
 		return deptSort;
-	}
-
-	public String getDeptType() {
-		return deptType;
 	}
 
 	public Long getUpDeptId() {
@@ -64,10 +58,6 @@ public class Dept extends Base {
 
 	public void setDeptSort(Long deptSort) {
 		this.deptSort = deptSort;
-	}
-
-	public void setDeptType(String deptType) {
-		this.deptType = deptType == null ? null : deptType.trim();
 	}
 
 	public void setUpDeptId(Long upDeptId) {

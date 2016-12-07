@@ -5,13 +5,12 @@
 		<id column="DEPT_ID" jdbcType="DECIMAL" property="deptId" />
 		<result column="UP_DEPT_ID" jdbcType="DECIMAL" property="upDeptId" />
 		<result column="DEPT_NAME" jdbcType="VARCHAR" property="deptName" />
-		<result column="DEPT_TYPE" jdbcType="CHAR" property="deptType" />
 		<result column="DEPT_SORT" jdbcType="DECIMAL" property="deptSort" />
 		<result column="DEPT_INNER_CODE" jdbcType="VARCHAR" property="deptInnerCode" />
 		<result column="DEPT_INNER_NAME" jdbcType="VARCHAR" property="deptInnerName" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		DEPT_ID, UP_DEPT_ID, DEPT_NAME, DEPT_TYPE, DEPT_SORT,
+		DEPT_ID, UP_DEPT_ID, DEPT_NAME, DEPT_SORT,
 		DEPT_INNER_CODE,
 		DEPT_INNER_NAME
 	</sql>
@@ -19,6 +18,8 @@
 		select dept_id as id
 		,dept_name as text,dept_inner_code,up_dept_id
 		from BASE_DEPT
+		ORDER BY
+		DEPT_SORT,DEPT_ID
 	</select>
 	<select id="selectDeptsForList" parameterType="com.base.admin.entity.Dept"
 		resultType="java.util.HashMap">
@@ -33,12 +34,13 @@
 				AND DEPT_NAME like CONCAT('%','${deptName}','%' )
 			</if>
 		</where>
+		ORDER BY DEPT_SORT,DEPT_ID
 	</select>
 	<select id="selectDeptsForPage" parameterType="com.base.admin.entity.Dept"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select DEPT_ID,
-		UP_DEPT_ID, DEPT_NAME, DEPT_TYPE, DEPT_SORT,
+		UP_DEPT_ID, DEPT_NAME, DEPT_SORT,
 		DEPT_INNER_CODE,
 		DEPT_INNER_NAME,UP_DEPT_NAME,VIEW_DEPT_INNER_NAME,VIEW_DEPT_INNER_CODE
 		from VIEW_BASE_DEPT
@@ -89,9 +91,6 @@
 			<if test="deptName != null">
 				DEPT_NAME,
 			</if>
-			<if test="deptType != null">
-				DEPT_TYPE,
-			</if>
 			<if test="deptSort != null">
 				DEPT_SORT,
 			</if>
@@ -134,9 +133,6 @@
 			</if>
 			<if test="deptName != null">
 				DEPT_NAME = #{deptName,jdbcType=VARCHAR},
-			</if>
-			<if test="deptType != null">
-				DEPT_TYPE = #{deptType,jdbcType=CHAR},
 			</if>
 			<if test="deptSort != null">
 				DEPT_SORT = #{deptSort,jdbcType=DECIMAL},

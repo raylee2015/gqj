@@ -51,7 +51,7 @@
 				AND MENU_ID=#{menuId}
 			</if>
 		</where>
-		order by DIC_SORT,DIC_ID
+		order by DIC_CODE,DIC_SORT,DIC_ID
 		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
 		) WHERE num<![CDATA[>=]]>
 		(1+(${currPage}-1)*${pageSize})
