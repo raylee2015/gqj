@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.base.admin.dao.PostMenuMapper">
+  <resultMap id="BaseResultMap" type="com.base.admin.entity.PostMenuKey">
+    <id column="MENU_ID" jdbcType="DECIMAL" property="menuId" />
+    <id column="POST_ID" jdbcType="DECIMAL" property="postId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="com.base.admin.entity.PostMenuKey">
+    delete from BASE_POST_MENU
+    where MENU_ID = #{menuId,jdbcType=DECIMAL}
+      and POST_ID = #{postId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.base.admin.entity.PostMenuKey">
+    insert into BASE_POST_MENU (MENU_ID, POST_ID)
+    values (#{menuId,jdbcType=DECIMAL}, #{postId,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.base.admin.entity.PostMenuKey">
+    insert into BASE_POST_MENU
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="menuId != null">
+        MENU_ID,
+      </if>
+      <if test="postId != null">
+        POST_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="menuId != null">
+        #{menuId,jdbcType=DECIMAL},
+      </if>
+      <if test="postId != null">
+        #{postId,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+</mapper>

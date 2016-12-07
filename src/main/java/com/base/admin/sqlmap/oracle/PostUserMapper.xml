@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.base.admin.dao.PostUserMapper">
+  <resultMap id="BaseResultMap" type="com.base.admin.entity.PostUserKey">
+    <id column="USER_ID" jdbcType="DECIMAL" property="userId" />
+    <id column="POST_ID" jdbcType="DECIMAL" property="postId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="com.base.admin.entity.PostUserKey">
+    delete from BASE_POST_USER
+    where USER_ID = #{userId,jdbcType=DECIMAL}
+      and POST_ID = #{postId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.base.admin.entity.PostUserKey">
+    insert into BASE_POST_USER (USER_ID, POST_ID)
+    values (#{userId,jdbcType=DECIMAL}, #{postId,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.base.admin.entity.PostUserKey">
+    insert into BASE_POST_USER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="postId != null">
+        POST_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="postId != null">
+        #{postId,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+</mapper>
