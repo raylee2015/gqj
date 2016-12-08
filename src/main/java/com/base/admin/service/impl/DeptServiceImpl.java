@@ -63,7 +63,7 @@ public class DeptServiceImpl implements IDeptService {
 		String tree = BaseUtil
 				.list2Tree(deptArr, -1, "id", "up_dept_id", "children")
 				.toString().toLowerCase();
-		return tree.toLowerCase();
+		return tree;
 	}
 
 	@Override

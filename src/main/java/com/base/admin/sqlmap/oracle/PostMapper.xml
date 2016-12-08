@@ -1,82 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.base.admin.dao.PostMapper">
-  <resultMap id="BaseResultMap" type="com.base.admin.entity.Post">
-    <id column="POST_ID" jdbcType="DECIMAL" property="postId" />
-    <result column="POST_NAME" jdbcType="VARCHAR" property="postName" />
-    <result column="POST_DESP" jdbcType="VARCHAR" property="postDesp" />
-    <result column="POST_SORT" jdbcType="DECIMAL" property="postSort" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    POST_ID, POST_NAME, POST_DESP, POST_SORT
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from BASE_POST
-    where POST_ID = #{postId,jdbcType=DECIMAL}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from BASE_POST
-    where POST_ID = #{postId,jdbcType=DECIMAL}
-  </delete>
-  <insert id="insert" parameterType="com.base.admin.entity.Post">
-    insert into BASE_POST (POST_ID, POST_NAME, POST_DESP, 
-      POST_SORT)
-    values (#{postId,jdbcType=DECIMAL}, #{postName,jdbcType=VARCHAR}, #{postDesp,jdbcType=VARCHAR}, 
-      #{postSort,jdbcType=DECIMAL})
-  </insert>
-  <insert id="insertSelective" parameterType="com.base.admin.entity.Post">
-    insert into BASE_POST
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="postId != null">
-        POST_ID,
-      </if>
-      <if test="postName != null">
-        POST_NAME,
-      </if>
-      <if test="postDesp != null">
-        POST_DESP,
-      </if>
-      <if test="postSort != null">
-        POST_SORT,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="postId != null">
-        #{postId,jdbcType=DECIMAL},
-      </if>
-      <if test="postName != null">
-        #{postName,jdbcType=VARCHAR},
-      </if>
-      <if test="postDesp != null">
-        #{postDesp,jdbcType=VARCHAR},
-      </if>
-      <if test="postSort != null">
-        #{postSort,jdbcType=DECIMAL},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.base.admin.entity.Post">
-    update BASE_POST
-    <set>
-      <if test="postName != null">
-        POST_NAME = #{postName,jdbcType=VARCHAR},
-      </if>
-      <if test="postDesp != null">
-        POST_DESP = #{postDesp,jdbcType=VARCHAR},
-      </if>
-      <if test="postSort != null">
-        POST_SORT = #{postSort,jdbcType=DECIMAL},
-      </if>
-    </set>
-    where POST_ID = #{postId,jdbcType=DECIMAL}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.base.admin.entity.Post">
-    update BASE_POST
-    set POST_NAME = #{postName,jdbcType=VARCHAR},
-      POST_DESP = #{postDesp,jdbcType=VARCHAR},
-      POST_SORT = #{postSort,jdbcType=DECIMAL}
-    where POST_ID = #{postId,jdbcType=DECIMAL}
-  </update>
+	<resultMap id="BaseResultMap" type="com.base.admin.entity.Post">
+		<id column="POST_ID" jdbcType="DECIMAL" property="postId" />
+		<result column="POST_NAME" jdbcType="VARCHAR" property="postName" />
+		<result column="POST_DESP" jdbcType="VARCHAR" property="postDesp" />
+		<result column="POST_SORT" jdbcType="DECIMAL" property="postSort" />
+		<result column="POST_ID" jdbcType="DECIMAL" property="deptId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		POST_ID, POST_NAME, POST_DESP,
+		POST_SORT,POST_DEPT_ID,POST_DEPT_NAME
+	</sql>
+	<select id="selectPostsForPage" parameterType="com.base.admin.entity.Post"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_BASE_POST
+		<where>
+			<if test="ids != null">
+				and POST_DEPT_ID in (${ids})
+			</if>
+			<if test="keyWord != null">
+				AND POST_NAME like '%${keyWord}%'
+			</if>
+		</where>
+		order by POST_SORT,POST_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfPostsForPage" parameterType="com.base.admin.entity.Post"
+		resultType="java.lang.Integer">
+		select count(t.POST_ID) from VIEW_BASE_POST t
+		<where>
+			<if test="ids != null">
+				and POST_DEPT_ID in (${ids})
+			</if>
+			<if test="keyWord != null">
+				AND POST_NAME like '%${keyWord}%'
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="java.lang.Long">
+		delete from
+		BASE_POST
+		where POST_ID in (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.base.admin.entity.Post">
+		insert into BASE_POST
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="postId != null">
+				POST_ID,
+			</if>
+			<if test="postName != null">
+				POST_NAME,
+			</if>
+			<if test="postDesp != null">
+				POST_DESP,
+			</if>
+			<if test="postSort != null">
+				POST_SORT,
+			</if>
+			<if test="deptId != null">
+				DEPT_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="postId != null">
+				BASE_POST_SEQ.nextval,
+			</if>
+			<if test="postName != null">
+				#{postName,jdbcType=VARCHAR},
+			</if>
+			<if test="postDesp != null">
+				#{postDesp,jdbcType=VARCHAR},
+			</if>
+			<if test="postSort != null">
+				#{postSort,jdbcType=DECIMAL},
+			</if>
+			<if test="deptId != null">
+				#{deptId,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.base.admin.entity.Post">
+		update BASE_POST
+		<set>
+			<if test="postName != null">
+				POST_NAME = #{postName,jdbcType=VARCHAR},
+			</if>
+			<if test="postDesp != null">
+				POST_DESP = #{postDesp,jdbcType=VARCHAR},
+			</if>
+			<if test="postSort != null">
+				POST_SORT = #{postSort,jdbcType=DECIMAL},
+			</if>
+			<if test="deptId != null">
+				DEPT_ID = #{deptId,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where POST_ID = #{postId,jdbcType=DECIMAL}
+	</update>
 </mapper>

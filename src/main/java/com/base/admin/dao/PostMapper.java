@@ -1,17 +1,19 @@
 package com.base.admin.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.base.admin.entity.Post;
 
 public interface PostMapper {
-    int deleteByPrimaryKey(Long postId);
 
-    int insert(Post record);
+	int deleteByPrimaryKeys(Post post);
 
-    int insertSelective(Post record);
+	List<Map<String, Object>> selectPostsForPage(Post post);
 
-    Post selectByPrimaryKey(Long postId);
+	int selectCountOfPostsForPage(Post post);
 
-    int updateByPrimaryKeySelective(Post record);
+	int insertSelective(Post post);
 
-    int updateByPrimaryKey(Post record);
+	int updateByPrimaryKeySelective(Post post);
 }
