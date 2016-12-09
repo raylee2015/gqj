@@ -28,8 +28,70 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
-	//记录新增或者修改的方法
-	var url;
+	//为职位配置人员
+	function addUsersToPost() {
+		var selectedPost = $('#datagridOfPost').datagrid('getSelected');
+		var rowDatas = $('#datagridOfUnSelectedUsers')
+				.datagrid('getSelections');
+		if (rowDatas.length == 0) {
+			alert('请选择待选人员');
+		} else {
+			var rowDatas = $('#datagridOfUnSelectedUsers').datagrid(
+					'getSelections');
+			var ids = '';
+			for (var i = 0; i < rowDatas.length; i++) {
+				var item = rowDatas[i];
+				if (item.USER_ID != 'undefined') {
+					ids += item.USER_ID + ',';
+				}
+			}
+			ids = ids.substring(0, ids.length - 1);
+			var params = {
+				USER_IDS : ids,
+				POST_ID : selectedPost.POST_ID
+			};
+			save2(params, "addUsersToPost.do", successFunction,
+					errorFunctionForOption, false);
+		}
+	}
+
+	//成功配置职位人员
+	function successFunctionForAddUsersToPost() {
+		var selectedPost = $('#datagridOfPost').datagrid('getSelected');
+		querySelectedUsersForPage(selectedPost.POST_ID);
+		queryUnSelectedUsersForPage(selectedPost.POST_ID);
+	}
+
+	//删除
+	function delUsersToPost() {
+		var selectedPost = $('#datagridOfPost').datagrid('getSelected');
+		var rowDatas = $('#datagridOfSelectedUsers').datagrid('getSelections');
+		if (rowDatas.length == 0) {
+			alert('请选择已选人员');
+		} else {
+			var rowDatas = $('#datagridOfSelectedUsers').datagrid(
+					'getSelections');
+			var ids = '';
+			for (var i = 0; i < rowDatas.length; i++) {
+				var item = rowDatas[i];
+				if (item.USER_ID != 'undefined') {
+					ids += item.USER_ID + ',';
+				}
+			}
+			ids = ids.substring(0, ids.length - 1);
+			var params = {
+				USER_IDS : ids,
+				POST_ID : selectedPost.POST_ID
+			};
+			save2(params, "delUsersToPost.do", successFunction,
+					errorFunctionForOption, false);
+		}
+	}
+
+	//成功删除职位人员
+	function successFunctionForDelUsersToPost() {
+		successFunctionForAddUsersToPost();
+	}
 
 	//查询岗位
 	function queryPostForPage(deptIds) {
@@ -98,6 +160,16 @@
 			url : 'queryDeptTree.do',
 			onClick : function(node) {
 				queryPostForPage(node.dept_inner_code); // 在用户点击的时候提示
+				$('#datagridOfUnSelectedUsers').datagrid('loadData', {
+					total : 0,
+					rows : []
+				});
+				$('#datagridOfSelectedUsers').datagrid('loadData', {
+					total : 0,
+					rows : []
+				});
+				$('#datagridOfPost').datagrid('unselectAll');
+				$('#datagridOfPost').datagrid('uncheckAll');
 			},
 			onLoadError : function(arguments) {
 				eval(errorCodeForQuery);

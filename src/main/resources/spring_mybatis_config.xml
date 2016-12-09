@@ -33,11 +33,9 @@
 	<!-- SqlSessionFactory -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<!---->
-		<!-- <property name="configLocation" value="classpath:mybatis-config.xml" 
-			/> -->
 		<!-- 自动扫描mapping.xml文件，**表示迭代查找 -->
-		<property name="mapperLocations" value="classpath:com/**/*Mapper.xml" />
+		<!-- 这里留下以后调整数据库的地方 -->
+		<property name="mapperLocations" value="classpath:com/**/oracle/*Mapper.xml" />
 	</bean>
 
 	<!-- Mybatis mapper scanner, scans for java mapper -->
@@ -45,5 +43,37 @@
 		<property name="basePackage" value="com.**.dao" />
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
 	</bean>
+
+	<tx:annotation-driven transaction-manager="txManager" />
+
+	<!-- 事务管理器 -->
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="transactionTemplate"
+		class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager">
+			<ref local="txManager" />
+		</property>
+	</bean>
+
+	<!-- 声明式事务 -->
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="get*" />
+			<tx:method name="insert*" rollback-for="Throwable" />
+			<tx:method name="update*" rollback-for="Throwable" />
+			<tx:method name="delete*" rollback-for="Throwable" />
+			<tx:method name="del*" rollback-for="Throwable" />
+			<tx:method name="save*" rollback-for="Throwable" />
+			<tx:method name="add*" rollback-for="Throwable" />
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut id="serviceOperation" expression="execution(* com..*.impl.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation" />
+	</aop:config>
 
 </beans>
