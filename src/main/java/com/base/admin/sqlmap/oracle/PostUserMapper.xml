@@ -1,36 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.base.admin.dao.PostUserMapper">
-  <resultMap id="BaseResultMap" type="com.base.admin.entity.PostUserKey">
-    <id column="USER_ID" jdbcType="DECIMAL" property="userId" />
-    <id column="POST_ID" jdbcType="DECIMAL" property="postId" />
-  </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="com.base.admin.entity.PostUserKey">
-    delete from BASE_POST_USER
-    where USER_ID = #{userId,jdbcType=DECIMAL}
-      and POST_ID = #{postId,jdbcType=DECIMAL}
-  </delete>
-  <insert id="insert" parameterType="com.base.admin.entity.PostUserKey">
-    insert into BASE_POST_USER (USER_ID, POST_ID)
-    values (#{userId,jdbcType=DECIMAL}, #{postId,jdbcType=DECIMAL})
-  </insert>
-  <insert id="insertSelective" parameterType="com.base.admin.entity.PostUserKey">
-    insert into BASE_POST_USER
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="userId != null">
-        USER_ID,
-      </if>
-      <if test="postId != null">
-        POST_ID,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="userId != null">
-        #{userId,jdbcType=DECIMAL},
-      </if>
-      <if test="postId != null">
-        #{postId,jdbcType=DECIMAL},
-      </if>
-    </trim>
-  </insert>
+	<resultMap id="BaseResultMap" type="com.base.admin.entity.PostUser">
+		<id column="USER_ID" jdbcType="DECIMAL" property="userId" />
+		<id column="POST_ID" jdbcType="DECIMAL" property="postId" />
+	</resultMap>
+	<select id="querySelectedUsers" parameterType="com.base.admin.entity.PostUser"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		SELECT
+		U.USER_ID,U.USER_NAME,U.USER_DEPT_NAME FROM BASE_POST_USER PU
+		LEFT
+		JOIN
+		VIEW_BASE_USER U ON U.USER_ID = PU.USER_ID
+		<where>
+			<if test="postId != null and postId != ''">
+				AND POST_ID = #{postId}
+			</if>
+		</where>
+		ORDER BY U.USER_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="queryCountOfSelectedUsers" parameterType="com.base.admin.entity.PostUser"
+		resultType="java.lang.Integer">
+		SELECT count(1) FROM BASE_POST_USER PU
+		LEFT
+		JOIN
+		BASE_USER U
+		ON U.USER_ID
+		= PU.USER_ID
+		<where>
+			<if test="postId != null and postId != ''">
+				AND POST_ID = #{postId}
+			</if>
+		</where>
+	</select>
+	<select id="queryUnSelectedUsers" parameterType="com.base.admin.entity.PostUser"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		SELECT
+		U.USER_ID,U.USER_NAME,U.USER_DEPT_NAME
+		FROM
+		VIEW_BASE_USER U WHERE
+		USER_ID IN (
+		SELECT USER_ID FROM BASE_USER
+		MINUS
+		SELECT USER_ID FROM
+		BASE_POST_USER
+		PU
+		<where>
+			<if test="postId != null and postId != ''">
+				AND POST_ID = #{postId}
+			</if>
+		</where>
+		)
+		ORDER BY U.USER_ID
+		) A WHERE
+		ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="queryCountOfUnSelectedUsers" parameterType="com.base.admin.entity.PostUser"
+		resultType="java.lang.Integer">
+		SELECT count(1)
+		FROM
+		VIEW_BASE_USER U WHERE
+		USER_ID IN (
+		SELECT USER_ID
+		FROM BASE_USER
+		MINUS
+		SELECT USER_ID FROM
+		BASE_POST_USER
+		PU
+		<where>
+			<if test="postId != null and postId != ''">
+				AND POST_ID = #{postId}
+			</if>
+		</where>
+		)
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="com.base.admin.entity.PostUser">
+		delete from
+		BASE_POST_USER
+		where USER_ID in (${ids})
+		and POST_ID =
+		#{postId,jdbcType=DECIMAL}
+	</delete>
+	<insert id="insert" parameterType="com.base.admin.entity.PostUser">
+		insert into BASE_POST_USER
+		(USER_ID, POST_ID)
+		values (#{userId,jdbcType=DECIMAL},
+		#{postId,jdbcType=DECIMAL})
+	</insert>
 </mapper>

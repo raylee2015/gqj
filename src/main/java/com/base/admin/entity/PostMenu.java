@@ -1,6 +1,6 @@
 package com.base.admin.entity;
 
-public class PostMenuKey {
+public class PostMenu {
     private Long menuId;
 
     private Long postId;

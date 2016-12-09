@@ -1,11 +1,26 @@
 package com.base.admin.dao;
 
-import com.base.admin.entity.PostUserKey;
+import java.util.List;
+import java.util.Map;
+
+import com.base.admin.entity.Post;
+import com.base.admin.entity.PostUser;
 
 public interface PostUserMapper {
-    int deleteByPrimaryKey(PostUserKey key);
+	int deleteByPrimaryKeys(PostUser postUser);
 
-    int insert(PostUserKey record);
+	int insert(PostUser postUser);
 
-    int insertSelective(PostUserKey record);
+	String selectDeptsForTree();
+
+	Map<String, Object> selectPostsForPage(Post post);
+
+	List<Map<String, Object>> querySelectedUsers(PostUser postUser);
+
+	List<Map<String, Object>> queryUnSelectedUsers(PostUser postUser);
+
+	int queryCountOfSelectedUsers(PostUser postUser);
+
+	int queryCountOfUnSelectedUsers(PostUser postUser);
+
 }
