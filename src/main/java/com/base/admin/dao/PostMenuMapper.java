@@ -1,11 +1,16 @@
 package com.base.admin.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.base.admin.entity.PostMenu;
 
 public interface PostMenuMapper {
-    int deleteByPrimaryKey(PostMenu key);
+	int deleteByPrimaryKeys(PostMenu postMenu);
 
-    int insert(PostMenu record);
+	int insert(PostMenu postMenu);
 
-    int insertSelective(PostMenu record);
+	int selectCountByPrimaryKey(PostMenu postMenu);
+
+	List<Map<String, Object>> selectSelectedMenusForTree(PostMenu postMenu);
 }

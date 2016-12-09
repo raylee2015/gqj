@@ -15,29 +15,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.base.admin.entity.Post;
-import com.base.admin.entity.PostUser;
-import com.base.admin.service.IPostUserService;
+import com.base.admin.entity.PostMenu;
+import com.base.admin.service.IPostMenuService;
 import com.base.util.BaseUtil;
 
 @Controller
-@RequestMapping("/base/admin/post_user")
-public class PostUserController {
+@RequestMapping("/base/admin/post_menu")
+public class PostMenuController {
 
 	public static final Logger LOGGER = Logger
-			.getLogger(PostUserController.class);
+			.getLogger(PostMenuController.class);
 
 	/**
-	 * 跳转到配对岗位人员首页
+	 * 跳转到配对岗位菜单权限首页
 	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
-		return new ModelAndView("/base/admin/post_user");
+		return new ModelAndView("/base/admin/post_menu");
 	}
 
 	@Autowired
-	private IPostUserService postUserService;
+	private IPostMenuService postMenuService;
 
 	/**
 	 * 分页查询岗位列表
@@ -60,53 +60,46 @@ public class PostUserController {
 		post.setPageSize(Integer.parseInt(rows));
 		post.setKeyWord(keyWord);
 		post.setIds(deptIds);
-		return postUserService.selectPostsForPage(post);
+		return postMenuService.selectPostsForPage(post);
 	}
 
 	/**
-	 * 分页查询未被选择人员列表
+	 * 分页查询未被选择菜单权限列表
 	 * 
 	 * @param request
 	 * @param response
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryUnSelectedUsersForPage.do")
+	@RequestMapping("/queryUnSelectedMenusForTree.do")
 	@ResponseBody
-	public Map<String, Object> queryUnSelectedUsersForPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		String page = request.getParameter("page");
-		String rows = request.getParameter("rows");
-		String postId = request.getParameter("POST_ID");
-		PostUser postUser = new PostUser();
-		postUser.setCurrPage(Integer.parseInt(page));
-		postUser.setPageSize(Integer.parseInt(rows));
-		postUser.setPostId(BaseUtil.strToLong(postId));
-		return postUserService.queryUnSelectedUsersForPage(postUser);
+	public void queryUnSelectedMenusForTree(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter()
+				.print(postMenuService.queryUnSelectedMenusForTree());
+		response.getWriter().flush();
+		response.getWriter().close();
 	}
 
 	/**
-	 * 分页查询已经被选择人员列表
+	 * 分页查询已经被选择菜单权限列表
 	 * 
 	 * @param request
 	 * @param response
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/querySelectedUsersForPage.do")
+	@RequestMapping("/querySelectedMenusForTree.do")
 	@ResponseBody
-	public Map<String, Object> querySelectedUsersForPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		String page = request.getParameter("page");
-		String rows = request.getParameter("rows");
+	public void querySelectedMenusForTree(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String postId = request.getParameter("POST_ID");
-		PostUser postUser = new PostUser();
-		postUser.setCurrPage(Integer.parseInt(page));
-		postUser.setPageSize(Integer.parseInt(rows));
-		postUser.setPostId(BaseUtil.strToLong(postId));
-		return postUserService.querySelectedUsersForPage(postUser);
+		PostMenu postMenu = new PostMenu();
+		postMenu.setPostId(BaseUtil.strToLong(postId));
+		response.getWriter().print(
+				postMenuService.querySelectedMenusForTree(postMenu));
+		response.getWriter().flush();
+		response.getWriter().close();
 	}
 
 	/**
@@ -121,13 +114,13 @@ public class PostUserController {
 	public void queryPostTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		response.getWriter()
-				.print(postUserService.selectDeptsForTree());
+				.print(postMenuService.selectDeptsForTree());
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
 
 	/**
-	 * @Description 为岗位配置人员
+	 * @Description 为岗位配置菜单权限
 	 * @Author RayLee
 	 * @Version 1.0
 	 * @date 2016年12月9日
@@ -136,18 +129,18 @@ public class PostUserController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/addUsersToPost.do")
+	@RequestMapping("/addMenusToPost.do")
 	@ResponseBody
-	public Map<String, Object> addUsersToPost(
+	public Map<String, Object> addMenusToPost(
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		String userIds = request.getParameter("USER_IDS");
+		String menuIds = request.getParameter("MENU_IDS");
 		String postId = request.getParameter("POST_ID");
 		Map<String, Object> map = new HashMap<String, Object>();
-		PostUser postUser = new PostUser();
-		postUser.setPostId(BaseUtil.strToLong(postId));
-		postUser.setIds(userIds);
-		int bool = postUserService.insert(postUser);
+		PostMenu postMenu = new PostMenu();
+		postMenu.setPostId(BaseUtil.strToLong(postId));
+		postMenu.setIds(menuIds);
+		int bool = postMenuService.insert(postMenu);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -159,7 +152,7 @@ public class PostUserController {
 	}
 
 	/**
-	 * @Description 删除岗位的人员
+	 * @Description 删除岗位的菜单权限
 	 * @Author RayLee
 	 * @Version 1.0
 	 * @date 2016年12月9日
@@ -168,18 +161,18 @@ public class PostUserController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/delUsersToPost.do")
+	@RequestMapping("/delMenusToPost.do")
 	@ResponseBody
-	public Map<String, Object> delUsersToPost(
+	public Map<String, Object> delMenusToPost(
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		String userIds = request.getParameter("USER_IDS");
+		String menuIds = request.getParameter("MENU_IDS");
 		String postId = request.getParameter("POST_ID");
 		Map<String, Object> map = new HashMap<String, Object>();
-		PostUser postUser = new PostUser();
-		postUser.setPostId(BaseUtil.strToLong(postId));
-		postUser.setIds(userIds);
-		int bool = postUserService.deleteByPrimaryKeys(postUser);
+		PostMenu postMenu = new PostMenu();
+		postMenu.setPostId(BaseUtil.strToLong(postId));
+		postMenu.setIds(menuIds);
+		int bool = postMenuService.deleteByPrimaryKeys(postMenu);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");

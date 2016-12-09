@@ -1,23 +1,23 @@
 package com.base.admin.entity;
 
-public class PostMenu {
-    private Long menuId;
+public class PostMenu extends Base {
+	private Long menuId;
 
-    private Long postId;
+	private Long postId;
 
-    public Long getMenuId() {
-        return menuId;
-    }
+	public Long getMenuId() {
+		return menuId;
+	}
 
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
-    }
+	public void setMenuId(Long menuId) {
+		this.menuId = menuId;
+	}
 
-    public Long getPostId() {
-        return postId;
-    }
+	public Long getPostId() {
+		return postId;
+	}
 
-    public void setPostId(Long postId) {
-        this.postId = postId;
-    }
+	public void setPostId(Long postId) {
+		this.postId = postId;
+	}
 }

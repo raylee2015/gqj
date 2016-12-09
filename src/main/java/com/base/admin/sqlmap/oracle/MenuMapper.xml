@@ -19,9 +19,9 @@
 	<select id="selectMenusForTree" parameterType="com.base.admin.entity.Menu"
 		resultType="java.util.HashMap">
 		select menu_id as id
-		,menu_name as text,up_menu_id,menu_inner_code
+		,menu_name as text,up_menu_id,menu_inner_code,view_menu_up_inner_code
 		from
-		BASE_MENU
+		VIEW_BASE_MENU
 		<where>
 			<if test="menuLevel !=null">
 				menu_level=#{menuLevel} OR MENU_ID=0

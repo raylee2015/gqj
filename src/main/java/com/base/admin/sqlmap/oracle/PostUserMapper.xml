@@ -89,9 +89,9 @@
 		#{postId,jdbcType=DECIMAL}
 	</delete>
 	<insert id="insert" parameterType="com.base.admin.entity.PostUser">
-		insert into BASE_POST_USER
-		(USER_ID, POST_ID)
-		values (#{userId,jdbcType=DECIMAL},
-		#{postId,jdbcType=DECIMAL})
+		insert into BASE_POST_USER(USER_ID, POST_ID)
+		SELECT USER_ID ,#{postId,jdbcType=DECIMAL} FROM
+		BASE_USER WHERE
+		USER_ID IN (${ids})
 	</insert>
 </mapper>
