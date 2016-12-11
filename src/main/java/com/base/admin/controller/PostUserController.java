@@ -26,105 +26,8 @@ public class PostUserController {
 	public static final Logger LOGGER = Logger
 			.getLogger(PostUserController.class);
 
-	/**
-	 * 跳转到配对岗位人员首页
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
-	public ModelAndView toIndex() {
-		return new ModelAndView("/base/admin/post_user");
-	}
-
 	@Autowired
 	private IPostUserService postUserService;
-
-	/**
-	 * 分页查询岗位列表
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryPostPage.do")
-	@ResponseBody
-	public Map<String, Object> queryPostPage(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String page = request.getParameter("page");
-		String rows = request.getParameter("rows");
-		String deptIds = request.getParameter("DEPT_IDS");
-		String keyWord = request.getParameter("keyWord");
-		Post post = new Post();
-		post.setCurrPage(Integer.parseInt(page));
-		post.setPageSize(Integer.parseInt(rows));
-		post.setKeyWord(keyWord);
-		post.setIds(deptIds);
-		return postUserService.selectPostsForPage(post);
-	}
-
-	/**
-	 * 分页查询未被选择人员列表
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryUnSelectedUsersForPage.do")
-	@ResponseBody
-	public Map<String, Object> queryUnSelectedUsersForPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		String page = request.getParameter("page");
-		String rows = request.getParameter("rows");
-		String postId = request.getParameter("POST_ID");
-		PostUser postUser = new PostUser();
-		postUser.setCurrPage(Integer.parseInt(page));
-		postUser.setPageSize(Integer.parseInt(rows));
-		postUser.setPostId(BaseUtil.strToLong(postId));
-		return postUserService.queryUnSelectedUsersForPage(postUser);
-	}
-
-	/**
-	 * 分页查询已经被选择人员列表
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/querySelectedUsersForPage.do")
-	@ResponseBody
-	public Map<String, Object> querySelectedUsersForPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		String page = request.getParameter("page");
-		String rows = request.getParameter("rows");
-		String postId = request.getParameter("POST_ID");
-		PostUser postUser = new PostUser();
-		postUser.setCurrPage(Integer.parseInt(page));
-		postUser.setPageSize(Integer.parseInt(rows));
-		postUser.setPostId(BaseUtil.strToLong(postId));
-		return postUserService.querySelectedUsersForPage(postUser);
-	}
-
-	/**
-	 * 查询部门树
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryDeptTree.do")
-	@ResponseBody
-	public void queryPostTree(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		response.getWriter()
-				.print(postUserService.selectDeptsForTree());
-		response.getWriter().flush();
-		response.getWriter().close();
-	}
 
 	/**
 	 * @Description 为岗位配置人员
@@ -140,7 +43,7 @@ public class PostUserController {
 	@ResponseBody
 	public Map<String, Object> addUsersToPost(
 			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+					throws Exception {
 		String userIds = request.getParameter("USER_IDS");
 		String postId = request.getParameter("POST_ID");
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -172,7 +75,7 @@ public class PostUserController {
 	@ResponseBody
 	public Map<String, Object> delUsersToPost(
 			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+					throws Exception {
 		String userIds = request.getParameter("USER_IDS");
 		String postId = request.getParameter("POST_ID");
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -188,6 +91,103 @@ public class PostUserController {
 			map.put("msg", "保存成功");
 		}
 		return map;
+	}
+
+	/**
+	 * 分页查询岗位列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryPostPage.do")
+	@ResponseBody
+	public Map<String, Object> queryPostPage(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String deptIds = request.getParameter("DEPT_IDS");
+		String keyWord = request.getParameter("keyWord");
+		Post post = new Post();
+		post.setCurrPage(Integer.parseInt(page));
+		post.setPageSize(Integer.parseInt(rows));
+		post.setKeyWord(keyWord);
+		post.setIds(deptIds);
+		return postUserService.selectPostsForPage(post);
+	}
+
+	/**
+	 * 查询部门树
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryDeptTree.do")
+	@ResponseBody
+	public void queryPostTree(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter()
+				.print(postUserService.selectDeptsForTree());
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
+
+	/**
+	 * 分页查询已经被选择人员列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/querySelectedUsersForPage.do")
+	@ResponseBody
+	public Map<String, Object> querySelectedUsersForPage(
+			HttpServletRequest request, HttpServletResponse response)
+					throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String postId = request.getParameter("POST_ID");
+		PostUser postUser = new PostUser();
+		postUser.setCurrPage(Integer.parseInt(page));
+		postUser.setPageSize(Integer.parseInt(rows));
+		postUser.setPostId(BaseUtil.strToLong(postId));
+		return postUserService.querySelectedUsersForPage(postUser);
+	}
+
+	/**
+	 * 分页查询未被选择人员列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryUnSelectedUsersForPage.do")
+	@ResponseBody
+	public Map<String, Object> queryUnSelectedUsersForPage(
+			HttpServletRequest request, HttpServletResponse response)
+					throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String postId = request.getParameter("POST_ID");
+		PostUser postUser = new PostUser();
+		postUser.setCurrPage(Integer.parseInt(page));
+		postUser.setPageSize(Integer.parseInt(rows));
+		postUser.setPostId(BaseUtil.strToLong(postId));
+		return postUserService.queryUnSelectedUsersForPage(postUser);
+	}
+
+	/**
+	 * 跳转到配对岗位人员首页
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
+	public ModelAndView toIndex() {
+		return new ModelAndView("/base/admin/post_user");
 	}
 
 }

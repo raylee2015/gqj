@@ -26,98 +26,8 @@ public class PostMenuController {
 	public static final Logger LOGGER = Logger
 			.getLogger(PostMenuController.class);
 
-	/**
-	 * 跳转到配对岗位菜单权限首页
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
-	public ModelAndView toIndex() {
-		return new ModelAndView("/base/admin/post_menu");
-	}
-
 	@Autowired
 	private IPostMenuService postMenuService;
-
-	/**
-	 * 分页查询岗位列表
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryPostPage.do")
-	@ResponseBody
-	public Map<String, Object> queryPostPage(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String page = request.getParameter("page");
-		String rows = request.getParameter("rows");
-		String deptIds = request.getParameter("DEPT_IDS");
-		String keyWord = request.getParameter("keyWord");
-		Post post = new Post();
-		post.setCurrPage(Integer.parseInt(page));
-		post.setPageSize(Integer.parseInt(rows));
-		post.setKeyWord(keyWord);
-		post.setIds(deptIds);
-		return postMenuService.selectPostsForPage(post);
-	}
-
-	/**
-	 * 分页查询未被选择菜单权限列表
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryUnSelectedMenusForTree.do")
-	@ResponseBody
-	public void queryUnSelectedMenusForTree(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		response.getWriter()
-				.print(postMenuService.queryUnSelectedMenusForTree());
-		response.getWriter().flush();
-		response.getWriter().close();
-	}
-
-	/**
-	 * 分页查询已经被选择菜单权限列表
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/querySelectedMenusForTree.do")
-	@ResponseBody
-	public void querySelectedMenusForTree(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String postId = request.getParameter("POST_ID");
-		PostMenu postMenu = new PostMenu();
-		postMenu.setPostId(BaseUtil.strToLong(postId));
-		response.getWriter().print(
-				postMenuService.querySelectedMenusForTree(postMenu));
-		response.getWriter().flush();
-		response.getWriter().close();
-	}
-
-	/**
-	 * 查询部门树
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryDeptTree.do")
-	@ResponseBody
-	public void queryPostTree(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		response.getWriter()
-				.print(postMenuService.selectDeptsForTree());
-		response.getWriter().flush();
-		response.getWriter().close();
-	}
 
 	/**
 	 * @Description 为岗位配置菜单权限
@@ -133,7 +43,7 @@ public class PostMenuController {
 	@ResponseBody
 	public Map<String, Object> addMenusToPost(
 			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+					throws Exception {
 		String menuIds = request.getParameter("MENU_IDS");
 		String postId = request.getParameter("POST_ID");
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -165,7 +75,7 @@ public class PostMenuController {
 	@ResponseBody
 	public Map<String, Object> delMenusToPost(
 			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+					throws Exception {
 		String menuIds = request.getParameter("MENU_IDS");
 		String postId = request.getParameter("POST_ID");
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -181,6 +91,96 @@ public class PostMenuController {
 			map.put("msg", "保存成功");
 		}
 		return map;
+	}
+
+	/**
+	 * 分页查询岗位列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryPostPage.do")
+	@ResponseBody
+	public Map<String, Object> queryPostPage(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String deptIds = request.getParameter("DEPT_IDS");
+		String keyWord = request.getParameter("keyWord");
+		Post post = new Post();
+		post.setCurrPage(Integer.parseInt(page));
+		post.setPageSize(Integer.parseInt(rows));
+		post.setKeyWord(keyWord);
+		post.setIds(deptIds);
+		return postMenuService.selectPostsForPage(post);
+	}
+
+	/**
+	 * 查询部门树
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryDeptTree.do")
+	@ResponseBody
+	public void queryPostTree(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter()
+				.print(postMenuService.selectDeptsForTree());
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
+
+	/**
+	 * 分页查询已经被选择菜单权限列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/querySelectedMenusForTree.do")
+	@ResponseBody
+	public void querySelectedMenusForTree(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String postId = request.getParameter("POST_ID");
+		PostMenu postMenu = new PostMenu();
+		postMenu.setPostId(BaseUtil.strToLong(postId));
+		response.getWriter().print(
+				postMenuService.querySelectedMenusForTree(postMenu));
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
+
+	/**
+	 * 分页查询未被选择菜单权限列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryUnSelectedMenusForTree.do")
+	@ResponseBody
+	public void queryUnSelectedMenusForTree(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter()
+				.print(postMenuService.queryUnSelectedMenusForTree());
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
+
+	/**
+	 * 跳转到配对岗位菜单权限首页
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
+	public ModelAndView toIndex() {
+		return new ModelAndView("/base/admin/post_menu");
 	}
 
 }

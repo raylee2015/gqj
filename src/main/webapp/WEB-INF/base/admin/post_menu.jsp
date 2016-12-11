@@ -76,8 +76,8 @@
 				var ids = '';
 				for (var i = 0; i < rowDatas.length; i++) {
 					var item = rowDatas[i];
-					if (item.view_menu_up_inner_code != 'undefined') {
-						ids += item.view_menu_up_inner_code + ',';
+					if (item.id != 'undefined') {
+						ids += item.id + ',';
 					}
 				}
 				ids = ids.substring(0, ids.length - 1);

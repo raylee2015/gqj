@@ -6,7 +6,7 @@ var errorCodeForOption = 'alert(\'数据操作发生错误，请联系系统管�
 
 // 重写操作列，使得操作栏显示编辑连接
 function editColumnFormatter(fieldValue, rowData, rowIndex) {
-	var btn = '<a class="easyui-linkbutton" iconCls="icon-edit" onclick="openEditUI(\'edit\',\''
+	var btn = '<a class="easyui-linkbutton"  onclick="openEditUI(\'edit\',\''
 			+ rowIndex + '\')" href="javascript:void(0)">编辑</a>';
 	return btn;
 }

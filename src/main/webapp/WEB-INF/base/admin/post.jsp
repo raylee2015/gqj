@@ -18,6 +18,8 @@
 	href="<%=contextPath%>/jquery-easyui-1.5/themes/icon.css">
 <link rel="stylesheet" type="text/css"
 	href="<%=contextPath%>/jquery-easyui-1.5/demo/demo.css">
+<link rel="stylesheet" type="text/css"
+	href="<%=contextPath%>/css/base.css">
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.min.js"></script>
 <script type="text/javascript"
@@ -80,7 +82,100 @@
 		initDocument();
 		initDataGrid();
 		initTree();
+		initDataGridOfSelectedUsers();
+		initDataGridOfUnSelectedUsers();
+		initUnSelectedMenuTree();
+		initSelectedMenuTree();
 	});
+
+	//初始化岗位列表
+	function initDataGridOfUnSelectedUsers() {
+		$('#datagridOfUnSelectedUsers').datagrid({
+			idField : 'USER_ID',
+			columns : [ [ {
+				field : 'ck',
+				title : '操作',
+				checkbox : true,
+			}, {
+				field : 'USER_NAME',
+				title : '用户名称',
+				width : 100
+			}, {
+				field : 'USER_DEPT_NAME',
+				title : '所属部门',
+				width : 250
+			} ] ]
+		});
+	}
+
+	//初始化岗位列表
+	function initDataGridOfSelectedUsers() {
+		$('#datagridOfSelectedUsers').datagrid({
+			idField : 'USER_ID',
+			columns : [ [ {
+				field : 'ck',
+				title : '操作',
+				checkbox : true,
+			}, {
+				field : 'USER_NAME',
+				title : '用户名称',
+				width : 100
+			}, {
+				field : 'USER_DEPT_NAME',
+				title : '所属部门',
+				width : 250
+			} ] ]
+		});
+	}
+
+	//初始化待选择菜单权限树
+	function initUnSelectedMenuTree() {
+		$('#treeOfUnSelectedMenus').tree(
+				{
+					url : 'queryUnSelectedMenusForTree.do',
+					checkbox : true,
+					checkOnSelect : true,
+					onClick : function(node) {
+						var selectedPost = $('#datagridOfPost').datagrid(
+								'getSelected');
+						if (selectedPost == null) {
+							alert('请选择岗位');
+						}
+						if (node.checked == true) {
+							$(this).tree('uncheck', node.target);
+						} else {
+							$(this).tree('check', node.target);
+						}
+					},
+					onLoadError : function(arguments) {
+						eval(errorCodeForQuery);
+					}
+				});
+	}
+
+	//初始化已选择菜单权限树
+	function initSelectedMenuTree() {
+		$('#treeOfSelectedMenus').tree(
+				{
+					checkbox : true,
+					checkOnSelect : true,
+					onClick : function(node) {
+						var selectedPost = $('#datagridOfPost').datagrid(
+								'getSelected');
+						if (selectedPost == null) {
+							alert('请选择岗位');
+						}
+						if (node.checked == true) {
+							$(this).tree('uncheck', node.target);
+						} else {
+							$(this).tree('check', node.target);
+						}
+					},
+					onLoadError : function(arguments) {
+						eval(errorCodeForQuery);
+					}
+				});
+	}
 
 	//初始化树
 	function initTree() {
@@ -108,6 +203,16 @@
 				title : '操作',
 				formatter : editColumnFormatter
 			}, {
+				field : 'CHOOSE_USER',
+				title : '选择相关人员',
+				width : 120,
+				formatter : chooseUserColumnFormatter
+			}, {
+				field : 'CHOOSE_MENU',
+				title : '选择相关菜单权限',
+				width : 140,
+				formatter : chooseMenuColumnFormatter
+			}, {
 				field : 'POST_NAME',
 				title : '岗位名称',
 				width : 100,
@@ -128,6 +233,227 @@
 				eval(errorCodeForQuery);
 			}
 		});
+	}
+
+	// 重写选人列，使得选人栏显示选人连接
+	function chooseUserColumnFormatter(fieldValue, rowData, rowIndex) {
+		var btn = '<a class="easyui-linkbutton" onclick="openChooseUserUI(\'edit\',\''
+				+ rowIndex + '\')" href="javascript:void(0)">选择相关人员</a>';
+		return btn;
+	}
+
+	// 重写选菜单列，使得选菜单栏显示选人连接
+	function chooseMenuColumnFormatter(fieldValue, rowData, rowIndex) {
+		var btn = '<a class="easyui-linkbutton" onclick="openChooseMenuUI(\'edit\',\''
+				+ rowIndex + '\')" href="javascript:void(0)">选择相关菜单权限</a>';
+		return btn;
+	}
+
+	// 打开选择人窗口
+	function openChooseUserUI(opType, rowIndex) {
+		var rowData = $('#datagrid').datagrid('getData').rows[rowIndex];
+		var postId = rowData.POST_ID;
+		selectedPost=rowData;
+		querySelectedUsersForPage(postId);
+		queryUnSelectedUsersForPage(postId);
+		$('#chooseUserUI').window('open');
+	}
+
+	//查询待选人员
+	function queryUnSelectedUsersForPage(postId) {
+		var params = {
+			POST_ID : postId,
+			page : 1,
+			rows : $('#datagridOfUnSelectedUsers').datagrid('getPager').data(
+					"pagination").options.pageSize
+		};
+		ajaxFunction(params, 'queryUnSelectedUsersForPage.do',
+				successFunctionForQueryUnSelectedUsers, errorFunctionForQuery,
+				false);
+	}
+
+	//成功查询待选人员
+	function successFunctionForQueryUnSelectedUsers(result, haveTree) {
+		$('#datagridOfUnSelectedUsers').datagrid('loadData', result);
+		$('#datagridOfUnSelectedUsers').datagrid('uncheckAll');
+		$('#datagridOfUnSelectedUsers').datagrid('unselectAll');
+	}
+
+	//查询已选人员
+	function querySelectedUsersForPage(postId) {
+		var params = {
+			POST_ID : postId,
+			page : 1,
+			rows : $('#datagridOfSelectedUsers').datagrid('getPager').data(
+					"pagination").options.pageSize
+		};
+		ajaxFunction(params, 'querySelectedUsersForPage.do',
+				successFunctionForQuerySelectedUsers, errorFunctionForQuery,
+				false);
+	}
+
+	//成功查询已选人员
+	function successFunctionForQuerySelectedUsers(result, haveTree) {
+		$('#datagridOfSelectedUsers').datagrid('loadData', result);
+		$('#datagridOfSelectedUsers').datagrid('uncheckAll');
+		$('#datagridOfSelectedUsers').datagrid('unselectAll');
+	}
+
+	var selectedPost = null;
+
+	// 打开选择菜单窗口
+	function openChooseMenuUI(opType, rowIndex) {
+		var rowData = $('#datagrid').datagrid('getData').rows[rowIndex];
+		selectedPost = rowData;
+		var postId = rowData.POST_ID;
+		querySelectedMenusForTree(postId);
+		$('#chooseMenuUI').window('open');
+	}
+
+	//查询已选菜单权限
+	function querySelectedMenusForTree(postId) {
+		var params = {
+			POST_ID : postId,
+		};
+		ajaxFunction(params, 'querySelectedMenusForTree.do',
+				successFunctionForQuerySelectedMenus, errorFunctionForQuery,
+				false);
+	}
+
+	//成功查询已选菜单权限
+	function successFunctionForQuerySelectedMenus(result, haveTree) {
+		$('#treeOfSelectedMenus').tree('loadData', result);
+		unCheckALL('treeOfUnSelectedMenus');
+		unCheckALL('treeOfSelectedMenus');
+	}
+
+	//全部不选
+	function unCheckALL(treeId) {
+		var tree = eval('$(\'#' + treeId + '\')');
+		var roots = tree.tree('getRoots');
+		for (var i = 0; i < roots.length; i++) {
+			var node = tree.tree('find', roots[i].id);
+			tree.tree('uncheck', node.target);
+		}
+	}
+
+	//为职位配置菜单权限
+	function addMenusToPost() {
+		var rowDatas = $('#treeOfUnSelectedMenus').tree('getChecked');
+		if (rowDatas.length == 0) {
+			alert('请选择待选菜单权限');
+		} else {
+			var ids = '';
+			for (var i = 0; i < rowDatas.length; i++) {
+				var item = rowDatas[i];
+				if (item.view_menu_up_inner_code != 'undefined') {
+					ids += item.view_menu_up_inner_code + ',';
+				}
+			}
+			ids = ids.substring(0, ids.length - 1);
+			var params = {
+				MENU_IDS : ids,
+				POST_ID : selectedPost.POST_ID
+			};
+			save2(params, "addMenusToPost.do",
+					successFunctionForAddMenusToPost, errorFunctionForOption,
+					false);
+		}
+	}
+
+	//成功配置职位菜单权限
+	function successFunctionForAddMenusToPost() {
+		querySelectedMenusForTree(selectedPost.POST_ID);
+	}
+
+	//删除
+	function delMenusToPost() {
+		var rowDatas = $('#treeOfSelectedMenus').tree('getChecked');
+		if (rowDatas.length == 0) {
+			alert('请选择已选菜单权限');
+		} else {
+			var ids = '';
+			for (var i = 0; i < rowDatas.length; i++) {
+				var item = rowDatas[i];
+				if (item.id != 'undefined') {
+					ids += item.id + ',';
+				}
+			}
+			ids = ids.substring(0, ids.length - 1);
+			var params = {
+				MENU_IDS : ids,
+				POST_ID : selectedPost.POST_ID
+			};
+			save2(params, "delMenusToPost.do",
+					successFunctionForDelMenusToPost, errorFunctionForOption,
+					false);
+		}
+	}
+
+	//成功删除职位菜单权限
+	function successFunctionForDelMenusToPost() {
+		successFunctionForAddMenusToPost();
+	}
+
+	//为职位配置人员
+	function addUsersToPost() {
+		var rowDatas = $('#datagridOfUnSelectedUsers')
+				.datagrid('getSelections');
+		if (rowDatas.length == 0) {
+			alert('请选择待选人员');
+		} else {
+			var ids = '';
+			for (var i = 0; i < rowDatas.length; i++) {
+				var item = rowDatas[i];
+				if (item.USER_ID != 'undefined') {
+					ids += item.USER_ID + ',';
+				}
+			}
+			ids = ids.substring(0, ids.length - 1);
+			var params = {
+				USER_IDS : ids,
+				POST_ID : selectedPost.POST_ID
+			};
+			save2(params, "addUsersToPost.do",
+					successFunctionForAddUsersToPost, errorFunctionForOption,
+					false);
+		}
+	}
+
+	//成功配置职位人员
+	function successFunctionForAddUsersToPost() {
+		querySelectedUsersForPage(selectedPost.POST_ID);
+		queryUnSelectedUsersForPage(selectedPost.POST_ID);
+	}
+
+	//删除
+	function delUsersToPost() {
+		var rowDatas = $('#datagridOfSelectedUsers').datagrid('getSelections');
+		if (rowDatas.length == 0) {
+			alert('请选择已选人员');
+		} else {
+			var ids = '';
+			for (var i = 0; i < rowDatas.length; i++) {
+				var item = rowDatas[i];
+				if (item.USER_ID != 'undefined') {
+					ids += item.USER_ID + ',';
+				}
+			}
+			ids = ids.substring(0, ids.length - 1);
+			var params = {
+				USER_IDS : ids,
+				POST_ID : selectedPost.POST_ID
+			};
+			save2(params, "delUsersToPost.do",
+					successFunctionForDelUsersToPost, errorFunctionForOption,
+					false);
+			rowDatas = {};
+		}
+	}
+
+	//成功删除职位人员
+	function successFunctionForDelUsersToPost() {
+		successFunctionForAddUsersToPost();
 	}
 </script>
 </head>
@@ -209,6 +535,60 @@
 					href="javascript:void(0)" onclick="savePost()">保存</a> <a
 					class="easyui-linkbutton" iconCls="icon-cancel"
 					href="javascript:void(0)" onclick="closeEditUI()">关闭</a>
+			</div>
+		</div>
+	</div>
+
+	<!--  选择相关人员界面 -->
+	<div id="chooseUserUI" class="easyui-window" title="选择相关人员"
+		closed="true" style="width: 1000px; height: 600px;">
+		<div class="easyui-layout" data-options="fit:true,border:false">
+			<div region="west" title="待选人员" collapsible="false"
+				style="width: 45%; height: 100%;">
+				<table id="datagridOfUnSelectedUsers" class="easyui-datagrid"
+					pagination="true" pageSize="30" pageNumber="1" method="get"
+					fit="true">
+				</table>
+			</div>
+			<div region="center" style="width: 10%; height: 100%;">
+				<a href="#" class="easyui-linkbutton"
+					data-options="iconCls:'icon-arrow-right',size:'large',iconAlign:'top'"
+					style="width: 100%; height: 50%;" onclick="addUsersToPost()">选择</a>
+				<a href="#" class="easyui-linkbutton"
+					data-options="iconCls:'icon-arrow-left',size:'large',iconAlign:'top'"
+					style="width: 100%; height: 50%;" onclick="delUsersToPost()">取消选择</a>
+			</div>
+			<div region="east" collapsible="false" title="已选人员"
+				style="width: 45%; height: 100%;">
+				<table id="datagridOfSelectedUsers" class="easyui-datagrid"
+					checkOnSelect="true" pagination="true" pageSize="30" pageNumber="1"
+					method="get" fit="true">
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!--  选择相关菜单权限界面 -->
+	<div id="chooseMenuUI" class="easyui-window" title="选择相关菜单权限"
+		closed="true" style="width: 1000px; height: 600px;">
+		<div class="easyui-layout" data-options="fit:true,border:false">
+			<div region="west" title="待选菜单权限" collapsible="false"
+				style="width: 45%; height: 100%;">
+				<ul id="treeOfUnSelectedMenus" class="easyui-tree" method="get"
+					animate="true" lines="true"></ul>
+			</div>
+			<div region="center" style="width: 10%; height: 100%;">
+				<a href="#" class="easyui-linkbutton"
+					data-options="iconCls:'icon-arrow-right',size:'large',iconAlign:'top'"
+					style="width: 100%; height: 50%;" onclick="addMenusToPost()">选择</a>
+				<a href="#" class="easyui-linkbutton"
+					data-options="iconCls:'icon-arrow-left',size:'large',iconAlign:'top'"
+					style="width: 100%; height: 50%;" onclick="delMenusToPost()">取消选择</a>
+			</div>
+			<div region="east" collapsible="false" title="已选菜单权限"
+				style="width: 45%; height: 100%;">
+				<ul id="treeOfSelectedMenus" class="easyui-tree" method="get"
+					animate="true" lines="true"></ul>
 			</div>
 		</div>
 	</div>
