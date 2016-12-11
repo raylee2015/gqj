@@ -14,7 +14,7 @@
 	</resultMap>
 	<sql id="Base_Column_List">
 		MENU_ID, UP_MENU_ID, MENU_NAME, MENU_LEVEL, MENU_URL,
-		MENU_SORT,MENU_EXT_CODE,MENU_LEVEL_NAME
+		MENU_SORT,MENU_EXT_CODE,MENU_LEVEL_NAME,MENU_INNER_CODE
 	</sql>
 	<select id="selectMenusForTree" parameterType="com.base.admin.entity.Menu"
 		resultType="java.util.HashMap">

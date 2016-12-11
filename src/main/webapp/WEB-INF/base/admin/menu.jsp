@@ -45,7 +45,7 @@
 
 	//删除
 	function delMenus() {
-		var ids = getIdsOfSelectedItems('MENU_INNER_CODE', 'MENU_IDS', '');
+		var ids = getIdsOfSelectedItems('MENU_INNER_CODE', '数据出现问题，请联系系统管理员');
 		var params = {
 			MENU_IDS : ids
 		};
