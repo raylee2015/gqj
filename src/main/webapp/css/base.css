@@ -4,3 +4,7 @@
 .icon-arrow-right{
 	background:url('../img/arrow_right.png') no-repeat center center;
 }
+.icon-person {
+	background: url('../img/../img/IconsExtension/03.png') no-repeat center
+		center;
+}

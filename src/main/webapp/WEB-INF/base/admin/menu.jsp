@@ -34,6 +34,8 @@
 		openAddDataUI2(true);
 		setTextBoxValue('menuIdTextBox', -1);
 		url = 'addNewMenu.do';
+		$('#menuURLTextBox').textbox('enable');
+		$('#menuExtCodeTextBox').textbox('enable');
 	}
 
 	//打开编辑窗口
@@ -41,6 +43,8 @@
 		var rowData = $('#datagrid').datagrid('getData').rows[rowIndex];
 		openEditDataUI2(rowData, true, 'UP_MENU_ID', 'UP_MENU_NAME');
 		url = 'updateMenu.do';
+		$('#menuURLTextBox').textbox('enable');
+		$('#menuExtCodeTextBox').textbox('enable');
 	}
 
 	//删除
@@ -132,7 +136,31 @@
 			require : true,
 			panelHeight : 'auto',
 			prompt : '菜单级别',
-			url : 'queryMenuLevelDropList.do'
+			url : 'queryMenuLevelDropList.do',
+			onChange : function(newValue, oldValue) {
+				if (newValue == 0 || newValue == 1 || newValue == 2) {
+					$('#menuURLTextBox').textbox('disable');
+					$('#menuExtCodeTextBox').textbox('disable');
+					$('#menuURLTextBox').textbox('setText', '-');
+					$('#menuExtCodeTextBox').textbox('setText', '-');
+					$('#menuURLTextBox').textbox('setValue', '-');
+					$('#menuExtCodeTextBox').textbox('setValue', '-');
+				} else if (newValue == 3) {
+					$('#menuURLTextBox').textbox('enable');
+					$('#menuExtCodeTextBox').textbox('disable');
+					$('#menuURLTextBox').textbox('setText', '');
+					$('#menuExtCodeTextBox').textbox('setText', '-');
+					$('#menuURLTextBox').textbox('setValue', '');
+					$('#menuExtCodeTextBox').textbox('setValue', '-');
+				} else if (newValue == 4) {
+					$('#menuURLTextBox').textbox('disable');
+					$('#menuExtCodeTextBox').textbox('enable');
+					$('#menuURLTextBox').textbox('setText', '-');
+					$('#menuExtCodeTextBox').textbox('setText', '');
+					$('#menuURLTextBox').textbox('setValue', '-');
+					$('#menuExtCodeTextBox').textbox('setValue', '');
+				}
+			}
 		});
 	}
 
