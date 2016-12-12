@@ -12,8 +12,6 @@
 <link rel="stylesheet" type="text/css"
 	href="<%=contextPath%>/jquery-easyui-1.5/themes/icon.css">
 <link rel="stylesheet" type="text/css"
-	href="<%=contextPath%>/jquery-easyui-1.5/demo/demo.css">
-<link rel="stylesheet" type="text/css"
 	href="<%=contextPath%>/css/base.css">
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.min.js"></script>
@@ -48,28 +46,66 @@
 		</div>
 		<div id="tab-tools">
 			<a href="#" class="easyui-menubutton"
-				data-options="menu:'#mm1',iconCls:'icon-person'">XXX，欢迎使用综合管理平台</a>
-			<div id="mm1" style="width: 150px;">
-				<div data-options="iconCls:'icon-undo'">Undo</div>
-				<div data-options="iconCls:'icon-redo'">Redo</div>
-				<div class="menu-sep"></div>
-				<div>Cut</div>
-				<div>Copy</div>
-				<div>Paste</div>
-				<div class="menu-sep"></div>
-				<div>
-					<span>Toolbar</span>
-					<div>
-						<div>Address</div>
-						<div>Link</div>
-						<div>Navigation Toolbar</div>
-						<div>Bookmark Toolbar</div>
-						<div class="menu-sep"></div>
-						<div>New Toolbar...</div>
+				data-options="menu:'#menu',iconCls:'icon-person'">XXX，欢迎使用综合管理平台</a>
+			<div id="menu" style="width: 206px;">
+				<div style="width: 206px;" data-options="iconCls:'icon-medal-gold'">
+					<span style="width: 206px;">XXX系统</span>
+					<div style="width: 206px;">
+						<div style="width: 206px;">
+							<span style="width: 206px;">XXX管理模块</span>
+							<div style="width: 206px;">
+								<div style="width: 206px;">XXX管理</div>
+								<div style="width: 206px;">XXX管理</div>
+								<div style="width: 206px;">XXX管理</div>
+							</div>
+						</div>
+						<div style="width: 206px;">
+							<span style="width: 206px;">XXX管理模块</span>
+							<div style="width: 206px;">
+								<div style="width: 206px;">XXX管理</div>
+								<div style="width: 206px;">XXX管理</div>
+								<div style="width: 206px;">XXX管理</div>
+							</div>
+						</div>
+						<div style="width: 206px;">
+							<span style="width: 206px;">XXX管理模块</span>
+							<div style="width: 206px;">
+								<div style="width: 206px;">XXX管理</div>
+								<div style="width: 206px;">XXX管理</div>
+								<div style="width: 206px;">XXX管理</div>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div data-options="iconCls:'icon-remove'">Delete</div>
-				<div>Select All</div>
+				<div style="width: 206px;">
+					<span style="width: 206px;">XXX系统</span>
+					<div style="width: 206px;">
+						<div style="width: 206px;">
+							<span style="width: 206px;">XXX管理模块</span>
+							<div style="width: 206px;">
+								<div style="width: 206px;">XXX管理</div>
+								<div style="width: 206px;">XXX管理</div>
+								<div style="width: 206px;">XXX管理</div>
+							</div>
+						</div>
+						<div style="width: 206px;">
+							<span style="width: 206px;">XXX管理模块</span>
+							<div style="width: 206px;">
+								<div style="width: 206px;">XXX管理</div>
+								<div style="width: 206px;">XXX管理</div>
+								<div style="width: 206px;">XXX管理</div>
+							</div>
+						</div>
+						<div style="width: 206px;">
+							<span style="width: 206px;">XXX管理模块</span>
+							<div style="width: 206px;">
+								<div style="width: 206px;">XXX管理</div>
+								<div style="width: 206px;">XXX管理</div>
+								<div style="width: 206px;">XXX管理</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
