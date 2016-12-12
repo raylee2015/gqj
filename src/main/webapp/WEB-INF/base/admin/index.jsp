@@ -34,6 +34,33 @@
 			});
 		}
 	}
+
+	//页面加载完
+	$(document).ready(function() {
+		initMenu();
+	});
+
+	function initMenu() {
+		// 追加一个顶部菜单
+		$('#menu').menu('appendItem', {
+			text : '打开',
+			minWidth : 206,
+			onclick : function() {
+				alert('提示：新菜单项！')
+			}
+		});
+
+		// 追加一个子菜单项
+		var item = $('#menu').menu('findItem', '打开'); // 查找“打开”项
+		$('#menu').menu('appendItem', {
+			parent : item.target, // 设置父菜单元素
+			text : '打开Excel文档',
+			minWidth : 206,
+			onclick : function() {
+				alert('提示：打开Excel文档！')
+			}
+		});
+	}
 </script>
 <style>
 </style>
@@ -42,71 +69,12 @@
 	<div id="content" region="center" style="width: 100%; height: 100%;">
 		<div id="tab" data-options="tools:'#tab-tools',toolPosition:'left'"
 			class="easyui-tabs" style="width: 100%; height: 100%;">
-			<div title="首页" style="width: 100%; height: 100%;">首页</div>
+			<div title="首页" style="width: 100%; height: 100%;">欢迎使用综合管理平台</div>
 		</div>
 		<div id="tab-tools">
 			<a href="#" class="easyui-menubutton"
 				data-options="menu:'#menu',iconCls:'icon-person'">XXX，欢迎使用综合管理平台</a>
-			<div id="menu" style="width: 206px;">
-				<div style="width: 206px;" data-options="iconCls:'icon-medal-gold'">
-					<span style="width: 206px;">XXX系统</span>
-					<div style="width: 206px;">
-						<div style="width: 206px;">
-							<span style="width: 206px;">XXX管理模块</span>
-							<div style="width: 206px;">
-								<div style="width: 206px;">XXX管理</div>
-								<div style="width: 206px;">XXX管理</div>
-								<div style="width: 206px;">XXX管理</div>
-							</div>
-						</div>
-						<div style="width: 206px;">
-							<span style="width: 206px;">XXX管理模块</span>
-							<div style="width: 206px;">
-								<div style="width: 206px;">XXX管理</div>
-								<div style="width: 206px;">XXX管理</div>
-								<div style="width: 206px;">XXX管理</div>
-							</div>
-						</div>
-						<div style="width: 206px;">
-							<span style="width: 206px;">XXX管理模块</span>
-							<div style="width: 206px;">
-								<div style="width: 206px;">XXX管理</div>
-								<div style="width: 206px;">XXX管理</div>
-								<div style="width: 206px;">XXX管理</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div style="width: 206px;">
-					<span style="width: 206px;">XXX系统</span>
-					<div style="width: 206px;">
-						<div style="width: 206px;">
-							<span style="width: 206px;">XXX管理模块</span>
-							<div style="width: 206px;">
-								<div style="width: 206px;">XXX管理</div>
-								<div style="width: 206px;">XXX管理</div>
-								<div style="width: 206px;">XXX管理</div>
-							</div>
-						</div>
-						<div style="width: 206px;">
-							<span style="width: 206px;">XXX管理模块</span>
-							<div style="width: 206px;">
-								<div style="width: 206px;">XXX管理</div>
-								<div style="width: 206px;">XXX管理</div>
-								<div style="width: 206px;">XXX管理</div>
-							</div>
-						</div>
-						<div style="width: 206px;">
-							<span style="width: 206px;">XXX管理模块</span>
-							<div style="width: 206px;">
-								<div style="width: 206px;">XXX管理</div>
-								<div style="width: 206px;">XXX管理</div>
-								<div style="width: 206px;">XXX管理</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+			<div id="menu" class="easyui-menu" style="width: 206px;"></div>
 		</div>
 	</div>
 
