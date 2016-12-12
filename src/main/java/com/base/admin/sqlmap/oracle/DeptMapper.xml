@@ -111,9 +111,6 @@
 			<if test="deptName != null">
 				#{deptName,jdbcType=VARCHAR},
 			</if>
-			<if test="deptType != null">
-				#{deptType,jdbcType=CHAR},
-			</if>
 			<if test="deptSort != null">
 				#{deptSort,jdbcType=DECIMAL},
 			</if>
