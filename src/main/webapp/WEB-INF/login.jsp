@@ -28,7 +28,7 @@
 </head>
 <body id="layout" class="easyui-layout">
 	<div id="content" region="center" style="width: 100%; height: 100%;">
-		<form action="<%=contextPath%>/login/login.do" method="post">
+		<form action="<%=contextPath%>/login.do" method="post">
 			userCode: <input id="userCode" name="userCode" type="text" /> <br>userPassWord:
 			<input id="userPassWord" name="userPassWord" type="password" /><br>
 			<input type="submit" value="登录" /> <input type="reset" value="重置" />

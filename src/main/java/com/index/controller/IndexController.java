@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.base.admin.entity.Menu;
+import com.base.admin.entity.User;
 import com.base.admin.service.IMenuService;
+import com.base.admin.service.IUserService;
+import com.base.util.BaseUtil;
 
 @Controller
 @RequestMapping("/")
@@ -42,5 +45,30 @@ public class IndexController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", depts);
 		return map;
+	}
+
+	@Autowired
+	private IUserService userService;
+
+	@RequestMapping("/login.do")
+	public String login(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		// 查询用户
+		String userCode = request.getParameter("userCode");
+		String userPassWord = request.getParameter("userPassWord");
+		userPassWord = BaseUtil.MD5(userPassWord).substring(0, 20);
+		User user = new User();
+		user.setUserCode(userCode);
+		user.setUserPassWord(userPassWord);
+		List<User> list = userService.selectUsersForList(user);
+		if (list.size() == 1) {
+			// 设置session
+			request.getSession().setAttribute("user", list.get(0));
+			// 跳转
+			return "/index";
+		} else {
+			return "/login";
+		}
+
 	}
 }

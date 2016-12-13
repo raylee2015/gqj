@@ -35,9 +35,9 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 		String requestUri = request.getRequestURI();
 		String contextPath = request.getContextPath();
 		String url = requestUri.substring(contextPath.length());
-
+		// return true;
 		if (url.indexOf("login.do") > 0) {
-			return false;
+			return true;
 		} else {
 			// 其他时候
 			User user = (User) request.getSession()
