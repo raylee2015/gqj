@@ -48,6 +48,11 @@ public class UserServiceImpl implements IUserService {
 		return userMapper.selectUsersForPage(user);
 	}
 
+	@Override
+	public List<User> selectUsersForList(User user) {
+		return userMapper.selectUsersForList(user);
+	}
+
 	/*
 	 * (非 Javadoc) <p>Title: selectCountOfUsersForPage</p> <p>Description: </p>
 	 * 
@@ -96,6 +101,5 @@ public class UserServiceImpl implements IUserService {
 	public int updateByPrimaryKeysSelective(User user) {
 		return userMapper.updateByPrimaryKeysSelective(user);
 	}
-
 
 }

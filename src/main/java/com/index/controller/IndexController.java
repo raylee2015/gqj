@@ -1,4 +1,4 @@
-package com.base.admin.controller;
+package com.index.controller;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +20,10 @@ import com.base.admin.service.IMenuService;
 
 @Controller
 @RequestMapping("/")
-public class AdminIndexController {
+public class IndexController {
 
 	public static final Logger LOGGER = Logger
-			.getLogger(AdminIndexController.class);
+			.getLogger(IndexController.class);
 
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public String toIndex(HttpServletRequest request, Model model) {

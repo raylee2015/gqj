@@ -10,6 +10,8 @@ public interface UserMapper {
 
 	List<Map<String, Object>> selectUsersForPage(User user);
 
+	List<User> selectUsersForList(User user);
+
 	int selectCountOfUsersForPage(User user);
 
 	int insertSelective(User user);

@@ -6,11 +6,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.base.admin.entity.User;
+
 /**
  * @author tfj 2014-8-1
  */
 public class CommonInterceptor extends HandlerInterceptorAdapter {
-	public static final String LAST_PAGE = "com.alibaba.lastPage";
 
 	/*
 	 * 利用正则映射到需要拦截的路径
@@ -28,24 +29,27 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler)
-			throws Exception {
+					throws Exception {
 		// if ("GET".equalsIgnoreCase(request.getMethod())) {
 		// }
-		// String requestUri = request.getRequestURI();
-		// String contextPath = request.getContextPath();
-		// String url = requestUri.substring(contextPath.length());
+		String requestUri = request.getRequestURI();
+		String contextPath = request.getContextPath();
+		String url = requestUri.substring(contextPath.length());
 
-		System.out.println("preHandle");
-		// String username = (String) request.getSession()
-		// .getAttribute("user");
-		// if (username == null) {
-		// request.getRequestDispatcher("/WEB-INF/jsp/login.jsp")
-		// .forward(request, response);
-		// return false;
-		// } else {
-		// return true;
-		// }
-		return true;
+		if (url.indexOf("login.do") > 0) {
+			return false;
+		} else {
+			// 其他时候
+			User user = (User) request.getSession()
+					.getAttribute("user");
+			if (user == null) {
+				request.getRequestDispatcher("/WEB-INF/login.jsp")
+						.forward(request, response);
+				return false;
+			} else {
+				return true;
+			}
+		}
 	}
 
 	/**
@@ -66,7 +70,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public void afterCompletion(HttpServletRequest request,
 			HttpServletResponse response, Object handler, Exception ex)
-			throws Exception {
+					throws Exception {
 		System.out.println("afterCompletion");
 	}
 

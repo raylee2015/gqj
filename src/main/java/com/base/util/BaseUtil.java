@@ -97,7 +97,7 @@ public class BaseUtil {
 	 *            传入参数
 	 * @return
 	 */
-	private final static String MD5(String param) {
+	public final static String MD5(String param) {
 		char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7',
 				'8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 		try {
