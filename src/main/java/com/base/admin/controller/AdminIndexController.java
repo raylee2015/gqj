@@ -19,7 +19,7 @@ import com.base.admin.entity.Menu;
 import com.base.admin.service.IMenuService;
 
 @Controller
-@RequestMapping("/base/admin")
+@RequestMapping("/")
 public class AdminIndexController {
 
 	public static final Logger LOGGER = Logger
@@ -27,7 +27,7 @@ public class AdminIndexController {
 
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public String toIndex(HttpServletRequest request, Model model) {
-		return "/base/admin/index";
+		return "/index";
 	}
 
 	@Autowired
