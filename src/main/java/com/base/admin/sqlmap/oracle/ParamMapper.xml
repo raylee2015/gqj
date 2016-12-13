@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.base.admin.dao.ParamMapper">
+	<resultMap id="BaseResultMap" type="com.base.admin.entity.Param">
+		<id column="PARAM_ID" jdbcType="DECIMAL" property="paramId" />
+		<result column="PARAM_KEY" jdbcType="VARCHAR" property="paramKey" />
+		<result column="PARAM_VALUE" jdbcType="VARCHAR" property="paramValue" />
+		<result column="PARAM_REMARK" jdbcType="VARCHAR" property="paramRemark" />
+		<result column="MENU_ID" jdbcType="DECIMAL" property="menuId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		PARAM_ID, PARAM_KEY, PARAM_VALUE, PARAM_REMARK, MENU_ID
+	</sql>
+	<select id="selectParamsForList" parameterType="com.base.admin.entity.Param"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from BASE_PARAM
+		<where>
+			<if test="paramKey != null">
+				AND PARAM_KEY = #{paramKey}
+			</if>
+			<if test="paramValue != null">
+				AND PARAM_VALUE = #{paramValue}
+			</if>
+		</where>
+	</select>
+	<select id="selectParamsForPage" parameterType="com.base.admin.entity.Param"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from BASE_PARAM
+		<where>
+			<if test="keyWord != null">
+				AND PARAM_KEY like '%${keyWord}%'
+			</if>
+		</where>
+		order by PARAM_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfParamsForPage" parameterType="com.base.admin.entity.Param"
+		resultType="java.lang.Integer">
+		select count(t.PARAM_ID) from BASE_PARAM t
+		<where>
+			<if test="keyWord != null">
+				AND PARAM_KEY like '%${keyWord}%'
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="com.base.admin.entity.Param">
+		delete from
+		BASE_PARAM
+		where PARAM_ID in (#{ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.base.admin.entity.Param">
+		insert into BASE_PARAM
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="paramId != null">
+				PARAM_ID,
+			</if>
+			<if test="paramKey != null">
+				PARAM_KEY,
+			</if>
+			<if test="paramValue != null">
+				PARAM_VALUE,
+			</if>
+			<if test="paramRemark != null">
+				PARAM_REMARK,
+			</if>
+			<if test="menuId != null">
+				MENU_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="paramId != null">
+				BASE_PARAM_SEQ.nextval,
+			</if>
+			<if test="paramKey != null">
+				#{paramKey,jdbcType=VARCHAR},
+			</if>
+			<if test="paramValue != null">
+				#{paramValue,jdbcType=VARCHAR},
+			</if>
+			<if test="paramRemark != null">
+				#{paramRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="menuId != null">
+				#{menuId,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.base.admin.entity.Param">
+		update BASE_PARAM
+		<set>
+			<if test="paramKey != null">
+				PARAM_KEY = #{paramKey,jdbcType=VARCHAR},
+			</if>
+			<if test="paramValue != null">
+				PARAM_VALUE = #{paramValue,jdbcType=VARCHAR},
+			</if>
+			<if test="paramRemark != null">
+				PARAM_REMARK = #{paramRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="menuId != null">
+				MENU_ID = #{menuId,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where PARAM_ID = #{paramId,jdbcType=DECIMAL}
+	</update>
+</mapper>

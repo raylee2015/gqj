@@ -43,7 +43,9 @@
 	function initMenu() {
 		$('#menu').menu({
 			onClick : function(item) {
-				addTab(item.text, item.url);
+				if (item.menuLevel == 3) {
+					addTab(item.text, item.url);
+				}
 			}
 		});
 		querySelectedMenusForList();
@@ -63,21 +65,25 @@
 		for (var i = 0; i < rows.length; i++) {
 			var upMenuName = rows[i].UP_MENU_NAME;
 			var menuName = rows[i].MENU_NAME;
+			var menuLevel = rows[i].MENU_LEVEL;
 			var base =
 <%="'" + contextPath + "'"%>
 	;
 			var menuUrl = base + rows[i].MENU_URL;
-			if (typeof (upMenuName) == 'undefined') {
+			if (menuLevel == 0) {
+			} else if (menuLevel == 1) {
 				$('#menu').menu('appendItem', {
 					text : menuName,
-					url : menuUrl
+					url : menuUrl,
+					menuLevel : menuLevel
 				});
 			} else {
 				var item = $('#menu').menu('findItem', upMenuName); // 查找“打开”项
 				$('#menu').menu('appendItem', {
 					parent : item.target, // 设置父菜单元素
 					text : menuName,
-					url : menuUrl
+					url : menuUrl,
+					menuLevel : menuLevel
 				});
 			}
 		}

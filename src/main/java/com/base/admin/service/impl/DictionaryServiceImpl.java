@@ -19,18 +19,6 @@ public class DictionaryServiceImpl implements IDictionaryService {
 
 	@Autowired
 	private DictionaryMapper dictionaryMapper;
-
-	/*
-	 * (非 Javadoc) <p>Title: deleteByPrimaryKeys</p> <p>Description: </p>
-	 * 
-	 * @param dictionaryIds
-	 * 
-	 * @return
-	 * 
-	 * @see
-	 * com.base.admin.service.IDictionaryService#deleteByPrimaryKeys(java.lang.
-	 * String)
-	 */
 	@Override
 	public int deleteByPrimaryKeys(Dictionary dictionary) {
 		return dictionaryMapper.deleteByPrimaryKeys(dictionary);
