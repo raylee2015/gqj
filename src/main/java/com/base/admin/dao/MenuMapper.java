@@ -16,6 +16,8 @@ public interface MenuMapper {
 
 	List<Map<String, Object>> selectMenusForPage(Menu menu);
 
+	List<Map<String, Object>> selectMenusForList(Menu menu);
+
 	int selectCountOfMenusForPage(Menu menu);
 
 	int updataInnerData();

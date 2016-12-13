@@ -40,6 +40,11 @@ public class MenuServiceImpl implements IMenuService {
 	}
 
 	@Override
+	public List<Map<String, Object>> selectMenusForList(Menu menu) {
+		return menuMapper.selectMenusForList(menu);
+	}
+
+	@Override
 	public String selectMenusForTree(Menu menu) {
 		List<Map<Object, Object>> menus = menuMapper
 				.selectMenusForTree(menu);

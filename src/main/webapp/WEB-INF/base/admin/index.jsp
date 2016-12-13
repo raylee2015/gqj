@@ -41,25 +41,46 @@
 	});
 
 	function initMenu() {
-		// 追加一个顶部菜单
-		$('#menu').menu('appendItem', {
-			text : '打开',
-			minWidth : 206,
-			onclick : function() {
-				alert('提示：新菜单项！')
+		$('#menu').menu({
+			onClick : function(item) {
+				addTab(item.text, item.url);
 			}
 		});
+		querySelectedMenusForList();
+	}
 
-		// 追加一个子菜单项
-		var item = $('#menu').menu('findItem', '打开'); // 查找“打开”项
-		$('#menu').menu('appendItem', {
-			parent : item.target, // 设置父菜单元素
-			text : '打开Excel文档',
-			minWidth : 206,
-			onclick : function() {
-				alert('提示：打开Excel文档！')
+	//查询已选菜单权限
+	function querySelectedMenusForList() {
+		var params = {};
+		ajaxFunction(params, 'queryMenuList.do',
+				successFunctionForQuerySelectedMenus, errorFunctionForQuery,
+				false);
+	}
+
+	//成功查询已选菜单权限
+	function successFunctionForQuerySelectedMenus(result, haveTree) {
+		var rows = result.rows;
+		for (var i = 0; i < rows.length; i++) {
+			var upMenuName = rows[i].UP_MENU_NAME;
+			var menuName = rows[i].MENU_NAME;
+			var base =
+<%="'" + contextPath + "'"%>
+	;
+			var menuUrl = base + rows[i].MENU_URL;
+			if (typeof (upMenuName) == 'undefined') {
+				$('#menu').menu('appendItem', {
+					text : menuName,
+					url : menuUrl
+				});
+			} else {
+				var item = $('#menu').menu('findItem', upMenuName); // 查找“打开”项
+				$('#menu').menu('appendItem', {
+					parent : item.target, // 设置父菜单元素
+					text : menuName,
+					url : menuUrl
+				});
 			}
-		});
+		}
 	}
 </script>
 <style>

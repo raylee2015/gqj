@@ -14,12 +14,13 @@
 	</resultMap>
 	<sql id="Base_Column_List">
 		MENU_ID, UP_MENU_ID, MENU_NAME, MENU_LEVEL, MENU_URL,
-		MENU_SORT,MENU_EXT_CODE,MENU_LEVEL_NAME,MENU_INNER_CODE
+		MENU_SORT,MENU_EXT_CODE,MENU_LEVEL_NAME,MENU_INNER_CODE,UP_MENU_NAME
 	</sql>
 	<select id="selectMenusForTree" parameterType="com.base.admin.entity.Menu"
 		resultType="java.util.HashMap">
 		select menu_id as id
-		,menu_name as text,up_menu_id,menu_inner_code,view_menu_up_inner_code
+		,menu_name as
+		text,up_menu_id,menu_inner_code,view_menu_up_inner_code
 		from
 		VIEW_BASE_MENU
 		<where>
@@ -28,6 +29,13 @@
 			</if>
 		</where>
 		ORDER BY MENU_SORT,MENU_ID
+	</select>
+	<select id="selectMenusForList" parameterType="com.base.admin.entity.Menu"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_BASE_MENU
+		ORDER BY MENU_LEVEL
 	</select>
 	<select id="selectMenusForPage" parameterType="com.base.admin.entity.Menu"
 		resultType="java.util.HashMap">
