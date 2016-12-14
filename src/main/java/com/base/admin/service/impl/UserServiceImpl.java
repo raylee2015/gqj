@@ -49,8 +49,8 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public List<User> selectUsersForList(User user) {
-		return userMapper.selectUsersForList(user);
+	public User selectUsersForObject(User user) {
+		return userMapper.selectUsersForObject(user);
 	}
 
 	/*

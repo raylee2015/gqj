@@ -15,8 +15,8 @@
 		USER_ID, USER_NAME, USER_CODE, USER_DEPT_ID, USER_PHONE,
 		USER_SORT,USER_PASS_WORD,USER_LOCK_FLAG,USER_USE_FLAG
 	</sql>
-	<select id="selectUsersForList" parameterType="com.base.admin.entity.User"
-		resultType="com.base.admin.entity.User">
+	<select id="selectUsersForObject" parameterType="com.base.admin.entity.User"
+		resultMap="BaseResultMap">
 		select * from BASE_USER
 		<where>
 			<if test="userCode != null and userCode !=''">

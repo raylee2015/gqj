@@ -56,16 +56,22 @@ public class IndexController {
 		// 查询用户
 		String userCode = request.getParameter("userCode");
 		String userPassWord = request.getParameter("userPassWord");
-		userPassWord = BaseUtil.MD5(userPassWord).substring(0, 20);
-		User user = new User();
-		user.setUserCode(userCode);
-		user.setUserPassWord(userPassWord);
-		List<User> list = userService.selectUsersForList(user);
-		if (list.size() == 1) {
-			// 设置session
-			request.getSession().setAttribute("user", list.get(0));
-			// 跳转
-			return "/index";
+		if (userCode != null && !"".equals(userCode)
+				&& userPassWord != null && !"".equals(userPassWord)) {
+
+			userPassWord = BaseUtil.MD5(userPassWord).substring(0, 20);
+			User user = new User();
+			user.setUserCode(userCode);
+			user.setUserPassWord(userPassWord);
+			user = userService.selectUsersForObject(user);
+			if (user != null) {
+				// 设置session
+				request.getSession().setAttribute("user", user);
+				// 跳转
+				return "/index";
+			} else {
+				return "/login";
+			}
 		} else {
 			return "/login";
 		}

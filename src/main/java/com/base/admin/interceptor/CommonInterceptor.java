@@ -29,13 +29,12 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler)
-					throws Exception {
+			throws Exception {
 		// if ("GET".equalsIgnoreCase(request.getMethod())) {
 		// }
 		String requestUri = request.getRequestURI();
 		String contextPath = request.getContextPath();
 		String url = requestUri.substring(contextPath.length());
-		// return true;
 		if (url.indexOf("login.do") > 0) {
 			return true;
 		} else {
@@ -59,7 +58,6 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 	public void postHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		System.out.println("postHandle");
 	}
 
 	/**
@@ -70,8 +68,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public void afterCompletion(HttpServletRequest request,
 			HttpServletResponse response, Object handler, Exception ex)
-					throws Exception {
-		System.out.println("afterCompletion");
+			throws Exception {
 	}
 
 }

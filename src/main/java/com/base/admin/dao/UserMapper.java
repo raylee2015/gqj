@@ -10,7 +10,7 @@ public interface UserMapper {
 
 	List<Map<String, Object>> selectUsersForPage(User user);
 
-	List<User> selectUsersForList(User user);
+	User selectUsersForObject(User user);
 
 	int selectCountOfUsersForPage(User user);
 

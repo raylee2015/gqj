@@ -16,6 +16,5 @@ public interface IUserService {
 
 	int updateByPrimaryKeysSelective(User user);
 
-	List<User> selectUsersForList(User user);
-
+	User selectUsersForObject(User user);
 }
