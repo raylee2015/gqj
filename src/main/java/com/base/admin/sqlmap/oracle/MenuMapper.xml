@@ -35,7 +35,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from VIEW_BASE_MENU
-		ORDER BY MENU_LEVEL
+		ORDER BY MENU_LEVEL,MENU_SORT,MENU_ID
 	</select>
 	<select id="selectMenusForPage" parameterType="com.base.admin.entity.Menu"
 		resultType="java.util.HashMap">

@@ -38,6 +38,7 @@
 	//页面加载完
 	$(document).ready(function() {
 		initMenu();
+		closeCache();
 	});
 
 	function initMenu() {
