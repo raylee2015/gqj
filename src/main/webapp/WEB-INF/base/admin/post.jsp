@@ -136,11 +136,6 @@
 					checkbox : true,
 					checkOnSelect : true,
 					onClick : function(node) {
-						var selectedPost = $('#datagridOfPost').datagrid(
-								'getSelected');
-						if (selectedPost == null) {
-							alert('请选择岗位');
-						}
 						if (node.checked == true) {
 							$(this).tree('uncheck', node.target);
 						} else {
@@ -160,11 +155,6 @@
 					checkbox : true,
 					checkOnSelect : true,
 					onClick : function(node) {
-						var selectedPost = $('#datagridOfPost').datagrid(
-								'getSelected');
-						if (selectedPost == null) {
-							alert('请选择岗位');
-						}
 						if (node.checked == true) {
 							$(this).tree('uncheck', node.target);
 						} else {

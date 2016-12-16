@@ -30,12 +30,20 @@
 		</where>
 		ORDER BY MENU_SORT,MENU_ID
 	</select>
-	<select id="selectMenusForList" parameterType="com.base.admin.entity.Menu"
+	<select id="selectMenusForList" parameterType="com.base.admin.entity.User"
 		resultType="java.util.HashMap">
-		select
-		<include refid="Base_Column_List" />
-		from VIEW_BASE_MENU
-		ORDER BY MENU_LEVEL,MENU_SORT,MENU_ID
+		SELECT T.POST_ID,PU.USER_ID,M.* FROM BASE_POST_MENU T
+		LEFT JOIN
+		BASE_POST_USER PU ON PU.POST_ID=T.POST_ID
+		LEFT JOIN VIEW_BASE_MENU M ON
+		M.MENU_ID = T.MENU_ID
+		<where>
+			<if test="userId !=null">
+				PU.USER_ID=#{userId}
+			</if>
+		</where>
+		ORDER BY M.MENU_LEVEL,M.MENU_SORT,M.MENU_ID
+
 	</select>
 	<select id="selectMenusForPage" parameterType="com.base.admin.entity.Menu"
 		resultType="java.util.HashMap">

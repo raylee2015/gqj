@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.base.admin.entity.Menu;
+import com.base.admin.entity.User;
 
 public interface MenuMapper {
 	int deleteByPrimaryKeys(Menu menu);
@@ -16,7 +17,7 @@ public interface MenuMapper {
 
 	List<Map<String, Object>> selectMenusForPage(Menu menu);
 
-	List<Map<String, Object>> selectMenusForList(Menu menu);
+	List<Map<String, Object>> selectMenusForList(User user);
 
 	int selectCountOfMenusForPage(Menu menu);
 

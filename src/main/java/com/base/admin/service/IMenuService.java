@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.base.admin.entity.Menu;
+import com.base.admin.entity.User;
 
 public interface IMenuService {
 	int deleteByPrimaryKeys(Menu menu);
@@ -20,5 +21,5 @@ public interface IMenuService {
 
 	int updataInnerData();
 
-	List<Map<String, Object>> selectMenusForList(Menu menu);
+	List<Map<String, Object>> selectMenusForList(User user);
 }

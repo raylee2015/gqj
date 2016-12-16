@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.base.admin.dao.MenuMapper;
 import com.base.admin.entity.Menu;
+import com.base.admin.entity.User;
 import com.base.admin.service.IMenuService;
 import com.base.util.BaseUtil;
 
@@ -40,8 +41,8 @@ public class MenuServiceImpl implements IMenuService {
 	}
 
 	@Override
-	public List<Map<String, Object>> selectMenusForList(Menu menu) {
-		return menuMapper.selectMenusForList(menu);
+	public List<Map<String, Object>> selectMenusForList(User user) {
+		return menuMapper.selectMenusForList(user);
 	}
 
 	@Override

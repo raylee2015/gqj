@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.base.admin.entity.Menu;
 import com.base.admin.entity.User;
 import com.base.admin.service.IMenuService;
 import com.base.admin.service.IUserService;
@@ -40,8 +39,9 @@ public class IndexController {
 	@ResponseBody
 	public Map<String, Object> queryMenuList(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		User user = (User) request.getSession().getAttribute("user");
 		List<Map<String, Object>> depts = menuService
-				.selectMenusForList(new Menu());
+				.selectMenusForList(user);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", depts);
 		return map;
