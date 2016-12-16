@@ -1,7 +1,10 @@
+<%@page import="com.base.admin.entity.User"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
+	User user = (User) request.getSession().getAttribute("user");
+	String userName = user.getUserName();
 %>
 <!DOCTYPE html>
 <html>
@@ -95,13 +98,17 @@
 </head>
 <body id="layout" class="easyui-layout">
 	<div id="content" region="center" style="width: 100%; height: 100%;">
+		<form id="logoutForm" action="<%=contextPath%>/logout.do"
+			method="Post"></form>
 		<div id="tab" data-options="tools:'#tab-tools',toolPosition:'left'"
 			class="easyui-tabs" style="width: 100%; height: 100%;">
 			<div title="首页" style="width: 100%; height: 100%;">欢迎使用综合管理平台</div>
 		</div>
 		<div id="tab-tools">
 			<a href="#" class="easyui-menubutton"
-				data-options="menu:'#menu',iconCls:'icon-person'">XXX，欢迎使用综合管理平台</a>
+				data-options="menu:'#menu',iconCls:'icon-person'"><%=userName%>，欢迎使用综合管理平台</a>
+			<a href="#" class="easyui-linkbutton"
+				data-options="iconCls:'icon-control_power'" onClick="logout()">注销</a>
 			<div id="menu" class="easyui-menu" style="width: 206px;"></div>
 		</div>
 	</div>

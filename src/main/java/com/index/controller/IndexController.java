@@ -75,6 +75,12 @@ public class IndexController {
 		} else {
 			return "/login";
 		}
+	}
 
+	@RequestMapping("/logout.do")
+	public String logout(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		request.getSession().removeAttribute("user");
+		return "/login";
 	}
 }

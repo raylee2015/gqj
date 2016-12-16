@@ -58,6 +58,11 @@ function ajaxFunction(params, url, successFunction, errorFunction, haveTree) {
 	});
 }
 
+// 注销
+function logout() {
+	$('#logoutForm').submit();
+}
+
 // 保存成功后执行的方法
 function successFunctionForSave(result, haveTree) {
 	var title = '';

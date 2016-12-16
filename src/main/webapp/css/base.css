@@ -1,14 +1,22 @@
-.icon-arrow-left{
-	background:url('../img/arrow_left.png') no-repeat center center;
+.icon-arrow-left {
+	background: url('../img/arrow_left.png') no-repeat center center;
 }
-.icon-arrow-right{
-	background:url('../img/arrow_right.png') no-repeat center center;
+
+.icon-arrow-right {
+	background: url('../img/arrow_right.png') no-repeat center center;
 }
+
 .icon-person {
 	background: url('../img/../img/IconsExtension/03.png') no-repeat center
 		center;
 }
+
 .icon-medal-gold {
-	background: url('../img/../img/IconsExtension/medal_gold_3.png') no-repeat center
-		center;
+	background: url('../img/../img/IconsExtension/medal_gold_3.png')
+		no-repeat center center;
+}
+
+.icon-control_power {
+	background: url('../img/IconsExtension/control_power.png') no-repeat
+		center center;
 }
