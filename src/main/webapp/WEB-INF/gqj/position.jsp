@@ -165,6 +165,7 @@
 						class="easyui-linkbutton" iconCls="icon-search"
 						onclick="queryForPage('')">查询</a>
 				</div>
+
 			</div>
 		</div>
 	</div>

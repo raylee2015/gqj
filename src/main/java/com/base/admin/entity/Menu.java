@@ -1,5 +1,7 @@
 package com.base.admin.entity;
 
+import com.base.entity.Base;
+
 public class Menu extends Base {
 	private String menuExtCode;
 

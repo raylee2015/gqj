@@ -209,7 +209,7 @@ public class PostController {
 	 */
 	@RequestMapping("/queryDeptTree.do")
 	@ResponseBody
-	public void queryPostTree(HttpServletRequest request,
+	public void queryDeptTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		response.getWriter().print(deptService.selectDeptsForTree());
 		response.getWriter().flush();

@@ -43,7 +43,7 @@ public class PostUserController {
 	@ResponseBody
 	public Map<String, Object> addUsersToPost(
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
 		String userIds = request.getParameter("USER_IDS");
 		String postId = request.getParameter("POST_ID");
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -75,7 +75,7 @@ public class PostUserController {
 	@ResponseBody
 	public Map<String, Object> delUsersToPost(
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
 		String userIds = request.getParameter("USER_IDS");
 		String postId = request.getParameter("POST_ID");
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -146,7 +146,8 @@ public class PostUserController {
 	@ResponseBody
 	public Map<String, Object> querySelectedUsersForPage(
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
+		String keyWord = request.getParameter("KEY_WORD");
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String postId = request.getParameter("POST_ID");
@@ -154,6 +155,7 @@ public class PostUserController {
 		postUser.setCurrPage(Integer.parseInt(page));
 		postUser.setPageSize(Integer.parseInt(rows));
 		postUser.setPostId(BaseUtil.strToLong(postId));
+		postUser.setKeyWord(keyWord);
 		return postUserService.querySelectedUsersForPage(postUser);
 	}
 
@@ -169,7 +171,8 @@ public class PostUserController {
 	@ResponseBody
 	public Map<String, Object> queryUnSelectedUsersForPage(
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
+		String keyWord = request.getParameter("KEY_WORD");
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String postId = request.getParameter("POST_ID");
@@ -177,6 +180,7 @@ public class PostUserController {
 		postUser.setCurrPage(Integer.parseInt(page));
 		postUser.setPageSize(Integer.parseInt(rows));
 		postUser.setPostId(BaseUtil.strToLong(postId));
+		postUser.setKeyWord(keyWord);
 		return postUserService.queryUnSelectedUsersForPage(postUser);
 	}
 

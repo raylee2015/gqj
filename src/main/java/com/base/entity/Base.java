@@ -1,4 +1,4 @@
-package com.base.admin.entity;
+package com.base.entity;
 
 /**
  * 1.主要用来分页用的，因为在oracle里面分页的优化而设置<br>

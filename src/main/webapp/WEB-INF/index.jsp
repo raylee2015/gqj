@@ -24,6 +24,19 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
+	//刷新当前标签Tabs
+	function refreshTab(currentTab) {
+		var content = $(currentTab.panel('options')).attr('content');
+		$('#tab').tabs('update', {
+			tab : currentTab,
+			options : {
+				content : content
+			}
+		});
+		currentTab.panel('refresh');
+	}
+
+	//添加tab页面
 	function addTab(title, url) {
 		if ($('#tab').tabs('exists', title)) {
 			$('#tab').tabs('select', title);
@@ -42,8 +55,22 @@
 	$(document).ready(function() {
 		initMenu();
 		closeCache();
+		initTabs();
 	});
 
+	//初始tab页面
+	function initTabs() {
+		$('#tab').tabs({
+			onSelect : function(title) {
+				if ($('#tab').tabs('exists', title)) {
+					//当选中的时候刷新
+					refreshTab($('#tab').tabs('getSelected'));
+				}
+			}
+		});
+	}
+
+	//初始化菜单
 	function initMenu() {
 		$('#menu').menu({
 			onClick : function(item) {

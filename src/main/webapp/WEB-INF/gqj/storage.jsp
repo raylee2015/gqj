@@ -31,80 +31,57 @@
 
 	//打开编辑窗口
 	function openAddUI() {
-		openAddDataUI2(true);
-		setTextBoxValue('deptIdTextBox', -1);
-		url = 'addNewDept.do';
+		openAddDataUI1();
+		setTextBoxValue('storageIdTextBox', -1);
+		url = 'addNewStorage.do';
 	}
 
 	//打开编辑窗口
 	function openEditUI(opType, rowIndex) {
 		var rowData = $('#datagrid').datagrid('getData').rows[rowIndex];
-		openEditDataUI2(rowData, true, 'UP_DEPT_ID', 'UP_DEPT_NAME');
-		url = 'updateDept.do';
+		openEditDataUI1(rowData);
+		url = 'updateStorage.do';
 	}
 
 	//删除
-	function delDepts() {
-		var ids = getIdsOfSelectedItems('DEPT_INNER_CODE', '请先更新级联数据');
+	function delStorages() {
+		var ids = getIdsOfSelectedItems('STORE_ID', '数据出现问题，请联系系统管理员');
 		var params = {
-			DEPT_IDS : ids
+			STORE_IDS : ids
 		};
-		del(params, "请选择部门", '是否删除所选部门及其下属部门?', 'delDepts.do', true);
-	}
-
-	//更新级联数据
-	function updateInnerData() {
-		var params = {};
-		shwoConfirm(params, '是否更新级联数据?', 'updateInnerData.do', true);
+		del(params, "请选择仓库", '是否删除所选仓库?', 'delStorages.do', true);
 	}
 
 	// 保存数据
-	function saveDept() {
+	function saveStorage() {
 		var params = {
-			DEPT_ID : getTextBoxValue('deptIdTextBox'),
-			DEPT_NAME : getTextBoxValue('deptNameTextBox'),
-			DEPT_SORT : getTextBoxValue('deptSortTextBox'),
-			UP_DEPT_ID : getComboTreeValue('comboTree')
+			STORE_ID : getTextBoxValue('storageIdTextBox'),
+			STORE_NAME : getTextBoxValue('storageNameTextBox'),
 		};
 		save1(params, url, true);
 	}
 
 	//查询
-	function queryForPage(deptInnerCode) {
+	function queryForPage() {
 		var params = {
-			deptInnerCode : deptInnerCode,
 			keyWord : $('#keyWordTextInput').textbox('getValue'),
 			page : 1,
 			rows : $('#datagrid').datagrid('getPager').data("pagination").options.pageSize
 		};
-		query(params, 'queryDeptPage.do');
+		query(params, 'queryStoragePage.do');
 	}
 
 	//页面加载完
 	$(document).ready(function() {
 		initDocument();
 		initDataGrid();
-		initTree();
 	});
-
-	//初始化树
-	function initTree() {
-		$('#tree').tree({
-			url : 'queryDeptTree.do',
-			onClick : function(node) {
-				queryForPage(node.dept_inner_code); // 在用户点击的时候提示
-			},
-			onLoadError : function(arguments) {
-				eval(errorCodeForQuery);
-			}
-		});
-	}
 
 	//初始化列表元素
 	function initDataGrid() {
 		$('#datagrid').datagrid({
-			url : 'queryDeptPage.do',
-			idField : 'DEPT_ID',
+			url : 'queryStoragePage.do',
+			idField : 'STORE_ID',
 			columns : [ [ {
 				field : 'ck',
 				checkbox : true
@@ -113,20 +90,8 @@
 				title : '操作',
 				formatter : editColumnFormatter
 			}, {
-				field : 'DEPT_NAME',
-				title : '部门名称',
-				width : 100,
-			}, {
-				field : 'UP_DEPT_NAME',
-				title : '上级部门',
-				width : 100,
-			}, {
-				field : 'DEPT_INNER_NAME',
-				title : '部门级联',
-				width : 250,
-			}, {
-				field : 'DEPT_SORT',
-				title : '排序号',
+				field : 'STORE_NAME',
+				title : '仓库名称',
 				width : 100,
 			} ] ],
 			onLoadError : function() {
@@ -139,10 +104,6 @@
 <body>
 	<!-- 列表页面 -->
 	<div class="easyui-layout" data-options="fit:true">
-		<div region="west" collapsible="false" style="width: 200px;">
-			<ul id="tree" class="easyui-tree" method="get" animate="true"
-				lines="true"></ul>
-		</div>
 		<div region="center">
 			<table id="datagrid" class="easyui-datagrid" rownumbers="true"
 				toolbar="#toolbar" pagination="true" pageSize="30" pageNumber="1"
@@ -154,50 +115,38 @@
 						plain="true" onclick="refresh()">刷新</a> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-add" plain="true"
 						onclick="openAddUI()">添加</a> <a href="#" class="easyui-linkbutton"
-						iconCls="icon-remove" plain="true" onclick="delDepts()">删除</a> <a
-						href="#" class="easyui-linkbutton" iconCls="icon-reload"
-						plain="true" onclick="updateInnerData()">更新级联数据</a>
+						iconCls="icon-remove" plain="true" onclick="delStorages()">删除</a>
 				</div>
 				<div>
 					<input id="keyWordTextInput" class="easyui-textbox"
-						data-options="prompt:'部门名称',validType:'length[0,50]'"
+						data-options="prompt:'仓库名称',validType:'length[0,50]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
-						onclick="queryForPage('')">查询</a>
+						onclick="queryForPage()">查询</a>
 				</div>
+
 			</div>
 		</div>
 	</div>
 
 	<!--  详细界面 -->
-	<div id="editUI" class="easyui-window" title="添加部门" closed="true"
+	<div id="editUI" class="easyui-window" title="添加仓库" closed="true"
 		data-options="iconCls:'icon-save'"
 		style="width: 400px; height: 190px; padding: 5px;">
 		<div class="easyui-layout" data-options="fit:true">
 			<div region="north" fit="true" border="false">
 				<form id="form" method="post" style="width: 100%;">
 					<div style="display: none">
-						<input id="deptIdTextBox" name="DEPT_ID" class="easyui-textbox" />
+						<input id="storageIdTextBox" name="STORE_ID"
+							class="easyui-textbox" />
 					</div>
 					<table width="100%">
 						<tr>
-							<td width="22%">上级部门:</td>
-							<td><input id="comboTree" name="UP_DEPT_ID"
-								class="easyui-combotree" data-options="required:true"
-								style="width: 100%; height: 32px"></td>
-						</tr>
-						<tr>
-							<td width="22%">部门名称:</td>
-							<td><input id="deptNameTextBox" name="DEPT_NAME"
+							<td width="22%">仓库名称:</td>
+							<td><input id="storageNameTextBox" name="STORE_NAME"
 								class="easyui-textbox"
-								data-options="prompt:'部门名称',required:true,validType:'length[3,10]'"
+								data-options="prompt:'仓库名称',required:true,validType:'length[3,10]'"
 								style="width: 100%; height: 32px" /></td>
-						</tr>
-						<tr>
-							<td width="22%">排序号:</td>
-							<td><input id="deptSortTextBox" name="DEPT_SORT" type="text"
-								class="easyui-numberbox" style="width: 100%; height: 32px"
-								data-options="min:0,max:99,precision:0,prompt:'排序号',required:true,validType:'length[0,2]'" /></td>
 						</tr>
 					</table>
 				</form>
@@ -205,7 +154,7 @@
 			<div region="south" border="false"
 				style="text-align: right; height: 30px">
 				<a class="easyui-linkbutton" iconCls="icon-ok"
-					href="javascript:void(0)" onclick="saveDept()">保存</a> <a
+					href="javascript:void(0)" onclick="saveStorage()">保存</a> <a
 					class="easyui-linkbutton" iconCls="icon-cancel"
 					href="javascript:void(0)" onclick="closeEditUI()">关闭</a>
 			</div>

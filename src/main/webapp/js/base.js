@@ -106,16 +106,16 @@ function closeCache() {
 
 // 初始化
 function initDocument() {
-	registerKeyPressForTextInput();
+	registerKeyPressForTextInput('keyWordTextInput', queryForPage);
 	closeCache();
 }
 
 // 注册按下回车的事件
-function registerKeyPressForTextInput() {
-	var keyWordTextInput = $('#keyWordTextInput');
+function registerKeyPressForTextInput(textInputId, searchFunction) {
+	var keyWordTextInput = eval('$(\'#' + textInputId + '\')');
 	keyWordTextInput.textbox('textbox').bind('keypress', function(e) {
 		if (e.keyCode == 13) {
-			queryForPage();
+			searchFunction();
 		}
 	});
 }

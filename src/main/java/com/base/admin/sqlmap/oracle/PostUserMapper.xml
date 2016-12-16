@@ -17,6 +17,10 @@
 			<if test="postId != null and postId != ''">
 				AND POST_ID = #{postId}
 			</if>
+			<if test="keyWord != null and keyWord != ''">
+				AND (U.USER_NAME LIKE '%${keyWord}%' or U.USER_DEPT_NAME
+				LIKE '%${keyWord}%')
+			</if>
 		</where>
 		ORDER BY U.USER_ID
 		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
@@ -28,12 +32,16 @@
 		SELECT count(1) FROM BASE_POST_USER PU
 		LEFT
 		JOIN
-		BASE_USER U
+		VIEW_BASE_USER U
 		ON U.USER_ID
 		= PU.USER_ID
 		<where>
 			<if test="postId != null and postId != ''">
 				AND POST_ID = #{postId}
+			</if>
+			<if test="keyWord != null and keyWord != ''">
+				AND (U.USER_NAME LIKE '%${keyWord}%' or U.USER_DEPT_NAME
+				LIKE '%${keyWord}%')
 			</if>
 		</where>
 	</select>
@@ -56,6 +64,10 @@
 			</if>
 		</where>
 		)
+		<if test="keyWord != null and keyWord != ''">
+			AND (U.USER_NAME LIKE '%${keyWord}%' or U.USER_DEPT_NAME
+			LIKE '%${keyWord}%')
+		</if>
 		ORDER BY U.USER_ID
 		) A WHERE
 		ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
@@ -80,6 +92,10 @@
 			</if>
 		</where>
 		)
+		<if test="keyWord != null and keyWord != ''">
+			AND (U.USER_NAME LIKE '%${keyWord}%' or U.USER_DEPT_NAME
+			LIKE '%${keyWord}%')
+		</if>
 	</select>
 	<delete id="deleteByPrimaryKeys" parameterType="com.base.admin.entity.PostUser">
 		delete from
@@ -89,8 +105,10 @@
 		#{postId,jdbcType=DECIMAL}
 	</delete>
 	<insert id="insert" parameterType="com.base.admin.entity.PostUser">
-		insert into BASE_POST_USER(USER_ID, POST_ID)
-		SELECT USER_ID ,#{postId,jdbcType=DECIMAL} FROM
+		insert into
+		BASE_POST_USER(USER_ID, POST_ID)
+		SELECT USER_ID
+		,#{postId,jdbcType=DECIMAL} FROM
 		BASE_USER WHERE
 		USER_ID IN (${ids})
 	</insert>

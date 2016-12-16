@@ -78,15 +78,22 @@
 	}
 
 	//页面加载完
-	$(document).ready(function() {
-		initDocument();
-		initDataGrid();
-		initTree();
-		initDataGridOfSelectedUsers();
-		initDataGridOfUnSelectedUsers();
-		initUnSelectedMenuTree();
-		initSelectedMenuTree();
-	});
+	$(document).ready(
+			function() {
+				initDocument();
+				initDataGrid();
+				initTree();
+				initDataGridOfSelectedUsers();
+				initDataGridOfUnSelectedUsers();
+				initUnSelectedMenuTree();
+				initSelectedMenuTree();
+				registerKeyPressForTextInput(
+						'keyWordForSelectedUsersTextInput',
+						querySelectedUsersForPage);
+				registerKeyPressForTextInput(
+						'keyWordForUnSelectedUsersTextInput',
+						queryUnSelectedUsersForPage);
+			});
 
 	//初始化岗位列表
 	function initDataGridOfUnSelectedUsers() {
@@ -130,41 +137,39 @@
 
 	//初始化待选择菜单权限树
 	function initUnSelectedMenuTree() {
-		$('#treeOfUnSelectedMenus').tree(
-				{
-					url : 'queryUnSelectedMenusForTree.do',
-					checkbox : true,
-					checkOnSelect : true,
-					onClick : function(node) {
-						if (node.checked == true) {
-							$(this).tree('uncheck', node.target);
-						} else {
-							$(this).tree('check', node.target);
-						}
-					},
-					onLoadError : function(arguments) {
-						eval(errorCodeForQuery);
-					}
-				});
+		$('#treeOfUnSelectedMenus').tree({
+			url : 'queryUnSelectedMenusForTree.do',
+			checkbox : true,
+			checkOnSelect : true,
+			onClick : function(node) {
+				if (node.checked == true) {
+					$(this).tree('uncheck', node.target);
+				} else {
+					$(this).tree('check', node.target);
+				}
+			},
+			onLoadError : function(arguments) {
+				eval(errorCodeForQuery);
+			}
+		});
 	}
 
 	//初始化已选择菜单权限树
 	function initSelectedMenuTree() {
-		$('#treeOfSelectedMenus').tree(
-				{
-					checkbox : true,
-					checkOnSelect : true,
-					onClick : function(node) {
-						if (node.checked == true) {
-							$(this).tree('uncheck', node.target);
-						} else {
-							$(this).tree('check', node.target);
-						}
-					},
-					onLoadError : function(arguments) {
-						eval(errorCodeForQuery);
-					}
-				});
+		$('#treeOfSelectedMenus').tree({
+			checkbox : true,
+			checkOnSelect : true,
+			onClick : function(node) {
+				if (node.checked == true) {
+					$(this).tree('uncheck', node.target);
+				} else {
+					$(this).tree('check', node.target);
+				}
+			},
+			onLoadError : function(arguments) {
+				eval(errorCodeForQuery);
+			}
+		});
 	}
 
 	//初始化树
@@ -243,7 +248,7 @@
 	function openChooseUserUI(opType, rowIndex) {
 		var rowData = $('#datagrid').datagrid('getData').rows[rowIndex];
 		var postId = rowData.POST_ID;
-		selectedPost=rowData;
+		selectedPost = rowData;
 		querySelectedUsersForPage(postId);
 		queryUnSelectedUsersForPage(postId);
 		$('#chooseUserUI').window('open');
@@ -251,7 +256,11 @@
 
 	//查询待选人员
 	function queryUnSelectedUsersForPage(postId) {
+		if (postId == '' || postId == null) {
+			postId = selectedPost.POST_ID;
+		}
 		var params = {
+			KEY_WORD : getTextBoxValue('keyWordForUnSelectedUsersTextInput'),
 			POST_ID : postId,
 			page : 1,
 			rows : $('#datagridOfUnSelectedUsers').datagrid('getPager').data(
@@ -271,7 +280,11 @@
 
 	//查询已选人员
 	function querySelectedUsersForPage(postId) {
+		if (postId == '' || postId == null) {
+			postId = selectedPost.POST_ID;
+		}
 		var params = {
+			KEY_WORD : getTextBoxValue('keyWordForSelectedUsersTextInput'),
 			POST_ID : postId,
 			page : 1,
 			rows : $('#datagridOfSelectedUsers').datagrid('getPager').data(
@@ -500,7 +513,7 @@
 							<td width="25%">岗位名称:</td>
 							<td><input id="postNameTextBox" name="POST_NAME"
 								class="easyui-textbox"
-								data-options="prompt:'岗位名称',required:true,validType:'length[0,10]'"
+								data-options="prompt:'岗位名称',required:true,validType:'length[0,20]'"
 								style="width: 100%; height: 32px" /></td>
 						</tr>
 						<tr>
@@ -536,9 +549,19 @@
 			<div region="west" title="待选人员" collapsible="false"
 				style="width: 45%; height: 100%;">
 				<table id="datagridOfUnSelectedUsers" class="easyui-datagrid"
-					pagination="true" pageSize="30" pageNumber="1" method="get"
-					fit="true">
+					toolbar="#toolbarForUnSelectedUsers" pagination="true"
+					pageSize="30" pageNumber="1" method="get" fit="true">
 				</table>
+				<div id="toolbarForUnSelectedUsers">
+					<div>
+						<input id="keyWordForUnSelectedUsersTextInput"
+							class="easyui-textbox"
+							data-options="prompt:'待选人员名称|部门名称',validType:'length[0,50]'"
+							style="width: 200px"> <a href="#"
+							class="easyui-linkbutton" iconCls="icon-search"
+							onclick="queryUnSelectedUsersForPage('')">查询</a>
+					</div>
+				</div>
 			</div>
 			<div region="center" style="width: 10%; height: 100%;">
 				<a href="#" class="easyui-linkbutton"
@@ -551,9 +574,20 @@
 			<div region="east" collapsible="false" title="已选人员"
 				style="width: 45%; height: 100%;">
 				<table id="datagridOfSelectedUsers" class="easyui-datagrid"
-					checkOnSelect="true" pagination="true" pageSize="30" pageNumber="1"
-					method="get" fit="true">
+					toolbar="#toolbarForSelectedUsers" checkOnSelect="true"
+					pagination="true" pageSize="30" pageNumber="1" method="get"
+					fit="true">
 				</table>
+				<div id="toolbarForSelectedUsers">
+					<div>
+						<input id="keyWordForSelectedUsersTextInput"
+							class="easyui-textbox"
+							data-options="prompt:'已选人员名称|部门名称',validType:'length[0,50]'"
+							style="width: 200px"> <a href="#"
+							class="easyui-linkbutton" iconCls="icon-search"
+							onclick="querySelectedUsersForPage('')">查询</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

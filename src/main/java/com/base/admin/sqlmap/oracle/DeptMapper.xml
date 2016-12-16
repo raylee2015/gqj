@@ -48,10 +48,10 @@
 		<if test="upDeptId != null">
 			and UP_DEPT_ID = #{upDeptId}
 		</if>
-		<if test="deptInnerCode != null and deptInnerCode!=''">
+		<if test="deptInnerCode != null and deptInnerCode != ''">
 			and DEPT_ID IN (${deptInnerCode})
 		</if>
-		<if test="keyWord != null">
+		<if test="keyWord != null and keyWord != ''">
 			AND DEPT_NAME like '%${keyWord}%'
 		</if>
 		order by DEPT_SORT,dept_id
@@ -66,10 +66,10 @@
 		<if test="upDeptId != null">
 			and UP_DEPT_ID = #{upDeptId}
 		</if>
-		<if test="deptInnerCode != null and deptInnerCode!=''">
+		<if test="deptInnerCode != null and deptInnerCode != ''">
 			and DEPT_ID IN (${deptInnerCode})
 		</if>
-		<if test="keyWord != null">
+		<if test="keyWord != null and keyWord != ''">
 			AND DEPT_NAME like '%${keyWord}%'
 		</if>
 	</select>

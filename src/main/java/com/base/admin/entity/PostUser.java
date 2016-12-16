@@ -1,5 +1,7 @@
 package com.base.admin.entity;
 
+import com.base.entity.Base;
+
 public class PostUser extends Base {
 	private Long userId;
 

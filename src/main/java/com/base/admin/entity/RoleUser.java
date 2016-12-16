@@ -1,4 +1,7 @@
 package com.base.admin.entity;
+
+import com.base.entity.Base;
+
 @Deprecated
 public class RoleUser extends Base{
     private Long roleId;

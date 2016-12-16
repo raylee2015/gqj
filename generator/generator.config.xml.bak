@@ -19,23 +19,23 @@
 			<property name="forceBigDecimals" value="false" />
 		</javaTypeResolver>
 		<!--生成Model类存放位置 -->
-		<javaModelGenerator targetPackage="com.base.admin.entity"
+		<javaModelGenerator targetPackage="com.gqj.entity"
 			targetProject="../src/main/java">
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
 		<!--生成映射文件存放位置 -->
-		<sqlMapGenerator targetPackage="com.base.admin.sqlmap.oracle"
+		<sqlMapGenerator targetPackage="com.gqj.sqlmap.oracle"
 			targetProject="../src/main/java">
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
 		<!--生成Dao类存放位置 -->
 		<javaClientGenerator type="XMLMAPPER"
-			targetPackage="com.base.admin.dao" targetProject="../src/main/java">
+			targetPackage="com.gqj.dao" targetProject="../src/main/java">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
 		<!--生成对应表及类名 -->
-		<table tableName="BASE_POST_USER" domainObjectName="PostUser"
+		<table tableName="GQJ_STORAGE" domainObjectName="Storage"
 		enableSelectByExample="false"
 		enableDeleteByExample="false"
 enableCountByExample="false" enableUpdateByExample="false"
