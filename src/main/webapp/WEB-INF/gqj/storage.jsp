@@ -124,7 +124,6 @@
 						class="easyui-linkbutton" iconCls="icon-search"
 						onclick="queryForPage()">查询</a>
 				</div>
-
 			</div>
 		</div>
 	</div>
@@ -132,7 +131,7 @@
 	<!--  详细界面 -->
 	<div id="editUI" class="easyui-window" title="添加仓库" closed="true"
 		data-options="iconCls:'icon-save'"
-		style="width: 400px; height: 190px; padding: 5px;">
+		style="width: 400px; height: 120px; padding: 5px;">
 		<div class="easyui-layout" data-options="fit:true">
 			<div region="north" fit="true" border="false">
 				<form id="form" method="post" style="width: 100%;">

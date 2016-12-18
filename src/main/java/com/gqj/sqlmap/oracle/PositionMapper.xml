@@ -8,14 +8,14 @@
 		<result column="POS_DEPT_ID" jdbcType="DECIMAL" property="posDeptId" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		POS_ID, POS_ID, POS_NAME, POS_DEPT_ID
+		POS_ID, STORE_ID, POS_NAME, POS_DEPT_ID,STORE_NAME
 	</sql>
-	<select id="selectPostsForPage" parameterType="com.gqj.entity.Position"
+	<select id="selectPositionsForPage" parameterType="com.gqj.entity.Position"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select
 		<include refid="Base_Column_List" />
-		from GQJ_POSITION
+		from VIEW_GQJ_POSITION
 		<where>
 			<if test="posDeptId != null">
 				and POS_DEPT_ID = #{posDeptId}
@@ -32,9 +32,9 @@
 		) WHERE num<![CDATA[>=]]>
 		(1+(${currPage}-1)*${pageSize})
 	</select>
-	<select id="selectCountOfPostsForPage" parameterType="com.gqj.entity.Position"
+	<select id="selectCountOfPositionsForPage" parameterType="com.gqj.entity.Position"
 		resultType="java.lang.Integer">
-		select count(t.POS_ID) from GQJ_POSITION t
+		select count(t.POS_ID) from VIEW_GQJ_POSITION t
 		<where>
 			<if test="posDeptId != null">
 				and POS_DEPT_ID = #{posDeptId}
@@ -70,7 +70,7 @@
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="posId != null">
-				#{posId,jdbcType=DECIMAL},
+				GQJ_POSITION_SEQ.nextval,
 			</if>
 			<if test="storeId != null">
 				#{storeId,jdbcType=DECIMAL},

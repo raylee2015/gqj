@@ -133,7 +133,7 @@
 		</div>
 		<div id="tab-tools">
 			<a href="#" class="easyui-menubutton"
-				data-options="menu:'#menu',iconCls:'icon-person'"><%=userName%>，欢迎使用综合管理平台</a>
+				data-options="menu:'#menu',iconCls:'icon-person'"><b><%=userName%></b>，欢迎使用综合管理平台</a>
 			<a href="#" class="easyui-linkbutton"
 				data-options="iconCls:'icon-control_power'" onClick="logout()">注销</a>
 			<div id="menu" class="easyui-menu" style="width: 206px;"></div>

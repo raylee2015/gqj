@@ -1,17 +1,18 @@
 package com.gqj.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.gqj.entity.Position;
 
 public interface PositionMapper {
-    int deleteByPrimaryKey(Long posId);
+	int deleteByPrimaryKeys(Position position);
 
-    int insert(Position record);
+	List<Map<String, Object>> selectPositionsForPage(Position position);
 
-    int insertSelective(Position record);
+	int selectCountOfPositionsForPage(Position position);
 
-    Position selectByPrimaryKey(Long posId);
+	int insertSelective(Position position);
 
-    int updateByPrimaryKeySelective(Position record);
-
-    int updateByPrimaryKey(Position record);
+	int updateByPrimaryKeySelective(Position position);
 }
