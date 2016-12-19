@@ -10,6 +10,8 @@ public interface PositionMapper {
 
 	List<Map<String, Object>> selectPositionsForPage(Position position);
 
+	Map<String, Object> selectPositionsForObject(Position position);
+
 	int selectCountOfPositionsForPage(Position position);
 
 	int insertSelective(Position position);

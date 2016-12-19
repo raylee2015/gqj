@@ -13,4 +13,6 @@ public interface IPositionService {
 
 	Map<String, Object> selectPositionsForPage(Position position);
 
+	Map<String, Object> selectPositionsForObject(Position position);
+
 }

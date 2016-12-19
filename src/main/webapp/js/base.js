@@ -6,8 +6,8 @@ var errorCodeForOption = 'alert(\'数据操作发生错误，请联系系统管�
 
 // 重写操作列，使得操作栏显示编辑连接
 function editColumnFormatter(fieldValue, rowData, rowIndex) {
-	var btn = '<a class="easyui-linkbutton"  onclick="openEditUI(\'edit\',\''
-			+ rowIndex + '\')" href="javascript:void(0)">编辑</a>';
+	var btn = '<a class="easyui-linkbutton"  onclick="openEditUI(\'' + rowIndex
+			+ '\')" href="javascript:void(0)">编辑</a>';
 	return btn;
 }
 
@@ -224,7 +224,14 @@ function query(params, url) {
 
 // 当查询成功时需要执行的代码
 function successFunctionForQuery(result, haveTree) {
-	$('#datagrid').datagrid('loadData', result);
+	// $('#datagrid').datagrid('loadData', result);
+	dataGridLoadData('datagrid', result)
+}
+
+// 为表格设置数据
+function dataGridLoadData(dataGridId, result) {
+	var dataGrid = eval('$(\'#' + dataGridId + '\')');
+	dataGrid.datagrid('loadData', result);
 }
 
 // 打开编辑窗口
@@ -259,4 +266,48 @@ function openEditDataUI2(rowData, haveTree, columnNameOfcomboTreeValue,
 	}
 	$('#form').form('load', rowData);
 	$('#editUI').window('open');
+}
+
+/**
+ * 创建一个模态 Dialog
+ * 
+ * @param id
+ *            divId
+ * @param _url
+ *            Div链接
+ * @param _title
+ *            标题
+ * @param _width
+ *            宽度
+ * @param _height
+ *            高度
+ * @param _icon
+ *            ICON图标
+ */
+function createModalDialog(id, _url, _title, _width, _height, _icon) {
+	$("body").append("<div id='" + id + "' class='easyui-window'></div>");
+	if (_width == null)
+		_width = 800;
+	if (_height == null)
+		_height = 500;
+	var content = '<iframe scrolling="auto" frameborder="0"  src="' + _url
+			+ '" style="width:100%;height:100%;"></iframe>';
+	$("#" + id).dialog({
+		title : _title,
+		width : _width,
+		height : _height,
+		cache : false,
+		iconCls : _icon,
+		content : content,
+		shadow : false,
+		collapsible : false,
+		minimizable : false,
+		maximizable : false,
+		resizable : false,
+		modal : true,
+		closed : true,
+		onClose : function() {
+			$(this).dialog('destroy');
+		}
+	});
 }

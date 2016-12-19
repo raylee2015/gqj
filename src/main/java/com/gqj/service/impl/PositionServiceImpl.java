@@ -45,4 +45,10 @@ public class PositionServiceImpl implements IPositionService {
 		return positionMapper.updateByPrimaryKeySelective(position);
 	}
 
+	@Override
+	public Map<String, Object> selectPositionsForObject(
+			Position position) {
+		return positionMapper.selectPositionsForObject(position);
+	}
+
 }

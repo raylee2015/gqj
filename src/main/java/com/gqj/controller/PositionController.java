@@ -45,7 +45,7 @@ public class PositionController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> addNewPosition(
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
 		String posName = request.getParameter("POS_NAME");
 		String storeId = request.getParameter("STORE_ID");
 		long posDeptId = getSessionUser(request, response)
@@ -106,7 +106,7 @@ public class PositionController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> queryPositionPage(
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		long posDeptId = getSessionUser(request, response)
@@ -132,7 +132,7 @@ public class PositionController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> queryStoragePage(
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		long storeDeptId = getSessionUser(request, response)
@@ -147,13 +147,43 @@ public class PositionController extends BaseController {
 	}
 
 	/**
+	 * 根据条件查询仓位列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryPositionObject.do")
+	@ResponseBody
+	public Map<String, Object> queryPositionObject(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String posId = request.getParameter("POS_ID");
+		Position position = new Position();
+		position.setPosId(BaseUtil.strToLong(posId));
+		return positionService.selectPositionsForObject(position);
+	}
+
+	/**
 	 * 跳转到仓位管理首页
 	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
-		return new ModelAndView("/gqj/position");
+		return new ModelAndView("/gqj/position/index");
+	}
+
+	/**
+	 * 跳转到仓位管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
+	public ModelAndView openEditUI(HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView("/gqj/position/editUI");
 	}
 
 	/**
@@ -168,7 +198,7 @@ public class PositionController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> updatePosition(
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
 		String posId = request.getParameter("POS_ID");
 		String posName = request.getParameter("POS_NAME");
 		String storeId = request.getParameter("STORE_ID");
