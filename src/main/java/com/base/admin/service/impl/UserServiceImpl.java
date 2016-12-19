@@ -1,5 +1,6 @@
 package com.base.admin.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,90 +17,40 @@ public class UserServiceImpl implements IUserService {
 	@Autowired
 	private UserMapper userMapper;
 
-	/*
-	 * (非 Javadoc) <p>Title: deleteByPrimaryKeys</p> <p>Description: </p>
-	 * 
-	 * @param userIds
-	 * 
-	 * @return
-	 * 
-	 * @see
-	 * com.base.admin.service.IUserService#deleteByPrimaryKeys(java.lang.String[
-	 * ])
-	 */
 	@Override
 	public int deleteByPrimaryKeys(String[] userIds) {
 		return userMapper.deleteByPrimaryKeys(userIds);
 	}
 
-	/*
-	 * (非 Javadoc) <p>Title: selectUsersForPage</p> <p>Description: </p>
-	 * 
-	 * @param user
-	 * 
-	 * @return
-	 * 
-	 * @see
-	 * com.base.admin.service.IUserService#selectUsersForPage(com.base.admin.
-	 * entity.User)
-	 */
 	@Override
-	public List<Map<String, Object>> selectUsersForPage(User user) {
-		return userMapper.selectUsersForPage(user);
+	public Map<String, Object> queryUsersForPage(User user) {
+		List<Map<String, Object>> users = userMapper
+				.queryUsersForPage(user);
+		int count = userMapper.queryCountOfUsersForPage(user);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("rows", users);
+		map.put("total", count);
+		return map;
 	}
 
 	@Override
-	public User selectUsersForObject(User user) {
-		return userMapper.selectUsersForObject(user);
+	public Map<String, Object> queryUserForObject(User user) {
+		return userMapper.queryUsersForList(user).get(0);
 	}
 
-	/*
-	 * (非 Javadoc) <p>Title: selectCountOfUsersForPage</p> <p>Description: </p>
-	 * 
-	 * @param user
-	 * 
-	 * @return
-	 * 
-	 * @see
-	 * com.base.admin.service.IUserService#selectCountOfUsersForPage(com.base.
-	 * admin.entity.User)
-	 */
-	@Override
-	public int selectCountOfUsersForPage(User user) {
-		return userMapper.selectCountOfUsersForPage(user);
-	}
-
-	/*
-	 * (非 Javadoc) <p>Title: insertSelective</p> <p>Description: </p>
-	 * 
-	 * @param user
-	 * 
-	 * @return
-	 * 
-	 * @see
-	 * com.base.admin.service.IUserService#insertSelective(com.base.admin.entity
-	 * .User)
-	 */
 	@Override
 	public int insertSelective(User user) {
 		return userMapper.insertSelective(user);
 	}
 
-	/*
-	 * (非 Javadoc) <p>Title: updateByPrimaryKeySelective</p> <p>Description:
-	 * </p>
-	 * 
-	 * @param user
-	 * 
-	 * @return
-	 * 
-	 * @see
-	 * com.base.admin.service.IUserService#updateByPrimaryKeySelective(com.base.
-	 * admin.entity.User)
-	 */
 	@Override
 	public int updateByPrimaryKeysSelective(User user) {
 		return userMapper.updateByPrimaryKeysSelective(user);
+	}
+
+	@Override
+	public User queryUserForSession(User user) {
+		return userMapper.queryUserForSession(user);
 	}
 
 }

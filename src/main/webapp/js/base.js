@@ -45,14 +45,12 @@ function errorFunctionForOption() {
 }
 
 // 与后台交互方法
-function ajaxFunction(params, url, successFunction, errorFunction, haveTree) {
+function ajaxFunction(params, url, successFunction, errorFunction) {
 	$.ajax({
 		type : 'POST',
 		url : url,
 		data : params,
-		success : function(result, textStatus) {
-			successFunction(result, haveTree);
-		},
+		success : successFunction,
 		error : errorFunction,
 		dataType : 'json'
 	});
@@ -218,8 +216,7 @@ function shwoConfirm(params, tipsForConfirm, urlForConfirm, haveTree) {
 
 // 翻页查询
 function query(params, url) {
-	ajaxFunction(params, url, successFunctionForQuery, errorFunctionForQuery,
-			true);
+	ajaxFunction(params, url, successFunctionForQuery, errorFunctionForQuery);
 }
 
 // 当查询成功时需要执行的代码

@@ -63,7 +63,7 @@ public class IndexController {
 			User user = new User();
 			user.setUserCode(userCode);
 			user.setUserPassWord(userPassWord);
-			user = userService.selectUsersForObject(user);
+			user = userService.queryUserForSession(user);
 			if (user != null) {
 				// 设置session
 				request.getSession().setAttribute("user", user);

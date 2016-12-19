@@ -8,11 +8,13 @@ import com.base.admin.entity.User;
 public interface UserMapper {
 	int deleteByPrimaryKeys(String[] userIds);
 
-	List<Map<String, Object>> selectUsersForPage(User user);
+	List<Map<String, Object>> queryUsersForPage(User user);
 
-	User selectUsersForObject(User user);
+	List<Map<String, Object>> queryUsersForList(User user);
 
-	int selectCountOfUsersForPage(User user);
+	User queryUserForSession(User user);
+
+	int queryCountOfUsersForPage(User user);
 
 	int insertSelective(User user);
 

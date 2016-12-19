@@ -1,7 +1,6 @@
 package com.base.admin.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,13 +68,7 @@ public class RoleUserController {
 		user.setPageSize(BaseUtil.strToInt(rows));
 		user.setUserDeptId(BaseUtil.strToLong(userDeptId));
 		user.setKeyWord(keyWord);
-		List<Map<String, Object>> users = userService
-				.selectUsersForPage(user);
-		int count = userService.selectCountOfUsersForPage(user);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("rows", users);
-		map.put("total", count);
-		return map;
+		return userService.queryUsersForPage(user);
 	}
 
 	@Autowired
