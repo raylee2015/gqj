@@ -97,7 +97,7 @@ public class DictionaryController {
 		// 查询子系统
 		menu.setMenuLevel("1");
 		response.getWriter()
-				.print(menuService.selectMenusForTree(menu));
+				.print(menuService.queryMenusForTree(menu));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}

@@ -13,13 +13,13 @@ public interface MenuMapper {
 
 	int updateByPrimaryKeySelective(Menu menu);
 
-	List<Map<Object, Object>> selectMenusForTree(Menu menu);
+	List<Map<Object, Object>> queryMenusForTree(Menu menu);
 
-	List<Map<String, Object>> selectMenusForPage(Menu menu);
+	List<Map<String, Object>> queryMenusForPage(Menu menu);
 
-	List<Map<String, Object>> selectMenusForList(User user);
+	List<Map<String, Object>> queryMenusForList(User user);
 
-	int selectCountOfMenusForPage(Menu menu);
+	int queryCountOfMenusForPage(Menu menu);
 
 	int updataInnerData();
 }

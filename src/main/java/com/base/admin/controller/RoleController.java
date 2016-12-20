@@ -100,7 +100,7 @@ public class RoleController {
 	public void queryMenuTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		response.getWriter().print(menuService
-				.selectMenusForTree(new Menu()).toLowerCase());
+				.queryMenusForTree(new Menu()).toLowerCase());
 		response.getWriter().flush();
 		response.getWriter().close();
 	}

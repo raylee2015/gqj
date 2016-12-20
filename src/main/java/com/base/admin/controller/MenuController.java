@@ -1,7 +1,6 @@
 package com.base.admin.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,18 +37,6 @@ public class MenuController {
 	 * @Author RayLee
 	 * @Version 1.0
 	 * @date 2016年12月2日
-	 * @param menuName
-	 *            菜单名称
-	 * @param menuLevel
-	 *            菜单级别（0根节点;1子系统;2菜单模块;3菜单项;4扩展权限）
-	 * @param menuUrl
-	 *            菜单连接
-	 * @param menuSort
-	 *            菜单排序号
-	 * @param upMenuId
-	 *            菜单父id
-	 * @param menuExtCode
-	 *            扩展权限代码
 	 * @param request
 	 * @param response
 	 * @return
@@ -117,6 +104,17 @@ public class MenuController {
 	}
 
 	/**
+	 * 跳转到菜单管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
+	public ModelAndView openEditUI(HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView("/base/admin/menu/editUI");
+	}
+
+	/**
 	 * 查询菜单级别下拉列表
 	 * 
 	 * @param request
@@ -147,10 +145,11 @@ public class MenuController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryMenuPage.do")
+	@RequestMapping("/queryMenusPage.do")
 	@ResponseBody
-	public Map<String, Object> queryMenuPage(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public Map<String, Object> queryMenusPage(
+			HttpServletRequest request, HttpServletResponse response)
+					throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String menuInnerCode = request.getParameter("menuInnerCode");
@@ -160,13 +159,7 @@ public class MenuController {
 		menu.setCurrPage(Integer.parseInt(page));
 		menu.setPageSize(Integer.parseInt(rows));
 		menu.setKeyWord(keyWord);
-		List<Map<String, Object>> menus = menuService
-				.selectMenusForPage(menu);
-		int count = menuService.selectCountOfMenusForPage(menu);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("rows", menus);
-		map.put("total", count);
-		return map;
+		return menuService.queryMenusForPage(menu);
 	}
 
 	/**
@@ -181,7 +174,7 @@ public class MenuController {
 	public void queryMenuTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		response.getWriter().print(menuService
-				.selectMenusForTree(new Menu()).toLowerCase());
+				.queryMenusForTree(new Menu()).toLowerCase());
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -193,7 +186,7 @@ public class MenuController {
 	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
-		return new ModelAndView("/base/admin/menu");
+		return new ModelAndView("/base/admin/menu/index");
 	}
 
 	/**
@@ -226,20 +219,6 @@ public class MenuController {
 	 * @Author RayLee
 	 * @Version 1.0
 	 * @date 2016年12月2日
-	 * @param menuId
-	 *            菜单id
-	 * @param menuName
-	 *            菜单名称
-	 * @param menuLevel
-	 *            菜单级别（0根节点;1子系统;2菜单模块;3菜单项;4扩展权限）
-	 * @param menuUrl
-	 *            菜单连接
-	 * @param menuSort
-	 *            菜单排序号
-	 * @param upMenuId
-	 *            菜单父id
-	 * @param menuExtCode
-	 *            扩展权限代码
 	 * @param request
 	 * @param response
 	 * @return

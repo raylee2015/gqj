@@ -41,7 +41,7 @@ public class IndexController {
 			HttpServletResponse response) throws Exception {
 		User user = (User) request.getSession().getAttribute("user");
 		List<Map<String, Object>> depts = menuService
-				.selectMenusForList(user);
+				.queryMenusForList(user);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", depts);
 		return map;

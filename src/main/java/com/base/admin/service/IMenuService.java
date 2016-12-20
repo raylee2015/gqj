@@ -13,13 +13,11 @@ public interface IMenuService {
 
 	int updateByPrimaryKeySelective(Menu menu);
 
-	String selectMenusForTree(Menu menu);
+	String queryMenusForTree(Menu menu);
 
-	List<Map<String, Object>> selectMenusForPage(Menu menu);
-
-	int selectCountOfMenusForPage(Menu menu);
+	Map<String, Object> queryMenusForPage(Menu menu);
 
 	int updataInnerData();
 
-	List<Map<String, Object>> selectMenusForList(User user);
+	List<Map<String, Object>> queryMenusForList(User user);
 }

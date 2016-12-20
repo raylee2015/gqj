@@ -81,7 +81,7 @@ public class PostMenuServiceImpl implements IPostMenuService {
 
 	@Override
 	public String queryUnSelectedMenusForTree() {
-		return menuService.selectMenusForTree(new Menu());
+		return menuService.queryMenusForTree(new Menu());
 	}
 
 }

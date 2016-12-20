@@ -1,5 +1,6 @@
 package com.base.admin.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,24 +32,25 @@ public class MenuServiceImpl implements IMenuService {
 	}
 
 	@Override
-	public int selectCountOfMenusForPage(Menu menu) {
-		return menuMapper.selectCountOfMenusForPage(menu);
+	public Map<String, Object> queryMenusForPage(Menu menu) {
+		List<Map<String, Object>> menus = menuMapper
+				.queryMenusForPage(menu);
+		int count = menuMapper.queryCountOfMenusForPage(menu);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("rows", menus);
+		map.put("total", count);
+		return map;
 	}
 
 	@Override
-	public List<Map<String, Object>> selectMenusForPage(Menu menu) {
-		return menuMapper.selectMenusForPage(menu);
+	public List<Map<String, Object>> queryMenusForList(User user) {
+		return menuMapper.queryMenusForList(user);
 	}
 
 	@Override
-	public List<Map<String, Object>> selectMenusForList(User user) {
-		return menuMapper.selectMenusForList(user);
-	}
-
-	@Override
-	public String selectMenusForTree(Menu menu) {
+	public String queryMenusForTree(Menu menu) {
 		List<Map<Object, Object>> menus = menuMapper
-				.selectMenusForTree(menu);
+				.queryMenusForTree(menu);
 		JSONArray menuArr = JSONArray.fromObject(menus);
 		String tree = BaseUtil
 				.list2Tree(menuArr, -1, "id", "up_menu_id", "children")

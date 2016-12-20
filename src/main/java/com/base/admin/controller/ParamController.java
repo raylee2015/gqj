@@ -27,6 +27,9 @@ public class ParamController {
 			.getLogger(ParamController.class);
 
 	@Autowired
+	private IMenuService menuService;
+
+	@Autowired
 	private IParamService paramService;
 
 	/**
@@ -82,6 +85,37 @@ public class ParamController {
 	}
 
 	/**
+	 * 跳转到全局参数管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
+	public ModelAndView openEditUI(HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView("/base/admin/param/editUI");
+	}
+
+	/**
+	 * 查询系统树
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryMenuTree.do")
+	@ResponseBody
+	public void queryMenuTree(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		Menu menu = new Menu();
+		// 查询子系统
+		menu.setMenuLevel("1");
+		response.getWriter()
+				.print(menuService.queryMenusForTree(menu));
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
+
+	/**
 	 * 分页查询全局参数列表
 	 * 
 	 * @param request
@@ -106,29 +140,6 @@ public class ParamController {
 		return paramService.queryParamsForPage(param);
 	}
 
-	@Autowired
-	private IMenuService menuService;
-
-	/**
-	 * 查询系统树
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryMenuTree.do")
-	@ResponseBody
-	public void queryMenuTree(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		Menu menu = new Menu();
-		// 查询子系统
-		menu.setMenuLevel("1");
-		response.getWriter()
-				.print(menuService.selectMenusForTree(menu));
-		response.getWriter().flush();
-		response.getWriter().close();
-	}
-
 	/**
 	 * 跳转到全局参数管理首页
 	 * 
@@ -137,17 +148,6 @@ public class ParamController {
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
 		return new ModelAndView("/base/admin/param/index");
-	}
-
-	/**
-	 * 跳转到全局参数管理操作页面
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(HttpServletRequest request,
-			HttpServletResponse response) {
-		return new ModelAndView("/base/admin/param/editUI");
 	}
 
 	/**
