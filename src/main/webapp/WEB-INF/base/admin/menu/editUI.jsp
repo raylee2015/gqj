@@ -88,27 +88,30 @@
 	}
 
 	function menuLevelChange(newValue, oldValue) {
-		if (newValue == 0 || newValue == 1 || newValue == 2) {
-			$('#menuURLTextBox').textbox('disable');
-			$('#menuExtCodeTextBox').textbox('disable');
-			$('#menuURLTextBox').textbox('setText', '-');
-			$('#menuExtCodeTextBox').textbox('setText', '-');
-			$('#menuURLTextBox').textbox('setValue', '-');
-			$('#menuExtCodeTextBox').textbox('setValue', '-');
-		} else if (newValue == 3) {
-			$('#menuURLTextBox').textbox('enable');
-			$('#menuExtCodeTextBox').textbox('disable');
-			$('#menuURLTextBox').textbox('setText', '');
-			$('#menuExtCodeTextBox').textbox('setText', '-');
-			$('#menuURLTextBox').textbox('setValue', '');
-			$('#menuExtCodeTextBox').textbox('setValue', '-');
-		} else if (newValue == 4) {
-			$('#menuURLTextBox').textbox('disable');
-			$('#menuExtCodeTextBox').textbox('enable');
-			$('#menuURLTextBox').textbox('setText', '-');
-			$('#menuExtCodeTextBox').textbox('setText', '');
-			$('#menuURLTextBox').textbox('setValue', '-');
-			$('#menuExtCodeTextBox').textbox('setValue', '');
+		var opType = getTextBoxValue('opType');
+		if (opType == 'add') {
+			if (newValue == 0 || newValue == 1 || newValue == 2) {
+				$('#menuURLTextBox').textbox('disable');
+				$('#menuExtCodeTextBox').textbox('disable');
+				$('#menuURLTextBox').textbox('setText', '-');
+				$('#menuExtCodeTextBox').textbox('setText', '-');
+				$('#menuURLTextBox').textbox('setValue', '-');
+				$('#menuExtCodeTextBox').textbox('setValue', '-');
+			} else if (newValue == 3) {
+				$('#menuURLTextBox').textbox('enable');
+				$('#menuExtCodeTextBox').textbox('disable');
+				$('#menuURLTextBox').textbox('setText', '');
+				$('#menuExtCodeTextBox').textbox('setText', '-');
+				$('#menuURLTextBox').textbox('setValue', '');
+				$('#menuExtCodeTextBox').textbox('setValue', '-');
+			} else if (newValue == 4) {
+				$('#menuURLTextBox').textbox('disable');
+				$('#menuExtCodeTextBox').textbox('enable');
+				$('#menuURLTextBox').textbox('setText', '-');
+				$('#menuExtCodeTextBox').textbox('setText', '');
+				$('#menuURLTextBox').textbox('setValue', '-');
+				$('#menuExtCodeTextBox').textbox('setValue', '');
+			}
 		}
 	}
 </script>
