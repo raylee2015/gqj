@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.base.admin.entity.User;
+import com.base.admin.service.IDeptService;
 import com.base.admin.service.IDictionaryService;
 import com.base.admin.service.IUserService;
 import com.base.util.BaseUtil;
@@ -27,7 +28,7 @@ public class UserController {
 			.getLogger(DeptController.class);
 
 	@Autowired
-	private DeptController deptController;
+	private IDeptService deptService;
 
 	@Autowired
 	private IDictionaryService dictionaryService;
@@ -88,7 +89,7 @@ public class UserController {
 	 */
 	@RequestMapping("/delUsers.do")
 	@ResponseBody
-	public Map<String, Object> delDepts(HttpServletRequest request,
+	public Map<String, Object> delUsers(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String userIds = request.getParameter("USER_IDS");
 		Map<String, Object> map = new HashMap<>();
@@ -114,9 +115,9 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/initUserPassWord.do")
+	@RequestMapping("/initUsersPassWord.do")
 	@ResponseBody
-	public Map<String, Object> initUserPassWord(
+	public Map<String, Object> initUsersPassWord(
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		String userIds = request.getParameter("USER_IDS");
@@ -157,7 +158,10 @@ public class UserController {
 	@ResponseBody
 	public void queryDeptTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		deptController.queryDeptTree(request, response);
+		response.getWriter()
+				.print(deptService.selectDeptsForTree().toLowerCase());
+		response.getWriter().flush();
+		response.getWriter().close();
 	}
 
 	/**
@@ -191,9 +195,9 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryUserPage.do")
+	@RequestMapping("/queryUsersPage.do")
 	@ResponseBody
-	public Map<String, Object> queryUserPage(HttpServletRequest request,
+	public Map<String, Object> queryUsersPage(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
@@ -246,7 +250,7 @@ public class UserController {
 	 */
 	@RequestMapping("/updateUser.do")
 	@ResponseBody
-	public Map<String, Object> updateDept(HttpServletRequest request,
+	public Map<String, Object> updateUser(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String userId = request.getParameter("USER_ID");
 		String userName = request.getParameter("USER_NAME");
