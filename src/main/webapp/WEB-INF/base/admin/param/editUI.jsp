@@ -30,12 +30,13 @@
 	var url;
 
 	// 保存数据
-	function saveDept() {
+	function saveParam() {
 		var params = {
-			DEPT_ID : getTextBoxValue('deptIdTextBox'),
-			DEPT_NAME : getTextBoxValue('deptNameTextBox'),
-			DEPT_SORT : getTextBoxValue('deptSortTextBox'),
-			UP_DEPT_ID : getComboTreeValue('deptTree')
+			PARAM_ID : getTextBoxValue('paramIdTextBox'),
+			PARAM_KEY : getTextBoxValue('paramKeyTextBox'),
+			PARAM_VALUE : getTextBoxValue('paramValueTextBox'),
+			PARAM_REMARK : getTextBoxValue('paramRemarkTextBox'),
+			MENU_ID : getComboTreeValue('menuTree')
 		};
 		save(params, url, successFunctionForSave);
 	}
@@ -43,71 +44,79 @@
 	//回调函数，保存成功后执行
 	function successFunctionForSave(result) {
 		parent.successFunctionForOption(result);
-		closeEditUIForDept();
+		closeEditUIForParam();
 	}
 
 	//页面加载完
 	$(document).ready(function() {
 		closeCache();
-		initDeptForm();
-		initDeptTree();
+		initMenuTree();
+		initParamForm();
 	});
 
 	//初始化表单
-	function initDeptForm() {
+	function initParamForm() {
 		var opType = getTextBoxValue('opType');
 		if (opType == 'add') {
-			url = 'addNewDept.do';
+			url = 'addNewParam.do';
 		} else if (opType == 'edit') {
 			var rowIndex = getTextBoxValue('rowIndex');
-			var rowData = parent.$('#datagridForDept').datagrid('getData').rows[rowIndex];
-			$('#deptForm').form('load', rowData);
-			url = 'updateDept.do';
+			var rowData = parent.$('#datagridForParam').datagrid('getData').rows[rowIndex];
+			$('#paramForm').form('load', rowData);
+			url = 'updateParam.do';
 		}
 	}
 
 	//初始化树
-	function initDeptTree() {
-		var treeNodes = parent.$('#deptTree').tree('getRoots');
-		$('#deptTree').combotree('loadData', treeNodes);
+	function initMenuTree() {
+		var treeNodes = parent.$('#menuTree').tree('getRoots');
+		$('#menuTree').combotree('loadData', treeNodes);
 	}
 
 	//关闭编辑窗口
-	function closeEditUIForDept() {
-		parent.closeEditUIForDept();
+	function closeEditUIForParam() {
+		parent.closeEditUIForParam();
 	}
 </script>
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit:true">
 		<div region="north" fit="true" border="false">
-			<form id="deptForm" method="post" style="width: 100%;">
+			<form id="paramForm" method="post" style="width: 100%;">
 				<div style="display: none">
-					<input id="deptIdTextBox" name="DEPT_ID" class="easyui-textbox" /><input
-						id="opType" value="<%=request.getParameter("opType")%>"
+					<input id="paramIdTextBox" name="PARAM_ID" class="easyui-textbox" />
+					<input id="opType" value="<%=request.getParameter("opType")%>"
 						class="easyui-textbox" /> <input id="rowIndex"
 						value="<%=request.getParameter("rowIndex")%>"
 						class="easyui-textbox" />
 				</div>
 				<table style="width: 100%; padding: 10px">
 					<tr>
-						<td width="22%">上级部门:</td>
-						<td><input id="deptTree" name="UP_DEPT_ID"
+						<td width="25%">所属系统:</td>
+						<td><input id="menuTree" name="MENU_ID"
 							class="easyui-combotree" data-options="required:true"
 							style="width: 100%; height: 32px"></td>
 					</tr>
 					<tr>
-						<td width="22%">部门名称:</td>
-						<td><input id="deptNameTextBox" name="DEPT_NAME"
+						<td width="25%">参数键:</td>
+						<td><input id="paramKeyTextBox" name="PARAM_KEY"
 							class="easyui-textbox"
-							data-options="prompt:'部门名称',required:true,validType:'length[0,25]'"
+							data-options="prompt:'参数键',required:true,validType:'length[0,25]'"
 							style="width: 100%; height: 32px" /></td>
 					</tr>
 					<tr>
-						<td width="22%">排序号:</td>
-						<td><input id="deptSortTextBox" name="DEPT_SORT" type="text"
-							class="easyui-numberbox" style="width: 100%; height: 32px"
-							data-options="min:0,max:99,precision:0,prompt:'排序号',required:true,validType:'length[0,2]'" /></td>
+						<td width="25%">参数值:</td>
+						<td><input id="paramValueTextBox" name="PARAM_VALUE"
+							class="easyui-textbox"
+							data-options="prompt:'参数值',required:true,validType:'length[0,25]'"
+							style="width: 100%; height: 32px" /></td>
+					</tr>
+					<tr>
+						<td width="25%">备注:</td>
+						<td><input id="paramRemarkTextBox" name="PARAM_REMARK"
+							class="easyui-textbox"
+							data-options="prompt:'备注',required:true,validType:'length[0,50]'"
+							style="width: 100%; height: 32px" /></td>
 					</tr>
 				</table>
 			</form>
@@ -115,9 +124,9 @@
 		<div region="south" border="false"
 			style="text-align: right; height: 30px">
 			<a class="easyui-linkbutton" iconCls="icon-ok"
-				href="javascript:void(0)" onclick="saveDept()">保存</a> <a
+				href="javascript:void(0)" onclick="saveParam()">保存</a> <a
 				class="easyui-linkbutton" iconCls="icon-cancel"
-				href="javascript:void(0)" onclick="closeEditUIForDept()">关闭</a>
+				href="javascript:void(0)" onclick="closeEditUIForParam()">关闭</a>
 		</div>
 	</div>
 </body>

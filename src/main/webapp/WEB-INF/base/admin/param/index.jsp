@@ -27,34 +27,33 @@
 <script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//关闭编辑窗口
-	function closeEditUIForDept() {
-		closeEditUI('editUIForDept')
+	function closeEditUIForParam() {
+		closeEditUI('editUIForParam')
 	}
 
 	//打开编辑窗口
-	function openAddUIForDept() {
-		createModalDialog("editUIForDept", "openEditUI.do?opType=add", "部门设置",
-				400, 200);
-		openEditUI('editUIForDept');
+	function openAddUIForParam() {
+		createModalDialog("editUIForParam", "openEditUI.do?opType=add",
+				"全局参数设置", 400, 230);
+		openEditUI('editUIForParam');
 	}
 
 	//打开编辑窗口
-	function openEditUIForDept(rowIndex) {
+	function openEditUIForParam(rowIndex) {
 		var url = "openEditUI.do?opType=edit&rowIndex=" + rowIndex;
-		createModalDialog("editUIForDept", url, "部门设置", 400, 200);
-		openEditUI('editUIForDept');
+		createModalDialog("editUIForParam", url, "全局参数设置", 400, 230);
+		openEditUI('editUIForParam');
 	}
 
 	//删除
-	function delDepts() {
-		if (checkSelectedItems('datagridForDept', '请选择部门')) {
-			var deptIds = getIdsOfSelectedItems('datagridForDept',
-					'DEPT_INNER_CODE');
-			if (deptIds != null && deptIds != '') {
+	function delParams() {
+		if (checkSelectedItems('datagridForParam', '请选择全局参数')) {
+			var paramIds = getIdsOfSelectedItems('datagridForParam', 'PARAM_ID');
+			if (paramIds != null && paramIds != '') {
 				var params = {
-					DEPT_IDS : deptIds
+					PARAM_IDS : paramIds
 				};
-				showMessageBox(params, 'delDepts.do', '是否删除所选部门及其下属部门?',
+				showMessageBox(params, 'delParams.do', '是否删除所选全局参数?',
 						successFunctionForOption);
 			}
 		}
@@ -63,58 +62,52 @@
 	//回调函数，删除或其他操作成功后调用
 	function successFunctionForOption(result) {
 		showMessage(result.msg, result.msg);
-		reloadDataGrid('datagridForDept');
-	}
-
-	//更新级联数据
-	function updateInnerData() {
-		var params = {};
-		showMessageBox(params, 'updateInnerData.do', '是否更新级联数据?',
-				successFunctionForOption);
+		reloadDataGrid('datagridForParam');
 	}
 
 	//用在点击查询按钮的时候
-	function queryDeptPagesForSearch() {
-		queryDepts('');
+	function queryParamPageForSearch() {
+		queryParams('');
 	}
 
 	//用在点击树的时候
-	function queryDeptPagesForTree(deptInnerCode) {
-		queryDepts(deptInnerCode);
+	function queryParamPageForTree(menuId) {
+		queryParams(menuId);
 	}
 
 	//查询
-	function queryDepts(deptInnerCode) {
+	function queryParams(menuId) {
 		var params = {
-			deptInnerCode : deptInnerCode,
-			keyWord : $('#keyWordForDeptTextInput').textbox('getValue'),
+			MENU_ID : menuId,
+			keyWord : $('#keyWordForParamTextInput').textbox('getValue'),
 			page : 1,
-			rows : getPageSizeOfDataGrid('datagridForDept')
+			rows : getPageSizeOfDataGrid('datagridForParam')
 		};
-		query(params, 'queryDeptsPage.do', successFunctionForQuery);
+		query(params, 'queryParamsPage.do', successFunctionForQuery);
 	}
-
+	
 	//回调函数，查询成功后调用
 	function successFunctionForQuery(result) {
-		dataGridLoadData('datagridForDept', result);
+		dataGridLoadData('datagridForParam', result);
 	}
+
 
 	//页面加载完
 	$(document).ready(
 			function() {
 				closeCache();
-				initDataGridForDept();
-				initDeptTree();
-				registerKeyPressForTextInput('keyWordForDeptTextInput',
-						queryDeptPagesForSearch);
+				initDataGridForParam();
+				initMenuTree();
+				registerKeyPressForTextInput('keyWordForParamTextInput',
+						queryParamPageForSearch);
 			});
 
 	//初始化树
-	function initDeptTree() {
-		$('#deptTree').tree({
-			url : 'queryDeptTree.do',
+	function initMenuTree() {
+		$('#menuTree').tree({
+			url : 'queryMenuTree.do',
 			onClick : function(node) {
-				queryDeptPagesForTree(node.dept_inner_code); // 在部门点击的时候提示
+				queryParamPageForTree(node.id); // 在用户点击的时候提示
 			},
 			onLoadError : function(arguments) {
 				errorFunctionForQuery();
@@ -123,14 +116,14 @@
 	}
 
 	//初始化列表元素
-	function initDataGridForDept() {
-		$('#datagridForDept')
+	function initDataGridForParam() {
+		$('#datagridForParam')
 				.datagrid(
 						{
-							url : 'queryDeptsPage.do',
-							idField : 'DEPT_ID',
+							url : 'queryParamsPage.do',
+							idField : 'PARAM_ID',
 							rownumbers : true,
-							toolbar : '#toolbarForDept',
+							toolbar : '#toolbarForParam',
 							pagination : true,
 							pageSize : 30,
 							pageNumber : 1,
@@ -148,26 +141,22 @@
 										formatter : function(fieldValue,
 												rowData, rowIndex) {
 											var btn = '<a class="easyui-linkbutton" '
-													+ ' onclick="openEditUIForDept(\''
+													+ ' onclick="openEditUIForParam(\''
 													+ rowIndex
 													+ '\')" href="javascript:void(0)">编辑</a>';
 											return btn;
 										}
 									}, {
-										field : 'DEPT_NAME',
-										title : '部门名称',
+										field : 'PARAM_KEY',
+										title : '参数键',
+										width : 200,
+									}, {
+										field : 'PARAM_VALUE',
+										title : '参数值',
 										width : 100,
 									}, {
-										field : 'UP_DEPT_NAME',
-										title : '上级部门',
-										width : 100,
-									}, {
-										field : 'DEPT_INNER_NAME',
-										title : '部门级联',
-										width : 250,
-									}, {
-										field : 'DEPT_SORT',
-										title : '排序号',
+										field : 'PARAM_REMARK',
+										title : '备注',
 										width : 100,
 									} ] ],
 							onLoadError : function() {
@@ -181,29 +170,29 @@
 	<!-- 列表页面 -->
 	<div class="easyui-layout" data-options="fit:true">
 		<div region="west" collapsible="false" style="width: 200px;">
-			<ul id="deptTree" class="easyui-tree" method="get" animate="true"
+			<ul id="menuTree" class="easyui-tree" method="get" animate="true"
 				lines="true"></ul>
 		</div>
 		<div region="center">
-			<table id="datagridForDept" class="easyui-datagrid">
+			<table id="datagridForParam" class="easyui-datagrid">
 			</table>
-			<div id="toolbarForDept">
+			<div id="toolbarForParam">
 				<div>
 					<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
-						plain="true" onclick="refreshDataGrid('datagridForDept')">刷新</a> <a
-						href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true"
-						onclick="openAddUIForDept()">添加</a> <a href="#"
+						plain="true" onclick="refreshDataGrid('datagridForParam')">刷新</a>
+					<a href="#" class="easyui-linkbutton" iconCls="icon-add"
+						plain="true" onclick="openAddUIForParam()">添加</a> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
-						onclick="delDepts()">删除</a> <a href="#" class="easyui-linkbutton"
-						iconCls="icon-reload" plain="true" onclick="updateInnerData()">更新级联数据</a>
+						onclick="delParams()">删除</a>
 				</div>
 				<div>
-					<input id="keyWordForDeptTextInput" class="easyui-textbox"
-						data-options="prompt:'部门名称',validType:'length[0,50]'"
+					<input id="keyWordForParamTextInput" class="easyui-textbox"
+						data-options="prompt:'参数键',validType:'length[0,50]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
-						onclick="queryDeptPagesForSearch()">查询</a>
+						onclick="queryParamPageForSearch()">查询</a>
 				</div>
+
 			</div>
 		</div>
 	</div>

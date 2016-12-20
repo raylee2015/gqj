@@ -25,7 +25,7 @@ public class ParamServiceImpl implements IParamService {
 	@Override
 	public Map<String, Object> insertSelective(Param param) {
 		Map<String, Object> result = new HashMap<>();
-		if (paramMapper.selectParamsForList(param).size() > 0) {
+		if (paramMapper.queryParamsForList(param).size() > 0) {
 			result.put("success", false);
 			result.put("msg", "系统已经存在同样的参数键与参数值");
 		} else {
@@ -43,10 +43,10 @@ public class ParamServiceImpl implements IParamService {
 	}
 
 	@Override
-	public Map<String, Object> selectParamsForPage(Param param) {
+	public Map<String, Object> queryParamsForPage(Param param) {
 		List<Map<String, Object>> params = paramMapper
-				.selectParamsForPage(param);
-		int count = paramMapper.selectCountOfParamsForPage(param);
+				.queryParamsForPage(param);
+		int count = paramMapper.queryCountOfParamsForPage(param);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", params);
 		map.put("total", count);

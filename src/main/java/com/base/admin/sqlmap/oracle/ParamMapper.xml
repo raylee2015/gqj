@@ -11,7 +11,7 @@
 	<sql id="Base_Column_List">
 		PARAM_ID, PARAM_KEY, PARAM_VALUE, PARAM_REMARK, MENU_ID
 	</sql>
-	<select id="selectParamsForList" parameterType="com.base.admin.entity.Param"
+	<select id="queryParamsForList" parameterType="com.base.admin.entity.Param"
 		resultType="java.util.HashMap">
 		select
 		<include refid="Base_Column_List" />
@@ -23,9 +23,12 @@
 			<if test="paramValue != null">
 				AND PARAM_VALUE = #{paramValue}
 			</if>
+			<if test="menuId != null">
+				AND MENU_ID = #{menuId}
+			</if>
 		</where>
 	</select>
-	<select id="selectParamsForPage" parameterType="com.base.admin.entity.Param"
+	<select id="queryParamsForPage" parameterType="com.base.admin.entity.Param"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select
@@ -35,13 +38,16 @@
 			<if test="keyWord != null">
 				AND PARAM_KEY like '%${keyWord}%'
 			</if>
+			<if test="menuId != null">
+				AND MENU_ID = #{menuId}
+			</if>
 		</where>
 		order by PARAM_ID
 		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
 		) WHERE num<![CDATA[>=]]>
 		(1+(${currPage}-1)*${pageSize})
 	</select>
-	<select id="selectCountOfParamsForPage" parameterType="com.base.admin.entity.Param"
+	<select id="queryCountOfParamsForPage" parameterType="com.base.admin.entity.Param"
 		resultType="java.lang.Integer">
 		select count(t.PARAM_ID) from BASE_PARAM t
 		<where>

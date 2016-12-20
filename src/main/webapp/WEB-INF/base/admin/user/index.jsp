@@ -204,8 +204,8 @@
 			<div id="toolbarForUser">
 				<div>
 					<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
-						plain="true" onclick="refresh()">刷新</a> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-add" plain="true"
+						plain="true" onclick="refreshDataGrid('datagridForUser')">刷新</a> <a
+						href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true"
 						onclick="openAddUIForUser()">添加</a> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
 						onclick="delUsers()">删除</a><a href="#" class="easyui-linkbutton"

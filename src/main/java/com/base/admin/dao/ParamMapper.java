@@ -6,11 +6,11 @@ import java.util.Map;
 import com.base.admin.entity.Param;
 
 public interface ParamMapper {
-	List<Map<String, Object>> selectParamsForPage(Param param);
+	List<Map<String, Object>> queryParamsForPage(Param param);
 
-	List<Map<String, Object>> selectParamsForList(Param param);
+	List<Map<String, Object>> queryParamsForList(Param param);
 
-	int selectCountOfParamsForPage(Param param);
+	int queryCountOfParamsForPage(Param param);
 
 	int deleteByPrimaryKeys(Param param);
 

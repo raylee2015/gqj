@@ -11,6 +11,6 @@ public interface IParamService {
 
 	int updateByPrimaryKeySelective(Param param);
 
-	Map<String, Object>  selectParamsForPage(Param param);
+	Map<String, Object>  queryParamsForPage(Param param);
 
 }

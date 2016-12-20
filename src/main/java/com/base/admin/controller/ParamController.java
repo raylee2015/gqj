@@ -89,21 +89,21 @@ public class ParamController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryParamPage.do")
+	@RequestMapping("/queryParamsPage.do")
 	@ResponseBody
-	public Map<String, Object> queryParamPage(
+	public Map<String, Object> queryParamsPage(
 			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+					throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		String menuIds = request.getParameter("MENU_IDS");
+		String menuId = request.getParameter("MENU_ID");
 		String keyWord = request.getParameter("keyWord");
 		Param param = new Param();
 		param.setCurrPage(Integer.parseInt(page));
 		param.setPageSize(Integer.parseInt(rows));
 		param.setKeyWord(keyWord);
-		param.setIds(menuIds);
-		return paramService.selectParamsForPage(param);
+		param.setMenuId(BaseUtil.strToLong(menuId));
+		return paramService.queryParamsForPage(param);
 	}
 
 	@Autowired
@@ -136,7 +136,18 @@ public class ParamController {
 	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
-		return new ModelAndView("/base/admin/param");
+		return new ModelAndView("/base/admin/param/index");
+	}
+
+	/**
+	 * 跳转到全局参数管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
+	public ModelAndView openEditUI(HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView("/base/admin/param/editUI");
 	}
 
 	/**
