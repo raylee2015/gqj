@@ -102,7 +102,7 @@ function getIdsOfSelectedItems(dataGridId, columnNameForSelect) {
 		} else {
 			// 获取数据失败，提示失败
 			alert('数据错误，请联系系统管理员');
-			break;
+			return;
 		}
 	}
 	ids = ids.substring(0, ids.length - 1);

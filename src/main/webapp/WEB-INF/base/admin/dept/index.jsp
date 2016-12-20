@@ -26,113 +26,155 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
-	//记录新增或者修改的方法
-	var url;
-
-	//打开编辑窗口
-	function openAddUI() {
-		openAddDataUI2(true);
-		setTextBoxValue('deptIdTextBox', -1);
-		url = 'addNewDept.do';
+	//关闭编辑窗口
+	function closeEditUIForDept() {
+		closeEditUI('editUIForDept')
 	}
 
 	//打开编辑窗口
-	function openEditUI(opType, rowIndex) {
-		var rowData = $('#datagrid').datagrid('getData').rows[rowIndex];
-		openEditDataUI2(rowData, true, 'UP_DEPT_ID', 'UP_DEPT_NAME');
-		url = 'updateDept.do';
+	function openAddUIForDept() {
+		createModalDialog("editUIForDept", "openEditUI.do?opType=add", "部门设置",
+				400, 200);
+		openEditUI('editUIForDept');
+	}
+
+	//打开编辑窗口
+	function openEditUIForDept(rowIndex) {
+		var url = "openEditUI.do?opType=edit&rowIndex=" + rowIndex;
+		createModalDialog("editUIForDept", url, "部门设置", 400, 200);
+		openEditUI('editUIForDept');
 	}
 
 	//删除
 	function delDepts() {
-		var ids = getIdsOfSelectedItems('DEPT_INNER_CODE', '请先更新级联数据');
-		var params = {
-			DEPT_IDS : ids
-		};
-		del(params, "请选择部门", '是否删除所选部门及其下属部门?', 'delDepts.do', true);
+		if (checkSelectedItems('datagridForDept', '请选择用户')) {
+			var deptIds = getIdsOfSelectedItems('datagridForDept',
+					'DEPT_INNER_CODE');
+			if (deptIds != null && deptIds != '') {
+				var params = {
+					DEPT_IDS : deptIds
+				};
+				showMessageBox(params, 'delDepts.do', '是否删除所选部门及其下属部门?',
+						successFunctionForOption);
+			}
+		}
+	}
+
+	//回调函数，删除或其他操作成功后调用
+	function successFunctionForOption(result) {
+		showMessage(result.msg, result.msg);
+		reloadDataGrid('datagridForDept');
 	}
 
 	//更新级联数据
 	function updateInnerData() {
 		var params = {};
-		shwoConfirm(params, '是否更新级联数据?', 'updateInnerData.do', true);
+		showMessageBox(params, 'updateInnerData.do', '是否更新级联数据?',
+				successFunctionForOption);
 	}
 
-	// 保存数据
-	function saveDept() {
-		var params = {
-			DEPT_ID : getTextBoxValue('deptIdTextBox'),
-			DEPT_NAME : getTextBoxValue('deptNameTextBox'),
-			DEPT_SORT : getTextBoxValue('deptSortTextBox'),
-			UP_DEPT_ID : getComboTreeValue('comboTree')
-		};
-		save1(params, url, true);
+	//用在点击查询按钮的时候
+	function queryDeptPagesForSearch() {
+		queryDepts('');
+	}
+
+	//用在点击树的时候
+	function queryDeptPagesForTree(deptInnerCode) {
+		queryDepts(deptInnerCode);
 	}
 
 	//查询
-	function queryForPage(deptInnerCode) {
+	function queryDepts(deptInnerCode) {
 		var params = {
 			deptInnerCode : deptInnerCode,
-			keyWord : $('#keyWordTextInput').textbox('getValue'),
+			keyWord : $('#keyWordForDeptTextInput').textbox('getValue'),
 			page : 1,
-			rows : $('#datagrid').datagrid('getPager').data("pagination").options.pageSize
+			rows : $('#datagridForDept').datagrid('getPager')
+					.data("pagination").options.pageSize
 		};
-		query(params, 'queryDeptPage.do');
+		query(params, 'queryDeptsPage.do', successFunctionForQuery);
+	}
+
+	//回调函数，查询成功后调用
+	function successFunctionForQuery(result) {
+		dataGridLoadData('datagridForDept', result);
 	}
 
 	//页面加载完
-	$(document).ready(function() {
-		initDocument();
-		initDataGrid();
-		initTree();
-	});
+	$(document).ready(
+			function() {
+				closeCache();
+				initDataGridForDept();
+				initDeptTree();
+				registerKeyPressForTextInput('keyWordForDeptTextInput',
+						queryDeptPagesForSearch);
+			});
 
 	//初始化树
-	function initTree() {
-		$('#tree').tree({
+	function initDeptTree() {
+		$('#deptTree').tree({
 			url : 'queryDeptTree.do',
 			onClick : function(node) {
-				queryForPage(node.dept_inner_code); // 在用户点击的时候提示
+				queryDeptPagesForTree(node.dept_inner_code); // 在部门点击的时候提示
 			},
 			onLoadError : function(arguments) {
-				eval(errorCodeForQuery);
+				errorFunctionForQuery();
 			}
 		});
 	}
 
 	//初始化列表元素
-	function initDataGrid() {
-		$('#datagrid').datagrid({
-			url : 'queryDeptPage.do',
-			idField : 'DEPT_ID',
-			columns : [ [ {
-				field : 'ck',
-				checkbox : true
-			}, {
-				field : 'op',
-				title : '操作',
-				formatter : editColumnFormatter
-			}, {
-				field : 'DEPT_NAME',
-				title : '部门名称',
-				width : 100,
-			}, {
-				field : 'UP_DEPT_NAME',
-				title : '上级部门',
-				width : 100,
-			}, {
-				field : 'DEPT_INNER_NAME',
-				title : '部门级联',
-				width : 250,
-			}, {
-				field : 'DEPT_SORT',
-				title : '排序号',
-				width : 100,
-			} ] ],
-			onLoadError : function() {
-				eval(errorCodeForQuery);
-			}
-		});
+	function initDataGridForDept() {
+		$('#datagridForDept')
+				.datagrid(
+						{
+							url : 'queryDeptsPage.do',
+							idField : 'DEPT_ID',
+							rownumbers : true,
+							toolbar : '#toolbarForDept',
+							pagination : true,
+							pageSize : 30,
+							pageNumber : 1,
+							checkOnSelect : false,
+							fit : true,
+							method : 'get',
+							columns : [ [
+									{
+										field : 'ck',
+										checkbox : true
+									},
+									{
+										field : 'op',
+										title : '操作',
+										formatter : function(fieldValue,
+												rowData, rowIndex) {
+											var btn = '<a class="easyui-linkbutton" '
+													+ ' onclick="openEditUIForDept(\''
+													+ rowIndex
+													+ '\')" href="javascript:void(0)">编辑</a>';
+											return btn;
+										}
+									}, {
+										field : 'DEPT_NAME',
+										title : '部门名称',
+										width : 100,
+									}, {
+										field : 'UP_DEPT_NAME',
+										title : '上级部门',
+										width : 100,
+									}, {
+										field : 'DEPT_INNER_NAME',
+										title : '部门级联',
+										width : 250,
+									}, {
+										field : 'DEPT_SORT',
+										title : '排序号',
+										width : 100,
+									} ] ],
+							onLoadError : function() {
+								errorFunctionForQuery();
+							}
+						});
 	}
 </script>
 </head>
@@ -140,74 +182,29 @@
 	<!-- 列表页面 -->
 	<div class="easyui-layout" data-options="fit:true">
 		<div region="west" collapsible="false" style="width: 200px;">
-			<ul id="tree" class="easyui-tree" method="get" animate="true"
+			<ul id="deptTree" class="easyui-tree" method="get" animate="true"
 				lines="true"></ul>
 		</div>
 		<div region="center">
-			<table id="datagrid" class="easyui-datagrid" rownumbers="true"
-				toolbar="#toolbar" pagination="true" pageSize="30" pageNumber="1"
-				checkOnSelect="false" method="get" fit="true">
+			<table id="datagridForDept" class="easyui-datagrid">
 			</table>
-			<div id="toolbar">
+			<div id="toolbarForDept">
 				<div>
 					<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
 						plain="true" onclick="refresh()">刷新</a> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-add" plain="true"
-						onclick="openAddUI()">添加</a> <a href="#" class="easyui-linkbutton"
-						iconCls="icon-remove" plain="true" onclick="delDepts()">删除</a> <a
-						href="#" class="easyui-linkbutton" iconCls="icon-reload"
-						plain="true" onclick="updateInnerData()">更新级联数据</a>
+						onclick="openAddUIForDept()">添加</a> <a href="#"
+						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
+						onclick="delDepts()">删除</a> <a href="#" class="easyui-linkbutton"
+						iconCls="icon-reload" plain="true" onclick="updateInnerData()">更新级联数据</a>
 				</div>
 				<div>
-					<input id="keyWordTextInput" class="easyui-textbox"
+					<input id="keyWordForDeptTextInput" class="easyui-textbox"
 						data-options="prompt:'部门名称',validType:'length[0,50]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
-						onclick="queryForPage('')">查询</a>
+						onclick="queryDeptPagesForSearch()">查询</a>
 				</div>
-			</div>
-		</div>
-	</div>
-
-	<!--  详细界面 -->
-	<div id="editUI" class="easyui-window" title="添加部门" closed="true"
-		data-options="iconCls:'icon-save'"
-		style="width: 400px; height: 190px; padding: 5px;">
-		<div class="easyui-layout" data-options="fit:true">
-			<div region="north" fit="true" border="false">
-				<form id="form" method="post" style="width: 100%;">
-					<div style="display: none">
-						<input id="deptIdTextBox" name="DEPT_ID" class="easyui-textbox" />
-					</div>
-					<table width="100%">
-						<tr>
-							<td width="22%">上级部门:</td>
-							<td><input id="comboTree" name="UP_DEPT_ID"
-								class="easyui-combotree" data-options="required:true"
-								style="width: 100%; height: 32px"></td>
-						</tr>
-						<tr>
-							<td width="22%">部门名称:</td>
-							<td><input id="deptNameTextBox" name="DEPT_NAME"
-								class="easyui-textbox"
-								data-options="prompt:'部门名称',required:true,validType:'length[3,10]'"
-								style="width: 100%; height: 32px" /></td>
-						</tr>
-						<tr>
-							<td width="22%">排序号:</td>
-							<td><input id="deptSortTextBox" name="DEPT_SORT" type="text"
-								class="easyui-numberbox" style="width: 100%; height: 32px"
-								data-options="min:0,max:99,precision:0,prompt:'排序号',required:true,validType:'length[0,2]'" /></td>
-						</tr>
-					</table>
-				</form>
-			</div>
-			<div region="south" border="false"
-				style="text-align: right; height: 30px">
-				<a class="easyui-linkbutton" iconCls="icon-ok"
-					href="javascript:void(0)" onclick="saveDept()">保存</a> <a
-					class="easyui-linkbutton" iconCls="icon-cancel"
-					href="javascript:void(0)" onclick="closeEditUI()">关闭</a>
 			</div>
 		</div>
 	</div>

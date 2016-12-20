@@ -57,7 +57,7 @@
 		}
 	}
 
-	//回调函数，删除用户成功后调用
+	//回调函数，删除或其他操作成功后调用
 	function successFunctionForOption(result) {
 		showMessage(result.msg, result.msg);
 		reloadDataGrid('datagridForUser');
@@ -119,7 +119,7 @@
 				queryUserPagesForTree(node.id); // 在用户点击的时候提示
 			},
 			onLoadError : function(arguments) {
-				eval(errorCodeForQuery);
+				errorFunctionForQuery();
 			}
 		});
 	}

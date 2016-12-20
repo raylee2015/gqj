@@ -137,7 +137,7 @@ public class UserController {
 	}
 
 	/**
-	 * 跳转到仓位管理操作页面
+	 * 跳转到用户管理操作页面
 	 * 
 	 * @return
 	 */

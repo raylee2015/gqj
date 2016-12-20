@@ -26,71 +26,8 @@ public class DeptController {
 	public static final Logger LOGGER = Logger
 			.getLogger(DeptController.class);
 
-	/**
-	 * 跳转到部门管理首页
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
-	public ModelAndView toIndex() {
-		return new ModelAndView("/base/admin/dept");
-	}
-
 	@Autowired
 	private IDeptService deptService;
-
-	/**
-	 * 分页查询部门列表
-	 * 
-	 * @param page
-	 *            页数
-	 * @param rows
-	 *            显示行数
-	 * @param keyWord
-	 *            关键字
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryDeptPage.do")
-	@ResponseBody
-	public Map<String, Object> queryDeptPage(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String page = request.getParameter("page");
-		String rows = request.getParameter("rows");
-		String deptInnerCode = request.getParameter("deptInnerCode");
-		String keyWord = request.getParameter("keyWord");
-		Dept dept = new Dept();
-		dept.setCurrPage(Integer.parseInt(page));
-		dept.setPageSize(Integer.parseInt(rows));
-		dept.setDeptInnerCode(deptInnerCode);
-		dept.setKeyWord(keyWord);
-		List<Map<String, Object>> depts = deptService
-				.selectDeptsForPage(dept);
-		int count = deptService.selectCountOfDeptsForPage(dept);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("rows", depts);
-		map.put("total", count);
-		return map;
-	}
-
-	/**
-	 * 查询部门树
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryDeptTree.do")
-	@ResponseBody
-	public void queryDeptTree(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		response.getWriter()
-				.print(deptService.selectDeptsForTree().toLowerCase());
-		response.getWriter().flush();
-		response.getWriter().close();
-	}
 
 	/**
 	 * 添加部门信息
@@ -131,6 +68,110 @@ public class DeptController {
 	}
 
 	/**
+	 * 删除部门
+	 * 
+	 * @param deptIds
+	 *            部门id串
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/delDepts.do")
+	@ResponseBody
+	public Map<String, Object> delDepts(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String deptIds = request.getParameter("DEPT_IDS");
+		Map<String, Object> map = new HashMap<>();
+		Dept dept = new Dept();
+		dept.setIds(deptIds);
+		int bool = deptService.deleteByPrimaryKeys(dept);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "删除失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "删除成功");
+		}
+		return map;
+	}
+
+	/**
+	 * 跳转到部门管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
+	public ModelAndView openEditUI(HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView("/base/admin/dept/editUI");
+	}
+
+	/**
+	 * 分页查询部门列表
+	 * 
+	 * @param page
+	 *            页数
+	 * @param rows
+	 *            显示行数
+	 * @param keyWord
+	 *            关键字
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryDeptsPage.do")
+	@ResponseBody
+	public Map<String, Object> queryDeptsPage(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String deptInnerCode = request.getParameter("deptInnerCode");
+		String keyWord = request.getParameter("keyWord");
+		Dept dept = new Dept();
+		dept.setCurrPage(Integer.parseInt(page));
+		dept.setPageSize(Integer.parseInt(rows));
+		dept.setDeptInnerCode(deptInnerCode);
+		dept.setKeyWord(keyWord);
+		List<Map<String, Object>> depts = deptService
+				.selectDeptsForPage(dept);
+		int count = deptService.selectCountOfDeptsForPage(dept);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("rows", depts);
+		map.put("total", count);
+		return map;
+	}
+
+	/**
+	 * 查询部门树
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryDeptTree.do")
+	@ResponseBody
+	public void queryDeptTree(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter()
+				.print(deptService.selectDeptsForTree().toLowerCase());
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
+
+	/**
+	 * 跳转到部门管理首页
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
+	public ModelAndView toIndex() {
+		return new ModelAndView("/base/admin/dept/index");
+	}
+
+	/**
 	 * 更新部门信息
 	 * 
 	 * @param deptId
@@ -167,35 +208,6 @@ public class DeptController {
 		} else {
 			map.put("success", true);
 			map.put("msg", "保存成功");
-		}
-		return map;
-	}
-
-	/**
-	 * 删除部门
-	 * 
-	 * @param deptIds
-	 *            部门id串
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/delDepts.do")
-	@ResponseBody
-	public Map<String, Object> delDepts(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String deptIds = request.getParameter("DEPT_IDS");
-		Map<String, Object> map = new HashMap<>();
-		Dept dept = new Dept();
-		dept.setIds(deptIds);
-		int bool = deptService.deleteByPrimaryKeys(dept);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
 		}
 		return map;
 	}
