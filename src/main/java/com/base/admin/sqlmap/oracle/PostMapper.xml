@@ -19,7 +19,7 @@
 		<include refid="Base_Column_List" />
 		from VIEW_BASE_POST
 		<where>
-			<if test="ids != null">
+			<if test="ids != null and ids != ''">
 				and POST_DEPT_ID in (${ids})
 			</if>
 			<if test="keyWord != null">
@@ -35,7 +35,7 @@
 		resultType="java.lang.Integer">
 		select count(t.POST_ID) from VIEW_BASE_POST t
 		<where>
-			<if test="ids != null">
+			<if test="ids != null and ids != ''">
 				and POST_DEPT_ID in (${ids})
 			</if>
 			<if test="keyWord != null">

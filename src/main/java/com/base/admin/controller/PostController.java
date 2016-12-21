@@ -260,7 +260,8 @@ public class PostController {
 	@ResponseBody
 	public void queryUnSelectedMenusForTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		postMenuController.queryUnSelectedMenusForTree(request, response);
+		postMenuController.queryUnSelectedMenusForTree(request,
+				response);
 	}
 
 	/**
@@ -287,7 +288,18 @@ public class PostController {
 	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
-		return new ModelAndView("/base/admin/post");
+		return new ModelAndView("/base/admin/post/index");
+	}
+
+	/**
+	 * 跳转到岗位管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
+	public ModelAndView openEditUI(HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView("/base/admin/post/editUI");
 	}
 
 	/**
