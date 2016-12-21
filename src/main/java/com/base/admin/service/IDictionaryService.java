@@ -12,14 +12,11 @@ public interface IDictionaryService {
 
 	int updateByPrimaryKeySelective(Dictionary dictionary);
 
-	List<Dictionary> selectDictionarysForList(Dictionary dictionary);
+	List<Dictionary> queryDictionarysForList(Dictionary dictionary);
 
-	Map<String, List<Map<String, Object>>> selectDictionarysForCache();
+	Map<String, List<Map<String, Object>>> queryDictionarysForCache();
 
-	List<Map<String, Object>> selectDictionarysForPage(
-			Dictionary dictionary);
-
-	int selectCountOfDictionarysForPage(Dictionary dictionary);
+	Map<String, Object> queryDictionarysForPage(Dictionary dictionary);
 
 	String getDictionarysByDicCode(String dicCode);
 

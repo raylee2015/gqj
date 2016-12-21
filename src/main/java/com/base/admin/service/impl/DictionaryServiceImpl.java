@@ -19,6 +19,7 @@ public class DictionaryServiceImpl implements IDictionaryService {
 
 	@Autowired
 	private DictionaryMapper dictionaryMapper;
+
 	@Override
 	public int deleteByPrimaryKeys(Dictionary dictionary) {
 		return dictionaryMapper.deleteByPrimaryKeys(dictionary);
@@ -27,7 +28,7 @@ public class DictionaryServiceImpl implements IDictionaryService {
 	@Override
 	public Map<String, Object> insertSelective(Dictionary dictionary) {
 		Map<String, Object> result = new HashMap<>();
-		if (selectDictionarysForList(dictionary).size() > 0) {
+		if (queryDictionarysForList(dictionary).size() > 0) {
 			result.put("success", false);
 			result.put("msg", "系统已经存在同样的字典代码与字典值");
 		} else {
@@ -46,21 +47,22 @@ public class DictionaryServiceImpl implements IDictionaryService {
 	}
 
 	@Override
-	public int selectCountOfDictionarysForPage(Dictionary dictionary) {
-		return dictionaryMapper
-				.selectCountOfDictionarysForPage(dictionary);
+	public List<Dictionary> queryDictionarysForList(
+			Dictionary dictionary) {
+		return dictionaryMapper.queryDictionarysForList(dictionary);
 	}
 
 	@Override
-	public List<Dictionary> selectDictionarysForList(
+	public Map<String, Object> queryDictionarysForPage(
 			Dictionary dictionary) {
-		return dictionaryMapper.selectDictionarysForList(dictionary);
-	}
-
-	@Override
-	public List<Map<String, Object>> selectDictionarysForPage(
-			Dictionary dictionary) {
-		return dictionaryMapper.selectDictionarysForPage(dictionary);
+		List<Map<String, Object>> dictionarys = dictionaryMapper
+				.queryDictionarysForPage(dictionary);
+		int count = dictionaryMapper
+				.queryCountOfDictionarysForPage(dictionary);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("rows", dictionarys);
+		map.put("total", count);
+		return map;
 	}
 
 	@Override
@@ -69,9 +71,9 @@ public class DictionaryServiceImpl implements IDictionaryService {
 	}
 
 	@Override
-	public Map<String, List<Map<String, Object>>> selectDictionarysForCache() {
+	public Map<String, List<Map<String, Object>>> queryDictionarysForCache() {
 		List<Map<String, Object>> dicList = dictionaryMapper
-				.selectDictionarysForCache();
+				.queryDictionarysForCache();
 		Map<String, List<Map<String, Object>>> result = new HashMap<>();
 		for (int i = 0; i < dicList.size(); i++) {
 			Map<String, Object> item = dicList.get(i);
@@ -92,7 +94,7 @@ public class DictionaryServiceImpl implements IDictionaryService {
 
 	@Override
 	public String getDictionarysByDicCode(String dicCode) {
-		List<Map<String, Object>> list = selectDictionarysForCache()
+		List<Map<String, Object>> list = queryDictionarysForCache()
 				.get(dicCode);
 		String result = "";
 		if (list != null && list.size() != 0) {

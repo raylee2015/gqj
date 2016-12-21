@@ -12,13 +12,13 @@ public interface DictionaryMapper {
 
 	int updateByPrimaryKeySelective(Dictionary record);
 
-	List<Dictionary> selectDictionarysForList(Dictionary dictionary);
+	List<Dictionary> queryDictionarysForList(Dictionary dictionary);
 
-	List<Map<String, Object>> selectDictionarysForCache();
+	List<Map<String, Object>> queryDictionarysForCache();
 
-	List<Map<String, Object>> selectDictionarysForPage(
+	List<Map<String, Object>> queryDictionarysForPage(
 			Dictionary dictionary);
 
-	int selectCountOfDictionarysForPage(Dictionary dictionary);
+	int queryCountOfDictionarysForPage(Dictionary dictionary);
 
 }
