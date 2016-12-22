@@ -26,6 +26,18 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
+	//关闭选岗位窗口
+	function closeChoosePostUIForUser() {
+		closeEditUI('choosePostUIForUser')
+	}
+
+	//打开选岗位窗口
+	function openChoosePostUIForUser(rowIndex) {
+		var url = "openChoosePostUI.do?opType=edit&rowIndex=" + rowIndex;
+		createModalDialog("choosePostUIForUser", url, "选择岗位", 1000, 600);
+		openEditUI('choosePostUIForUser');
+	}
+
 	//关闭编辑窗口
 	function closeEditUIForUser() {
 		closeEditUI('editUIForUser')
@@ -153,6 +165,18 @@
 													+ ' onclick="openEditUIForUser(\''
 													+ rowIndex
 													+ '\')" href="javascript:void(0)">编辑</a>';
+											return btn;
+										}
+									},
+									{
+										field : 'CHOOSE_POST',
+										title : '选择岗位',
+										formatter : function(fieldValue,
+												rowData, rowIndex) {
+											var btn = '<a class="easyui-linkbutton" '
+													+ ' onclick="openChoosePostUIForUser(\''
+													+ rowIndex
+													+ '\')" href="javascript:void(0)">选择岗位</a>';
 											return btn;
 										}
 									}, {

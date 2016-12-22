@@ -146,6 +146,17 @@ public class UserController {
 			HttpServletResponse response) {
 		return new ModelAndView("/base/admin/user/editUI");
 	}
+	
+	/**
+	 * 跳转到选择岗位管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openChoosePostUI.do", method = RequestMethod.GET)
+	public ModelAndView openChoosePostUI(HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView("/base/admin/user/choosePostUI");
+	}
 
 	/**
 	 * 查询部门树
