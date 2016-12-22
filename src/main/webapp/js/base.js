@@ -156,6 +156,8 @@ function query(params, url, successFunction) {
 function dataGridLoadData(dataGridId, result) {
 	var dataGrid = eval('$(\'#' + dataGridId + '\')');
 	dataGrid.datagrid('loadData', result);
+	dataGrid.datagrid('uncheckAll');
+	dataGrid.datagrid('unselectAll');
 }
 
 // 关闭编辑窗口

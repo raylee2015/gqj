@@ -303,6 +303,17 @@ public class PostController {
 	}
 
 	/**
+	 * 跳转到匹配岗位人员操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openChooseUserUI.do", method = RequestMethod.GET)
+	public ModelAndView openChooseUserUI(HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView("/base/admin/post/chooseUserUI");
+	}
+
+	/**
 	 * 更新岗位信息
 	 * 
 	 * @param request
