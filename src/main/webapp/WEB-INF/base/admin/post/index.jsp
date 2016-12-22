@@ -59,6 +59,18 @@
 		openEditUI('chooseUserUIForPost');
 	}
 
+	//关闭选菜单窗口
+	function closeChooseMenuUIForPost() {
+		closeEditUI('chooseMenuUIForPost')
+	}
+
+	//打开选菜单窗口
+	function openChooseMenuUIForPost(rowIndex) {
+		var url = "openChooseMenuUI.do?opType=edit&rowIndex=" + rowIndex;
+		createModalDialog("chooseMenuUIForPost", url, "匹配岗位菜单权限", 1000, 600);
+		openEditUI('chooseMenuUIForPost');
+	}
+
 	//删除
 	function delPosts() {
 		if (checkSelectedItems('datagridForPost', '请选择岗位')) {
@@ -111,50 +123,9 @@
 				closeCache();
 				initDataGridForPost();
 				initDeptTree();
-				initUnSelectedMenuTree();
-				initSelectedMenuTree();
 				registerKeyPressForTextInput('keyWordForPostTextInput',
 						queryPostPagesForSearch);
 			});
-	
-	
-
-	//初始化待选择菜单权限树
-	function initUnSelectedMenuTree() {
-		$('#treeOfUnSelectedMenus').tree({
-			url : 'queryUnSelectedMenusForTree.do',
-			checkbox : true,
-			checkOnSelect : true,
-			onClick : function(node) {
-				if (node.checked == true) {
-					$(this).tree('uncheck', node.target);
-				} else {
-					$(this).tree('check', node.target);
-				}
-			},
-			onLoadError : function(arguments) {
-				eval(errorCodeForQuery);
-			}
-		});
-	}
-
-	//初始化已选择菜单权限树
-	function initSelectedMenuTree() {
-		$('#treeOfSelectedMenus').tree({
-			checkbox : true,
-			checkOnSelect : true,
-			onClick : function(node) {
-				if (node.checked == true) {
-					$(this).tree('uncheck', node.target);
-				} else {
-					$(this).tree('check', node.target);
-				}
-			},
-			onLoadError : function(arguments) {
-				eval(errorCodeForQuery);
-			}
-		});
-	}
 
 	//初始化树
 	function initDeptTree() {
@@ -213,11 +184,19 @@
 													+ '\')" href="javascript:void(0)">选择相关人员</a>';
 											return btn;
 										}
-									}, {
+									},
+									{
 										field : 'CHOOSE_MENU',
 										title : '选择相关菜单权限',
 										width : 140,
-										formatter : chooseMenuColumnFormatter
+										formatter : function(fieldValue,
+												rowData, rowIndex) {
+											var btn = '<a class="easyui-linkbutton" '
+													+ 'onclick="openChooseMenuUIForPost(\''
+													+ rowIndex
+													+ '\')" href="javascript:void(0)">选择相关菜单权限</a>';
+											return btn;
+										}
 									}, {
 										field : 'POST_NAME',
 										title : '岗位名称',
@@ -239,109 +218,6 @@
 								eval(errorCodeForQuery);
 							}
 						});
-	}
-
-	// 重写选菜单列，使得选菜单栏显示选人连接
-	function chooseMenuColumnFormatter(fieldValue, rowData, rowIndex) {
-		var btn = '<a class="easyui-linkbutton" onclick="openChooseMenuUI(\'edit\',\''
-				+ rowIndex + '\')" href="javascript:void(0)">选择相关菜单权限</a>';
-		return btn;
-	}
-
-	var selectedPost = null;
-
-	// 打开选择菜单窗口
-	function openChooseMenuUI(opType, rowIndex) {
-		var rowData = $('#datagrid').datagrid('getData').rows[rowIndex];
-		selectedPost = rowData;
-		var postId = rowData.POST_ID;
-		querySelectedMenusForTree(postId);
-		$('#chooseMenuUI').window('open');
-	}
-
-	//查询已选菜单权限
-	function querySelectedMenusForTree(postId) {
-		var params = {
-			POST_ID : postId,
-		};
-		ajaxFunction(params, 'querySelectedMenusForTree.do',
-				successFunctionForQuerySelectedMenus, errorFunctionForQuery,
-				false);
-	}
-
-	//成功查询已选菜单权限
-	function successFunctionForQuerySelectedMenus(result, haveTree) {
-		$('#treeOfSelectedMenus').tree('loadData', result);
-		unCheckALL('treeOfUnSelectedMenus');
-		unCheckALL('treeOfSelectedMenus');
-	}
-
-	//全部不选
-	function unCheckALL(treeId) {
-		var tree = eval('$(\'#' + treeId + '\')');
-		var roots = tree.tree('getRoots');
-		for (var i = 0; i < roots.length; i++) {
-			var node = tree.tree('find', roots[i].id);
-			tree.tree('uncheck', node.target);
-		}
-	}
-
-	//为职位配置菜单权限
-	function addMenusToPost() {
-		var rowDatas = $('#treeOfUnSelectedMenus').tree('getChecked');
-		if (rowDatas.length == 0) {
-			alert('请选择待选菜单权限');
-		} else {
-			var ids = '';
-			for (var i = 0; i < rowDatas.length; i++) {
-				var item = rowDatas[i];
-				if (item.view_menu_up_inner_code != 'undefined') {
-					ids += item.view_menu_up_inner_code + ',';
-				}
-			}
-			ids = ids.substring(0, ids.length - 1);
-			var params = {
-				MENU_IDS : ids,
-				POST_ID : selectedPost.POST_ID
-			};
-			save2(params, "addMenusToPost.do",
-					successFunctionForAddMenusToPost, errorFunctionForOption,
-					false);
-		}
-	}
-
-	//成功配置职位菜单权限
-	function successFunctionForAddMenusToPost() {
-		querySelectedMenusForTree(selectedPost.POST_ID);
-	}
-
-	//删除
-	function delMenusToPost() {
-		var rowDatas = $('#treeOfSelectedMenus').tree('getChecked');
-		if (rowDatas.length == 0) {
-			alert('请选择已选菜单权限');
-		} else {
-			var ids = '';
-			for (var i = 0; i < rowDatas.length; i++) {
-				var item = rowDatas[i];
-				if (item.id != 'undefined') {
-					ids += item.id + ',';
-				}
-			}
-			ids = ids.substring(0, ids.length - 1);
-			var params = {
-				MENU_IDS : ids,
-				POST_ID : selectedPost.POST_ID
-			};
-			save2(params, "delMenusToPost.do",
-					successFunctionForDelMenusToPost, errorFunctionForOption,
-					false);
-		}
-	}
-
-	//成功删除职位菜单权限
-	function successFunctionForDelMenusToPost() {
-		successFunctionForAddMenusToPost();
 	}
 </script>
 </head>
@@ -372,31 +248,6 @@
 						onclick="queryPostPagesForSearch()">查询</a>
 				</div>
 
-			</div>
-		</div>
-	</div>
-
-	<!--  选择相关菜单权限界面 -->
-	<div id="chooseMenuUI" class="easyui-window" title="选择相关菜单权限"
-		closed="true" style="width: 1000px; height: 600px;">
-		<div class="easyui-layout" data-options="fit:true,border:false">
-			<div region="west" title="待选菜单权限" collapsible="false"
-				style="width: 45%; height: 100%;">
-				<ul id="treeOfUnSelectedMenus" class="easyui-tree" method="get"
-					animate="true" lines="true"></ul>
-			</div>
-			<div region="center" style="width: 10%; height: 100%;">
-				<a href="#" class="easyui-linkbutton"
-					data-options="iconCls:'icon-arrow-right',size:'large',iconAlign:'top'"
-					style="width: 100%; height: 50%;" onclick="addMenusToPost()">选择</a>
-				<a href="#" class="easyui-linkbutton"
-					data-options="iconCls:'icon-arrow-left',size:'large',iconAlign:'top'"
-					style="width: 100%; height: 50%;" onclick="delMenusToPost()">取消选择</a>
-			</div>
-			<div region="east" collapsible="false" title="已选菜单权限"
-				style="width: 45%; height: 100%;">
-				<ul id="treeOfSelectedMenus" class="easyui-tree" method="get"
-					animate="true" lines="true"></ul>
 			</div>
 		</div>
 	</div>

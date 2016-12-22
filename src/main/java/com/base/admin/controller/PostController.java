@@ -314,6 +314,17 @@ public class PostController {
 	}
 
 	/**
+	 * 跳转到匹配岗位菜单操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openChooseMenuUI.do", method = RequestMethod.GET)
+	public ModelAndView openChooseMenuUI(HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView("/base/admin/post/chooseMenuUI");
+	}
+
+	/**
 	 * 更新岗位信息
 	 * 
 	 * @param request
