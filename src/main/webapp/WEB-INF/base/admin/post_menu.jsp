@@ -50,9 +50,8 @@
 					MENU_IDS : ids,
 					POST_ID : selectedPost.POST_ID
 				};
-				save2(params, "addMenusToPost.do",
-						successFunctionForAddMenusToPost,
-						errorFunctionForOption, false);
+				save(params, "addMenusToPost.do",
+						successFunctionForAddMenusToPost);
 			}
 		}
 	}
@@ -85,9 +84,8 @@
 					MENU_IDS : ids,
 					POST_ID : selectedPost.POST_ID
 				};
-				save2(params, "delMenusToPost.do",
-						successFunctionForDelMenusToPost,
-						errorFunctionForOption, false);
+				save(params, "delMenusToPost.do",
+						successFunctionForDelMenusToPost);
 			}
 		}
 	}
@@ -102,15 +100,14 @@
 		var params = {
 			DEPT_IDS : deptIds,
 			page : 1,
-			rows : $('#datagridOfPost').datagrid('getPager').data("pagination").options.pageSize
+			rows : getPageSizeOfDataGrid('datagridOfPost')
 		};
-		ajaxFunction(params, 'queryPostPage.do', successFunctionForQueryPost,
-				errorFunctionForQuery, false);
+		query(params, 'queryPostPage.do', successFunctionForQueryPost);
 	}
 
 	//岗位查询成功
 	function successFunctionForQueryPost(result) {
-		$('#datagridOfPost').datagrid('loadData', result);
+		dataGridLoadData('datagridOfPost', result);
 	}
 
 	//查询已选菜单权限
@@ -118,9 +115,8 @@
 		var params = {
 			POST_ID : postId,
 		};
-		ajaxFunction(params, 'querySelectedMenusForTree.do',
-				successFunctionForQuerySelectedMenus, errorFunctionForQuery,
-				false);
+		query(params, 'querySelectedMenusForTree.do',
+				successFunctionForQuerySelectedMenus);
 	}
 
 	//成功查询已选菜单权限
@@ -149,7 +145,7 @@
 				});
 			},
 			onLoadError : function(arguments) {
-				eval(errorCodeForQuery);
+				errorFunctionForQuery();
 			}
 		});
 	}
@@ -174,7 +170,7 @@
 						}
 					},
 					onLoadError : function(arguments) {
-						eval(errorCodeForQuery);
+						errorFunctionForQuery();
 					}
 				});
 	}

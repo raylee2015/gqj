@@ -51,9 +51,8 @@
 					USER_IDS : ids,
 					POST_ID : selectedPost.POST_ID
 				};
-				save2(params, "addUsersToPost.do",
-						successFunctionForAddUsersToPost,
-						errorFunctionForOption, false);
+				save(params, "addUsersToPost.do",
+						successFunctionForAddUsersToPost);
 			}
 		}
 	}
@@ -88,9 +87,8 @@
 					USER_IDS : ids,
 					POST_ID : selectedPost.POST_ID
 				};
-				save2(params, "delUsersToPost.do",
-						successFunctionForDelUsersToPost,
-						errorFunctionForOption, false);
+				save(params, "delUsersToPost.do",
+						successFunctionForDelUsersToPost);
 				rowDatas = {};
 			}
 		}
@@ -106,20 +104,19 @@
 		var params = {
 			DEPT_IDS : deptIds,
 			page : 1,
-			rows : $('#datagridOfPost').datagrid('getPager').data("pagination").options.pageSize
+			rows : getPageSizeOfDataGrid('datagridOfPost')
 		};
-		ajaxFunction(params, 'queryPostPage.do', successFunctionForQueryPost,
-				errorFunctionForQuery, false);
+		query(params, 'queryPostPage.do', successFunctionForQueryPost);
 	}
 
 	//岗位查询成功
 	function successFunctionForQueryPost(result) {
-		$('#datagridOfPost').datagrid('loadData', result);
+		dataGridLoadData('datagridOfPost', result);
 	}
 
 	//查询待选人员
 	function queryUnSelectedUsersForPage(postId) {
-		if (postId == '') {
+		if (postId == '' || postId == null) {
 			var selectedPost = $('#datagridOfPost').datagrid('getSelected');
 			if (selectedPost == null) {
 				alert("请选择岗位");
@@ -132,24 +129,20 @@
 			KEY_WORD : getTextBoxValue('keyWordForUnSelectedUsersTextInput'),
 			POST_ID : postId,
 			page : 1,
-			rows : $('#datagridOfUnSelectedUsers').datagrid('getPager').data(
-					"pagination").options.pageSize
+			rows : getPageSizeOfDataGrid('datagridOfUnSelectedUsers')
 		};
-		ajaxFunction(params, 'queryUnSelectedUsersForPage.do',
-				successFunctionForQueryUnSelectedUsers, errorFunctionForQuery,
-				false);
+		query(params, 'queryUnSelectedUsersForPage.do',
+				successFunctionForQueryUnSelectedUsers);
 	}
 
 	//成功查询待选人员
 	function successFunctionForQueryUnSelectedUsers(result, haveTree) {
-		$('#datagridOfUnSelectedUsers').datagrid('loadData', result);
-		$('#datagridOfUnSelectedUsers').datagrid('uncheckAll');
-		$('#datagridOfUnSelectedUsers').datagrid('unselectAll');
+		dataGridLoadData('datagridOfUnSelectedUsers', result);
 	}
 
 	//查询已选人员
 	function querySelectedUsersForPage(postId) {
-		if (postId == '') {
+		if (postId == ''|| postId == null) {
 			var selectedPost = $('#datagridOfPost').datagrid('getSelected');
 			if (selectedPost == null) {
 				alert("请选择岗位");
@@ -162,19 +155,15 @@
 			KEY_WORD : getTextBoxValue('keyWordForSelectedUsersTextInput'),
 			POST_ID : postId,
 			page : 1,
-			rows : $('#datagridOfSelectedUsers').datagrid('getPager').data(
-					"pagination").options.pageSize
+			rows : getPageSizeOfDataGrid('datagridOfSelectedUsers')
 		};
-		ajaxFunction(params, 'querySelectedUsersForPage.do',
-				successFunctionForQuerySelectedUsers, errorFunctionForQuery,
-				false);
+		query(params, 'querySelectedUsersForPage.do',
+				successFunctionForQuerySelectedUsers);
 	}
 
 	//成功查询已选人员
 	function successFunctionForQuerySelectedUsers(result, haveTree) {
-		$('#datagridOfSelectedUsers').datagrid('loadData', result);
-		$('#datagridOfSelectedUsers').datagrid('uncheckAll');
-		$('#datagridOfSelectedUsers').datagrid('unselectAll');
+		dataGridLoadData('datagridOfSelectedUsers', result);
 	}
 
 	//页面加载完
@@ -211,7 +200,7 @@
 				$('#datagridOfPost').datagrid('uncheckAll');
 			},
 			onLoadError : function(arguments) {
-				eval(errorCodeForQuery);
+				errorFunctionForQuery();
 			}
 		});
 	}
