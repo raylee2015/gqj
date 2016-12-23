@@ -94,9 +94,9 @@ public class StorageController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryStoragePage.do")
+	@RequestMapping("/queryStoragesPage.do")
 	@ResponseBody
-	public Map<String, Object> queryStoragePage(
+	public Map<String, Object> queryStoragesPage(
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		String page = request.getParameter("page");

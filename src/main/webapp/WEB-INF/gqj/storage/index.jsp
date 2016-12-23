@@ -34,21 +34,23 @@
 	//打开编辑窗口
 	function openAddUIForStorage() {
 		createModalDialog("editUIForStorage", "openEditUI.do?opType=add",
-				"仓库设置", 400, 300);
+				"添加仓库", 400, 120);
 		openEditUI('editUIForStorage');
 	}
 
 	//打开编辑窗口
 	function openEditUIForStorage(rowIndex) {
 		var url = "openEditUI.do?opType=edit&rowIndex=" + rowIndex;
-		createModalDialog("editUIForStorage", url, "仓库设置", 400, 300);
+		var rowData = getRowDataOfSelfDataGrid('datagridForStorage', rowIndex);
+		createModalDialog("editUIForStorage", url, ("修改仓库\""
+				+ rowData.STORE_NAME + "\"的信息"), 400, 120);
 		openEditUI('editUIForStorage');
 	}
 	//删除
 	function delStorages() {
 		if (checkSelectedItems('datagridForStorage', '请选择仓库')) {
 			var storeIds = getIdsOfSelectedItems('datagridForStorage',
-					'MENU_INNER_CODE');
+					'STORE_ID');
 			if (storeIds != null && storeIds != '') {
 				var params = {
 					STORE_IDS : storeIds
@@ -58,44 +60,82 @@
 			}
 		}
 	}
-	
+
+	//回调函数，删除或其他操作成功后调用
+	function successFunctionForOption(result) {
+		showMessage(result.msg, result.msg);
+		reloadDataGrid('datagridForStorage');
+	}
+
+	//用在点击查询按钮的时候
+	function queryStoragePagesForSearch() {
+		queryStorages();
+	}
+
 	//查询
-	function queryForPage() {
+	function queryStorages() {
 		var params = {
-			keyWord : $('#keyWordTextInput').textbox('getValue'),
+			keyWord : getTextBoxValue('keyWordForStorageTextInput'),
 			page : 1,
-			rows : $('#datagrid').datagrid('getPager').data("pagination").options.pageSize
+			rows : getPageSizeOfDataGrid('datagridForStorage')
 		};
-		query(params, 'queryStoragePage.do');
+		query(params, 'queryStoragesPage.do', successFunctionForQuery);
+	}
+
+	//回调函数，查询成功后调用
+	function successFunctionForQuery(result) {
+		dataGridLoadData('datagridForStorage', result);
 	}
 
 	//页面加载完
-	$(document).ready(function() {
-		initDocument();
-		initDataGrid();
-	});
+	$(document).ready(
+			function() {
+				closeCache();
+				registerKeyPressForTextInput('keyWordForStorageTextInput',
+						queryStoragePagesForSearch);
+				initDataGridForStorage();
+			});
 
 	//初始化列表元素
-	function initDataGrid() {
-		$('#datagrid').datagrid({
-			url : 'queryStoragePage.do',
-			idField : 'STORE_ID',
-			columns : [ [ {
-				field : 'ck',
-				checkbox : true
-			}, {
-				field : 'op',
-				title : '操作',
-				formatter : editColumnFormatter
-			}, {
-				field : 'STORE_NAME',
-				title : '仓库名称',
-				width : 100,
-			} ] ],
-			onLoadError : function() {
-				eval(errorCodeForQuery);
-			}
-		});
+	function initDataGridForStorage() {
+		$('#datagridForStorage')
+				.datagrid(
+						{
+							url : 'queryStoragesPage.do',
+							idField : 'STORE_ID',
+							rownumbers : true,
+							toolbar : '#toolbarForStorage',
+							pagination : true,
+							pageSize : 30,
+							pageNumber : 1,
+							checkOnSelect : false,
+							fit : true,
+							method : 'get',
+							columns : [ [
+									{
+										field : 'ck',
+										checkbox : true
+									},
+									{
+										field : 'op',
+										title : '操作',
+										formatter : function(fieldValue,
+												rowData, rowIndex) {
+											var btn = '<a class="easyui-linkbutton" '
+													+ ' onclick="openEditUIForStorage(\''
+													+ rowIndex
+													+ '\')" href="javascript:void(0)">编辑</a>';
+											return btn;
+										}
+									}, {
+										field : 'STORE_NAME',
+										title : '仓库名称',
+										width : 100,
+									} ] ],
+							onLoadError : function() {
+								errorFunctionForQuery();
+							}
+						});
 	}
 </script>
 </head>
@@ -103,57 +143,24 @@
 	<!-- 列表页面 -->
 	<div class="easyui-layout" data-options="fit:true">
 		<div region="center">
-			<table id="datagrid" class="easyui-datagrid" rownumbers="true"
-				toolbar="#toolbar" pagination="true" pageSize="30" pageNumber="1"
-				checkOnSelect="false" method="get" fit="true">
+			<table id="datagridForStorage" class="easyui-datagrid">
 			</table>
-			<div id="toolbar">
+			<div id="toolbarForStorage">
 				<div>
 					<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
-						plain="true" onclick="refresh()">刷新</a> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-add" plain="true"
-						onclick="openAddUI()">添加</a> <a href="#" class="easyui-linkbutton"
-						iconCls="icon-remove" plain="true" onclick="delStorages()">删除</a>
+						plain="true" onclick="refreshDataGrid('datagridForStorage')">刷新</a>
+					<a href="#" class="easyui-linkbutton" iconCls="icon-add"
+						plain="true" onclick="openAddUIForStorage()">添加</a> <a href="#"
+						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
+						onclick="delStorages()">删除</a>
 				</div>
 				<div>
-					<input id="keyWordTextInput" class="easyui-textbox"
+					<input id="keyWordForStorageTextInput" class="easyui-textbox"
 						data-options="prompt:'仓库名称',validType:'length[0,50]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
-						onclick="queryForPage()">查询</a>
+						onclick="queryStoragePagesForSearch()">查询</a>
 				</div>
-			</div>
-		</div>
-	</div>
-
-	<!--  详细界面 -->
-	<div id="editUI" class="easyui-window" title="添加仓库" closed="true"
-		data-options="iconCls:'icon-save'"
-		style="width: 400px; height: 120px; padding: 5px;">
-		<div class="easyui-layout" data-options="fit:true">
-			<div region="north" fit="true" border="false">
-				<form id="form" method="post" style="width: 100%;">
-					<div style="display: none">
-						<input id="storageIdTextBox" name="STORE_ID"
-							class="easyui-textbox" />
-					</div>
-					<table width="100%">
-						<tr>
-							<td width="22%">仓库名称:</td>
-							<td><input id="storageNameTextBox" name="STORE_NAME"
-								class="easyui-textbox"
-								data-options="prompt:'仓库名称',required:true,validType:'length[3,10]'"
-								style="width: 100%; height: 32px" /></td>
-						</tr>
-					</table>
-				</form>
-			</div>
-			<div region="south" border="false"
-				style="text-align: right; height: 30px">
-				<a class="easyui-linkbutton" iconCls="icon-ok"
-					href="javascript:void(0)" onclick="saveStorage()">保存</a> <a
-					class="easyui-linkbutton" iconCls="icon-cancel"
-					href="javascript:void(0)" onclick="closeEditUI()">关闭</a>
 			</div>
 		</div>
 	</div>

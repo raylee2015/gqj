@@ -60,7 +60,7 @@
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="storeId != null">
-				#{storeId,jdbcType=DECIMAL},
+				BASE_STORAGE_SEQ.nextval,
 			</if>
 			<if test="storeName != null">
 				#{storeName,jdbcType=VARCHAR},
