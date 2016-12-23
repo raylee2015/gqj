@@ -63,7 +63,8 @@
 			url = 'addNewUser.do';
 		} else if (opType == 'edit') {
 			var rowIndex = getTextBoxValue('rowIndex');
-			var rowData = parent.$('#datagridForUser').datagrid('getData').rows[rowIndex];
+			var rowData = getRowDataOfParentDataGrid('datagridForUser',
+					rowIndex);
 			$('#userForm').form('load', rowData);
 			url = 'updateUser.do';
 		}

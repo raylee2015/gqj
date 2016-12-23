@@ -34,7 +34,9 @@
 	//打开选岗位窗口
 	function openChoosePostUIForUser(rowIndex) {
 		var url = "openChoosePostUI.do?opType=edit&rowIndex=" + rowIndex;
-		createModalDialog("choosePostUIForUser", url, "选择岗位", 1000, 600);
+		var rowData = getRowDataOfSelfDataGrid('datagridForUser', rowIndex);
+		createModalDialog("choosePostUIForUser", url, ("设置\""
+				+ rowData.USER_NAME + "\"的岗位"), 1000, 600);
 		openEditUI('choosePostUIForUser');
 	}
 
@@ -45,7 +47,7 @@
 
 	//打开编辑窗口
 	function openAddUIForUser() {
-		createModalDialog("editUIForUser", "openEditUI.do?opType=add", "用户设置",
+		createModalDialog("editUIForUser", "openEditUI.do?opType=add", "添加用户",
 				400, 350);
 		openEditUI('editUIForUser');
 	}
@@ -53,7 +55,9 @@
 	//打开编辑窗口
 	function openEditUIForUser(rowIndex) {
 		var url = "openEditUI.do?opType=edit&rowIndex=" + rowIndex;
-		createModalDialog("editUIForUser", url, "用户设置", 400, 350);
+		var rowData = getRowDataOfSelfDataGrid('datagridForUser', rowIndex);
+		createModalDialog("editUIForUser", url,
+				("修改\"" + rowData.USER_NAME + "\"的用户资料"), 400, 350);
 		openEditUI('editUIForUser');
 	}
 
