@@ -63,8 +63,8 @@
 			url = 'addNewDictionary.do';
 		} else if (opType == 'edit') {
 			var rowIndex = getTextBoxValue('rowIndex');
-			var rowData = parent.$('#datagridForDictionary')
-					.datagrid('getData').rows[rowIndex];
+			var rowData = getRowDataOfParentDataGrid('datagridForDictionary',
+					rowIndex);
 			$('#dictionaryForm').form('load', rowData);
 			url = 'updateDictionary.do';
 		}

@@ -61,7 +61,8 @@
 			url = 'addNewParam.do';
 		} else if (opType == 'edit') {
 			var rowIndex = getTextBoxValue('rowIndex');
-			var rowData = parent.$('#datagridForParam').datagrid('getData').rows[rowIndex];
+			var rowData = getRowDataOfParentDataGrid('datagridForParam',
+					rowIndex);
 			$('#paramForm').form('load', rowData);
 			url = 'updateParam.do';
 		}

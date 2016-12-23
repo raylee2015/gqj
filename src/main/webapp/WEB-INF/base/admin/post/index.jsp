@@ -35,7 +35,7 @@
 
 	//打开编辑窗口
 	function openAddUIForPost() {
-		createModalDialog("editUIForPost", "openEditUI.do?opType=add", "岗位设置",
+		createModalDialog("editUIForPost", "openEditUI.do?opType=add", "添加岗位",
 				400, 260);
 		openEditUI('editUIForPost');
 	}
@@ -43,7 +43,9 @@
 	//打开编辑窗口
 	function openEditUIForPost(rowIndex) {
 		var url = "openEditUI.do?opType=edit&rowIndex=" + rowIndex;
-		createModalDialog("editUIForPost", url, "岗位设置", 400, 260);
+		var rowData = getRowDataOfSelfDataGrid('datagridForPost', rowIndex);
+		createModalDialog("editUIForPost", url,
+				("修改岗位\"" + rowData.POST_NAME + "\"的信息"), 400, 260);
 		openEditUI('editUIForPost');
 	}
 
@@ -55,7 +57,9 @@
 	//打开选人窗口
 	function openChooseUserUIForPost(rowIndex) {
 		var url = "openChooseUserUI.do?opType=edit&rowIndex=" + rowIndex;
-		createModalDialog("chooseUserUIForPost", url, "匹配岗位人员", 1000, 600);
+		var rowData = getRowDataOfSelfDataGrid('datagridForPost', rowIndex);
+		createModalDialog("chooseUserUIForPost", url, ("设置岗位\""
+				+ rowData.POST_NAME + "\"的人员"), 1000, 600);
 		openEditUI('chooseUserUIForPost');
 	}
 
@@ -67,7 +71,9 @@
 	//打开选菜单窗口
 	function openChooseMenuUIForPost(rowIndex) {
 		var url = "openChooseMenuUI.do?opType=edit&rowIndex=" + rowIndex;
-		createModalDialog("chooseMenuUIForPost", url, "匹配岗位菜单权限", 1000, 600);
+		var rowData = getRowDataOfSelfDataGrid('datagridForPost', rowIndex);
+		createModalDialog("chooseMenuUIForPost", url, ("设置岗位\""
+				+ rowData.POST_NAME + "\"的菜单权限"), 1000, 600);
 		openEditUI('chooseMenuUIForPost');
 	}
 
@@ -105,7 +111,7 @@
 	function queryPosts(deptIds) {
 		var params = {
 			DEPT_IDS : deptIds,
-			keyWord : $('#keyWordForPostTextInput').textbox('getValue'),
+			keyWord : getTextBoxValue('keyWordForPostTextInput'),
 			page : 1,
 			rows : getPageSizeOfDataGrid('datagridForPost')
 		};

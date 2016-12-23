@@ -34,14 +34,18 @@
 	//打开编辑窗口
 	function openAddUIForDictionary() {
 		createModalDialog("editUIForDictionary", "openEditUI.do?opType=add",
-				"数据字典设置", 450, 300);
+				"添加数据字典数据", 450, 300);
 		openEditUI('editUIForDictionary');
 	}
 
 	//打开编辑窗口
 	function openEditUIForDictionary(rowIndex) {
 		var url = "openEditUI.do?opType=edit&rowIndex=" + rowIndex;
-		createModalDialog("editUIForDictionary", url, "数据字典设置", 450, 300);
+		var rowData = getRowDataOfSelfDataGrid('datagridForDictionary',
+				rowIndex);
+		createModalDialog("editUIForDictionary", url, ("修改数字字典\""
+				+ rowData.DIC_CODE + '-' + rowData.DIC_LABEL + "\"的信息"), 450,
+				300);
 		openEditUI('editUIForDictionary');
 	}
 

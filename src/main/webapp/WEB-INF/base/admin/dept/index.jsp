@@ -33,7 +33,7 @@
 
 	//打开编辑窗口
 	function openAddUIForDept() {
-		createModalDialog("editUIForDept", "openEditUI.do?opType=add", "部门设置",
+		createModalDialog("editUIForDept", "openEditUI.do?opType=add", "添加部门",
 				400, 200);
 		openEditUI('editUIForDept');
 	}
@@ -41,7 +41,9 @@
 	//打开编辑窗口
 	function openEditUIForDept(rowIndex) {
 		var url = "openEditUI.do?opType=edit&rowIndex=" + rowIndex;
-		createModalDialog("editUIForDept", url, "部门设置", 400, 200);
+		var rowData = getRowDataOfSelfDataGrid('datagridForDept', rowIndex);
+		createModalDialog("editUIForDept", url,
+				("修改部门\"" + rowData.DEPT_NAME + "\"的信息"), 400, 200);
 		openEditUI('editUIForDept');
 	}
 

@@ -60,7 +60,8 @@
 			url = 'addNewDept.do';
 		} else if (opType == 'edit') {
 			var rowIndex = getTextBoxValue('rowIndex');
-			var rowData = parent.$('#datagridForDept').datagrid('getData').rows[rowIndex];
+			var rowData = getRowDataOfParentDataGrid('datagridForDept',
+					rowIndex);
 			$('#deptForm').form('load', rowData);
 			url = 'updateDept.do';
 		}

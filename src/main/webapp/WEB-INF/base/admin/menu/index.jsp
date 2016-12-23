@@ -33,7 +33,7 @@
 
 	//打开编辑窗口
 	function openAddUIForMenu() {
-		createModalDialog("editUIForMenu", "openEditUI.do?opType=add", "菜单设置",
+		createModalDialog("editUIForMenu", "openEditUI.do?opType=add", "添加菜单",
 				400, 300);
 		openEditUI('editUIForMenu');
 	}
@@ -41,7 +41,9 @@
 	//打开编辑窗口
 	function openEditUIForMenu(rowIndex) {
 		var url = "openEditUI.do?opType=edit&rowIndex=" + rowIndex;
-		createModalDialog("editUIForMenu", url, "菜单设置", 400, 300);
+		var rowData = getRowDataOfSelfDataGrid('datagridForMenu', rowIndex);
+		createModalDialog("editUIForMenu", url,
+				("修改菜单\"" + rowData.MENU_NAME + "\"的信息"), 400, 300);
 		openEditUI('editUIForMenu');
 	}
 	//删除

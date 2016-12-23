@@ -63,7 +63,8 @@
 			url = 'addNewPost.do';
 		} else if (opType == 'edit') {
 			var rowIndex = getTextBoxValue('rowIndex');
-			var rowData = parent.$('#datagridForPost').datagrid('getData').rows[rowIndex];
+			var rowData = getRowDataOfParentDataGrid('datagridForPost',
+					rowIndex);
 			$('#postForm').form('load', rowData);
 			url = 'updatePost.do';
 		}

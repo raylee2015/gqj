@@ -34,14 +34,16 @@
 	//打开编辑窗口
 	function openAddUIForParam() {
 		createModalDialog("editUIForParam", "openEditUI.do?opType=add",
-				"全局参数设置", 400, 230);
+				"添加全局参数", 400, 230);
 		openEditUI('editUIForParam');
 	}
 
 	//打开编辑窗口
 	function openEditUIForParam(rowIndex) {
 		var url = "openEditUI.do?opType=edit&rowIndex=" + rowIndex;
-		createModalDialog("editUIForParam", url, "全局参数设置", 400, 230);
+		var rowData = getRowDataOfSelfDataGrid('datagridForParam', rowIndex);
+		createModalDialog("editUIForParam", url, ("修改全局参数\""
+				+ rowData.PARAM_KEY + "\"的信息"), 400, 230);
 		openEditUI('editUIForParam');
 	}
 
@@ -85,12 +87,11 @@
 		};
 		query(params, 'queryParamsPage.do', successFunctionForQuery);
 	}
-	
+
 	//回调函数，查询成功后调用
 	function successFunctionForQuery(result) {
 		dataGridLoadData('datagridForParam', result);
 	}
-
 
 	//页面加载完
 	$(document).ready(

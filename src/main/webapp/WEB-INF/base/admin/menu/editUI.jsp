@@ -54,7 +54,6 @@
 		closeCache();
 		initMenuTree();
 		initMenuForm();
-		//initMenuLevelComboBox();
 	});
 
 	//初始化表单
@@ -64,7 +63,8 @@
 			url = 'addNewMenu.do';
 		} else if (opType == 'edit') {
 			var rowIndex = getTextBoxValue('rowIndex');
-			var rowData = parent.$('#datagridForMenu').datagrid('getData').rows[rowIndex];
+			var rowData = getRowDataOfParentDataGrid('datagridForMenu',
+					rowIndex);
 			$('#menuForm').form('load', rowData);
 			url = 'updateMenu.do';
 		}
@@ -79,12 +79,6 @@
 	//关闭编辑窗口
 	function closeEditUIForMenu() {
 		parent.closeEditUIForMenu();
-	}
-
-	function initMenuLevelComboBox() {
-		$('#menuLevelComboBox').combobox({
-			onChange : menuLevelChange
-		});
 	}
 
 	function menuLevelChange(newValue, oldValue) {

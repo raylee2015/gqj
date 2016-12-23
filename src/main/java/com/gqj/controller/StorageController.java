@@ -119,7 +119,18 @@ public class StorageController extends BaseController {
 	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
-		return new ModelAndView("/gqj/storage");
+		return new ModelAndView("/gqj/storage/index");
+	}
+
+	/**
+	 * 跳转到仓库管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
+	public ModelAndView openEditUI(HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView("/gqj/storage/editUI");
 	}
 
 	/**
