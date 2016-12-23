@@ -6,9 +6,9 @@ import com.base.admin.entity.Post;
 import com.base.admin.entity.PostUser;
 
 public interface IPostUserService {
-	int deleteByPrimaryKeys(PostUser postUser);
+	int deleteUsersByPost(PostUser postUser);
 
-	int insert(PostUser postUser);
+	int insertUsersByPost(PostUser postUser);
 
 	Map<String, Object> selectPostsForPage(Post post);
 
@@ -17,5 +17,13 @@ public interface IPostUserService {
 	Map<String, Object> querySelectedUsersForPage(PostUser postUser);
 
 	Map<String, Object> queryUnSelectedUsersForPage(PostUser postUser);
+
+	Map<String, Object> querySelectedPostsForPage(PostUser postUser);
+
+	Map<String, Object> queryUnSelectedPostsForPage(PostUser postUser);
+
+	int deletePostsByUser(PostUser postUser);
+
+	int insertPostsByUser(PostUser postUser);
 
 }

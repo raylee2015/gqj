@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.base.admin.entity.PostUser;
 import com.base.admin.entity.User;
 import com.base.admin.service.IDeptService;
 import com.base.admin.service.IDictionaryService;
+import com.base.admin.service.IPostUserService;
 import com.base.admin.service.IUserService;
 import com.base.util.BaseUtil;
 
@@ -32,6 +34,9 @@ public class UserController {
 
 	@Autowired
 	private IDictionaryService dictionaryService;
+
+	@Autowired
+	private IPostUserService postUserService;
 
 	@Autowired
 	private IUserService userService;
@@ -78,6 +83,38 @@ public class UserController {
 	}
 
 	/**
+	 * @Description 为岗位配置人员
+	 * @Author RayLee
+	 * @Version 1.0
+	 * @date 2016年12月9日
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/addPostsToUser.do")
+	@ResponseBody
+	public Map<String, Object> addPostsToUser(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String userId = request.getParameter("USER_ID");
+		String postIds = request.getParameter("POST_IDS");
+		Map<String, Object> map = new HashMap<String, Object>();
+		PostUser postUser = new PostUser();
+		postUser.setUserId(BaseUtil.strToLong(userId));
+		postUser.setIds(postIds);
+		int bool = postUserService.insertPostsByUser(postUser);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
+	}
+
+	/**
 	 * 删除用户
 	 * 
 	 * @param userIds
@@ -100,6 +137,38 @@ public class UserController {
 		} else {
 			map.put("success", true);
 			map.put("msg", "删除成功");
+		}
+		return map;
+	}
+
+	/**
+	 * @Description 删除岗位的人员
+	 * @Author RayLee
+	 * @Version 1.0
+	 * @date 2016年12月9日
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/delPostsToUser.do")
+	@ResponseBody
+	public Map<String, Object> delPostsToUser(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String userId = request.getParameter("USER_ID");
+		String postIds = request.getParameter("POST_IDS");
+		Map<String, Object> map = new HashMap<String, Object>();
+		PostUser postUser = new PostUser();
+		postUser.setUserId(BaseUtil.strToLong(userId));
+		postUser.setIds(postIds);
+		int bool = postUserService.deletePostsByUser(postUser);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
 		}
 		return map;
 	}
@@ -137,17 +206,6 @@ public class UserController {
 	}
 
 	/**
-	 * 跳转到用户管理操作页面
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(HttpServletRequest request,
-			HttpServletResponse response) {
-		return new ModelAndView("/base/admin/user/editUI");
-	}
-	
-	/**
 	 * 跳转到选择岗位管理操作页面
 	 * 
 	 * @return
@@ -156,6 +214,17 @@ public class UserController {
 	public ModelAndView openChoosePostUI(HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView("/base/admin/user/choosePostUI");
+	}
+
+	/**
+	 * 跳转到用户管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
+	public ModelAndView openEditUI(HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView("/base/admin/user/editUI");
 	}
 
 	/**
@@ -173,6 +242,56 @@ public class UserController {
 				.print(deptService.selectDeptsForTree().toLowerCase());
 		response.getWriter().flush();
 		response.getWriter().close();
+	}
+
+	/**
+	 * 分页查询已经被选择人员列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/querySelectedPostsForPage.do")
+	@ResponseBody
+	public Map<String, Object> querySelectedPostsForPage(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String keyWord = request.getParameter("KEY_WORD");
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String userId = request.getParameter("USER_ID");
+		PostUser postUser = new PostUser();
+		postUser.setCurrPage(Integer.parseInt(page));
+		postUser.setPageSize(Integer.parseInt(rows));
+		postUser.setUserId(BaseUtil.strToLong(userId));
+		postUser.setKeyWord(keyWord);
+		return postUserService.querySelectedPostsForPage(postUser);
+	}
+
+	/**
+	 * 分页查询未被选择人员列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryUnSelectedPostsForPage.do")
+	@ResponseBody
+	public Map<String, Object> queryUnSelectedPostsForPage(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String keyWord = request.getParameter("KEY_WORD");
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String userId = request.getParameter("USER_ID");
+		PostUser postUser = new PostUser();
+		postUser.setCurrPage(Integer.parseInt(page));
+		postUser.setPageSize(Integer.parseInt(rows));
+		postUser.setUserId(BaseUtil.strToLong(userId));
+		postUser.setKeyWord(keyWord);
+		return postUserService.queryUnSelectedPostsForPage(postUser);
 	}
 
 	/**
@@ -208,8 +327,9 @@ public class UserController {
 	 */
 	@RequestMapping("/queryUsersPage.do")
 	@ResponseBody
-	public Map<String, Object> queryUsersPage(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public Map<String, Object> queryUsersPage(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String userDeptId = request.getParameter("USER_DEPT_ID");

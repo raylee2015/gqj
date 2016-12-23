@@ -32,13 +32,23 @@ public class PostUserServiceImpl implements IPostUserService {
 	}
 
 	@Override
-	public int deleteByPrimaryKeys(PostUser postUser) {
-		return postUserMapper.deleteByPrimaryKeys(postUser);
+	public int deleteUsersByPost(PostUser postUser) {
+		return postUserMapper.deleteUsersByPost(postUser);
 	}
 
 	@Override
-	public int insert(PostUser postUser) {
-		return postUserMapper.insert(postUser);
+	public int insertUsersByPost(PostUser postUser) {
+		return postUserMapper.insertUsersByPost(postUser);
+	}
+
+	@Override
+	public int deletePostsByUser(PostUser postUser) {
+		return postUserMapper.deletePostsByUser(postUser);
+	}
+
+	@Override
+	public int insertPostsByUser(PostUser postUser) {
+		return postUserMapper.insertPostsByUser(postUser);
 	}
 
 	@Override
@@ -65,6 +75,31 @@ public class PostUserServiceImpl implements IPostUserService {
 				.queryUnSelectedUsers(postUser);
 		int count = postUserMapper
 				.queryCountOfUnSelectedUsers(postUser);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("rows", postUsers);
+		map.put("total", count);
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> querySelectedPostsForPage(
+			PostUser postUser) {
+		List<Map<String, Object>> postUsers = postUserMapper
+				.querySelectedPosts(postUser);
+		int count = postUserMapper.queryCountOfSelectedPosts(postUser);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("rows", postUsers);
+		map.put("total", count);
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> queryUnSelectedPostsForPage(
+			PostUser postUser) {
+		List<Map<String, Object>> postUsers = postUserMapper
+				.queryUnSelectedPosts(postUser);
+		int count = postUserMapper
+				.queryCountOfUnSelectedPosts(postUser);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", postUsers);
 		map.put("total", count);

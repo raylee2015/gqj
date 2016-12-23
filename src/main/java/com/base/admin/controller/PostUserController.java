@@ -50,7 +50,7 @@ public class PostUserController {
 		PostUser postUser = new PostUser();
 		postUser.setPostId(BaseUtil.strToLong(postId));
 		postUser.setIds(userIds);
-		int bool = postUserService.insert(postUser);
+		int bool = postUserService.insertUsersByPost(postUser);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -82,7 +82,7 @@ public class PostUserController {
 		PostUser postUser = new PostUser();
 		postUser.setPostId(BaseUtil.strToLong(postId));
 		postUser.setIds(userIds);
-		int bool = postUserService.deleteByPrimaryKeys(postUser);
+		int bool = postUserService.deleteUsersByPost(postUser);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");

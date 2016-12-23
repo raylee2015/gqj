@@ -7,9 +7,13 @@ import com.base.admin.entity.Post;
 import com.base.admin.entity.PostUser;
 
 public interface PostUserMapper {
-	int deleteByPrimaryKeys(PostUser postUser);
+	int deleteUsersByPost(PostUser postUser);
 
-	int insert(PostUser postUser);
+	int insertUsersByPost(PostUser postUser);
+
+	int deletePostsByUser(PostUser postUser);
+
+	int insertPostsByUser(PostUser postUser);
 
 	String selectDeptsForTree();
 
@@ -22,5 +26,13 @@ public interface PostUserMapper {
 	int queryCountOfSelectedUsers(PostUser postUser);
 
 	int queryCountOfUnSelectedUsers(PostUser postUser);
+
+	List<Map<String, Object>> querySelectedPosts(PostUser postUser);
+
+	List<Map<String, Object>> queryUnSelectedPosts(PostUser postUser);
+
+	int queryCountOfSelectedPosts(PostUser postUser);
+
+	int queryCountOfUnSelectedPosts(PostUser postUser);
 
 }

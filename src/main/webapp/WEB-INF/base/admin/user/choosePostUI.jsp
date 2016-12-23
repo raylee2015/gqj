@@ -47,7 +47,7 @@
 
 	function initPost() {
 		var rowIndex = getTextBoxValue('rowIndex');
-		selectedUser = parent.$('#datagridForPost').datagrid('getData').rows[rowIndex];
+		selectedUser = parent.$('#datagridForUser').datagrid('getData').rows[rowIndex];
 	}
 
 	//初始化岗位列表
@@ -143,7 +143,7 @@
 				POST_IDS : ids,
 				USER_ID : selectedUser.USER_ID
 			};
-			save(params, "addPostsToPost.do", successFunctionForAddPostsToPost);
+			save(params, "addPostsToUser.do", successFunctionForAddPostsToPost);
 		}
 	}
 
@@ -171,7 +171,7 @@
 				POST_IDS : ids,
 				USER_ID : selectedUser.USER_ID
 			};
-			save(params, "delPostsToPost.do", successFunctionForDelPostsToPost);
+			save(params, "delPostsToUser.do", successFunctionForDelPostsToPost);
 			rowDatas = {};
 		}
 	}

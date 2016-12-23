@@ -5,6 +5,43 @@
 		<id column="USER_ID" jdbcType="DECIMAL" property="userId" />
 		<id column="POST_ID" jdbcType="DECIMAL" property="postId" />
 	</resultMap>
+	<select id="querySelectedPosts" parameterType="com.base.admin.entity.PostUser"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		SELECT
+		P.POST_ID,P.POST_NAME,PU.USER_ID FROM BASE_POST_USER PU
+		LEFT
+		JOIN
+		BASE_POST P ON P.POST_ID = PU.POST_ID
+		<where>
+			<if test="userId != null and userId != ''">
+				AND USER_ID = #{userId}
+			</if>
+			<if test="keyWord != null and keyWord != ''">
+				AND P.POST_NAME LIKE '%${keyWord}%'
+			</if>
+		</where>
+		ORDER BY P.POST_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="queryCountOfSelectedPosts" parameterType="com.base.admin.entity.PostUser"
+		resultType="java.lang.Integer">
+		SELECT count(1) FROM BASE_POST_USER PU
+		LEFT
+		JOIN
+		BASE_POST P ON P.POST_ID
+		= PU.POST_ID
+		<where>
+			<if test="userId != null and userId != ''">
+				AND USER_ID = #{userId}
+			</if>
+			<if test="keyWord != null and keyWord != ''">
+				AND P.POST_NAME LIKE '%${keyWord}%'
+			</if>
+		</where>
+	</select>
 	<select id="querySelectedUsers" parameterType="com.base.admin.entity.PostUser"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
@@ -33,7 +70,8 @@
 		LEFT
 		JOIN
 		VIEW_BASE_USER U
-		ON U.USER_ID
+		ON
+		U.USER_ID
 		= PU.USER_ID
 		<where>
 			<if test="postId != null and postId != ''">
@@ -44,6 +82,59 @@
 				LIKE '%${keyWord}%')
 			</if>
 		</where>
+	</select>
+	<select id="queryUnSelectedPosts" parameterType="com.base.admin.entity.PostUser"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		SELECT
+		P.*
+		FROM
+		BASE_POST P
+		WHERE
+		POST_ID IN (
+		SELECT POST_ID FROM BASE_POST
+		MINUS
+		SELECT POST_ID FROM
+		BASE_POST_USER
+		PU
+		<where>
+			<if test="userId != null and userId != ''">
+				AND USER_ID = #{userId}
+			</if>
+		</where>
+		)
+		<if test="keyWord != null and keyWord != ''">
+			AND P.POST_NAME LIKE '%${keyWord}%'
+		</if>
+		ORDER BY POST_SORT,POST_ID
+		) A WHERE
+		ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="queryCountOfUnSelectedPosts" parameterType="com.base.admin.entity.PostUser"
+		resultType="java.lang.Integer">
+		SELECT
+		COUNT(1)
+		FROM
+		BASE_POST P
+		WHERE
+		POST_ID IN (
+		SELECT POST_ID FROM
+		BASE_POST
+		MINUS
+		SELECT POST_ID FROM
+		BASE_POST_USER
+		PU
+		<where>
+			<if test="userId != null and userId != ''">
+				AND USER_ID = #{userId}
+			</if>
+		</where>
+		)
+		<if test="keyWord != null and keyWord != ''">
+			AND P.POST_NAME LIKE '%${keyWord}%'
+		</if>
 	</select>
 	<select id="queryUnSelectedUsers" parameterType="com.base.admin.entity.PostUser"
 		resultType="java.util.HashMap">
@@ -97,19 +188,35 @@
 			LIKE '%${keyWord}%')
 		</if>
 	</select>
-	<delete id="deleteByPrimaryKeys" parameterType="com.base.admin.entity.PostUser">
+	<delete id="deleteUsersByPost" parameterType="com.base.admin.entity.PostUser">
 		delete from
 		BASE_POST_USER
 		where USER_ID in (${ids})
 		and POST_ID =
 		#{postId,jdbcType=DECIMAL}
 	</delete>
-	<insert id="insert" parameterType="com.base.admin.entity.PostUser">
+	<insert id="insertUsersByPost" parameterType="com.base.admin.entity.PostUser">
 		insert into
 		BASE_POST_USER(USER_ID, POST_ID)
 		SELECT USER_ID
 		,#{postId,jdbcType=DECIMAL} FROM
 		BASE_USER WHERE
 		USER_ID IN (${ids})
+	</insert>
+	<delete id="deletePostsByUser" parameterType="com.base.admin.entity.PostUser">
+		delete from
+		BASE_POST_USER
+		where USER_ID =
+		#{userId,jdbcType=DECIMAL}
+		and POST_ID in
+		(${ids})
+	</delete>
+	<insert id="insertPostsByUser" parameterType="com.base.admin.entity.PostUser">
+		insert into
+		BASE_POST_USER( POST_ID,USER_ID)
+		SELECT POST_ID
+		,#{userId,jdbcType=DECIMAL} FROM
+		BASE_POST WHERE
+		POST_ID IN (${ids})
 	</insert>
 </mapper>
