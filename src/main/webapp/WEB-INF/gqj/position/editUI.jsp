@@ -36,13 +36,12 @@
 			POS_NAME : getTextBoxValue('positionNameTextBox'),
 			STORE_ID : getTextBoxValue('storageIdTextBox')
 		};
-		ajaxFunction(params, url, successFunctionForSavePosition,
-				errorFunctionForOption, false);
+		save(params, url, successFunctionForSavePosition);
 	}
 
-	function successFunctionForSavePosition(result, haveTree) {
-		parent.queryForPage();
-		parent.closeEditUI();
+	function successFunctionForSavePosition(result) {
+		parent.successFunctionForOption(result);
+		closeEditUIForPosition();
 	}
 
 	//页面加载完
@@ -53,17 +52,19 @@
 						queryStorageForPage);
 				initChooseStoragePanel();
 				initStorageDataGrid();
-				initForm();
+				initPositionForm();
 			});
 
 	//初始化表单
-	function initForm() {
+	function initPositionForm() {
 		var opType = getTextBoxValue('opType');
 		var postId = getTextBoxValue('positionIdTextBox');
 		if (opType == 'edit') {
 			url = "updatePosition.do";
-			$('#form')
-					.form('load', ('queryPositionObject.do?POS_ID=' + postId));
+			var rowIndex = getTextBoxValue('rowIndex');
+			var rowData = getRowDataOfParentDataGrid('datagridForPosition',
+					rowIndex);
+			$('#positionForm').form('load', rowData);
 		} else if (opType == 'add') {
 			url = "addNewPosition.do";
 		}
@@ -72,18 +73,16 @@
 	//查询仓库
 	function queryStorageForPage() {
 		var params = {
-			keyWord : $('#keyWordForStorageTextInput').textbox('getValue'),
+			keyWord : getTextBoxValue('keyWordForStorageTextInput'),
 			page : 1,
-			rows : $('#datagridForStorage').datagrid('getPager').data(
-					"pagination").options.pageSize
+			rows : getPageSizeOfDataGrid('datagridForStorage')
 		};
-		ajaxFunction(params, 'queryStoragePage.do',
-				successFunctionForQueryStorage, errorFunctionForQuery, false);
+		query(params, 'queryStoragePage.do', successFunctionForQueryStorage);
 	}
 
 	//当查询成功时需要执行的代码
-	function successFunctionForQueryStorage(result, haveTree) {
-		$('#datagridForStorage').datagrid('loadData', result);
+	function successFunctionForQueryStorage(result) {
+		dataGridLoadData('datagridForStorage', result);
 	}
 
 	//初始化选择仓库版面
@@ -129,7 +128,7 @@
 				width : 100,
 			} ] ],
 			onLoadError : function() {
-				eval(errorCodeForQuery);
+				errorFunctionForQuery();
 			}
 		});
 	}
@@ -152,8 +151,8 @@
 	}
 
 	//关闭编辑界面
-	function closeEditUI() {
-		parent.closeEditUI();
+	function closeEditUIForPosition() {
+		parent.closeEditUIForPosition();
 	}
 </script>
 </head>
@@ -162,12 +161,13 @@
 		data-options="fit:true,border:false">
 		<div class="easyui-layout" data-options="fit:true">
 			<div data-options="fit:true,border:false,region:'north'">
-				<form id="form" method="post" style="width: 100%;">
+				<form id="positionForm" method="post" style="width: 100%;">
 					<div style="display: none">
 						<input id="opType" class="easyui-textbox"
 							value="<%=request.getParameter("opType")%>" /> <input
 							id="positionIdTextBox" class="easyui-textbox" name="POS_ID"
-							value="<%=request.getParameter("postId")%>" /> <input
+							 /> <input id="rowIndex" class="easyui-textbox"
+							value="<%=request.getParameter("rowIndex")%>" /> <input
 							id="storageIdTextBox" class="easyui-textbox" name="STORE_ID" />
 					</div>
 					<table width="100%">
@@ -194,7 +194,7 @@
 				<a class="easyui-linkbutton" iconCls="icon-ok"
 					href="javascript:void(0)" onclick="savePosition()">保存</a> <a
 					class="easyui-linkbutton" iconCls="icon-cancel"
-					href="javascript:void(0)" onclick="closeEditUI()">关闭</a>
+					href="javascript:void(0)" onclick="closeEditUIForPosition()">关闭</a>
 			</div>
 		</div>
 	</div>

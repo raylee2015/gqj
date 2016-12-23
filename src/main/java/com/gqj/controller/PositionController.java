@@ -102,9 +102,9 @@ public class PositionController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryPositionPage.do")
+	@RequestMapping("/queryPositionsPage.do")
 	@ResponseBody
-	public Map<String, Object> queryPositionPage(
+	public Map<String, Object> queryPositionsPage(
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		String page = request.getParameter("page");
