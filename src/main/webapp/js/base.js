@@ -106,7 +106,7 @@ function getIdsOfSelectedItems(dataGridId, columnNameForSelect) {
 			ids += eval('item.' + columnNameForSelect) + ',';
 		} else {
 			// 获取数据失败，提示失败
-			alert('数据错误，请联系系统管理员');
+			alert('没有更新级联关系或者数据错误，请联系系统管理员');
 			return;
 		}
 	}
