@@ -45,11 +45,13 @@ public class DeptController {
 	 */
 	@RequestMapping("/addNewDept.do")
 	@ResponseBody
-	public Map<String, Object> addNewDept(HttpServletRequest request,
+	public Map<String, Object> addNewDept(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String deptName = request.getParameter("DEPT_NAME");
 		String deptSort = request.getParameter("DEPT_SORT");
-		String upDeptId = request.getParameter("UP_DEPT_ID");
+		String upDeptId = request
+				.getParameter("UP_DEPT_ID");
 		Map<String, Object> map = new HashMap<String, Object>();
 		Dept dept = new Dept();
 		dept.setDeptId(-1l);
@@ -79,7 +81,8 @@ public class DeptController {
 	 */
 	@RequestMapping("/delDepts.do")
 	@ResponseBody
-	public Map<String, Object> delDepts(HttpServletRequest request,
+	public Map<String, Object> delDepts(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String deptIds = request.getParameter("DEPT_IDS");
 		Map<String, Object> map = new HashMap<>();
@@ -102,7 +105,8 @@ public class DeptController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(HttpServletRequest request,
+	public ModelAndView openEditUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView("/base/admin/dept/editUI");
 	}
@@ -124,11 +128,12 @@ public class DeptController {
 	@RequestMapping("/queryDeptsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryDeptsPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		String deptInnerCode = request.getParameter("deptInnerCode");
+		String deptInnerCode = request
+				.getParameter("deptInnerCode");
 		String keyWord = request.getParameter("keyWord");
 		Dept dept = new Dept();
 		dept.setCurrPage(Integer.parseInt(page));
@@ -137,7 +142,8 @@ public class DeptController {
 		dept.setKeyWord(keyWord);
 		List<Map<String, Object>> depts = deptService
 				.selectDeptsForPage(dept);
-		int count = deptService.selectCountOfDeptsForPage(dept);
+		int count = deptService
+				.selectCountOfDeptsForPage(dept);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", depts);
 		map.put("total", count);
@@ -155,8 +161,8 @@ public class DeptController {
 	@ResponseBody
 	public void queryDeptTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter()
-				.print(deptService.selectDeptsForTree().toLowerCase());
+		response.getWriter().print(deptService
+				.selectDeptsForTree().toLowerCase());
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -189,19 +195,22 @@ public class DeptController {
 	 */
 	@RequestMapping("/updateDept.do")
 	@ResponseBody
-	public Map<String, Object> updateDept(HttpServletRequest request,
+	public Map<String, Object> updateDept(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String deptId = request.getParameter("DEPT_ID");
 		String deptName = request.getParameter("DEPT_NAME");
 		String deptSort = request.getParameter("DEPT_SORT");
-		String upDeptId = request.getParameter("UP_DEPT_ID");
+		String upDeptId = request
+				.getParameter("UP_DEPT_ID");
 		Map<String, Object> map = new HashMap<String, Object>();
 		Dept dept = new Dept();
 		dept.setDeptId(BaseUtil.strToLong(deptId));
 		dept.setDeptName(deptName);
 		dept.setDeptSort(BaseUtil.strToLong(deptSort));
 		dept.setUpDeptId(BaseUtil.strToLong(upDeptId));
-		int bool = deptService.updateByPrimaryKeySelective(dept);
+		int bool = deptService
+				.updateByPrimaryKeySelective(dept);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -223,8 +232,8 @@ public class DeptController {
 	@RequestMapping("/updateInnerData.do")
 	@ResponseBody
 	public Map<String, Object> updateInnerData(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = deptService.updataInnerData();
 		if (bool == 0) {

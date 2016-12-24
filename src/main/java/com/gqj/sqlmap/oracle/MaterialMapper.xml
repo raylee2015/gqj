@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gqj.dao.MaterialMapper">
+	<resultMap id="BaseResultMap" type="com.gqj.entity.Material">
+		<id column="MAT_ID" jdbcType="DECIMAL" property="matId" />
+		<result column="TYPE_ID" jdbcType="DECIMAL" property="typeId" />
+		<result column="MAT_NAME" jdbcType="VARCHAR" property="matName" />
+		<result column="MAT_SPEC" jdbcType="VARCHAR" property="matSpec" />
+		<result column="MAT_MODEL" jdbcType="VARCHAR" property="matModel" />
+		<result column="MAT_UNIT" jdbcType="DECIMAL" property="matUnit" />
+		<result column="MAT_REMARK" jdbcType="VARCHAR" property="matRemark" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		MAT_ID, TYPE_ID, MAT_NAME, MAT_SPEC, MAT_MODEL, MAT_UNIT,
+		MAT_REMARK,TYPE_ID,TYPE_NAME
+	</sql>
+	<select id="selectMaterialsForPage" parameterType="com.gqj.entity.Material"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_Material
+		<where>
+			<if test="keyWord != null">
+				AND MAT_NAME like '%${keyWord}%'
+			</if>
+			<if test="typeId != null and typeId != ''">
+				AND TYPE_ID=#{typeId}
+			</if>
+		</where>
+		order by MAT_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfMaterialsForPage" parameterType="com.gqj.entity.Material"
+		resultType="java.lang.Integer">
+		select count(t.MAT_ID) from VIEW_GQJ_Material t
+		<where>
+			<if test="keyWord != null">
+				AND MAT_NAME like '%${keyWord}%'
+			</if>
+			<if test="typeId != null and typeId != ''">
+				AND TYPE_ID=#{typeId}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="java.lang.Long">
+		delete from
+		GQJ_MATERIAL
+		where MAT_ID in #{ids}
+	</delete>
+	<insert id="insertSelective" parameterType="com.gqj.entity.Material">
+		insert into GQJ_MATERIAL
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="matId != null">
+				MAT_ID,
+			</if>
+			<if test="typeId != null">
+				TYPE_ID,
+			</if>
+			<if test="matName != null">
+				MAT_NAME,
+			</if>
+			<if test="matSpec != null">
+				MAT_SPEC,
+			</if>
+			<if test="matModel != null">
+				MAT_MODEL,
+			</if>
+			<if test="matUnit != null">
+				MAT_UNIT,
+			</if>
+			<if test="matRemark != null">
+				MAT_REMARK,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="matId != null">
+				GQJ_MATERIAL_SEQ.nextval,
+			</if>
+			<if test="typeId != null">
+				#{typeId,jdbcType=DECIMAL},
+			</if>
+			<if test="matName != null">
+				#{matName,jdbcType=VARCHAR},
+			</if>
+			<if test="matSpec != null">
+				#{matSpec,jdbcType=VARCHAR},
+			</if>
+			<if test="matModel != null">
+				#{matModel,jdbcType=VARCHAR},
+			</if>
+			<if test="matUnit != null">
+				#{matUnit,jdbcType=DECIMAL},
+			</if>
+			<if test="matRemark != null">
+				#{matRemark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.Material">
+		update GQJ_MATERIAL
+		<set>
+			<if test="typeId != null">
+				TYPE_ID = #{typeId,jdbcType=DECIMAL},
+			</if>
+			<if test="matName != null">
+				MAT_NAME = #{matName,jdbcType=VARCHAR},
+			</if>
+			<if test="matSpec != null">
+				MAT_SPEC = #{matSpec,jdbcType=VARCHAR},
+			</if>
+			<if test="matModel != null">
+				MAT_MODEL = #{matModel,jdbcType=VARCHAR},
+			</if>
+			<if test="matUnit != null">
+				MAT_UNIT = #{matUnit,jdbcType=DECIMAL},
+			</if>
+			<if test="matRemark != null">
+				MAT_REMARK = #{matRemark,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where MAT_ID = #{matId,jdbcType=DECIMAL}
+	</update>
+</mapper>

@@ -28,68 +28,69 @@
 <script type="text/javascript"
 	src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
-	//记录新增或者修改的方法
-	var url;
+	//记录增加和修改的地址
+	var url = "";
 
 	// 保存数据
-	function saveStorage() {
+	function saveMaterialType() {
 		var params = {
-			STORE_ID : getTextBoxValue('storageIdTextBox'),
-			STORE_NAME : getTextBoxValue('storageNameTextBox'),
+			TYPE_ID : getTextBoxValue('materialTypeIdTextBox'),
+			TYPE_NAME : getTextBoxValue('materialTypeNameTextBox'),
 		};
-		save(params, url, successFunctionForSave);
+		save(params, url, successFunctionForSaveMaterialType);
 	}
 
-	//回调函数，保存成功后执行
-	function successFunctionForSave(result) {
+	function successFunctionForSaveMaterialType(result) {
 		parent.successFunctionForOption(result);
-		closeEditUIForStorage();
+		closeEditUIForMaterialType();
 	}
 
 	//页面加载完
 	$(document).ready(function() {
 		closeCache();
-		initStorageForm();
+		initMaterialTypeForm();
 	});
 
 	//初始化表单
-	function initStorageForm() {
+	function initMaterialTypeForm() {
 		var opType = getTextBoxValue('opType');
-		if (opType == 'add') {
-			url = 'addNewStorage.do';
-		} else if (opType == 'edit') {
+		var postId = getTextBoxValue('materialTypeIdTextBox');
+		if (opType == 'edit') {
+			url = "updateMaterialType.do";
 			var rowIndex = getTextBoxValue('rowIndex');
-			var rowData = getRowDataOfParentDataGrid('datagridForStorage',
+			var rowData = getRowDataOfParentDataGrid('datagridForMaterialType',
 					rowIndex);
-			$('#storageForm').form('load', rowData);
-			url = 'updateStorage.do';
+			$('#materialTypeForm').form('load', rowData);
+		} else if (opType == 'add') {
+			url = "addNewMaterialType.do";
 		}
 	}
 
-	//关闭编辑窗口
-	function closeEditUIForStorage() {
-		parent.closeEditUIForStorage();
+	//关闭编辑界面
+	function closeEditUIForMaterialType() {
+		parent.closeEditUIForMaterialType();
 	}
 </script>
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit:true">
-		<div region="north" fit="true" border="false">
-			<form id="storageForm" method="post" style="width: 100%;">
+		<div data-options="fit:true,border:false,region:'north'">
+			<form id="materialTypeForm" method="post"
+				style="width: 100%;">
 				<div style="display: none">
-					<input id="storageIdTextBox" name="STORE_ID"
-						class="easyui-textbox" /><input id="opType"
-						value="<%=request.getParameter("opType")%>"
-						class="easyui-textbox" /> <input id="rowIndex"
-						value="<%=request.getParameter("rowIndex")%>"
-						class="easyui-textbox" />
+					<input id="opType" class="easyui-textbox"
+						value="<%=request.getParameter("opType")%>" /> <input
+						id="materialTypeIdTextBox" class="easyui-textbox"
+						name="TYPE_ID" /> <input id="rowIndex"
+						class="easyui-textbox"
+						value="<%=request.getParameter("rowIndex")%>" />
 				</div>
-				<table style="width: 100%; padding: 10px">
+				<table width="100%">
 					<tr>
-						<td width="22%">仓库名称:</td>
-						<td><input id="storageNameTextBox"
-							name="STORE_NAME" class="easyui-textbox"
-							data-options="prompt:'仓库名称',required:true,validType:'length[0,10]'"
+						<td width="22%">物资类型名称:</td>
+						<td><input id="materialTypeNameTextBox"
+							name="TYPE_NAME" class="easyui-textbox"
+							data-options="prompt:'物资类型名称',required:true,validType:'length[0,20]'"
 							style="width: 100%; height: 32px" /></td>
 					</tr>
 				</table>
@@ -98,10 +99,10 @@
 		<div region="south" border="false"
 			style="text-align: right; height: 30px">
 			<a class="easyui-linkbutton" iconCls="icon-ok"
-				href="javascript:void(0)" onclick="saveStorage()">保存</a>
+				href="javascript:void(0)" onclick="saveMaterialType()">保存</a>
 			<a class="easyui-linkbutton" iconCls="icon-cancel"
 				href="javascript:void(0)"
-				onclick="closeEditUIForStorage()">关闭</a>
+				onclick="closeEditUIForMaterialType()">关闭</a>
 		</div>
 	</div>
 </body>
