@@ -19,7 +19,7 @@
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select
 		<include refid="Base_Column_List" />
-		from VIEW_GQJ_Material
+		from VIEW_GQJ_MATERIAL
 		<where>
 			<if test="keyWord != null">
 				AND MAT_NAME like '%${keyWord}%'
@@ -35,7 +35,7 @@
 	</select>
 	<select id="selectCountOfMaterialsForPage" parameterType="com.gqj.entity.Material"
 		resultType="java.lang.Integer">
-		select count(t.MAT_ID) from VIEW_GQJ_Material t
+		select count(t.MAT_ID) from VIEW_GQJ_MATERIAL t
 		<where>
 			<if test="keyWord != null">
 				AND MAT_NAME like '%${keyWord}%'
@@ -45,7 +45,7 @@
 			</if>
 		</where>
 	</select>
-	<delete id="deleteByPrimaryKeys" parameterType="java.lang.Long">
+	<delete id="deleteByPrimaryKeys" parameterType="java.lang.String">
 		delete from
 		GQJ_MATERIAL
 		where MAT_ID in #{ids}

@@ -1,17 +1,19 @@
 package com.gqj.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.gqj.entity.Material;
 
 public interface MaterialMapper {
-    int deleteByPrimaryKey(Long matId);
+	List<Map<String, Object>> selectMaterialsForPage(
+			Material material);
 
-    int insert(Material record);
+	int selectCountOfMaterialsForPage(Material material);
 
-    int insertSelective(Material record);
+	int deleteByPrimaryKeys(Material material);
 
-    Material selectByPrimaryKey(Long matId);
+	int insertSelective(Material material);
 
-    int updateByPrimaryKeySelective(Material record);
-
-    int updateByPrimaryKey(Material record);
+	int updateByPrimaryKeySelective(Material material);
 }
