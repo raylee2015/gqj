@@ -11,24 +11,22 @@ import com.gqj.dao.MaterialTypeMapper;
 import com.gqj.entity.MaterialType;
 import com.gqj.service.IMaterialTypeService;
 
+import net.sf.json.JSONArray;
+
 @Service
-public class MaterialTypeServiceImpl
-		implements IMaterialTypeService {
+public class MaterialTypeServiceImpl implements IMaterialTypeService {
 
 	@Autowired
 	private MaterialTypeMapper materialTypeMapper;
 
 	@Override
-	public int deleteByPrimaryKeys(
-			MaterialType materialType) {
-		return materialTypeMapper
-				.deleteByPrimaryKeys(materialType);
+	public int deleteByPrimaryKeys(MaterialType materialType) {
+		return materialTypeMapper.deleteByPrimaryKeys(materialType);
 	}
 
 	@Override
 	public int insertSelective(MaterialType materialType) {
-		return materialTypeMapper
-				.insertSelective(materialType);
+		return materialTypeMapper.insertSelective(materialType);
 	}
 
 	@Override
@@ -37,8 +35,7 @@ public class MaterialTypeServiceImpl
 		List<Map<String, Object>> materialTypes = materialTypeMapper
 				.selectMaterialTypesForPage(materialType);
 		int count = materialTypeMapper
-				.selectCountOfMaterialTypesForPage(
-						materialType);
+				.selectCountOfMaterialTypesForPage(materialType);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", materialTypes);
 		map.put("total", count);
@@ -46,10 +43,21 @@ public class MaterialTypeServiceImpl
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(
-			MaterialType materialType) {
+	public int updateByPrimaryKeySelective(MaterialType materialType) {
 		return materialTypeMapper
 				.updateByPrimaryKeySelective(materialType);
+	}
+
+	@Override
+	public String selectMaterialTypesForList(
+			MaterialType materialType) {
+		List<Map<String, Object>> list = materialTypeMapper
+				.selectMaterialTypesForList(materialType);
+		String result = "";
+		if (list != null && list.size() != 0) {
+			result = JSONArray.fromObject(list).toString();
+		}
+		return result;
 	}
 
 }

@@ -39,15 +39,14 @@ public class MaterialTypeController extends BaseController {
 	@RequestMapping("/addNewMaterialType.do")
 	@ResponseBody
 	public Map<String, Object> addNewMaterialType(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String typeName = request.getParameter("TYPE_NAME");
 		Map<String, Object> map = new HashMap<String, Object>();
 		MaterialType materialType = new MaterialType();
 		materialType.setTypeId(-1l);
 		materialType.setTypeName(typeName);
-		int bool = materialTypeService
-				.insertSelective(materialType);
+		int bool = materialTypeService.insertSelective(materialType);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -69,10 +68,9 @@ public class MaterialTypeController extends BaseController {
 	@RequestMapping("/delMaterialTypes.do")
 	@ResponseBody
 	public Map<String, Object> delMaterialTypes(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String materialTypeIds = request
-				.getParameter("TYPE_IDS");
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String materialTypeIds = request.getParameter("TYPE_IDS");
 		Map<String, Object> map = new HashMap<>();
 		MaterialType materialType = new MaterialType();
 		materialType.setIds(materialTypeIds);
@@ -89,6 +87,17 @@ public class MaterialTypeController extends BaseController {
 	}
 
 	/**
+	 * 跳转到物资类型管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
+	public ModelAndView openEditUI(HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView("/gqj/material_type/editUI");
+	}
+
+	/**
 	 * 分页查询物资类型列表
 	 * 
 	 * @param request
@@ -99,8 +108,8 @@ public class MaterialTypeController extends BaseController {
 	@RequestMapping("/queryMaterialTypesPage.do")
 	@ResponseBody
 	public Map<String, Object> queryMaterialTypesPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -123,19 +132,6 @@ public class MaterialTypeController extends BaseController {
 	}
 
 	/**
-	 * 跳转到物资类型管理操作页面
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(
-			HttpServletRequest request,
-			HttpServletResponse response) {
-		return new ModelAndView(
-				"/gqj/material_type/editUI");
-	}
-
-	/**
 	 * 更新物资类型信息
 	 * 
 	 * @param request
@@ -146,8 +142,8 @@ public class MaterialTypeController extends BaseController {
 	@RequestMapping("/updateMaterialType.do")
 	@ResponseBody
 	public Map<String, Object> updateMaterialType(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String typeId = request.getParameter("TYPE_ID");
 		String typeName = request.getParameter("TYPE_NAME");
 		Map<String, Object> map = new HashMap<String, Object>();

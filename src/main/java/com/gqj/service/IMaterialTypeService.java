@@ -9,9 +9,10 @@ public interface IMaterialTypeService {
 
 	int insertSelective(MaterialType materialType);
 
-	int updateByPrimaryKeySelective(
-			MaterialType materialType);
+	int updateByPrimaryKeySelective(MaterialType materialType);
 
 	Map<String, Object> selectMaterialTypesForPage(
 			MaterialType materialType);
+
+	String selectMaterialTypesForList(MaterialType materialType);
 }

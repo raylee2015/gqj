@@ -12,7 +12,7 @@
 	</resultMap>
 	<sql id="Base_Column_List">
 		MAT_ID, TYPE_ID, MAT_NAME, MAT_SPEC, MAT_MODEL, MAT_UNIT,
-		MAT_REMARK,TYPE_ID,TYPE_NAME
+		MAT_REMARK,TYPE_NAME,MAT_UNIT_NAME
 	</sql>
 	<select id="selectMaterialsForPage" parameterType="com.gqj.entity.Material"
 		resultType="java.util.HashMap">

@@ -1,13 +1,12 @@
-<%@ page language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type"
-	content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -25,8 +24,7 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript"
-	src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	// 关闭编辑窗口
 	function closeEditUIForMaterial() {
@@ -36,7 +34,7 @@
 	//打开编辑窗口
 	function openAddUIForMaterial() {
 		createModalDialog("editUIForMaterial", "openEditUI.do?opType=add",
-				"添加物资", 400, 300);
+				"添加工器具", 500, 450);
 		openEditUI('editUIForMaterial');
 	}
 
@@ -44,21 +42,20 @@
 	function openEditUIForMaterial(rowIndex) {
 		var rowData = getRowDataOfSelfDataGrid('datagridForMaterial', rowIndex);
 		var url = "openEditUI.do?opType=edit&rowIndex=" + rowIndex;
-		createModalDialog("editUIForMaterial", url, ("修改物资\""
-				+ rowData.MAT_NAME + "\"的信息"), 400, 300);
+		createModalDialog("editUIForMaterial", url, ("修改工器具\""
+				+ rowData.MAT_NAME + "\"的信息"), 500, 450);
 		openEditUI('editUIForMaterial');
 	}
 
 	//删除
 	function delMaterials() {
-		if (checkSelectedItems('datagridForMaterial', '请选择物资')) {
-			var matIds = getIdsOfSelectedItems('datagridForMaterial',
-					'MAT_ID');
+		if (checkSelectedItems('datagridForMaterial', '请选择工器具')) {
+			var matIds = getIdsOfSelectedItems('datagridForMaterial', 'MAT_ID');
 			if (matIds != null && matIds != '') {
 				var params = {
 					MAT_IDS : matIds
 				};
-				showMessageBox(params, 'delMaterials.do', '是否删除所选物资?',
+				showMessageBox(params, 'delMaterials.do', '是否删除所选工器具?',
 						successFunctionForOption);
 			}
 		}
@@ -130,10 +127,30 @@
 													+ '\')" href="javascript:void(0)">编辑</a>';
 											return btn;
 										}
+									},{
+										field : 'TYPE_NAME',
+										title : '工器具类型',
+										width : 100,
 									}, {
 										field : 'MAT_NAME',
-										title : '物资名称',
+										title : '工器具名称',
 										width : 150,
+									}, {
+										field : 'MAT_SPEC',
+										title : '工器具标准配置',
+										width : 450,
+									}, {
+										field : 'MAT_MODEL',
+										title : '工器具型号',
+										width : 450,
+									}, {
+										field : 'MAT_UNIT_NAME',
+										title : '工器具单位',
+										width : 80,
+									},  {
+										field : 'MAT_REMARK',
+										title : '备注',
+										width : 80,
 									} ] ],
 							onLoadError : function() {
 								errorFunctionForQuery();
@@ -150,19 +167,16 @@
 			</table>
 			<div id="toolbarForMaterial">
 				<div>
-					<a href="#" class="easyui-linkbutton"
-						iconCls="icon-reload" plain="true"
-						onclick="refreshDataGrid('datagridForMaterial')">刷新</a>
-					<a href="#" class="easyui-linkbutton"
-						iconCls="icon-add" plain="true"
-						onclick="openAddUIForMaterial()">添加</a> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-remove"
-						plain="true" onclick="delMaterials()">删除</a>
+					<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
+						plain="true" onclick="refreshDataGrid('datagridForMaterial')">刷新</a>
+					<a href="#" class="easyui-linkbutton" iconCls="icon-add"
+						plain="true" onclick="openAddUIForMaterial()">添加</a> <a href="#"
+						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
+						onclick="delMaterials()">删除</a>
 				</div>
 				<div>
-					<input id="keyWordForMaterialTextInput"
-						class="easyui-textbox"
-						data-options="prompt:'物资名称',validType:'length[0,25]'"
+					<input id="keyWordForMaterialTextInput" class="easyui-textbox"
+						data-options="prompt:'工器具名称',validType:'length[0,25]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
 						onclick="queryMaterialPagesForSearch()">查询</a>

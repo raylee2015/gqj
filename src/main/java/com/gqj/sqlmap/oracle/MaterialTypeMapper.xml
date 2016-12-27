@@ -8,6 +8,19 @@
 	<sql id="Base_Column_List">
 		TYPE_ID, TYPE_NAME
 	</sql>
+	<select id="selectMaterialTypesForList" parameterType="com.gqj.entity.MaterialType"
+		resultType="java.util.HashMap">
+		SELECT
+		TYPE_ID AS ID,TYPE_NAME AS TEXT,TYPE_ID,TYPE_NAME
+		from
+		GQJ_MATERIAL_TYPE
+		<where>
+			<if test="keyWord != null">
+				AND TYPE_NAME like '%${keyWord}%'
+			</if>
+		</where>
+		order by TYPE_ID
+	</select>
 	<select id="selectMaterialTypesForPage" parameterType="com.gqj.entity.MaterialType"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (

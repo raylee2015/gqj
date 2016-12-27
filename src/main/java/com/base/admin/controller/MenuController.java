@@ -64,6 +64,7 @@ public class MenuController {
 		menu.setMenuExtCode(menuExtCode);
 		menu.setMenuInnerCode(menuInnerCode);
 		int bool = menuService.insertSelective(menu);
+		bool = menuService.updataInnerData();
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -93,6 +94,7 @@ public class MenuController {
 		Menu menu = new Menu();
 		menu.setIds(menuIds);
 		int bool = menuService.deleteByPrimaryKeys(menu);
+		bool = menuService.updataInnerData();
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");
@@ -149,7 +151,7 @@ public class MenuController {
 	@ResponseBody
 	public Map<String, Object> queryMenusPage(
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String menuInnerCode = request.getParameter("menuInnerCode");
@@ -201,7 +203,7 @@ public class MenuController {
 	@ResponseBody
 	public Map<String, Object> updateInnerData(
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = menuService.updataInnerData();
 		if (bool == 0) {
@@ -247,6 +249,7 @@ public class MenuController {
 		menu.setMenuExtCode(menuExtCode);
 		menu.setMenuInnerCode(menuInnerCode);
 		int bool = menuService.updateByPrimaryKeySelective(menu);
+		bool = menuService.updataInnerData();
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");

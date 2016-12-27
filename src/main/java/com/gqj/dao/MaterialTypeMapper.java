@@ -9,14 +9,15 @@ public interface MaterialTypeMapper {
 	List<Map<String, Object>> selectMaterialTypesForPage(
 			MaterialType materialType);
 
-	int selectCountOfMaterialTypesForPage(
+	List<Map<String, Object>> selectMaterialTypesForList(
 			MaterialType materialType);
+
+	int selectCountOfMaterialTypesForPage(MaterialType materialType);
 
 	int deleteByPrimaryKeys(MaterialType materialType);
 
 	int insertSelective(MaterialType materialType);
 
-	int updateByPrimaryKeySelective(
-			MaterialType materialType);
+	int updateByPrimaryKeySelective(MaterialType materialType);
 
 }
