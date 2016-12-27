@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gqj.dao.TemplateDetailMapper;
+import com.gqj.entity.Template;
 import com.gqj.entity.TemplateDetail;
 import com.gqj.service.ITemplateDetailService;
 
@@ -19,7 +20,8 @@ public class TemplateDetailServiceImpl
 	private TemplateDetailMapper templateMapper;
 
 	@Override
-	public int deleteByPrimaryKeys(TemplateDetail template) {
+	public int deleteByPrimaryKeys(
+			TemplateDetail template) {
 		return templateMapper.deleteByPrimaryKeys(template);
 	}
 
@@ -34,7 +36,8 @@ public class TemplateDetailServiceImpl
 		List<Map<String, Object>> templates = templateMapper
 				.selectTemplateDetailsForPage(template);
 		int count = templateMapper
-				.selectCountOfTemplateDetailsForPage(template);
+				.selectCountOfTemplateDetailsForPage(
+						template);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", templates);
 		map.put("total", count);
@@ -42,8 +45,21 @@ public class TemplateDetailServiceImpl
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(TemplateDetail template) {
-		return templateMapper.updateByPrimaryKeySelective(template);
+	public Map<String, Object> selectTemplateDetailsForList(
+			Template template) {
+		List<Map<String, Object>> templateDetails = templateMapper
+				.selectTemplateDetailsForList(template);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("rows", templateDetails);
+		map.put("total", templateDetails.size());
+		return map;
+	}
+
+	@Override
+	public int updateByPrimaryKeySelective(
+			TemplateDetail template) {
+		return templateMapper
+				.updateByPrimaryKeySelective(template);
 	}
 
 }

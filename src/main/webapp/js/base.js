@@ -167,10 +167,23 @@ function closeEditUI(editUIId) {
 	editUI.remove();
 }
 
+// 关闭窗口
+function closeUI(UIId) {
+	var UI = eval('$(\'#' + UIId + '\')');
+	UI.dialog('destroy');
+	UI.remove();
+}
+
 // 打开编辑窗口
 function openEditUI(editUIId) {
 	var editUI = eval('$(\'#' + editUIId + '\')');
 	editUI.dialog('open');
+}
+
+// 打开窗口
+function openUI(UIId) {
+	var UI = eval('$(\'#' + UIId + '\')');
+	UI.dialog('open');
 }
 
 // 获取本页面列表的行的数据对象

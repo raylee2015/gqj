@@ -8,8 +8,22 @@
 		<result column="DETAIL_REMARK" jdbcType="VARCHAR" property="detailRemark" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		DETAIL_ID, TEMPLATE_ID, MAT_ID, DETAIL_REMARK
+		DETAIL_ID, TEMPLATE_ID, MAT_ID,
+		DETAIL_REMARK,MAT_NAME,MAT_SPEC,MAT_MODEL,
+		MAT_UNIT,MAT_REMARK,TYPE_NAME,MAT_UNIT_NAME
 	</sql>
+	<select id="selectTemplateDetailsForList" parameterType="com.gqj.entity.Template"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_TEMPLATE_DETAIL
+		<where>
+			<if test="templateId != null">
+				and TEMPLATE_ID = #{templateId}
+			</if>
+		</where>
+		order by DETAIL_ID
+	</select>
 	<select id="selectTemplateDetailsForPage" parameterType="com.gqj.entity.TemplateDetail"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
