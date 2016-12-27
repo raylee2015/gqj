@@ -38,7 +38,7 @@ public class MaterialController extends BaseController {
 	private IMaterialTypeService materialTypeService;
 
 	/**
-	 * 添加物资信息
+	 * 添加工器具信息
 	 * 
 	 * @param request
 	 * @param response
@@ -77,7 +77,7 @@ public class MaterialController extends BaseController {
 	}
 
 	/**
-	 * 删除物资
+	 * 删除工器具
 	 * 
 	 * @param request
 	 * @param response
@@ -104,7 +104,7 @@ public class MaterialController extends BaseController {
 	}
 
 	/**
-	 * 跳转到物资管理操作页面
+	 * 跳转到工器具管理操作页面
 	 * 
 	 * @return
 	 */
@@ -115,7 +115,7 @@ public class MaterialController extends BaseController {
 	}
 
 	/**
-	 * 分页查询物资列表
+	 * 分页查询工器具列表
 	 * 
 	 * @param request
 	 * @param response
@@ -155,7 +155,7 @@ public class MaterialController extends BaseController {
 	}
 
 	/**
-	 * 查询物资单位下拉列表
+	 * 查询工器具单位下拉列表
 	 * 
 	 * @param request
 	 * @param response
@@ -172,7 +172,7 @@ public class MaterialController extends BaseController {
 	}
 
 	/**
-	 * 跳转到物资管理首页
+	 * 跳转到工器具管理首页
 	 * 
 	 * @return
 	 */
@@ -182,7 +182,7 @@ public class MaterialController extends BaseController {
 	}
 
 	/**
-	 * 更新物资信息
+	 * 更新工器具信息
 	 * 
 	 * @param request
 	 * @param response

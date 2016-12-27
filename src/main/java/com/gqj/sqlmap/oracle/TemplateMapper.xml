@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gqj.dao.TemplateMapper">
+	<resultMap id="BaseResultMap" type="com.gqj.entity.Template">
+		<id column="TEMPLATE_ID" jdbcType="DECIMAL" property="templateId" />
+		<result column="TEMPLATE_NAME" jdbcType="VARCHAR" property="templateName" />
+		<result column="TEMPLATE_CREATE_DATE" jdbcType="TIMESTAMP"
+			property="templateCreateDate" />
+		<result column="TEMPLATE_CREATE_USER_ID" jdbcType="DECIMAL"
+			property="templateCreateUserId" />
+		<result column="TEMPLATE_DEPT_ID" jdbcType="DECIMAL" property="templateDeptId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		TEMPLATE_ID, TEMPLATE_NAME, TEMPLATE_CREATE_DATE,
+		TEMPLATE_CREATE_USER_ID,
+		TEMPLATE_DEPT_ID
+	</sql>
+	<select id="selectTemplatesForPage" parameterType="com.gqj.entity.Template"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from GQJ_TEMPLATE
+		<where>
+			<if test="templateDeptId != null">
+				and TEMPLATE_DEPT_ID = #{templateDeptId}
+			</if>
+			<if test="keyWord != null">
+				AND TEMPLATE_NAME like '%${keyWord}%'
+			</if>
+		</where>
+		order by TEMPLATE_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfTemplatesForPage" parameterType="com.gqj.entity.Template"
+		resultType="java.lang.Integer">
+		select count(t.TEMPLATE_ID) from GQJ_TEMPLATE t
+		<where>
+			<if test="templateDeptId != null">
+				and TEMPLATE_DEPT_ID = #{templateDeptId}
+			</if>
+			<if test="keyWord != null">
+				AND TEMPLATE_NAME like '%${keyWord}%'
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeyS" parameterType="java.lang.String">
+		delete from
+		GQJ_TEMPLATE
+		where TEMPLATE_ID in (#{ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.gqj.entity.Template">
+		insert into GQJ_TEMPLATE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="templateId != null">
+				TEMPLATE_ID,
+			</if>
+			<if test="templateName != null">
+				TEMPLATE_NAME,
+			</if>
+			<if test="templateCreateDate != null">
+				TEMPLATE_CREATE_DATE,
+			</if>
+			<if test="templateCreateUserId != null">
+				TEMPLATE_CREATE_USER_ID,
+			</if>
+			<if test="templateDeptId != null">
+				TEMPLATE_DEPT_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="templateId != null">
+				GQJ_TEMPLATE_SEQ.nextval,
+			</if>
+			<if test="templateName != null">
+				#{templateName,jdbcType=VARCHAR},
+			</if>
+			<if test="templateCreateDate != null">
+				#{templateCreateDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="templateCreateUserId != null">
+				#{templateCreateUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="templateDeptId != null">
+				#{templateDeptId,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.Template">
+		update GQJ_TEMPLATE
+		<set>
+			<if test="templateName != null">
+				TEMPLATE_NAME = #{templateName,jdbcType=VARCHAR},
+			</if>
+			<if test="templateCreateDate != null">
+				TEMPLATE_CREATE_DATE =
+				#{templateCreateDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="templateCreateUserId != null">
+				TEMPLATE_CREATE_USER_ID =
+				#{templateCreateUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="templateDeptId != null">
+				TEMPLATE_DEPT_ID = #{templateDeptId,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where TEMPLATE_ID = #{templateId,jdbcType=DECIMAL}
+	</update>
+</mapper>
