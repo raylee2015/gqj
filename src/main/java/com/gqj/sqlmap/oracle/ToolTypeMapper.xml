@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.gqj.dao.MaterialTypeMapper">
-	<resultMap id="BaseResultMap" type="com.gqj.entity.MaterialType">
+<mapper namespace="com.gqj.dao.ToolTypeMapper">
+	<resultMap id="BaseResultMap" type="com.gqj.entity.ToolType">
 		<id column="TYPE_ID" jdbcType="DECIMAL" property="typeId" />
 		<result column="TYPE_NAME" jdbcType="VARCHAR" property="typeName" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		TYPE_ID, TYPE_NAME
 	</sql>
-	<select id="selectMaterialTypesForList" parameterType="com.gqj.entity.MaterialType"
+	<select id="selectToolTypesForList" parameterType="com.gqj.entity.ToolType"
 		resultType="java.util.HashMap">
 		SELECT
 		TYPE_ID AS ID,TYPE_NAME AS TEXT,TYPE_ID,TYPE_NAME
 		from
-		GQJ_MATERIAL_TYPE
+		GQJ_TOOL_TYPE
 		<where>
 			<if test="keyWord != null">
 				AND TYPE_NAME like '%${keyWord}%'
@@ -21,12 +21,12 @@
 		</where>
 		order by TYPE_ID
 	</select>
-	<select id="selectMaterialTypesForPage" parameterType="com.gqj.entity.MaterialType"
+	<select id="selectToolTypesForPage" parameterType="com.gqj.entity.ToolType"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		SELECT
 		<include refid="Base_Column_List" />
-		from GQJ_MATERIAL_TYPE
+		from GQJ_TOOL_TYPE
 		<where>
 			<if test="keyWord != null">
 				AND TYPE_NAME like '%${keyWord}%'
@@ -37,9 +37,9 @@
 		) WHERE num<![CDATA[>=]]>
 		(1+(${currPage}-1)*${pageSize})
 	</select>
-	<select id="selectCountOfMaterialTypesForPage" parameterType="com.gqj.entity.MaterialType"
+	<select id="selectCountOfToolTypesForPage" parameterType="com.gqj.entity.ToolType"
 		resultType="java.lang.Integer">
-		SELECT COUNT(T.TYPE_ID) from GQJ_MATERIAL_TYPE t
+		SELECT COUNT(T.TYPE_ID) from GQJ_TOOL_TYPE t
 		<where>
 			<if test="keyWord != null">
 				AND TYPE_NAME like '%${keyWord}%'
@@ -48,11 +48,11 @@
 	</select>
 	<delete id="deleteByPrimaryKeys" parameterType="java.lang.String">
 		delete from
-		GQJ_MATERIAL_TYPE
+		GQJ_TOOL_TYPE
 		where TYPE_ID IN #{ids}
 	</delete>
-	<insert id="insertSelective" parameterType="com.gqj.entity.MaterialType">
-		insert into GQJ_MATERIAL_TYPE
+	<insert id="insertSelective" parameterType="com.gqj.entity.ToolType">
+		insert into GQJ_TOOL_TYPE
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="typeId != null">
 				TYPE_ID,
@@ -63,15 +63,15 @@
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="typeId != null">
-				GQJ_MATERIAL_TYPE_SEQ.nextval,
+				GQJ_TOOL_TYPE_SEQ.nextval,
 			</if>
 			<if test="typeName != null">
 				#{typeName,jdbcType=VARCHAR},
 			</if>
 		</trim>
 	</insert>
-	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.MaterialType">
-		update GQJ_MATERIAL_TYPE
+	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.ToolType">
+		update GQJ_TOOL_TYPE
 		<set>
 			<if test="typeName != null">
 				TYPE_NAME = #{typeName,jdbcType=VARCHAR},

@@ -30,105 +30,105 @@
 	var url = "";
 
 	// 保存数据
-	function saveMaterial() {
+	function saveToolForPlan() {
 		var params = {
-			MAT_ID : getTextBoxValue('materialIdTextBox'),
-			MAT_NAME : getTextBoxValue('materialNameTextBox'),
-			MAT_SPEC : getTextBoxValue('materialSpecTextBox'),
-			MAT_MODEL : getTextBoxValue('materialModelTextBox'),
-			TYPE_ID : getComboBoxValue('materialTypeComboBox'),
-			MAT_UNIT : getComboBoxValue('materialUnitComboBox'),
-			MAT_REMARK : getTextBoxValue('materialRemarkTextBox'),
+			TOOL_ID : getTextBoxValue('toolIdTextBox'),
+			TOOL_NAME : getTextBoxValue('toolNameTextBox'),
+			TOOL_STANDARD_CONFIG_DEMAND : getTextBoxValue('toolStandardConfigDemandTextBox'),
+			TOOL_MODEL_DEMAND : getTextBoxValue('toolModelDemandTextBox'),
+			TYPE_ID : getComboBoxValue('toolTypeComboBox'),
+			TOOL_UNIT : getComboBoxValue('toolUnitComboBox'),
+			TOOL_REMARK : getTextBoxValue('toolRemarkTextBox'),
 		};
-		save(params, url, successFunctionForSaveMaterial);
+		save(params, url, successFunctionForSaveToolForPlan);
 	}
 
-	function successFunctionForSaveMaterial(result) {
+	function successFunctionForSaveToolForPlan(result) {
 		parent.successFunctionForOption(result);
-		closeEditUIForMaterial();
+		closeEditUIForToolForPlan();
 	}
 
 	//页面加载完
 	$(document).ready(function() {
 		closeCache();
-		initMaterialForm();
+		initToolForPlanForm();
 	});
 
 	//初始化表单
-	function initMaterialForm() {
+	function initToolForPlanForm() {
 		var opType = getTextBoxValue('opType');
-		var postId = getTextBoxValue('materialIdTextBox');
+		var postId = getTextBoxValue('toolIdTextBox');
 		if (opType == 'edit') {
-			url = "updateMaterial.do";
+			url = "updateToolForPlan.do";
 			var rowIndex = getTextBoxValue('rowIndex');
-			var rowData = getRowDataOfParentDataGrid('datagridForMaterial',
+			var rowData = getRowDataOfParentDataGrid('datagridForToolForPlan',
 					rowIndex);
-			$('#materialForm').form('load', rowData);
+			$('#toolForPlanForm').form('load', rowData);
 		} else if (opType == 'add') {
-			url = "addNewMaterial.do";
+			url = "addNewToolForPlan.do";
 		}
 	}
 
 	//关闭编辑界面
-	function closeEditUIForMaterial() {
-		parent.closeEditUIForMaterial();
+	function closeEditUIForToolForPlan() {
+		parent.closeEditUIForToolForPlan();
 	}
 </script>
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit:true">
 		<div data-options="fit:true,border:false,region:'north'">
-			<form id="materialForm" method="post" style="width: 100%;">
+			<form id="toolForPlanForm" method="post" style="width: 100%;">
 				<div style="display: none">
 					<input id="opType" class="easyui-textbox"
 						value="<%=request.getParameter("opType")%>" /> <input
-						id="materialIdTextBox" class="easyui-textbox" name="MAT_ID" /> <input
+						id="toolIdTextBox" class="easyui-textbox" name="TOOL_ID" /> <input
 						id="rowIndex" class="easyui-textbox"
 						value="<%=request.getParameter("rowIndex")%>" />
 				</div>
 				<table style="width: 100%; padding: 10px">
 					<tr>
-						<td width="22%">工器具种类:</td>
-						<td><input id="materialTypeComboBox" name="TYPE_ID"
+						<td width="25%">工器具种类:</td>
+						<td><input id="toolTypeComboBox" name="TYPE_ID"
 							data-options="valueField : 'ID',textField : 'TEXT',require : true,
 							panelHeight : 'auto',	prompt : '工器具类型',
-							url : 'queryMaterialTypeDropList.do'"
+							url : 'queryToolForPlanTypeDropList.do'"
 							class="easyui-combobox" style="width: 100%; height: 32px;"></td>
 					</tr>
 					<tr>
-						<td width="22%">工器具名称:</td>
-						<td><input id="materialNameTextBox" name="MAT_NAME"
+						<td width="25%">工器具名称:</td>
+						<td><input id="toolNameTextBox" name="TOOL_NAME"
 							class="easyui-textbox"
 							data-options="prompt:'工器具名称',required:true,validType:'length[0,20]'"
 							style="width: 100%; height: 32px" /></td>
 					</tr>
 					<tr>
-						<td width="22%">工器具标准配置:</td>
-						<td><input id="materialSpecTextBox" name="MAT_SPEC"
-							class="easyui-textbox"
+						<td width="25%">工器具标准配置:</td>
+						<td><input id="toolStandardConfigDemandTextBox"
+							name="TOOL_STANDARD_CONFIG_DEMAND" class="easyui-textbox"
 							data-options="prompt:'工器具标准配置',required:true,multiline:true,
 							validType:'length[0,500]'"
 							style="width: 100%; height: 100px" /></td>
 					</tr>
 					<tr>
-						<td width="22%">工器具型号:</td>
-						<td><input id="materialModelTextBox" name="MAT_MODEL"
+						<td width="25%">工器具型号:</td>
+						<td><input id="toolModelDemandTextBox" name="TOOL_MODEL_DEMAND"
 							class="easyui-textbox"
 							data-options="prompt:'工器具型号',required:true,multiline:true,
 							validType:'length[0,500]'"
 							style="width: 100%; height: 100px" /></td>
 					</tr>
 					<tr>
-						<td width="22%">工器具单位:</td>
-						<td><input id="materialUnitComboBox" name="MAT_UNIT"
+						<td width="25%">工器具单位:</td>
+						<td><input id="toolUnitComboBox" name="TOOL_UNIT"
 							data-options="valueField : 'ID',textField : 'TEXT',require : true,
 							panelHeight : 'auto',	prompt : '工器具单位',
-							url : 'queryMaterialUnitDropList.do'"
+							url : 'queryToolForPlanUnitDropList.do'"
 							class="easyui-combobox" style="width: 100%; height: 32px;"></td>
 					</tr>
 					<tr>
-						<td width="22%">工器具备注:</td>
-						<td><input id="materialRemarkTextBox" name="MAT_REMARK"
+						<td width="25%">工器具备注:</td>
+						<td><input id="toolRemarkTextBox" name="TOOL_REMARK"
 							class="easyui-textbox"
 							data-options="prompt:'工器具备注',validType:'length[0,50]'"
 							style="width: 100%; height: 32px" /></td>
@@ -139,9 +139,9 @@
 		<div region="south" border="false"
 			style="text-align: right; height: 30px">
 			<a class="easyui-linkbutton" iconCls="icon-ok"
-				href="javascript:void(0)" onclick="saveMaterial()">保存</a> <a
+				href="javascript:void(0)" onclick="saveToolForPlan()">保存</a> <a
 				class="easyui-linkbutton" iconCls="icon-cancel"
-				href="javascript:void(0)" onclick="closeEditUIForMaterial()">关闭</a>
+				href="javascript:void(0)" onclick="closeEditUIForToolForPlan()">关闭</a>
 		</div>
 	</div>
 </body>

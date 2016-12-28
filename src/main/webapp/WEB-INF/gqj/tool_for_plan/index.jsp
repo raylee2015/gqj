@@ -27,35 +27,36 @@
 <script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	// 关闭编辑窗口
-	function closeEditUIForMaterial() {
-		closeEditUI('editUIForMaterial')
+	function closeEditUIForToolForPlan() {
+		closeEditUI('editUIForToolForPlan')
 	}
 
 	//打开编辑窗口
-	function openAddUIForMaterial() {
-		createModalDialog("editUIForMaterial", "openEditUI.do?opType=add",
+	function openAddUIForToolForPlan() {
+		createModalDialog("editUIForToolForPlan", "openEditUI.do?opType=add",
 				"添加工器具", 500, 450);
-		openEditUI('editUIForMaterial');
+		openEditUI('editUIForToolForPlan');
 	}
 
 	//打开编辑窗口
-	function openEditUIForMaterial(rowIndex) {
-		var rowData = getRowDataOfSelfDataGrid('datagridForMaterial', rowIndex);
+	function openEditUIForToolForPlan(rowIndex) {
+		var rowData = getRowDataOfSelfDataGrid('datagridForToolForPlan',
+				rowIndex);
 		var url = "openEditUI.do?opType=edit&rowIndex=" + rowIndex;
-		createModalDialog("editUIForMaterial", url, ("修改工器具\""
-				+ rowData.MAT_NAME + "\"的信息"), 500, 450);
-		openEditUI('editUIForMaterial');
+		createModalDialog("editUIForToolForPlan", url, ("修改工器具\""
+				+ rowData.TOOL_NAME + "\"的信息"), 500, 450);
+		openEditUI('editUIForToolForPlan');
 	}
 
 	//删除
-	function delMaterials() {
-		if (checkSelectedItems('datagridForMaterial', '请选择工器具')) {
-			var matIds = getIdsOfSelectedItems('datagridForMaterial', 'MAT_ID');
-			if (matIds != null && matIds != '') {
+	function delToolForPlans() {
+		if (checkSelectedItems('datagridForToolForPlan', '请选择工器具')) {
+			var ids = getIdsOfSelectedItems('datagridForToolForPlan', 'TOOL_ID');
+			if (ids != null && ids != '') {
 				var params = {
-					MAT_IDS : matIds
+					TOOL_IDS : ids
 				};
-				showMessageBox(params, 'delMaterials.do', '是否删除所选工器具?',
+				showMessageBox(params, 'delToolForPlans.do', '是否删除所选工器具?',
 						successFunctionForOption);
 			}
 		}
@@ -64,47 +65,47 @@
 	//回调函数，删除或其他操作成功后调用
 	function successFunctionForOption(result) {
 		showMessage(result.msg, result.msg);
-		reloadDataGrid('datagridForMaterial');
+		reloadDataGrid('datagridForToolForPlan');
 	}
 
 	//用在点击查询按钮的时候
-	function queryMaterialPagesForSearch() {
-		queryMaterials();
+	function queryToolForPlanPagesForSearch() {
+		queryToolForPlans();
 	}
 
 	//查询
-	function queryMaterials() {
+	function queryToolForPlans() {
 		var params = {
-			keyWord : getTextBoxValue('keyWordForMaterialTextInput'),
+			keyWord : getTextBoxValue('keyWordForToolForPlanTextInput'),
 			page : 1,
-			rows : getPageSizeOfDataGrid('datagridForMaterial')
+			rows : getPageSizeOfDataGrid('datagridForToolForPlan')
 		};
-		query(params, 'queryMaterialsPage.do', successFunctionForQuery);
+		query(params, 'queryToolForPlansPage.do', successFunctionForQuery);
 	}
 
 	//回调函数，查询成功后调用
 	function successFunctionForQuery(result) {
-		dataGridLoadData('datagridForMaterial', result);
+		dataGridLoadData('datagridForToolForPlan', result);
 	}
 
 	//页面加载完
 	$(document).ready(
 			function() {
 				closeCache();
-				registerKeyPressForTextInput('keyWordForMaterialTextInput',
-						queryMaterialPagesForSearch);
-				initDataGridForMaterial();
+				registerKeyPressForTextInput('keyWordForToolForPlanTextInput',
+						queryToolForPlanPagesForSearch);
+				initDataGridForToolForPlan();
 			});
 
 	//初始化列表元素
-	function initDataGridForMaterial() {
-		$('#datagridForMaterial')
+	function initDataGridForToolForPlan() {
+		$('#datagridForToolForPlan')
 				.datagrid(
 						{
-							url : 'queryMaterialsPage.do',
-							idField : 'MAT_ID',
+							url : 'queryToolForPlansPage.do',
+							idField : 'TOOL_ID',
 							rownumbers : true,
-							toolbar : '#toolbarForMaterial',
+							toolbar : '#toolbarForToolForPlan',
 							pagination : true,
 							pageSize : 30,
 							pageNumber : 1,
@@ -122,33 +123,33 @@
 										formatter : function(fieldValue,
 												rowData, rowIndex) {
 											var btn = '<a class="easyui-linkbutton" '
-													+ ' onclick="openEditUIForMaterial(\''
+													+ ' onclick="openEditUIForToolForPlan(\''
 													+ rowIndex
 													+ '\')" href="javascript:void(0)">编辑</a>';
 											return btn;
 										}
-									},{
-										field : 'TYPE_NAME',
+									}, {
+										field : 'TOOL_TYPE_NAME',
 										title : '工器具类型',
 										width : 100,
 									}, {
-										field : 'MAT_NAME',
+										field : 'TOOL_NAME',
 										title : '工器具名称',
 										width : 150,
 									}, {
-										field : 'MAT_SPEC',
+										field : 'TOOL_STANDARD_CONFIG_DEMAND',
 										title : '工器具标准配置',
 										width : 450,
 									}, {
-										field : 'MAT_MODEL',
+										field : 'TOOL_MODEL_DEMAND',
 										title : '工器具型号',
 										width : 450,
 									}, {
-										field : 'MAT_UNIT_NAME',
+										field : 'TOOL_UNIT_NAME',
 										title : '工器具单位',
 										width : 80,
-									},  {
-										field : 'MAT_REMARK',
+									}, {
+										field : 'TOOL_REMARK',
 										title : '备注',
 										width : 80,
 									} ] ],
@@ -163,23 +164,23 @@
 	<!-- 列表页面 -->
 	<div class="easyui-layout" data-options="fit:true">
 		<div data-options="region:'center'">
-			<table id="datagridForMaterial" class="easyui-datagrid">
+			<table id="datagridForToolForPlan" class="easyui-datagrid">
 			</table>
-			<div id="toolbarForMaterial">
+			<div id="toolbarForToolForPlan">
 				<div>
 					<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
-						plain="true" onclick="refreshDataGrid('datagridForMaterial')">刷新</a>
+						plain="true" onclick="refreshDataGrid('datagridForToolForPlan')">刷新</a>
 					<a href="#" class="easyui-linkbutton" iconCls="icon-add"
-						plain="true" onclick="openAddUIForMaterial()">添加</a> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
-						onclick="delMaterials()">删除</a>
+						plain="true" onclick="openAddUIForToolForPlan()">添加</a> <a
+						href="#" class="easyui-linkbutton" iconCls="icon-remove"
+						plain="true" onclick="delToolForPlans()">删除</a>
 				</div>
 				<div>
-					<input id="keyWordForMaterialTextInput" class="easyui-textbox"
+					<input id="keyWordForToolForPlanTextInput" class="easyui-textbox"
 						data-options="prompt:'工器具名称',validType:'length[0,25]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
-						onclick="queryMaterialPagesForSearch()">查询</a>
+						onclick="queryToolForPlanPagesForSearch()">查询</a>
 				</div>
 			</div>
 		</div>

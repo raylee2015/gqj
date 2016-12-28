@@ -2,7 +2,7 @@ package com.gqj.entity;
 
 import com.base.entity.Base;
 
-public class MaterialType extends Base {
+public class ToolType extends Base {
 	private Long typeId;
 
 	private String typeName;

@@ -17,25 +17,25 @@ import org.springframework.web.servlet.ModelAndView;
 import com.base.admin.service.IDictionaryService;
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
-import com.gqj.entity.Material;
-import com.gqj.entity.MaterialType;
-import com.gqj.service.IMaterialService;
-import com.gqj.service.IMaterialTypeService;
+import com.gqj.entity.ToolForPlan;
+import com.gqj.entity.ToolType;
+import com.gqj.service.IToolForPlanService;
+import com.gqj.service.IToolTypeService;
 
 @Controller
-@RequestMapping("/gqj/material")
-public class MaterialController extends BaseController {
+@RequestMapping("/gqj/tool_for_plan")
+public class ToolForPlanController extends BaseController {
 	public static final Logger LOGGER = Logger
-			.getLogger(MaterialController.class);
+			.getLogger(ToolForPlanController.class);
 
 	@Autowired
 	private IDictionaryService dictionaryService;
 
 	@Autowired
-	private IMaterialService materialService;
+	private IToolForPlanService toolForPlanService;
 
 	@Autowired
-	private IMaterialTypeService materialTypeService;
+	private IToolTypeService toolTypeService;
 
 	/**
 	 * 添加工器具信息
@@ -45,27 +45,30 @@ public class MaterialController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/addNewMaterial.do")
+	@RequestMapping("/addNewToolForPlan.do")
 	@ResponseBody
-	public Map<String, Object> addNewMaterial(
+	public Map<String, Object> addNewToolForPlan(
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		String typeId = request.getParameter("TYPE_ID");
-		String matName = request.getParameter("MAT_NAME");
-		String matSpec = request.getParameter("MAT_SPEC");
-		String matModel = request.getParameter("MAT_MODEL");
-		String matUnit = request.getParameter("MAT_UNIT");
-		String matRemark = request.getParameter("MAT_REMARK");
+		String toolName = request.getParameter("TOOL_NAME");
+		String toolStandardConfigDemand = request
+				.getParameter("TOOL_STANDARD_CONFIG_DEMAND");
+		String toolModelDemand = request
+				.getParameter("TOOL_MODEL_DEMAND");
+		String toolUnit = request.getParameter("TOOL_UNIT");
+		String toolRemark = request.getParameter("TOOL_REMARK");
 		Map<String, Object> map = new HashMap<String, Object>();
-		Material material = new Material();
-		material.setMatId(-1l);
-		material.setTypeId(BaseUtil.strToLong(typeId));
-		material.setMatName(matName);
-		material.setMatSpec(matSpec);
-		material.setMatModel(matModel);
-		material.setMatUnit(BaseUtil.strToLong(matUnit));
-		material.setMatRemark(matRemark);
-		int bool = materialService.insertSelective(material);
+		ToolForPlan toolForPlan = new ToolForPlan();
+		toolForPlan.setToolId(-1l);
+		toolForPlan.setTypeId(BaseUtil.strToLong(typeId));
+		toolForPlan.setToolName(toolName);
+		toolForPlan
+				.setToolStandardConfigDemand(toolStandardConfigDemand);
+		toolForPlan.setToolModelDemand(toolModelDemand);
+		toolForPlan.setToolUnit(BaseUtil.strToLong(toolUnit));
+		toolForPlan.setToolRemark(toolRemark);
+		int bool = toolForPlanService.insertSelective(toolForPlan);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -84,15 +87,16 @@ public class MaterialController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/delMaterials.do")
+	@RequestMapping("/delToolForPlans.do")
 	@ResponseBody
-	public Map<String, Object> delMaterials(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String materialIds = request.getParameter("MAT_IDS");
+	public Map<String, Object> delToolForPlans(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String toolForPlanIds = request.getParameter("TOOL_IDS");
 		Map<String, Object> map = new HashMap<>();
-		Material material = new Material();
-		material.setIds(materialIds);
-		int bool = materialService.deleteByPrimaryKeys(material);
+		ToolForPlan toolForPlan = new ToolForPlan();
+		toolForPlan.setIds(toolForPlanIds);
+		int bool = toolForPlanService.deleteByPrimaryKeys(toolForPlan);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");
@@ -111,7 +115,7 @@ public class MaterialController extends BaseController {
 	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
 	public ModelAndView openEditUI(HttpServletRequest request,
 			HttpServletResponse response) {
-		return new ModelAndView("/gqj/material/editUI");
+		return new ModelAndView("/gqj/tool_for_plan/editUI");
 	}
 
 	/**
@@ -122,19 +126,20 @@ public class MaterialController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryMaterialsPage.do")
+	@RequestMapping("/queryToolForPlansPage.do")
 	@ResponseBody
-	public Map<String, Object> queryMaterialsPage(
+	public Map<String, Object> queryToolForPlansPage(
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
-		Material material = new Material();
-		material.setCurrPage(Integer.parseInt(page));
-		material.setPageSize(Integer.parseInt(rows));
-		material.setKeyWord(keyWord);
-		return materialService.selectMaterialsForPage(material);
+		ToolForPlan toolForPlan = new ToolForPlan();
+		toolForPlan.setCurrPage(Integer.parseInt(page));
+		toolForPlan.setPageSize(Integer.parseInt(rows));
+		toolForPlan.setKeyWord(keyWord);
+		return toolForPlanService
+				.selectToolForPlansForPage(toolForPlan);
 	}
 
 	/**
@@ -144,12 +149,12 @@ public class MaterialController extends BaseController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryMaterialTypeDropList.do")
+	@RequestMapping("/queryToolForPlanTypeDropList.do")
 	@ResponseBody
-	public void queryMaterialTypeDropList(HttpServletRequest request,
+	public void queryToolForPlanTypeDropList(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter().print(materialTypeService
-				.selectMaterialTypesForList(new MaterialType()));
+		response.getWriter().print(
+				toolTypeService.selectToolTypesForList(new ToolType()));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -161,9 +166,9 @@ public class MaterialController extends BaseController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryMaterialUnitDropList.do")
+	@RequestMapping("/queryToolForPlanUnitDropList.do")
 	@ResponseBody
-	public void queryMaterialUnitDropList(HttpServletRequest request,
+	public void queryToolForPlanUnitDropList(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		response.getWriter().print(
 				dictionaryService.getDictionarysByDicCode("UNIT"));
@@ -178,7 +183,7 @@ public class MaterialController extends BaseController {
 	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
-		return new ModelAndView("/gqj/material/index");
+		return new ModelAndView("/gqj/tool_for_plan/index");
 	}
 
 	/**
@@ -189,29 +194,32 @@ public class MaterialController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/updateMaterial.do")
+	@RequestMapping("/updateToolForPlan.do")
 	@ResponseBody
-	public Map<String, Object> updateMaterial(
+	public Map<String, Object> updateToolForPlan(
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		String matId = request.getParameter("MAT_ID");
+		String toolId = request.getParameter("TOOL_ID");
 		String typeId = request.getParameter("TYPE_ID");
-		String matName = request.getParameter("MAT_NAME");
-		String matSpec = request.getParameter("MAT_SPEC");
-		String matModel = request.getParameter("MAT_MODEL");
-		String matUnit = request.getParameter("MAT_UNIT");
-		String matRemark = request.getParameter("MAT_REMARK");
+		String toolName = request.getParameter("TOOL_NAME");
+		String toolStandardConfigDemand = request
+				.getParameter("TOOL_STANDARD_CONFIG_DEMAND");
+		String toolModelDemand = request
+				.getParameter("TOOL_MODEL_DEMAND");
+		String toolUnit = request.getParameter("TOOL_UNIT");
+		String toolRemark = request.getParameter("TOOL_REMARK");
 		Map<String, Object> map = new HashMap<String, Object>();
-		Material material = new Material();
-		material.setMatId(BaseUtil.strToLong(matId));
-		material.setTypeId(BaseUtil.strToLong(typeId));
-		material.setMatName(matName);
-		material.setMatSpec(matSpec);
-		material.setMatModel(matModel);
-		material.setMatUnit(BaseUtil.strToLong(matUnit));
-		material.setMatRemark(matRemark);
-		int bool = materialService
-				.updateByPrimaryKeySelective(material);
+		ToolForPlan toolForPlan = new ToolForPlan();
+		toolForPlan.setToolId(BaseUtil.strToLong(toolId));
+		toolForPlan.setTypeId(BaseUtil.strToLong(typeId));
+		toolForPlan.setToolName(toolName);
+		toolForPlan
+				.setToolStandardConfigDemand(toolStandardConfigDemand);
+		toolForPlan.setToolModelDemand(toolModelDemand);
+		toolForPlan.setToolUnit(BaseUtil.strToLong(toolUnit));
+		toolForPlan.setToolRemark(toolRemark);
+		int bool = toolForPlanService
+				.updateByPrimaryKeySelective(toolForPlan);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");

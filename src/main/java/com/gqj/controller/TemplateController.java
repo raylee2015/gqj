@@ -17,9 +17,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
-import com.gqj.entity.Material;
+import com.gqj.entity.ToolForPlan;
 import com.gqj.entity.Template;
-import com.gqj.service.IMaterialService;
+import com.gqj.service.IToolForPlanService;
 import com.gqj.service.ITemplateDetailService;
 import com.gqj.service.ITemplateService;
 
@@ -33,7 +33,7 @@ public class TemplateController extends BaseController {
 	private ITemplateService templateService;
 
 	@Autowired
-	private IMaterialService materialService;
+	private IToolForPlanService toolForPlanService;
 
 	/**
 	 * 分页查询工器具列表
@@ -46,17 +46,17 @@ public class TemplateController extends BaseController {
 	@RequestMapping("/queryMaterialsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryMaterialsPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
-		Material material = new Material();
-		material.setCurrPage(Integer.parseInt(page));
-		material.setPageSize(Integer.parseInt(rows));
-		material.setKeyWord(keyWord);
-		return materialService
-				.selectMaterialsForPage(material);
+		ToolForPlan toolForPlan = new ToolForPlan();
+		toolForPlan.setCurrPage(Integer.parseInt(page));
+		toolForPlan.setPageSize(Integer.parseInt(rows));
+		toolForPlan.setKeyWord(keyWord);
+		return toolForPlanService
+				.selectToolForPlansForPage(toolForPlan);
 	}
 
 	/**
@@ -70,23 +70,20 @@ public class TemplateController extends BaseController {
 	@RequestMapping("/addNewTemplate.do")
 	@ResponseBody
 	public Map<String, Object> addNewTemplate(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String templateName = request
-				.getParameter("TEMPLATE_NAME");
-		long templateDeptId = getSessionUser(request,
-				response).getUserDeptId();
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String templateName = request.getParameter("TEMPLATE_NAME");
+		long templateDeptId = getSessionUser(request, response)
+				.getUserDeptId();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Template template = new Template();
 		template.setTemplateId(-1l);
 		template.setTemplateName(templateName);
 		template.setTemplateDeptId(templateDeptId);
 		template.setTemplateCreateUserId(
-				getSessionUser(request, response)
-						.getUserId());
+				getSessionUser(request, response).getUserId());
 		template.setTemplateCreateDate(new Date());
-		int bool = templateService
-				.insertSelective(template);
+		int bool = templateService.insertSelective(template);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -107,16 +104,13 @@ public class TemplateController extends BaseController {
 	 */
 	@RequestMapping("/delTemplates.do")
 	@ResponseBody
-	public Map<String, Object> delTemplates(
-			HttpServletRequest request,
+	public Map<String, Object> delTemplates(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String templateIds = request
-				.getParameter("TEMPLATE_IDS");
+		String templateIds = request.getParameter("TEMPLATE_IDS");
 		Map<String, Object> map = new HashMap<>();
 		Template template = new Template();
 		template.setIds(templateIds);
-		int bool = templateService
-				.deleteByPrimaryKeys(template);
+		int bool = templateService.deleteByPrimaryKeys(template);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");
@@ -138,20 +132,19 @@ public class TemplateController extends BaseController {
 	@RequestMapping("/queryTemplatesPage.do")
 	@ResponseBody
 	public Map<String, Object> queryTemplatesPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		long templateDeptId = getSessionUser(request,
-				response).getUserDeptId();
+		long templateDeptId = getSessionUser(request, response)
+				.getUserDeptId();
 		String keyWord = request.getParameter("keyWord");
 		Template template = new Template();
 		template.setCurrPage(Integer.parseInt(page));
 		template.setPageSize(Integer.parseInt(rows));
 		template.setKeyWord(keyWord);
 		template.setTemplateDeptId(templateDeptId);
-		return templateService
-				.selectTemplatesForPage(template);
+		return templateService.selectTemplatesForPage(template);
 	}
 
 	@Autowired
@@ -168,13 +161,11 @@ public class TemplateController extends BaseController {
 	@RequestMapping("/queryTemplateDetailsForList.do")
 	@ResponseBody
 	public Map<String, Object> queryTemplateDetailsForList(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String templateId = request
-				.getParameter("TEMPLATE_ID");
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String templateId = request.getParameter("TEMPLATE_ID");
 		Template template = new Template();
-		template.setTemplateId(
-				BaseUtil.strToLong(templateId));
+		template.setTemplateId(BaseUtil.strToLong(templateId));
 		return templateDetailService
 				.selectTemplateDetailsForList(template);
 	}
@@ -195,11 +186,9 @@ public class TemplateController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openChooseMaterialUI.do", method = RequestMethod.GET)
-	public ModelAndView openChooseMaterialUI(
-			HttpServletRequest request,
+	public ModelAndView openChooseMaterialUI(HttpServletRequest request,
 			HttpServletResponse response) {
-		return new ModelAndView(
-				"/gqj/template/chooseMaterialUI");
+		return new ModelAndView("/gqj/template/chooseMaterialUI");
 	}
 
 	/**
@@ -213,23 +202,19 @@ public class TemplateController extends BaseController {
 	@RequestMapping("/updateTemplate.do")
 	@ResponseBody
 	public Map<String, Object> updateTemplate(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String templateId = request
-				.getParameter("TEMPLATE_ID");
-		String templateName = request
-				.getParameter("TEMPLATE_NAME");
-		long templateDeptId = getSessionUser(request,
-				response).getUserDeptId();
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String templateId = request.getParameter("TEMPLATE_ID");
+		String templateName = request.getParameter("TEMPLATE_NAME");
+		long templateDeptId = getSessionUser(request, response)
+				.getUserDeptId();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Template template = new Template();
-		template.setTemplateId(
-				BaseUtil.strToLong(templateId));
+		template.setTemplateId(BaseUtil.strToLong(templateId));
 		template.setTemplateName(templateName);
 		template.setTemplateDeptId(templateDeptId);
 		template.setTemplateCreateUserId(
-				getSessionUser(request, response)
-						.getUserId());
+				getSessionUser(request, response).getUserId());
 		template.setTemplateCreateDate(new Date());
 		int bool = templateService
 				.updateByPrimaryKeySelective(template);

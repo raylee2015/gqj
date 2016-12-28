@@ -32,65 +32,65 @@
 	var url = "";
 
 	// 保存数据
-	function saveMaterialType() {
+	function saveToolType() {
 		var params = {
-			TYPE_ID : getTextBoxValue('materialTypeIdTextBox'),
-			TYPE_NAME : getTextBoxValue('materialTypeNameTextBox'),
+			TYPE_ID : getTextBoxValue('toolTypeIdTextBox'),
+			TYPE_NAME : getTextBoxValue('toolTypeNameTextBox'),
 		};
-		save(params, url, successFunctionForSaveMaterialType);
+		save(params, url, successFunctionForSaveToolType);
 	}
 
-	function successFunctionForSaveMaterialType(result) {
+	function successFunctionForSaveToolType(result) {
 		parent.successFunctionForOption(result);
-		closeEditUIForMaterialType();
+		closeEditUIForToolType();
 	}
 
 	//页面加载完
 	$(document).ready(function() {
 		closeCache();
-		initMaterialTypeForm();
+		initToolTypeForm();
 	});
 
 	//初始化表单
-	function initMaterialTypeForm() {
+	function initToolTypeForm() {
 		var opType = getTextBoxValue('opType');
-		var postId = getTextBoxValue('materialTypeIdTextBox');
+		var postId = getTextBoxValue('toolTypeIdTextBox');
 		if (opType == 'edit') {
-			url = "updateMaterialType.do";
+			url = "updateToolType.do";
 			var rowIndex = getTextBoxValue('rowIndex');
-			var rowData = getRowDataOfParentDataGrid('datagridForMaterialType',
+			var rowData = getRowDataOfParentDataGrid('datagridForToolType',
 					rowIndex);
-			$('#materialTypeForm').form('load', rowData);
+			$('#toolTypeForm').form('load', rowData);
 		} else if (opType == 'add') {
-			url = "addNewMaterialType.do";
+			url = "addNewToolType.do";
 		}
 	}
 
 	//关闭编辑界面
-	function closeEditUIForMaterialType() {
-		parent.closeEditUIForMaterialType();
+	function closeEditUIForToolType() {
+		parent.closeEditUIForToolType();
 	}
 </script>
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit:true">
 		<div data-options="fit:true,border:false,region:'north'">
-			<form id="materialTypeForm" method="post"
+			<form id="toolTypeForm" method="post"
 				style="width: 100%;">
 				<div style="display: none">
 					<input id="opType" class="easyui-textbox"
 						value="<%=request.getParameter("opType")%>" /> <input
-						id="materialTypeIdTextBox" class="easyui-textbox"
+						id="toolTypeIdTextBox" class="easyui-textbox"
 						name="TYPE_ID" /> <input id="rowIndex"
 						class="easyui-textbox"
 						value="<%=request.getParameter("rowIndex")%>" />
 				</div>
 				<table width="100%">
 					<tr>
-						<td width="22%">物资类型名称:</td>
-						<td><input id="materialTypeNameTextBox"
+						<td width="25%">工器具类型名称:</td>
+						<td><input id="toolTypeNameTextBox"
 							name="TYPE_NAME" class="easyui-textbox"
-							data-options="prompt:'物资类型名称',required:true,validType:'length[0,20]'"
+							data-options="prompt:'工器具类型名称',required:true,validType:'length[0,20]'"
 							style="width: 100%; height: 32px" /></td>
 					</tr>
 				</table>
@@ -99,10 +99,10 @@
 		<div region="south" border="false"
 			style="text-align: right; height: 30px">
 			<a class="easyui-linkbutton" iconCls="icon-ok"
-				href="javascript:void(0)" onclick="saveMaterialType()">保存</a>
+				href="javascript:void(0)" onclick="saveToolType()">保存</a>
 			<a class="easyui-linkbutton" iconCls="icon-cancel"
 				href="javascript:void(0)"
-				onclick="closeEditUIForMaterialType()">关闭</a>
+				onclick="closeEditUIForToolType()">关闭</a>
 		</div>
 	</div>
 </body>

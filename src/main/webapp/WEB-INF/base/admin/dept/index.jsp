@@ -197,8 +197,7 @@
 						href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true"
 						onclick="openAddUIForDept()">添加</a> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
-						onclick="delDepts()">删除</a> <a href="#" class="easyui-linkbutton"
-						iconCls="icon-reload" plain="true" onclick="updateInnerData()">更新级联数据</a>
+						onclick="delDepts()">删除</a> 
 				</div>
 				<div>
 					<input id="keyWordForDeptTextInput" class="easyui-textbox"

@@ -161,7 +161,7 @@
 									}, {
 										field : 'MENU_NAME',
 										title : '菜单名称',
-										width : 100,
+										width : 200,
 									}, {
 										field : 'MENU_LEVEL_NAME',
 										title : '菜单级别',
@@ -203,8 +203,7 @@
 						href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true"
 						onclick="openAddUIForMenu()">添加</a> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
-						onclick="delMenus()">删除</a><a href="#" class="easyui-linkbutton"
-						iconCls="icon-reload" plain="true" onclick="updateInnerData()">更新级联数据</a>
+						onclick="delMenus()">删除</a>
 				</div>
 				<div>
 					<input id="keyWordForMenuTextInput" class="easyui-textbox"
