@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,11 +18,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
-import com.gqj.entity.ToolForPlan;
 import com.gqj.entity.Template;
-import com.gqj.service.IToolForPlanService;
+import com.gqj.entity.ToolForPlan;
 import com.gqj.service.ITemplateDetailService;
 import com.gqj.service.ITemplateService;
+import com.gqj.service.IToolForPlanService;
 
 @Controller
 @RequestMapping("/gqj/template")
@@ -43,9 +44,9 @@ public class TemplateController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryMaterialsPage.do")
+	@RequestMapping("/queryToolForPlansPage.do")
 	@ResponseBody
-	public Map<String, Object> queryMaterialsPage(
+	public Map<String, Object> queryToolForPlansPage(
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		String page = request.getParameter("page");
@@ -67,12 +68,14 @@ public class TemplateController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/addNewTemplate.do")
+	@RequestMapping("/addNewTemplatesAndDetails.do")
 	@ResponseBody
-	public Map<String, Object> addNewTemplate(
+	@Transactional
+	public Map<String, Object> addNewTemplatesAndDetails(
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		String templateName = request.getParameter("TEMPLATE_NAME");
+		String toolIds = request.getParameter("TOOL_IDS");
 		long templateDeptId = getSessionUser(request, response)
 				.getUserDeptId();
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -83,7 +86,8 @@ public class TemplateController extends BaseController {
 		template.setTemplateCreateUserId(
 				getSessionUser(request, response).getUserId());
 		template.setTemplateCreateDate(new Date());
-		int bool = templateService.insertSelective(template);
+		int bool = templateService.addTemplatesAndDetails(template,
+				toolIds);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -110,7 +114,7 @@ public class TemplateController extends BaseController {
 		Map<String, Object> map = new HashMap<>();
 		Template template = new Template();
 		template.setIds(templateIds);
-		int bool = templateService.deleteByPrimaryKeys(template);
+		int bool = templateService.deleteTemplatesAndDetails(template);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");
@@ -185,10 +189,10 @@ public class TemplateController extends BaseController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/openChooseMaterialUI.do", method = RequestMethod.GET)
-	public ModelAndView openChooseMaterialUI(HttpServletRequest request,
-			HttpServletResponse response) {
-		return new ModelAndView("/gqj/template/chooseMaterialUI");
+	@RequestMapping(value = "/openChooseToolForPlanUI.do", method = RequestMethod.GET)
+	public ModelAndView openChooseToolForPlanUI(
+			HttpServletRequest request, HttpServletResponse response) {
+		return new ModelAndView("/gqj/template/chooseToolForPlanUI");
 	}
 
 	/**
@@ -199,25 +203,27 @@ public class TemplateController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/updateTemplate.do")
+	@RequestMapping("/updateTemplatesAndDetails.do")
 	@ResponseBody
-	public Map<String, Object> updateTemplate(
+	public Map<String, Object> updateTemplatesAndDetails(
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		String templateId = request.getParameter("TEMPLATE_ID");
 		String templateName = request.getParameter("TEMPLATE_NAME");
+		String toolIds = request.getParameter("TOOL_IDS");
 		long templateDeptId = getSessionUser(request, response)
 				.getUserDeptId();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Template template = new Template();
 		template.setTemplateId(BaseUtil.strToLong(templateId));
+		template.setIds(templateId);
 		template.setTemplateName(templateName);
 		template.setTemplateDeptId(templateDeptId);
 		template.setTemplateCreateUserId(
 				getSessionUser(request, response).getUserId());
 		template.setTemplateCreateDate(new Date());
-		int bool = templateService
-				.updateByPrimaryKeySelective(template);
+		int bool = templateService.updateTemplatesAndDetails(template,
+				toolIds);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");

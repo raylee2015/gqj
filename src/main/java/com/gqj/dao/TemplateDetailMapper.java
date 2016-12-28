@@ -17,10 +17,9 @@ public interface TemplateDetailMapper {
 	int selectCountOfTemplateDetailsForPage(
 			TemplateDetail templateDetail);
 
-	int deleteByPrimaryKeys(TemplateDetail templateDetail);
+	int deleteByTemplate(Template templateDetail);
 
 	int insertSelective(TemplateDetail templateDetail);
 
-	int updateByPrimaryKeySelective(
-			TemplateDetail templateDetail);
+	int updateByPrimaryKeySelective(TemplateDetail templateDetail);
 }

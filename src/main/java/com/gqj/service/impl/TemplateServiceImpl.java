@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.gqj.dao.TemplateMapper;
 import com.gqj.entity.Template;
+import com.gqj.service.ITemplateDetailService;
 import com.gqj.service.ITemplateService;
 
 @Service
@@ -17,14 +18,23 @@ public class TemplateServiceImpl implements ITemplateService {
 	@Autowired
 	private TemplateMapper templateMapper;
 
+	@Autowired
+	private ITemplateDetailService templateDetailService;
+
 	@Override
-	public int deleteByPrimaryKeys(Template template) {
-		return templateMapper.deleteByPrimaryKeys(template);
+	public int deleteTemplatesAndDetails(Template template) {
+		int bool = templateDetailService.deleteByTemplate(template);
+		bool = templateMapper.deleteByPrimaryKeys(template);
+		return bool;
 	}
 
 	@Override
-	public int insertSelective(Template template) {
-		return templateMapper.insertSelective(template);
+	public int addTemplatesAndDetails(Template template,
+			String toolIds) {
+		int bool = templateMapper.insertSelective(template);
+		bool = templateDetailService
+				.addTemplateDetails(template.getTemplateId(), toolIds);
+		return bool;
 	}
 
 	@Override
@@ -41,8 +51,13 @@ public class TemplateServiceImpl implements ITemplateService {
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(Template template) {
-		return templateMapper.updateByPrimaryKeySelective(template);
+	public int updateTemplatesAndDetails(Template template,
+			String toolIds) {
+		int bool = templateDetailService.deleteByTemplate(template);
+		bool = templateMapper.updateByPrimaryKeySelective(template);
+		bool = templateDetailService
+				.addTemplateDetails(template.getTemplateId(), toolIds);
+		return bool;
 	}
 
 }

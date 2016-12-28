@@ -46,12 +46,16 @@
 			</if>
 		</where>
 	</select>
-	<delete id="deleteByPrimaryKeyS" parameterType="java.lang.String">
+	<delete id="deleteByPrimaryKeys" parameterType="com.gqj.entity.Template">
 		delete from
 		GQJ_TEMPLATE
 		where TEMPLATE_ID in (#{ids})
 	</delete>
 	<insert id="insertSelective" parameterType="com.gqj.entity.Template">
+		<selectKey resultType="java.lang.Long" order="BEFORE"
+			keyProperty="templateId">
+			select GQJ_TEMPLATE_SEQ.nextval from dual
+		</selectKey>
 		insert into GQJ_TEMPLATE
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="templateId != null">
@@ -72,7 +76,7 @@
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="templateId != null">
-				GQJ_TEMPLATE_SEQ.nextval,
+				#{templateId},
 			</if>
 			<if test="templateName != null">
 				#{templateName,jdbcType=VARCHAR},

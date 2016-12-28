@@ -5,11 +5,11 @@ import java.util.Map;
 import com.gqj.entity.Template;
 
 public interface ITemplateService {
-	int deleteByPrimaryKeys(Template template);
+	int deleteTemplatesAndDetails(Template template);
 
-	int insertSelective(Template template);
+	int addTemplatesAndDetails(Template template, String toolIds);
 
-	int updateByPrimaryKeySelective(Template template);
+	int updateTemplatesAndDetails(Template template, String toolIds);
 
 	Map<String, Object> selectTemplatesForPage(Template template);
 

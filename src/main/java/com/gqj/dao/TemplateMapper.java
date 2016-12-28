@@ -12,7 +12,7 @@ public interface TemplateMapper {
 
 	int selectCountOfTemplatesForPage(Template template);
 
-	int insertSelective(Template record);
+	int insertSelective(Template template);
 
-	int updateByPrimaryKeySelective(Template record);
+	int updateByPrimaryKeySelective(Template template);
 }

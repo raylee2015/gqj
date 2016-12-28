@@ -39,6 +39,12 @@ function setTextBoxValue(TextBoxId, value) {
 	return textBox.textbox('setValue', value);
 }
 
+// 输入框赋值
+function setTextBoxText(TextBoxId, text) {
+	var textBox = eval('$(\'#' + TextBoxId + '\')');
+	return textBox.textbox('setText', text);
+}
+
 // 查询时错误反馈
 function errorFunctionForQuery() {
 	eval(errorCodeForQuery);

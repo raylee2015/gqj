@@ -7,9 +7,17 @@ public class TemplateDetail extends Base {
 
 	private Long templateId;
 
-	private Long matId;
+	private Long toolId;
 
 	private String detailRemark;
+
+	public Long getToolId() {
+		return toolId;
+	}
+
+	public void setToolId(Long toolId) {
+		this.toolId = toolId;
+	}
 
 	public Long getDetailId() {
 		return detailId;
@@ -25,14 +33,6 @@ public class TemplateDetail extends Base {
 
 	public void setTemplateId(Long templateId) {
 		this.templateId = templateId;
-	}
-
-	public Long getMatId() {
-		return matId;
-	}
-
-	public void setMatId(Long matId) {
-		this.matId = matId;
 	}
 
 	public String getDetailRemark() {

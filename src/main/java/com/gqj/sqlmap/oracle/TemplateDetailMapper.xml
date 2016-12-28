@@ -4,13 +4,13 @@
 	<resultMap id="BaseResultMap" type="com.gqj.entity.TemplateDetail">
 		<id column="DETAIL_ID" jdbcType="DECIMAL" property="detailId" />
 		<result column="TEMPLATE_ID" jdbcType="DECIMAL" property="templateId" />
-		<result column="MAT_ID" jdbcType="DECIMAL" property="matId" />
+		<result column="TOOL_ID" jdbcType="DECIMAL" property="toolId" />
 		<result column="DETAIL_REMARK" jdbcType="VARCHAR" property="detailRemark" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		DETAIL_ID, TEMPLATE_ID, MAT_ID,
-		DETAIL_REMARK,MAT_NAME,MAT_SPEC,MAT_MODEL,
-		MAT_UNIT,MAT_REMARK,TYPE_NAME,MAT_UNIT_NAME
+		DETAIL_ID, TEMPLATE_ID, TOOL_ID,
+		TOOL_NAME,TOOL_STANDARD_CONFIG_DEMAND,TOOL_MODEL_DEMAND,
+		TOOL_UNIT,TOOL_REMARK,TOOL_TYPE_NAME,TOOL_UNIT_NAME
 	</sql>
 	<select id="selectTemplateDetailsForList" parameterType="com.gqj.entity.Template"
 		resultType="java.util.HashMap">
@@ -49,10 +49,10 @@
 			</if>
 		</where>
 	</select>
-	<delete id="deleteByPrimaryKeys" parameterType="java.lang.String">
+	<delete id="deleteByTemplate" parameterType="com.gqj.entity.Template">
 		delete from
 		GQJ_TEMPLATE_DETAIL
-		where DETAIL_ID in (#{ids})
+		where TEMPLATE_ID in (#{ids})
 	</delete>
 	<insert id="insertSelective" parameterType="com.gqj.entity.TemplateDetail">
 		insert into GQJ_TEMPLATE_DETAIL
@@ -63,8 +63,8 @@
 			<if test="templateId != null">
 				TEMPLATE_ID,
 			</if>
-			<if test="matId != null">
-				MAT_ID,
+			<if test="toolId != null">
+				TOOL_ID,
 			</if>
 			<if test="detailRemark != null">
 				DETAIL_REMARK,
@@ -72,13 +72,13 @@
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="detailId != null">
-				GQJ_TEMPLATE_DETAILSEQ.nextval,
+				GQJ_TEMPLATE_DETAIL_SEQ.nextval,
 			</if>
 			<if test="templateId != null">
 				#{templateId,jdbcType=DECIMAL},
 			</if>
-			<if test="matId != null">
-				#{matId,jdbcType=DECIMAL},
+			<if test="toolId != null">
+				#{toolId,jdbcType=DECIMAL},
 			</if>
 			<if test="detailRemark != null">
 				#{detailRemark,jdbcType=VARCHAR},
@@ -91,8 +91,8 @@
 			<if test="templateId != null">
 				TEMPLATE_ID = #{templateId,jdbcType=DECIMAL},
 			</if>
-			<if test="matId != null">
-				MAT_ID = #{matId,jdbcType=DECIMAL},
+			<if test="toolId != null">
+				TOOL_ID = #{toolId,jdbcType=DECIMAL},
 			</if>
 			<if test="detailRemark != null">
 				DETAIL_REMARK = #{detailRemark,jdbcType=VARCHAR},
