@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gqj.dao.BaseToolMapper">
+  <resultMap id="BaseResultMap" type="com.gqj.entity.BaseTool">
+    <id column="BASE_TOOL_ID" jdbcType="DECIMAL" property="baseToolId" />
+    <result column="TYPE_ID" jdbcType="DECIMAL" property="typeId" />
+    <result column="TOOL_ID_FOR_PLAN" jdbcType="DECIMAL" property="toolIdForPlan" />
+    <result column="MAN_ID" jdbcType="DECIMAL" property="manId" />
+    <result column="BASE_TOOL_MODEL" jdbcType="VARCHAR" property="baseToolModel" />
+    <result column="BASE_TOOL_SPEC" jdbcType="DECIMAL" property="baseToolSpec" />
+    <result column="BASE_TOOL_REMARK" jdbcType="VARCHAR" property="baseToolRemark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    BASE_TOOL_ID, TYPE_ID, TOOL_ID_FOR_PLAN, MAN_ID, BASE_TOOL_MODEL, BASE_TOOL_SPEC, 
+    BASE_TOOL_REMARK
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from GQJ_BASE_TOOL
+    where BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from GQJ_BASE_TOOL
+    where BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.gqj.entity.BaseTool">
+    insert into GQJ_BASE_TOOL (BASE_TOOL_ID, TYPE_ID, TOOL_ID_FOR_PLAN, 
+      MAN_ID, BASE_TOOL_MODEL, BASE_TOOL_SPEC, 
+      BASE_TOOL_REMARK)
+    values (#{baseToolId,jdbcType=DECIMAL}, #{typeId,jdbcType=DECIMAL}, #{toolIdForPlan,jdbcType=DECIMAL}, 
+      #{manId,jdbcType=DECIMAL}, #{baseToolModel,jdbcType=VARCHAR}, #{baseToolSpec,jdbcType=DECIMAL}, 
+      #{baseToolRemark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.gqj.entity.BaseTool">
+    insert into GQJ_BASE_TOOL
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="baseToolId != null">
+        BASE_TOOL_ID,
+      </if>
+      <if test="typeId != null">
+        TYPE_ID,
+      </if>
+      <if test="toolIdForPlan != null">
+        TOOL_ID_FOR_PLAN,
+      </if>
+      <if test="manId != null">
+        MAN_ID,
+      </if>
+      <if test="baseToolModel != null">
+        BASE_TOOL_MODEL,
+      </if>
+      <if test="baseToolSpec != null">
+        BASE_TOOL_SPEC,
+      </if>
+      <if test="baseToolRemark != null">
+        BASE_TOOL_REMARK,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="baseToolId != null">
+        #{baseToolId,jdbcType=DECIMAL},
+      </if>
+      <if test="typeId != null">
+        #{typeId,jdbcType=DECIMAL},
+      </if>
+      <if test="toolIdForPlan != null">
+        #{toolIdForPlan,jdbcType=DECIMAL},
+      </if>
+      <if test="manId != null">
+        #{manId,jdbcType=DECIMAL},
+      </if>
+      <if test="baseToolModel != null">
+        #{baseToolModel,jdbcType=VARCHAR},
+      </if>
+      <if test="baseToolSpec != null">
+        #{baseToolSpec,jdbcType=DECIMAL},
+      </if>
+      <if test="baseToolRemark != null">
+        #{baseToolRemark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.BaseTool">
+    update GQJ_BASE_TOOL
+    <set>
+      <if test="typeId != null">
+        TYPE_ID = #{typeId,jdbcType=DECIMAL},
+      </if>
+      <if test="toolIdForPlan != null">
+        TOOL_ID_FOR_PLAN = #{toolIdForPlan,jdbcType=DECIMAL},
+      </if>
+      <if test="manId != null">
+        MAN_ID = #{manId,jdbcType=DECIMAL},
+      </if>
+      <if test="baseToolModel != null">
+        BASE_TOOL_MODEL = #{baseToolModel,jdbcType=VARCHAR},
+      </if>
+      <if test="baseToolSpec != null">
+        BASE_TOOL_SPEC = #{baseToolSpec,jdbcType=DECIMAL},
+      </if>
+      <if test="baseToolRemark != null">
+        BASE_TOOL_REMARK = #{baseToolRemark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gqj.entity.BaseTool">
+    update GQJ_BASE_TOOL
+    set TYPE_ID = #{typeId,jdbcType=DECIMAL},
+      TOOL_ID_FOR_PLAN = #{toolIdForPlan,jdbcType=DECIMAL},
+      MAN_ID = #{manId,jdbcType=DECIMAL},
+      BASE_TOOL_MODEL = #{baseToolModel,jdbcType=VARCHAR},
+      BASE_TOOL_SPEC = #{baseToolSpec,jdbcType=DECIMAL},
+      BASE_TOOL_REMARK = #{baseToolRemark,jdbcType=VARCHAR}
+    where BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL}
+  </update>
+</mapper>
