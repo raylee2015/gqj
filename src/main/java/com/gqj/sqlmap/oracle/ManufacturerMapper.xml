@@ -33,10 +33,10 @@
 			</if>
 		</where>
 	</select>
-	<delete id="deleteByPrimaryKeys" parameterType="java.lang.String">
+	<delete id="deleteByPrimaryKeys" parameterType="com.gqj.entity.Manufacturer">
 		delete from
 		GQJ_MANUFACTURER
-		where MAN_ID = #{ids}
+		where MAN_ID in (${ids})
 	</delete>
 	<insert id="insertSelective" parameterType="com.gqj.entity.Manufacturer">
 		insert into GQJ_MANUFACTURER

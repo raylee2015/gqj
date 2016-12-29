@@ -1,17 +1,19 @@
 package com.gqj.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.gqj.entity.BaseTool;
 
 public interface BaseToolMapper {
-    int deleteByPrimaryKey(Long baseToolId);
+	List<Map<String, Object>> selectBaseToolsForPage(
+			BaseTool baseTool);
 
-    int insert(BaseTool record);
+	int selectCountOfBaseToolsForPage(BaseTool baseTool);
 
-    int insertSelective(BaseTool record);
+	int deleteByPrimaryKeys(BaseTool baseTool);
 
-    BaseTool selectByPrimaryKey(Long baseToolId);
+	int insertSelective(BaseTool baseTool);
 
-    int updateByPrimaryKeySelective(BaseTool record);
-
-    int updateByPrimaryKey(BaseTool record);
+	int updateByPrimaryKeySelective(BaseTool baseTool);
 }

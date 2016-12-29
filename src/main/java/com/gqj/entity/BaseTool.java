@@ -1,73 +1,77 @@
 package com.gqj.entity;
 
-public class BaseTool {
-    private Long baseToolId;
+import com.base.entity.Base;
 
-    private Long typeId;
+public class BaseTool extends Base {
+	private Long baseToolId;
 
-    private Long toolIdForPlan;
+	private Long typeId;
 
-    private Long manId;
+	private Long toolIdForPlan;
 
-    private String baseToolModel;
+	private Long manId;
 
-    private Long baseToolSpec;
+	private String baseToolModel;
 
-    private String baseToolRemark;
+	private String baseToolSpec;
 
-    public Long getBaseToolId() {
-        return baseToolId;
-    }
+	private String baseToolRemark;
 
-    public void setBaseToolId(Long baseToolId) {
-        this.baseToolId = baseToolId;
-    }
+	public Long getBaseToolId() {
+		return baseToolId;
+	}
 
-    public Long getTypeId() {
-        return typeId;
-    }
+	public void setBaseToolId(Long baseToolId) {
+		this.baseToolId = baseToolId;
+	}
 
-    public void setTypeId(Long typeId) {
-        this.typeId = typeId;
-    }
+	public Long getTypeId() {
+		return typeId;
+	}
 
-    public Long getToolIdForPlan() {
-        return toolIdForPlan;
-    }
+	public void setTypeId(Long typeId) {
+		this.typeId = typeId;
+	}
 
-    public void setToolIdForPlan(Long toolIdForPlan) {
-        this.toolIdForPlan = toolIdForPlan;
-    }
+	public Long getToolIdForPlan() {
+		return toolIdForPlan;
+	}
 
-    public Long getManId() {
-        return manId;
-    }
+	public void setToolIdForPlan(Long toolIdForPlan) {
+		this.toolIdForPlan = toolIdForPlan;
+	}
 
-    public void setManId(Long manId) {
-        this.manId = manId;
-    }
+	public Long getManId() {
+		return manId;
+	}
 
-    public String getBaseToolModel() {
-        return baseToolModel;
-    }
+	public void setManId(Long manId) {
+		this.manId = manId;
+	}
 
-    public void setBaseToolModel(String baseToolModel) {
-        this.baseToolModel = baseToolModel == null ? null : baseToolModel.trim();
-    }
+	public String getBaseToolModel() {
+		return baseToolModel;
+	}
 
-    public Long getBaseToolSpec() {
-        return baseToolSpec;
-    }
+	public void setBaseToolModel(String baseToolModel) {
+		this.baseToolModel = baseToolModel == null ? null
+				: baseToolModel.trim();
+	}
 
-    public void setBaseToolSpec(Long baseToolSpec) {
-        this.baseToolSpec = baseToolSpec;
-    }
+	public String getBaseToolSpec() {
+		return baseToolSpec;
+	}
 
-    public String getBaseToolRemark() {
-        return baseToolRemark;
-    }
+	public void setBaseToolSpec(String baseToolSpec) {
+		this.baseToolSpec = baseToolSpec;
+	}
 
-    public void setBaseToolRemark(String baseToolRemark) {
-        this.baseToolRemark = baseToolRemark == null ? null : baseToolRemark.trim();
-    }
+	public String getBaseToolRemark() {
+		return baseToolRemark;
+	}
+
+	public void setBaseToolRemark(String baseToolRemark) {
+		this.baseToolRemark = baseToolRemark == null ? null
+				: baseToolRemark.trim();
+	}
 }
