@@ -104,7 +104,7 @@ function showMessage(title, message) {
 // 根据所选记录获取id串
 function getIdsOfSelectedItems(dataGridId, columnNameForSelect) {
 	var dataGrid = eval('$(\'#' + dataGridId + '\')');
-	var rowDatas = dataGrid.datagrid('getSelections');
+	var rowDatas = dataGrid.datagrid('getChecked');
 	var ids = '';
 	for (var i = 0; i < rowDatas.length; i++) {
 		var item = rowDatas[i];

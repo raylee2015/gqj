@@ -2,7 +2,7 @@ package com.gqj.entity;
 
 import com.base.entity.Base;
 
-public class ToolForPlan extends Base {
+public class ToolDemand extends Base {
 	private Long toolId;
 
 	private Long typeId;

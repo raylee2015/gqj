@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.gqj.dao.ToolForPlanMapper">
-	<resultMap id="BaseResultMap" type="com.gqj.entity.ToolForPlan">
+<mapper namespace="com.gqj.dao.ToolDemandMapper">
+	<resultMap id="BaseResultMap" type="com.gqj.entity.ToolDemand">
 		<id column="TOOL_ID" jdbcType="DECIMAL" property="toolId" />
 		<result column="TYPE_ID" jdbcType="DECIMAL" property="typeId" />
 		<result column="TOOL_NAME" jdbcType="VARCHAR" property="toolName" />
-		<result column="TOOL_STANDARD_CONFIG_DEMAND" jdbcType="VARCHAR" property="toolSpec" />
+		<result column="TOOL_STANDARD_CONFIG_DEMAND" jdbcType="VARCHAR"
+			property="toolSpec" />
 		<result column="TOOL_MODEL_DEMAND" jdbcType="VARCHAR" property="toolModel" />
 		<result column="TOOL_UNIT" jdbcType="DECIMAL" property="toolUnit" />
 		<result column="TOOL_REMARK" jdbcType="VARCHAR" property="toolRemark" />
@@ -16,12 +17,12 @@
 		TOOL_UNIT,
 		TOOL_REMARK,TOOL_TYPE_NAME,TOOL_UNIT_NAME
 	</sql>
-	<select id="selectToolForPlansForPage" parameterType="com.gqj.entity.ToolForPlan"
+	<select id="selectToolDemandsForPage" parameterType="com.gqj.entity.ToolDemand"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select
 		<include refid="Base_Column_List" />
-		from VIEW_GQJ_TOOL_FOR_PLAN
+		from VIEW_GQJ_TOOL_DEMAND
 		<where>
 			<if test="keyWord != null">
 				AND TOOL_NAME like '%${keyWord}%'
@@ -35,9 +36,9 @@
 		) WHERE num<![CDATA[>=]]>
 		(1+(${currPage}-1)*${pageSize})
 	</select>
-	<select id="selectCountOfToolForPlansForPage" parameterType="com.gqj.entity.ToolForPlan"
+	<select id="selectCountOfToolDemandsForPage" parameterType="com.gqj.entity.ToolDemand"
 		resultType="java.lang.Integer">
-		select count(t.TOOL_ID) from VIEW_GQJ_TOOL_FOR_PLAN t
+		select count(t.TOOL_ID) from VIEW_GQJ_TOOL_DEMAND t
 		<where>
 			<if test="keyWord != null">
 				AND TOOL_NAME like '%${keyWord}%'
@@ -49,11 +50,11 @@
 	</select>
 	<delete id="deleteByPrimaryKeys" parameterType="java.lang.String">
 		delete from
-		GQJ_TOOL_FOR_PLAN
-		where TOOL_ID in #{ids}
+		GQJ_TOOL_DEMAND
+		where TOOL_ID in (#{ids})
 	</delete>
-	<insert id="insertSelective" parameterType="com.gqj.entity.ToolForPlan">
-		insert into GQJ_TOOL_FOR_PLAN
+	<insert id="insertSelective" parameterType="com.gqj.entity.ToolDemand">
+		insert into GQJ_TOOL_DEMAND
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="toolId != null">
 				TOOL_ID,
@@ -79,7 +80,7 @@
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="toolId != null">
-				GQJ_TOOL_FOR_PLAN_SEQ.nextval,
+				GQJ_TOOL_DEMAND_SEQ.nextval,
 			</if>
 			<if test="typeId != null">
 				#{typeId,jdbcType=DECIMAL},
@@ -101,8 +102,8 @@
 			</if>
 		</trim>
 	</insert>
-	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.ToolForPlan">
-		update GQJ_TOOL_FOR_PLAN
+	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.ToolDemand">
+		update GQJ_TOOL_DEMAND
 		<set>
 			<if test="typeId != null">
 				TYPE_ID = #{typeId,jdbcType=DECIMAL},
@@ -111,7 +112,8 @@
 				TOOL_NAME = #{toolName,jdbcType=VARCHAR},
 			</if>
 			<if test="toolStandardConfigDemand != null">
-				TOOL_STANDARD_CONFIG_DEMAND = #{toolStandardConfigDemand,jdbcType=VARCHAR},
+				TOOL_STANDARD_CONFIG_DEMAND =
+				#{toolStandardConfigDemand,jdbcType=VARCHAR},
 			</if>
 			<if test="toolModelDemand != null">
 				TOOL_MODEL_DEMAND = #{toolModelDemand,jdbcType=VARCHAR},

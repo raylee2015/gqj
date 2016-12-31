@@ -52,7 +52,7 @@
 	<delete id="deleteByTemplate" parameterType="com.gqj.entity.Template">
 		delete from
 		GQJ_TEMPLATE_DETAIL
-		where TEMPLATE_ID in (#{ids})
+		where TEMPLATE_ID in (${ids})
 	</delete>
 	<insert id="insertSelective" parameterType="com.gqj.entity.TemplateDetail">
 		insert into GQJ_TEMPLATE_DETAIL

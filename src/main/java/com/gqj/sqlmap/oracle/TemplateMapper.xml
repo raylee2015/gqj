@@ -49,7 +49,7 @@
 	<delete id="deleteByPrimaryKeys" parameterType="com.gqj.entity.Template">
 		delete from
 		GQJ_TEMPLATE
-		where TEMPLATE_ID in (#{ids})
+		where TEMPLATE_ID in (${ids})
 	</delete>
 	<insert id="insertSelective" parameterType="com.gqj.entity.Template">
 		<selectKey resultType="java.lang.Long" order="BEFORE"

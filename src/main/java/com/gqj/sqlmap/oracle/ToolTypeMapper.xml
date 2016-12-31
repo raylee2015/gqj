@@ -49,7 +49,7 @@
 	<delete id="deleteByPrimaryKeys" parameterType="java.lang.String">
 		delete from
 		GQJ_TOOL_TYPE
-		where TYPE_ID IN #{ids}
+		where TYPE_ID IN (${ids})
 	</delete>
 	<insert id="insertSelective" parameterType="com.gqj.entity.ToolType">
 		insert into GQJ_TOOL_TYPE

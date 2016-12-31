@@ -17,22 +17,22 @@ import org.springframework.web.servlet.ModelAndView;
 import com.base.admin.service.IDictionaryService;
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
-import com.gqj.entity.ToolForPlan;
+import com.gqj.entity.ToolDemand;
 import com.gqj.entity.ToolType;
-import com.gqj.service.IToolForPlanService;
+import com.gqj.service.IToolDemandService;
 import com.gqj.service.IToolTypeService;
 
 @Controller
-@RequestMapping("/gqj/tool_for_plan")
-public class ToolForPlanController extends BaseController {
+@RequestMapping("/gqj/tool_demand")
+public class ToolDemandController extends BaseController {
 	public static final Logger LOGGER = Logger
-			.getLogger(ToolForPlanController.class);
+			.getLogger(ToolDemandController.class);
 
 	@Autowired
 	private IDictionaryService dictionaryService;
 
 	@Autowired
-	private IToolForPlanService toolForPlanService;
+	private IToolDemandService toolDemandService;
 
 	@Autowired
 	private IToolTypeService toolTypeService;
@@ -45,30 +45,34 @@ public class ToolForPlanController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/addNewToolForPlan.do")
+	@RequestMapping("/addNewToolDemand.do")
 	@ResponseBody
-	public Map<String, Object> addNewToolForPlan(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Map<String, Object> addNewToolDemand(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String typeId = request.getParameter("TYPE_ID");
 		String toolName = request.getParameter("TOOL_NAME");
 		String toolStandardConfigDemand = request
-				.getParameter("TOOL_STANDARD_CONFIG_DEMAND");
+				.getParameter(
+						"TOOL_STANDARD_CONFIG_DEMAND");
 		String toolModelDemand = request
 				.getParameter("TOOL_MODEL_DEMAND");
 		String toolUnit = request.getParameter("TOOL_UNIT");
-		String toolRemark = request.getParameter("TOOL_REMARK");
+		String toolRemark = request
+				.getParameter("TOOL_REMARK");
 		Map<String, Object> map = new HashMap<String, Object>();
-		ToolForPlan toolForPlan = new ToolForPlan();
-		toolForPlan.setToolId(-1l);
-		toolForPlan.setTypeId(BaseUtil.strToLong(typeId));
-		toolForPlan.setToolName(toolName);
-		toolForPlan
-				.setToolStandardConfigDemand(toolStandardConfigDemand);
-		toolForPlan.setToolModelDemand(toolModelDemand);
-		toolForPlan.setToolUnit(BaseUtil.strToLong(toolUnit));
-		toolForPlan.setToolRemark(toolRemark);
-		int bool = toolForPlanService.insertSelective(toolForPlan);
+		ToolDemand toolDemand = new ToolDemand();
+		toolDemand.setToolId(-1l);
+		toolDemand.setTypeId(BaseUtil.strToLong(typeId));
+		toolDemand.setToolName(toolName);
+		toolDemand.setToolStandardConfigDemand(
+				toolStandardConfigDemand);
+		toolDemand.setToolModelDemand(toolModelDemand);
+		toolDemand
+				.setToolUnit(BaseUtil.strToLong(toolUnit));
+		toolDemand.setToolRemark(toolRemark);
+		int bool = toolDemandService
+				.insertSelective(toolDemand);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -87,16 +91,18 @@ public class ToolForPlanController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/delToolForPlans.do")
+	@RequestMapping("/delToolDemands.do")
 	@ResponseBody
-	public Map<String, Object> delToolForPlans(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		String toolForPlanIds = request.getParameter("TOOL_IDS");
+	public Map<String, Object> delToolDemands(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String toolDemandIds = request
+				.getParameter("TOOL_IDS");
 		Map<String, Object> map = new HashMap<>();
-		ToolForPlan toolForPlan = new ToolForPlan();
-		toolForPlan.setIds(toolForPlanIds);
-		int bool = toolForPlanService.deleteByPrimaryKeys(toolForPlan);
+		ToolDemand toolDemand = new ToolDemand();
+		toolDemand.setIds(toolDemandIds);
+		int bool = toolDemandService
+				.deleteByPrimaryKeys(toolDemand);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");
@@ -113,9 +119,10 @@ public class ToolForPlanController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(HttpServletRequest request,
+	public ModelAndView openEditUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
-		return new ModelAndView("/gqj/tool_for_plan/editUI");
+		return new ModelAndView("/gqj/tool_demand/editUI");
 	}
 
 	/**
@@ -126,20 +133,20 @@ public class ToolForPlanController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryToolForPlansPage.do")
+	@RequestMapping("/queryToolDemandsPage.do")
 	@ResponseBody
-	public Map<String, Object> queryToolForPlansPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Map<String, Object> queryToolDemandsPage(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
-		ToolForPlan toolForPlan = new ToolForPlan();
-		toolForPlan.setCurrPage(Integer.parseInt(page));
-		toolForPlan.setPageSize(Integer.parseInt(rows));
-		toolForPlan.setKeyWord(keyWord);
-		return toolForPlanService
-				.selectToolForPlansForPage(toolForPlan);
+		ToolDemand toolDemand = new ToolDemand();
+		toolDemand.setCurrPage(Integer.parseInt(page));
+		toolDemand.setPageSize(Integer.parseInt(rows));
+		toolDemand.setKeyWord(keyWord);
+		return toolDemandService
+				.selectToolDemandsForPage(toolDemand);
 	}
 
 	/**
@@ -149,12 +156,13 @@ public class ToolForPlanController extends BaseController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryToolForPlanTypeDropList.do")
+	@RequestMapping("/queryToolDemandTypeDropList.do")
 	@ResponseBody
-	public void queryToolForPlanTypeDropList(HttpServletRequest request,
+	public void queryToolDemandTypeDropList(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter().print(
-				toolTypeService.selectToolTypesForList(new ToolType()));
+		response.getWriter().print(toolTypeService
+				.selectToolTypesForList(new ToolType()));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -166,12 +174,13 @@ public class ToolForPlanController extends BaseController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryToolForPlanUnitDropList.do")
+	@RequestMapping("/queryToolDemandUnitDropList.do")
 	@ResponseBody
-	public void queryToolForPlanUnitDropList(HttpServletRequest request,
+	public void queryToolDemandUnitDropList(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter().print(
-				dictionaryService.getDictionarysByDicCode("UNIT"));
+		response.getWriter().print(dictionaryService
+				.getDictionarysByDicCode("UNIT"));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -183,7 +192,7 @@ public class ToolForPlanController extends BaseController {
 	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
-		return new ModelAndView("/gqj/tool_for_plan/index");
+		return new ModelAndView("/gqj/tool_demand/index");
 	}
 
 	/**
@@ -194,32 +203,35 @@ public class ToolForPlanController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/updateToolForPlan.do")
+	@RequestMapping("/updateToolDemand.do")
 	@ResponseBody
-	public Map<String, Object> updateToolForPlan(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Map<String, Object> updateToolDemand(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String toolId = request.getParameter("TOOL_ID");
 		String typeId = request.getParameter("TYPE_ID");
 		String toolName = request.getParameter("TOOL_NAME");
 		String toolStandardConfigDemand = request
-				.getParameter("TOOL_STANDARD_CONFIG_DEMAND");
+				.getParameter(
+						"TOOL_STANDARD_CONFIG_DEMAND");
 		String toolModelDemand = request
 				.getParameter("TOOL_MODEL_DEMAND");
 		String toolUnit = request.getParameter("TOOL_UNIT");
-		String toolRemark = request.getParameter("TOOL_REMARK");
+		String toolRemark = request
+				.getParameter("TOOL_REMARK");
 		Map<String, Object> map = new HashMap<String, Object>();
-		ToolForPlan toolForPlan = new ToolForPlan();
-		toolForPlan.setToolId(BaseUtil.strToLong(toolId));
-		toolForPlan.setTypeId(BaseUtil.strToLong(typeId));
-		toolForPlan.setToolName(toolName);
-		toolForPlan
-				.setToolStandardConfigDemand(toolStandardConfigDemand);
-		toolForPlan.setToolModelDemand(toolModelDemand);
-		toolForPlan.setToolUnit(BaseUtil.strToLong(toolUnit));
-		toolForPlan.setToolRemark(toolRemark);
-		int bool = toolForPlanService
-				.updateByPrimaryKeySelective(toolForPlan);
+		ToolDemand toolDemand = new ToolDemand();
+		toolDemand.setToolId(BaseUtil.strToLong(toolId));
+		toolDemand.setTypeId(BaseUtil.strToLong(typeId));
+		toolDemand.setToolName(toolName);
+		toolDemand.setToolStandardConfigDemand(
+				toolStandardConfigDemand);
+		toolDemand.setToolModelDemand(toolModelDemand);
+		toolDemand
+				.setToolUnit(BaseUtil.strToLong(toolUnit));
+		toolDemand.setToolRemark(toolRemark);
+		int bool = toolDemandService
+				.updateByPrimaryKeySelective(toolDemand);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
