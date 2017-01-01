@@ -6,11 +6,11 @@ import java.util.Map;
 import com.base.admin.entity.Dictionary;
 
 public interface IDictionaryService {
-	int deleteByPrimaryKeys(Dictionary dictionary);
+	Map<String, Object> deleteDictionaries(Dictionary dictionary);
 
-	Map<String, Object> insertSelective(Dictionary dictionary);
+	Map<String, Object> addNewDictionary(Dictionary dictionary);
 
-	int updateByPrimaryKeySelective(Dictionary dictionary);
+	Map<String, Object> updateDictionary(Dictionary dictionary);
 
 	List<Dictionary> queryDictionarysForList(Dictionary dictionary);
 

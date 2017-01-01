@@ -15,20 +15,34 @@ import com.base.admin.service.IDictionaryService;
 import net.sf.json.JSONArray;
 
 @Service
-public class DictionaryServiceImpl implements IDictionaryService {
+public class DictionaryServiceImpl
+		implements IDictionaryService {
 
 	@Autowired
 	private DictionaryMapper dictionaryMapper;
 
 	@Override
-	public int deleteByPrimaryKeys(Dictionary dictionary) {
-		return dictionaryMapper.deleteByPrimaryKeys(dictionary);
+	public Map<String, Object> deleteDictionaries(
+			Dictionary dictionary) {
+		Map<String, Object> map = new HashMap<>();
+		int bool = dictionaryMapper
+				.deleteByPrimaryKeys(dictionary);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "删除失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "删除成功");
+		}
+		return map;
 	}
 
 	@Override
-	public Map<String, Object> insertSelective(Dictionary dictionary) {
+	public Map<String, Object> addNewDictionary(
+			Dictionary dictionary) {
 		Map<String, Object> result = new HashMap<>();
-		if (queryDictionarysForList(dictionary).size() > 0) {
+		if (queryDictionarysForList(dictionary)
+				.size() > 0) {
 			result.put("success", false);
 			result.put("msg", "系统已经存在同样的字典代码与字典值");
 		} else {
@@ -49,7 +63,8 @@ public class DictionaryServiceImpl implements IDictionaryService {
 	@Override
 	public List<Dictionary> queryDictionarysForList(
 			Dictionary dictionary) {
-		return dictionaryMapper.queryDictionarysForList(dictionary);
+		return dictionaryMapper
+				.queryDictionarysForList(dictionary);
 	}
 
 	@Override
@@ -66,8 +81,19 @@ public class DictionaryServiceImpl implements IDictionaryService {
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(Dictionary dictionary) {
-		return dictionaryMapper.updateByPrimaryKeySelective(dictionary);
+	public Map<String, Object> updateDictionary(
+			Dictionary dictionary) {
+		int bool = dictionaryMapper
+				.updateByPrimaryKeySelective(dictionary);
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 	@Override
@@ -77,7 +103,8 @@ public class DictionaryServiceImpl implements IDictionaryService {
 		Map<String, List<Map<String, Object>>> result = new HashMap<>();
 		for (int i = 0; i < dicList.size(); i++) {
 			Map<String, Object> item = dicList.get(i);
-			String dicCode = item.get("DIC_CODE").toString();
+			String dicCode = item.get("DIC_CODE")
+					.toString();
 			if (result.containsKey(dicCode)) {
 				List<Map<String, Object>> listOfResult = result
 						.get(dicCode);

@@ -1,5 +1,6 @@
 package com.base.admin.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,29 +20,34 @@ public class DeptServiceImpl implements IDeptService {
 	@Autowired
 	private DeptMapper deptMapper;
 
-	/*
-	 * (非 Javadoc) <p>Title: deleteByPrimaryKeys</p> <p>Description: </p>
-	 * 
-	 * @param deptIds
-	 * 
-	 * @return
-	 * 
-	 * @see
-	 * com.base.admin.service.IDeptService#deleteByPrimaryKeys(java.lang.String)
-	 */
 	@Override
-	public int deleteByPrimaryKeys(Dept dept) {
-		return deptMapper.deleteByPrimaryKeys(dept);
+	public Map<String, Object> deleteDepts(Dept dept) {
+		Map<String, Object> map = new HashMap<>();
+		int bool = deptMapper.deleteByPrimaryKeys(dept);
+		bool = deptMapper.updataInnerData();
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "删除失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "删除成功");
+		}
+		return map;
 	}
 
 	@Override
-	public int insertSelective(Dept dept) {
-		return deptMapper.insertSelective(dept);
-	}
-
-	@Override
-	public int selectCountOfDeptsForPage(Dept dept) {
-		return deptMapper.selectCountOfDeptsForPage(dept);
+	public Map<String, Object> addNewDept(Dept dept) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = deptMapper.insertSelective(dept);
+		bool = deptMapper.updataInnerData();
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 	@Override
@@ -50,8 +56,16 @@ public class DeptServiceImpl implements IDeptService {
 	}
 
 	@Override
-	public List<Map<String, Object>> selectDeptsForPage(Dept dept) {
-		return deptMapper.selectDeptsForPage(dept);
+	public Map<String, Object> selectDeptsForPage(
+			Dept dept) {
+		List<Map<String, Object>> depts = deptMapper
+				.selectDeptsForPage(dept);
+		int count = deptMapper
+				.selectCountOfDeptsForPage(dept);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("rows", depts);
+		map.put("total", count);
+		return map;
 	}
 
 	@Override
@@ -61,19 +75,26 @@ public class DeptServiceImpl implements IDeptService {
 		JSONArray deptArr = JSONArray.fromObject(depts);
 		// 返回是必须全是小写
 		String tree = BaseUtil
-				.list2Tree(deptArr, -1, "id", "up_dept_id", "children")
+				.list2Tree(deptArr, -1, "id", "up_dept_id",
+						"children")
 				.toString().toLowerCase();
 		return tree;
 	}
 
 	@Override
-	public int updataInnerData() {
-		return deptMapper.updataInnerData();
-	}
-
-	@Override
-	public int updateByPrimaryKeySelective(Dept dept) {
-		return deptMapper.updateByPrimaryKeySelective(dept);
+	public Map<String, Object> updateDept(Dept dept) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = deptMapper
+				.updateByPrimaryKeySelective(dept);
+		bool = deptMapper.updataInnerData();
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 }

@@ -22,20 +22,42 @@ public class MenuServiceImpl implements IMenuService {
 	private MenuMapper menuMapper;
 
 	@Override
-	public int deleteByPrimaryKeys(Menu menu) {
-		return menuMapper.deleteByPrimaryKeys(menu);
+	public Map<String, Object> deleteMenus(Menu menu) {
+		Map<String, Object> map = new HashMap<>();
+		int bool = menuMapper.deleteByPrimaryKeys(menu);
+		bool = menuMapper.updataInnerData();
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "删除失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "删除成功");
+		}
+		return map;
 	}
 
 	@Override
-	public int insertSelective(Menu menu) {
-		return menuMapper.insertSelective(menu);
+	public Map<String, Object> addNewMenu(Menu menu) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = menuMapper.insertSelective(menu);
+		bool = menuMapper.updataInnerData();
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 	@Override
-	public Map<String, Object> queryMenusForPage(Menu menu) {
+	public Map<String, Object> queryMenusForPage(
+			Menu menu) {
 		List<Map<String, Object>> menus = menuMapper
 				.queryMenusForPage(menu);
-		int count = menuMapper.queryCountOfMenusForPage(menu);
+		int count = menuMapper
+				.queryCountOfMenusForPage(menu);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", menus);
 		map.put("total", count);
@@ -43,7 +65,8 @@ public class MenuServiceImpl implements IMenuService {
 	}
 
 	@Override
-	public List<Map<String, Object>> queryMenusForList(User user) {
+	public List<Map<String, Object>> queryMenusForList(
+			User user) {
 		return menuMapper.queryMenusForList(user);
 	}
 
@@ -53,19 +76,26 @@ public class MenuServiceImpl implements IMenuService {
 				.queryMenusForTree(menu);
 		JSONArray menuArr = JSONArray.fromObject(menus);
 		String tree = BaseUtil
-				.list2Tree(menuArr, -1, "id", "up_menu_id", "children")
+				.list2Tree(menuArr, -1, "id", "up_menu_id",
+						"children")
 				.toString().toLowerCase();
 		return tree;
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(Menu menu) {
-		return menuMapper.updateByPrimaryKeySelective(menu);
-	}
-
-	@Override
-	public int updataInnerData() {
-		return menuMapper.updataInnerData();
+	public Map<String, Object> updateMenu(Menu menu) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = menuMapper
+				.updateByPrimaryKeySelective(menu);
+		bool = menuMapper.updataInnerData();
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 }

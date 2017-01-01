@@ -5,11 +5,11 @@ import java.util.Map;
 import com.base.admin.entity.Param;
 
 public interface IParamService {
-	int deleteByPrimaryKeys(Param param);
+	Map<String, Object> deleteParams(Param param);
 
-	Map<String, Object> insertSelective(Param param);
+	Map<String, Object> addNewParam(Param param);
 
-	int updateByPrimaryKeySelective(Param param);
+	Map<String, Object> updateParam(Param param);
 
 	Map<String, Object>  queryParamsForPage(Param param);
 

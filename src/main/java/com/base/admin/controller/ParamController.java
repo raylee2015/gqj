@@ -1,6 +1,5 @@
 package com.base.admin.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,11 +41,14 @@ public class ParamController {
 	 */
 	@RequestMapping("/addNewParam.do")
 	@ResponseBody
-	public Map<String, Object> addNewParam(HttpServletRequest request,
+	public Map<String, Object> addNewParam(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String paramKey = request.getParameter("PARAM_KEY");
-		String paramValue = request.getParameter("PARAM_VALUE");
-		String paramRemark = request.getParameter("PARAM_REMARK");
+		String paramValue = request
+				.getParameter("PARAM_VALUE");
+		String paramRemark = request
+				.getParameter("PARAM_REMARK");
 		String menuId = request.getParameter("MENU_ID");
 		Param param = new Param();
 		param.setParamId(-1l);
@@ -54,7 +56,7 @@ public class ParamController {
 		param.setParamRemark(paramRemark);
 		param.setParamValue(paramValue);
 		param.setMenuId(BaseUtil.strToLong(menuId));
-		return paramService.insertSelective(param);
+		return paramService.addNewParam(param);
 	}
 
 	/**
@@ -67,21 +69,13 @@ public class ParamController {
 	 */
 	@RequestMapping("/delParams.do")
 	@ResponseBody
-	public Map<String, Object> delParams(HttpServletRequest request,
+	public Map<String, Object> delParams(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String paramIds = request.getParameter("PARAM_IDS");
-		Map<String, Object> map = new HashMap<>();
 		Param param = new Param();
 		param.setIds(paramIds);
-		int bool = paramService.deleteByPrimaryKeys(param);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
-		return map;
+		return paramService.deleteParams(param);
 	}
 
 	/**
@@ -90,7 +84,8 @@ public class ParamController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(HttpServletRequest request,
+	public ModelAndView openEditUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView("/base/admin/param/editUI");
 	}
@@ -126,8 +121,8 @@ public class ParamController {
 	@RequestMapping("/queryParamsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryParamsPage(
-			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String menuId = request.getParameter("MENU_ID");
@@ -160,29 +155,24 @@ public class ParamController {
 	 */
 	@RequestMapping("/updateParam.do")
 	@ResponseBody
-	public Map<String, Object> updateParam(HttpServletRequest request,
+	public Map<String, Object> updateParam(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String paramId = request.getParameter("PARAM_ID");
 		String paramKey = request.getParameter("PARAM_KEY");
-		String paramValue = request.getParameter("PARAM_VALUE");
-		String paramRemark = request.getParameter("PARAM_REMARK");
+		String paramValue = request
+				.getParameter("PARAM_VALUE");
+		String paramRemark = request
+				.getParameter("PARAM_REMARK");
 		String menuId = request.getParameter("MENU_ID");
-		Map<String, Object> map = new HashMap<String, Object>();
 		Param param = new Param();
 		param.setParamId(BaseUtil.strToLong(paramId));
 		param.setParamKey(paramKey);
 		param.setParamRemark(paramRemark);
 		param.setParamValue(paramValue);
 		param.setMenuId(BaseUtil.strToLong(menuId));
-		int bool = paramService.updateByPrimaryKeySelective(param);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return paramService
+				.updateParam(param);
 	}
 
 }

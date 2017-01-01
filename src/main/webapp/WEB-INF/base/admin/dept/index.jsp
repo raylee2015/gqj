@@ -1,12 +1,13 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java"
+	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type"
+	content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -24,7 +25,8 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript"
+	src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//关闭编辑窗口
 	function closeEditUIForDept() {
@@ -173,6 +175,9 @@
 										title : '排序号',
 										width : 100,
 									} ] ],
+							onBeforeLoad : function(param) {
+								param.keyWord = getTextBoxValue('keyWordForDeptTextInput');
+							},
 							onLoadError : function() {
 								errorFunctionForQuery();
 							}
@@ -183,29 +188,33 @@
 <body>
 	<!-- 列表页面 -->
 	<div class="easyui-layout" data-options="fit:true">
-		<div region="west" collapsible="false" style="width: 200px;">
-			<ul id="deptTree" class="easyui-tree" method="get" animate="true"
-				lines="true"></ul>
+		<div region="west" collapsible="false"
+			style="width: 200px;">
+			<ul id="deptTree" class="easyui-tree" method="get"
+				animate="true" lines="true"></ul>
 		</div>
 		<div region="center">
 			<table id="datagridForDept" class="easyui-datagrid">
 			</table>
 			<div id="toolbarForDept">
-				<div>
-					<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
-						plain="true" onclick="refreshDataGrid('datagridForDept')">刷新</a> <a
-						href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true"
-						onclick="openAddUIForDept()">添加</a> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
-						onclick="delDepts()">删除</a> 
-				</div>
-				<div>
-					<input id="keyWordForDeptTextInput" class="easyui-textbox"
-						data-options="prompt:'部门名称',validType:'length[0,50]'"
-						style="width: 200px"> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-search"
-						onclick="queryDeptPagesForSearch()">查询</a>
-				</div>
+				<table style="width: 100%">
+					<tr>
+						<td><a href="#" class="easyui-linkbutton"
+							iconCls="icon-reload" plain="true"
+							onclick="refreshDataGrid('datagridForDept')">刷新</a> <a
+							href="#" class="easyui-linkbutton" iconCls="icon-add"
+							plain="true" onclick="openAddUIForDept()">添加</a> <a
+							href="#" class="easyui-linkbutton"
+							iconCls="icon-remove" plain="true"
+							onclick="delDepts()">删除</a></td>
+						<td align="right"><input
+							id="keyWordForDeptTextInput" class="easyui-textbox"
+							data-options="prompt:'部门名称',validType:'length[0,50]'"
+							style="width: 200px"> <a href="#"
+							class="easyui-linkbutton" iconCls="icon-search"
+							onclick="queryDeptPagesForSearch()">查询</a></td>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</div>

@@ -6,19 +6,15 @@ import java.util.Map;
 import com.base.admin.entity.Dept;
 
 public interface IDeptService {
-	int deleteByPrimaryKeys(Dept dept);
+	Map<String, Object> deleteDepts(Dept dept);
 
-	int insertSelective(Dept dept);
+	Map<String, Object> addNewDept(Dept dept);
 
-	int updateByPrimaryKeySelective(Dept dept);
+	Map<String, Object> updateDept(Dept dept);
 
 	List<Dept> selectDeptsForList(Dept dept);
 
 	String selectDeptsForTree();
 
-	List<Map<String, Object>> selectDeptsForPage(Dept dept);
-
-	int selectCountOfDeptsForPage(Dept dept);
-
-	int updataInnerData();
+	Map<String, Object> selectDeptsForPage(Dept dept);
 }

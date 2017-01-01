@@ -1,6 +1,5 @@
 package com.base.admin.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,13 +43,18 @@ public class DictionaryController {
 	@RequestMapping("/addNewDictionary.do")
 	@ResponseBody
 	public Map<String, Object> addNewDictionary(
-			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
-		String dictionaryName = request.getParameter("DIC_NAME");
-		String dictionaryCode = request.getParameter("DIC_CODE");
-		String dictionaryValue = request.getParameter("DIC_VALUE");
-		String dictionaryLabel = request.getParameter("DIC_LABEL");
-		String dictionarySort = request.getParameter("DIC_SORT");
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String dictionaryName = request
+				.getParameter("DIC_NAME");
+		String dictionaryCode = request
+				.getParameter("DIC_CODE");
+		String dictionaryValue = request
+				.getParameter("DIC_VALUE");
+		String dictionaryLabel = request
+				.getParameter("DIC_LABEL");
+		String dictionarySort = request
+				.getParameter("DIC_SORT");
 		String menuId = request.getParameter("MENU_ID");
 		Dictionary dictionary = new Dictionary();
 		dictionary.setDicId(-1l);
@@ -58,9 +62,11 @@ public class DictionaryController {
 		dictionary.setDicCode(dictionaryCode);
 		dictionary.setDicValue(dictionaryValue);
 		dictionary.setDicLabel(dictionaryLabel);
-		dictionary.setDicSort(BaseUtil.strToLong(dictionarySort));
+		dictionary.setDicSort(
+				BaseUtil.strToLong(dictionarySort));
 		dictionary.setMenuId(BaseUtil.strToLong(menuId));
-		return dictionaryService.insertSelective(dictionary);
+		return dictionaryService
+				.addNewDictionary(dictionary);
 	}
 
 	/**
@@ -74,21 +80,14 @@ public class DictionaryController {
 	@RequestMapping("/delDictionarys.do")
 	@ResponseBody
 	public Map<String, Object> delDictionarys(
-			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
-		String dictionaryIds = request.getParameter("DIC_IDS");
-		Map<String, Object> map = new HashMap<>();
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String dictionaryIds = request
+				.getParameter("DIC_IDS");
 		Dictionary dictionary = new Dictionary();
 		dictionary.setIds(dictionaryIds);
-		int bool = dictionaryService.deleteByPrimaryKeys(dictionary);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
-		return map;
+		return dictionaryService
+				.deleteDictionaries(dictionary);
 	}
 
 	/**
@@ -97,9 +96,11 @@ public class DictionaryController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(HttpServletRequest request,
+	public ModelAndView openEditUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
-		return new ModelAndView("/base/admin/dictionary/editUI");
+		return new ModelAndView(
+				"/base/admin/dictionary/editUI");
 	}
 
 	/**
@@ -113,8 +114,8 @@ public class DictionaryController {
 	@RequestMapping("/queryDictionariesPage.do")
 	@ResponseBody
 	public Map<String, Object> queryDictionariesPage(
-			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String menuId = request.getParameter("MENU_ID");
@@ -124,7 +125,8 @@ public class DictionaryController {
 		dictionary.setCurrPage(Integer.parseInt(page));
 		dictionary.setPageSize(Integer.parseInt(rows));
 		dictionary.setKeyWord(keyWord);
-		return dictionaryService.queryDictionarysForPage(dictionary);
+		return dictionaryService
+				.queryDictionarysForPage(dictionary);
 	}
 
 	/**
@@ -141,7 +143,8 @@ public class DictionaryController {
 		Menu menu = new Menu();
 		// 查询子系统
 		menu.setMenuLevel("1");
-		response.getWriter().print(menuService.queryMenusForTree(menu));
+		response.getWriter()
+				.print(menuService.queryMenusForTree(menu));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -153,7 +156,8 @@ public class DictionaryController {
 	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
-		return new ModelAndView("/base/admin/dictionary/index");
+		return new ModelAndView(
+				"/base/admin/dictionary/index");
 	}
 
 	/**
@@ -167,34 +171,33 @@ public class DictionaryController {
 	@RequestMapping("/updateDictionary.do")
 	@ResponseBody
 	public Map<String, Object> updateDictionary(
-			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
-		String dictionaryId = request.getParameter("DIC_ID");
-		String dictionaryName = request.getParameter("DIC_NAME");
-		String dictionaryCode = request.getParameter("DIC_CODE");
-		String dictionaryValue = request.getParameter("DIC_VALUE");
-		String dictionaryLabel = request.getParameter("DIC_LABEL");
-		String dictionarySort = request.getParameter("DIC_SORT");
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String dictionaryId = request
+				.getParameter("DIC_ID");
+		String dictionaryName = request
+				.getParameter("DIC_NAME");
+		String dictionaryCode = request
+				.getParameter("DIC_CODE");
+		String dictionaryValue = request
+				.getParameter("DIC_VALUE");
+		String dictionaryLabel = request
+				.getParameter("DIC_LABEL");
+		String dictionarySort = request
+				.getParameter("DIC_SORT");
 		String menuId = request.getParameter("MENU_ID");
 		Dictionary dictionary = new Dictionary();
-		dictionary.setDicId(BaseUtil.strToLong(dictionaryId));
+		dictionary
+				.setDicId(BaseUtil.strToLong(dictionaryId));
 		dictionary.setDicName(dictionaryName);
 		dictionary.setDicCode(dictionaryCode);
 		dictionary.setDicValue(dictionaryValue);
 		dictionary.setDicLabel(dictionaryLabel);
-		dictionary.setDicSort(BaseUtil.strToLong(dictionarySort));
+		dictionary.setDicSort(
+				BaseUtil.strToLong(dictionarySort));
 		dictionary.setMenuId(BaseUtil.strToLong(menuId));
-		int bool = dictionaryService
-				.updateByPrimaryKeySelective(dictionary);
-		Map<String, Object> map = new HashMap<String, Object>();
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return dictionaryService
+				.updateDictionary(dictionary);
 	}
 
 }
