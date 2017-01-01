@@ -72,12 +72,18 @@
 
 	//用在点击查询按钮的时候
 	function queryToolDemandPagesForSearch() {
-		queryToolDemands();
+		queryToolDemands('');
+	}
+
+	//用在点击查询按钮的时候
+	function queryToolDemandPagesForComboBox(toolTypeId) {
+		queryToolDemands(toolTypeId);
 	}
 
 	//查询
-	function queryToolDemands() {
+	function queryToolDemands(toolTypeId) {
 		var params = {
+			TOOL_TYPE_ID : toolTypeId,
 			keyWord : getTextBoxValue('keyWordForToolDemandTextInput'),
 			page : 1,
 			rows : getPageSizeOfDataGrid('datagridForToolDemand')
@@ -160,33 +166,50 @@
 							}
 						});
 	}
+
+	//当下拉菜单变化时，触发的查询方法
+	function toolTypeChange(newValue, oldValue) {
+		queryToolDemandPagesForComboBox(newValue);
+	}
 </script>
 </head>
 <body>
 	<!-- 列表页面 -->
-	<div class="easyui-layout" data-options="fit:true">
-		<div data-options="region:'center'">
-			<table id="datagridForToolDemand" class="easyui-datagrid">
+	<div class="easyui-layout"
+		data-options="fit:true,border:false">
+		<div data-options="region:'center',border:false">
+			<table id="datagridForToolDemand"
+				class="easyui-datagrid,border:false">
 			</table>
 			<div id="toolbarForToolDemand">
-				<div>
-					<a href="#" class="easyui-linkbutton"
-						iconCls="icon-reload" plain="true"
-						onclick="refreshDataGrid('datagridForToolDemand')">刷新</a>
-					<a href="#" class="easyui-linkbutton"
-						iconCls="icon-add" plain="true"
-						onclick="openAddUIForToolDemand()">添加</a> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-remove"
-						plain="true" onclick="delToolDemands()">删除</a>
-				</div>
-				<div>
-					<input id="keyWordForToolDemandTextInput"
-						class="easyui-textbox"
-						data-options="prompt:'工器具名称',validType:'length[0,25]'"
-						style="width: 200px"> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-search"
-						onclick="queryToolDemandPagesForSearch()">查询</a>
-				</div>
+				<table width="100%">
+					<tr>
+						<td><a href="#" class="easyui-linkbutton"
+							iconCls="icon-reload" plain="true"
+							onclick="refreshDataGrid('datagridForToolDemand')">刷新</a>
+							<a href="#" class="easyui-linkbutton"
+							iconCls="icon-add" plain="true"
+							onclick="openAddUIForToolDemand()">添加</a> <a href="#"
+							class="easyui-linkbutton" iconCls="icon-remove"
+							plain="true" onclick="delToolDemands()">删除</a></td>
+						<td><input id="keyWordForToolDemandTextInput"
+							class="easyui-textbox"
+							data-options="prompt:'工器具名称',validType:'length[0,25]'"
+							style="width: 200px"> <a href="#"
+							class="easyui-linkbutton" iconCls="icon-search"
+							onclick="queryToolDemandPagesForSearch()">查询</a></td>
+						<td>工器具种类: <input id="toolTypeComboBox"
+							name="TYPE_ID"
+							data-options="valueField : 'ID',textField : 'TEXT',require : true,
+							panelHeight : 'auto',	prompt : '工器具类型',
+							url : 'queryToolDemandTypeDropList.do',
+							onChange : function(newValue, oldValue){
+								toolTypeChange(newValue, oldValue);
+							}
+							"
+							class="easyui-combobox" style="width: 200px;"></td>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</div>

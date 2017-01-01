@@ -4,17 +4,42 @@
 	<resultMap id="BaseResultMap" type="com.gqj.entity.BaseTool">
 		<id column="BASE_TOOL_ID" jdbcType="DECIMAL" property="baseToolId" />
 		<result column="TYPE_ID" jdbcType="DECIMAL" property="typeId" />
-		<result column="TOOL_ID_FOR_PLAN" jdbcType="DECIMAL" property="toolIdForPlan" />
+		<result column="TOOL_DEMAN_ID" jdbcType="DECIMAL" property="toolDemandId" />
 		<result column="MAN_ID" jdbcType="DECIMAL" property="manId" />
 		<result column="BASE_TOOL_MODEL" jdbcType="VARCHAR" property="baseToolModel" />
 		<result column="BASE_TOOL_SPEC" jdbcType="DECIMAL" property="baseToolSpec" />
 		<result column="BASE_TOOL_REMARK" jdbcType="VARCHAR" property="baseToolRemark" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		BASE_TOOL_ID, TYPE_ID, TOOL_ID_FOR_PLAN, MAN_ID,
+		BASE_TOOL_ID, BASE_TOOL_TYPE_ID, TOOL_DEMAND_ID, MAN_ID,
 		BASE_TOOL_MODEL, BASE_TOOL_SPEC,
 		BASE_TOOL_REMARK,BASE_TOOL_TYPE_NAME,BASE_TOOL_NAME,BASE_TOOL_MANUFACTURER_NAME
 	</sql>
+	<select id="selectBaseToolsForPage" parameterType="com.gqj.entity.BaseTool"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_BASE_TOOL
+		<where>
+			<if test="keyWord != null">
+				AND BASE_TOOL_NAME like '%${keyWord}%'
+			</if>
+		</where>
+		order by BASE_TOOL_ID DESC
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfBaseToolsForPage" parameterType="com.gqj.entity.BaseTool"
+		resultType="java.lang.Integer">
+		select count(t.BASE_TOOL_ID) from VIEW_GQJ_BASE_TOOL t
+		<where>
+			<if test="keyWord != null">
+				AND BASE_TOOL_NAME like '%${keyWord}%'
+			</if>
+		</where>
+	</select>
 	<delete id="deleteByPrimaryKeys" parameterType="com.gqj.entity.BaseTool">
 		delete from
 		GQJ_BASE_TOOL
@@ -26,11 +51,8 @@
 			<if test="baseToolId != null">
 				BASE_TOOL_ID,
 			</if>
-			<if test="typeId != null">
-				TYPE_ID,
-			</if>
-			<if test="toolIdForPlan != null">
-				TOOL_ID_FOR_PLAN,
+			<if test="toolDemandId != null">
+				TOOL_DEMAND_ID,
 			</if>
 			<if test="manId != null">
 				MAN_ID,
@@ -49,11 +71,8 @@
 			<if test="baseToolId != null">
 				GQJ_BASE_TOOL_SEQ.nextval,
 			</if>
-			<if test="typeId != null">
-				#{typeId,jdbcType=DECIMAL},
-			</if>
-			<if test="toolIdForPlan != null">
-				#{toolIdForPlan,jdbcType=DECIMAL},
+			<if test="toolDemandId != null">
+				#{toolDemandId,jdbcType=DECIMAL},
 			</if>
 			<if test="manId != null">
 				#{manId,jdbcType=DECIMAL},
@@ -72,11 +91,8 @@
 	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.BaseTool">
 		update GQJ_BASE_TOOL
 		<set>
-			<if test="typeId != null">
-				TYPE_ID = #{typeId,jdbcType=DECIMAL},
-			</if>
-			<if test="toolIdForPlan != null">
-				TOOL_ID_FOR_PLAN = #{toolIdForPlan,jdbcType=DECIMAL},
+			<if test="toolDemandId != null">
+				TOOL_DEMAND_ID = #{toolDemandId,jdbcType=DECIMAL},
 			</if>
 			<if test="manId != null">
 				MAN_ID = #{manId,jdbcType=DECIMAL},

@@ -5,9 +5,7 @@ import com.base.entity.Base;
 public class BaseTool extends Base {
 	private Long baseToolId;
 
-	private Long typeId;
-
-	private Long toolIdForPlan;
+	private Long toolDemandId;
 
 	private Long manId;
 
@@ -17,28 +15,20 @@ public class BaseTool extends Base {
 
 	private String baseToolRemark;
 
+	public Long getToolDemandId() {
+		return toolDemandId;
+	}
+
+	public void setToolDemandId(Long toolDemandId) {
+		this.toolDemandId = toolDemandId;
+	}
+
 	public Long getBaseToolId() {
 		return baseToolId;
 	}
 
 	public void setBaseToolId(Long baseToolId) {
 		this.baseToolId = baseToolId;
-	}
-
-	public Long getTypeId() {
-		return typeId;
-	}
-
-	public void setTypeId(Long typeId) {
-		this.typeId = typeId;
-	}
-
-	public Long getToolIdForPlan() {
-		return toolIdForPlan;
-	}
-
-	public void setToolIdForPlan(Long toolIdForPlan) {
-		this.toolIdForPlan = toolIdForPlan;
 	}
 
 	public Long getManId() {

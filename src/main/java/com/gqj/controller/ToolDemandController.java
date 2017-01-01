@@ -141,7 +141,11 @@ public class ToolDemandController extends BaseController {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
+		String toolTypeId = request
+				.getParameter("TOOL_TYPE_ID");
 		ToolDemand toolDemand = new ToolDemand();
+		toolDemand
+				.setTypeId(BaseUtil.strToLong(toolTypeId));
 		toolDemand.setCurrPage(Integer.parseInt(page));
 		toolDemand.setPageSize(Integer.parseInt(rows));
 		toolDemand.setKeyWord(keyWord);
