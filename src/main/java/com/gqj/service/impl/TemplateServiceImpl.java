@@ -13,7 +13,8 @@ import com.gqj.service.ITemplateDetailService;
 import com.gqj.service.ITemplateService;
 
 @Service
-public class TemplateServiceImpl implements ITemplateService {
+public class TemplateServiceImpl
+		implements ITemplateService {
 
 	@Autowired
 	private TemplateMapper templateMapper;
@@ -22,19 +23,37 @@ public class TemplateServiceImpl implements ITemplateService {
 	private ITemplateDetailService templateDetailService;
 
 	@Override
-	public int deleteTemplatesAndDetails(Template template) {
-		int bool = templateDetailService.deleteByTemplate(template);
+	public Map<String, Object> deleteTemplatesAndDetails(
+			Template template) {
+		Map<String, Object> map = new HashMap<>();
+		int bool = templateDetailService
+				.deleteByTemplate(template);
 		bool = templateMapper.deleteByPrimaryKeys(template);
-		return bool;
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "删除失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "删除成功");
+		}
+		return map;
 	}
 
 	@Override
-	public int addTemplatesAndDetails(Template template,
-			String toolIds) {
+	public Map<String, Object> addTemplatesAndDetails(
+			Template template, String toolIds) {
+		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = templateMapper.insertSelective(template);
-		bool = templateDetailService
-				.addTemplateDetails(template.getTemplateId(), toolIds);
-		return bool;
+		bool = templateDetailService.addTemplateDetails(
+				template.getTemplateId(), toolIds);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 	@Override
@@ -51,13 +70,23 @@ public class TemplateServiceImpl implements ITemplateService {
 	}
 
 	@Override
-	public int updateTemplatesAndDetails(Template template,
-			String toolIds) {
-		int bool = templateDetailService.deleteByTemplate(template);
-		bool = templateMapper.updateByPrimaryKeySelective(template);
-		bool = templateDetailService
-				.addTemplateDetails(template.getTemplateId(), toolIds);
-		return bool;
+	public Map<String, Object> updateTemplatesAndDetails(
+			Template template, String toolIds) {
+		int bool = templateDetailService
+				.deleteByTemplate(template);
+		bool = templateMapper
+				.updateByPrimaryKeySelective(template);
+		bool = templateDetailService.addTemplateDetails(
+				template.getTemplateId(), toolIds);
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 }

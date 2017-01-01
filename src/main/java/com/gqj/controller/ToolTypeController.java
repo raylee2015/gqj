@@ -1,6 +1,5 @@
 package com.gqj.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,22 +38,13 @@ public class ToolTypeController extends BaseController {
 	@RequestMapping("/addNewToolType.do")
 	@ResponseBody
 	public Map<String, Object> addNewToolType(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String typeName = request.getParameter("TYPE_NAME");
-		Map<String, Object> map = new HashMap<String, Object>();
 		ToolType toolType = new ToolType();
 		toolType.setTypeId(-1l);
 		toolType.setTypeName(typeName);
-		int bool = toolTypeService.insertSelective(toolType);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return toolTypeService.addNewToolType(toolType);
 	}
 
 	/**
@@ -67,21 +57,14 @@ public class ToolTypeController extends BaseController {
 	 */
 	@RequestMapping("/delToolTypes.do")
 	@ResponseBody
-	public Map<String, Object> delToolTypes(HttpServletRequest request,
+	public Map<String, Object> delToolTypes(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String toolTypeIds = request.getParameter("TYPE_IDS");
-		Map<String, Object> map = new HashMap<>();
+		String toolTypeIds = request
+				.getParameter("TYPE_IDS");
 		ToolType toolType = new ToolType();
 		toolType.setIds(toolTypeIds);
-		int bool = toolTypeService.deleteByPrimaryKeys(toolType);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
-		return map;
+		return toolTypeService.deleteToolTypes(toolType);
 	}
 
 	/**
@@ -90,7 +73,8 @@ public class ToolTypeController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(HttpServletRequest request,
+	public ModelAndView openEditUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView("/gqj/tool_type/editUI");
 	}
@@ -106,8 +90,8 @@ public class ToolTypeController extends BaseController {
 	@RequestMapping("/queryToolTypesPage.do")
 	@ResponseBody
 	public Map<String, Object> queryToolTypesPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -115,7 +99,8 @@ public class ToolTypeController extends BaseController {
 		toolType.setCurrPage(Integer.parseInt(page));
 		toolType.setPageSize(Integer.parseInt(rows));
 		toolType.setKeyWord(keyWord);
-		return toolTypeService.selectToolTypesForPage(toolType);
+		return toolTypeService
+				.selectToolTypesForPage(toolType);
 	}
 
 	/**
@@ -139,24 +124,14 @@ public class ToolTypeController extends BaseController {
 	@RequestMapping("/updateToolType.do")
 	@ResponseBody
 	public Map<String, Object> updateToolType(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String typeId = request.getParameter("TYPE_ID");
 		String typeName = request.getParameter("TYPE_NAME");
-		Map<String, Object> map = new HashMap<String, Object>();
 		ToolType toolType = new ToolType();
 		toolType.setTypeId(BaseUtil.strToLong(typeId));
 		toolType.setTypeName(typeName);
-		int bool = toolTypeService
-				.updateByPrimaryKeySelective(toolType);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return toolTypeService.updateToolType(toolType);
 	}
 
 }

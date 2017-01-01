@@ -1,5 +1,6 @@
 package com.base.admin.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,8 @@ import com.base.util.BaseUtil;
 import net.sf.json.JSONArray;
 
 @Service
-public class PostMenuServiceImpl implements IPostMenuService {
+public class PostMenuServiceImpl
+		implements IPostMenuService {
 
 	@Autowired
 	private IPostService postService;
@@ -34,17 +36,29 @@ public class PostMenuServiceImpl implements IPostMenuService {
 	private IMenuService menuService;
 
 	@Override
-	public Map<String, Object> selectPostsForPage(Post post) {
+	public Map<String, Object> selectPostsForPage(
+			Post post) {
 		return postService.selectPostsForPage(post);
 	}
 
 	@Override
-	public int deleteByPrimaryKeys(PostMenu postMenu) {
-		return postMenuMapper.deleteByPrimaryKeys(postMenu);
+	public Map<String, Object> deleteByPrimaryKeys(
+			PostMenu postMenu) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = postMenuMapper
+				.deleteByPrimaryKeys(postMenu);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 	@Override
-	public int insert(PostMenu postMenu) {
+	public Map<String, Object> insert(PostMenu postMenu) {
 		String menuIds = postMenu.getIds();
 		String[] menuId_arr = menuIds.split(",");
 		int result = 0;
@@ -56,11 +70,20 @@ public class PostMenuServiceImpl implements IPostMenuService {
 			PostMenu temp = new PostMenu();
 			temp.setPostId(postMenu.getPostId());
 			temp.setMenuId(BaseUtil.strToLong(menuId));
-			if (postMenuMapper.selectCountByPrimaryKey(temp) == 0) {
+			if (postMenuMapper
+					.selectCountByPrimaryKey(temp) == 0) {
 				result = postMenuMapper.insert(temp);
 			}
 		}
-		return result;
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (result == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 	@Override
@@ -69,12 +92,14 @@ public class PostMenuServiceImpl implements IPostMenuService {
 	}
 
 	@Override
-	public String querySelectedMenusForTree(PostMenu postMenu) {
+	public String querySelectedMenusForTree(
+			PostMenu postMenu) {
 		List<Map<String, Object>> menus = postMenuMapper
 				.selectSelectedMenusForTree(postMenu);
 		JSONArray menuArr = JSONArray.fromObject(menus);
 		String tree = BaseUtil
-				.list2Tree(menuArr, -1, "id", "up_menu_id", "children")
+				.list2Tree(menuArr, -1, "id", "up_menu_id",
+						"children")
 				.toString().toLowerCase();
 		return tree;
 	}

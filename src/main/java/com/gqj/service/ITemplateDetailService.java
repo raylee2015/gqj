@@ -10,7 +10,7 @@ public interface ITemplateDetailService {
 
 	int addTemplateDetails(long templateId, String toolIds);
 
-	int updateByPrimaryKeySelective(TemplateDetail template);
+	int updateTemplateDetail(TemplateDetail template);
 
 	Map<String, Object> selectTemplateDetailsForPage(
 			TemplateDetail template);

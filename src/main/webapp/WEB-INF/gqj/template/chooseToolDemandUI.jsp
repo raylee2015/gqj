@@ -45,6 +45,7 @@
 	//查询
 	function queryToolDemands() {
 		var params = {
+			TOOL_TYPE_ID : getComboBoxValue('toolTypeComboBox'),
 			keyWord : getTextBoxValue('keyWordForToolDemandTextInput'),
 			page : 1,
 			rows : getPageSizeOfDataGrid('datagridForToolDemand')
@@ -59,49 +60,55 @@
 
 	//初始化列表元素
 	function initDataGridForToolDemand() {
-		$('#datagridForToolDemand').datagrid({
-			url : 'queryToolDemandsPage.do',
-			idField : 'TOOL_ID',
-			rownumbers : true,
-			toolbar : '#toolbarForToolDemand',
-			pagination : true,
-			pageSize : 30,
-			pageNumber : 1,
-			checkOnSelect : false,
-			fit : true,
-			method : 'get',
-			columns : [ [ {
-				field : 'ck',
-				checkbox : true
-			}, {
-				field : 'TOOL_TYPE_NAME',
-				title : '工器具类型',
-				width : 100,
-			}, {
-				field : 'TOOL_NAME',
-				title : '工器具名称',
-				width : 150,
-			}, {
-				field : 'TOOL_STANDARD_CONFIG_DEMAND',
-				title : '工器具标准配置',
-				width : 250,
-			}, {
-				field : 'TOOL_MODEL_DEMAND',
-				title : '工器具型号',
-				width : 250,
-			}, {
-				field : 'TOOL_UNIT_NAME',
-				title : '工器具单位',
-				width : 80,
-			}, {
-				field : 'TOOL_REMARK',
-				title : '备注',
-				width : 80,
-			} ] ],
-			onLoadError : function() {
-				errorFunctionForQuery();
-			}
-		});
+		$('#datagridForToolDemand')
+				.datagrid(
+						{
+							url : 'queryToolDemandsPage.do',
+							idField : 'TOOL_ID',
+							rownumbers : true,
+							toolbar : '#toolbarForToolDemand',
+							pagination : true,
+							pageSize : 30,
+							pageNumber : 1,
+							checkOnSelect : false,
+							fit : true,
+							method : 'get',
+							columns : [ [ {
+								field : 'ck',
+								checkbox : true
+							}, {
+								field : 'TOOL_TYPE_NAME',
+								title : '工器具类型',
+								width : 100,
+							}, {
+								field : 'TOOL_NAME',
+								title : '工器具名称',
+								width : 150,
+							}, {
+								field : 'TOOL_STANDARD_CONFIG_DEMAND',
+								title : '工器具标准配置',
+								width : 250,
+							}, {
+								field : 'TOOL_MODEL_DEMAND',
+								title : '工器具型号',
+								width : 250,
+							}, {
+								field : 'TOOL_UNIT_NAME',
+								title : '工器具单位',
+								width : 80,
+							}, {
+								field : 'TOOL_REMARK',
+								title : '备注',
+								width : 80,
+							} ] ],
+							onBeforeLoad : function(param) {
+								param.keyWord = getTextBoxValue('keyWordForToolDemandTextInput');
+								param.TOOL_TYPE_ID = getComboBoxValue('toolTypeComboBox');
+							},
+							onLoadError : function() {
+								errorFunctionForQuery();
+							}
+						});
 	}
 	//关闭编辑窗口
 	function closeChooseToolDemandUIForTemplate() {
@@ -118,6 +125,33 @@
 		parent.$('#datagridForTemplateDetail').datagrid('loadData', data);
 		closeChooseToolDemandUIForTemplate();
 	}
+
+	//当下拉菜单变化时，触发的查询方法
+	function toolTypeChange(newValue, oldValue) {
+		queryToolDemandPagesForComboBox(newValue);
+	}
+
+	//用在点击查询按钮的时候
+	function queryToolDemandPagesForComboBox(toolTypeId) {
+		queryToolDemands(toolTypeId);
+	}
+
+	//查询
+	function queryToolDemands(toolTypeId) {
+		var params = {
+			TOOL_TYPE_ID : toolTypeId,
+			keyWord : getTextBoxValue('keyWordForToolDemandTextInput'),
+			page : 1,
+			rows : getPageSizeOfDataGrid('datagridForToolDemand')
+		};
+		query(params, 'queryToolDemandsPage.do',
+				successFunctionForQueryToolDemands);
+	}
+
+	//回调函数，查询成功后调用
+	function successFunctionForQueryToolDemands(result) {
+		dataGridLoadData('datagridForToolDemand', result);
+	}
 </script>
 </head>
 <body>
@@ -126,19 +160,33 @@
 			<table id="datagridForToolDemand" class="easyui-datagrid">
 			</table>
 			<div id="toolbarForToolDemand">
-				<div>
-					<a class="easyui-linkbutton" iconCls="icon-ok"
-						href="javascript:void(0)" onclick="choose()">选择</a> <a
-						class="easyui-linkbutton" iconCls="icon-cancel"
-						href="javascript:void(0)"
-						onclick="closeChooseToolDemandUIForTemplate()">关闭</a>
-					<input id="keyWordForToolDemandTextInput"
-						class="easyui-textbox"
-						data-options="prompt:'工器具名称',validType:'length[0,25]'"
-						style="width: 200px"> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-search"
-						onclick="queryToolDemandPagesForSearch()">查询</a>
-				</div>
+				<table style="width: 100%">
+					<tr>
+						<td><a class="easyui-linkbutton"
+							iconCls="icon-ok" href="javascript:void(0)"
+							onclick="choose()">选择</a> <a
+							class="easyui-linkbutton" iconCls="icon-cancel"
+							href="javascript:void(0)"
+							onclick="closeChooseToolDemandUIForTemplate()">关闭</a></td>
+						<td align="center">工器具种类: <input
+							id="toolTypeComboBox" name="TYPE_ID"
+							data-options="valueField : 'ID',textField : 'TEXT',require : true,
+							panelHeight : 'auto',	prompt : '工器具类型',
+							url : 'queryToolDemandTypeDropList.do',
+							onChange : function(newValue, oldValue){
+								toolTypeChange(newValue, oldValue);
+							}
+							"
+							class="easyui-combobox" style="width: 200px;"></td>
+						<td align="right"><input
+							id="keyWordForToolDemandTextInput"
+							class="easyui-textbox"
+							data-options="prompt:'工器具名称',validType:'length[0,25]'"
+							style="width: 200px"> <a href="#"
+							class="easyui-linkbutton" iconCls="icon-search"
+							onclick="queryToolDemandPagesForSearch()">查询</a>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</div>

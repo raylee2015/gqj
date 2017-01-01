@@ -6,9 +6,9 @@ import com.base.admin.entity.Post;
 import com.base.admin.entity.PostMenu;
 
 public interface IPostMenuService {
-	int deleteByPrimaryKeys(PostMenu postMenu);
+	Map<String, Object> deleteByPrimaryKeys(PostMenu postMenu);
 
-	int insert(PostMenu postMenu);
+	Map<String, Object> insert(PostMenu postMenu);
 
 	Map<String, Object> selectPostsForPage(Post post);
 

@@ -1,6 +1,5 @@
 package com.gqj.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,25 +37,18 @@ public class StorageController extends BaseController {
 	 */
 	@RequestMapping("/addNewStorage.do")
 	@ResponseBody
-	public Map<String, Object> addNewStorage(HttpServletRequest request,
+	public Map<String, Object> addNewStorage(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String storeName = request.getParameter("STORE_NAME");
+		String storeName = request
+				.getParameter("STORE_NAME");
 		long storeDeptId = getSessionUser(request, response)
 				.getUserDeptId();
-		Map<String, Object> map = new HashMap<String, Object>();
 		Storage storage = new Storage();
 		storage.setStoreId(-1l);
 		storage.setStoreName(storeName);
 		storage.setStoreDeptId(storeDeptId);
-		int bool = storageService.insertSelective(storage);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return storageService.addNewStorage(storage);
 	}
 
 	/**
@@ -69,21 +61,14 @@ public class StorageController extends BaseController {
 	 */
 	@RequestMapping("/delStorages.do")
 	@ResponseBody
-	public Map<String, Object> delStorages(HttpServletRequest request,
+	public Map<String, Object> delStorages(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String storageIds = request.getParameter("STORE_IDS");
-		Map<String, Object> map = new HashMap<>();
+		String storageIds = request
+				.getParameter("STORE_IDS");
 		Storage storage = new Storage();
 		storage.setIds(storageIds);
-		int bool = storageService.deleteByPrimaryKeys(storage);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
-		return map;
+		return storageService.deleteStorages(storage);
 	}
 
 	/**
@@ -97,8 +82,8 @@ public class StorageController extends BaseController {
 	@RequestMapping("/queryStoragesPage.do")
 	@ResponseBody
 	public Map<String, Object> queryStoragesPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		long storeDeptId = getSessionUser(request, response)
@@ -109,7 +94,8 @@ public class StorageController extends BaseController {
 		storage.setPageSize(Integer.parseInt(rows));
 		storage.setKeyWord(keyWord);
 		storage.setStoreDeptId(storeDeptId);
-		return storageService.selectStoragesForPage(storage);
+		return storageService
+				.selectStoragesForPage(storage);
 	}
 
 	/**
@@ -128,7 +114,8 @@ public class StorageController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(HttpServletRequest request,
+	public ModelAndView openEditUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView("/gqj/storage/editUI");
 	}
@@ -143,26 +130,19 @@ public class StorageController extends BaseController {
 	 */
 	@RequestMapping("/updateStorage.do")
 	@ResponseBody
-	public Map<String, Object> updateStorage(HttpServletRequest request,
+	public Map<String, Object> updateStorage(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String storeId = request.getParameter("STORE_ID");
-		String storeName = request.getParameter("STORE_NAME");
+		String storeName = request
+				.getParameter("STORE_NAME");
 		long storeDeptId = getSessionUser(request, response)
 				.getUserDeptId();
-		Map<String, Object> map = new HashMap<String, Object>();
 		Storage storage = new Storage();
 		storage.setStoreId(BaseUtil.strToLong(storeId));
 		storage.setStoreName(storeName);
 		storage.setStoreDeptId(storeDeptId);
-		int bool = storageService.updateByPrimaryKeySelective(storage);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return storageService.updateStorage(storage);
 	}
 
 }

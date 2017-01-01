@@ -14,19 +14,41 @@ import com.gqj.service.IToolTypeService;
 import net.sf.json.JSONArray;
 
 @Service
-public class ToolTypeServiceImpl implements IToolTypeService {
+public class ToolTypeServiceImpl
+		implements IToolTypeService {
 
 	@Autowired
 	private ToolTypeMapper toolTypeMapper;
 
 	@Override
-	public int deleteByPrimaryKeys(ToolType toolType) {
-		return toolTypeMapper.deleteByPrimaryKeys(toolType);
+	public Map<String, Object> deleteToolTypes(
+			ToolType toolType) {
+		Map<String, Object> map = new HashMap<>();
+		int bool = toolTypeMapper
+				.deleteByPrimaryKeys(toolType);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "删除失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "删除成功");
+		}
+		return map;
 	}
 
 	@Override
-	public int insertSelective(ToolType toolType) {
-		return toolTypeMapper.insertSelective(toolType);
+	public Map<String, Object> addNewToolType(
+			ToolType toolType) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = toolTypeMapper.insertSelective(toolType);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 	@Override
@@ -43,12 +65,24 @@ public class ToolTypeServiceImpl implements IToolTypeService {
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(ToolType toolType) {
-		return toolTypeMapper.updateByPrimaryKeySelective(toolType);
+	public Map<String, Object> updateToolType(
+			ToolType toolType) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = toolTypeMapper
+				.updateByPrimaryKeySelective(toolType);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 	@Override
-	public String selectToolTypesForList(ToolType toolType) {
+	public String selectToolTypesForList(
+			ToolType toolType) {
 		List<Map<String, Object>> list = toolTypeMapper
 				.selectToolTypesForList(toolType);
 		String result = "";

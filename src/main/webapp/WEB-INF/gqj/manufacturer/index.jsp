@@ -135,6 +135,9 @@
 										title : '厂家名称',
 										width : 150,
 									} ] ],
+							onBeforeLoad : function(param) {
+								param.keyWord = getTextBoxValue('keyWordForManufacturerTextInput');
+							},
 							onLoadError : function() {
 								errorFunctionForQuery();
 							}
@@ -150,25 +153,26 @@
 				class="easyui-datagrid">
 			</table>
 			<div id="toolbarForManufacturer">
-				<div>
-					<a href="#" class="easyui-linkbutton"
-						iconCls="icon-reload" plain="true"
-						onclick="refreshDataGrid('datagridForManufacturer')">刷新</a>
-					<a href="#" class="easyui-linkbutton"
-						iconCls="icon-add" plain="true"
-						onclick="openAddUIForManufacturer()">添加</a> <a
-						href="#" class="easyui-linkbutton"
-						iconCls="icon-remove" plain="true"
-						onclick="delManufacturers()">删除</a>
-				</div>
-				<div>
-					<input id="keyWordForManufacturerTextInput"
-						class="easyui-textbox"
-						data-options="prompt:'厂家名称',validType:'length[0,25]'"
-						style="width: 200px"> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-search"
-						onclick="queryManufacturerPagesForSearch()">查询</a>
-				</div>
+				<table style="width: 100%">
+					<tr>
+						<td><a href="#" class="easyui-linkbutton"
+							iconCls="icon-reload" plain="true"
+							onclick="refreshDataGrid('datagridForManufacturer')">刷新</a>
+							<a href="#" class="easyui-linkbutton"
+							iconCls="icon-add" plain="true"
+							onclick="openAddUIForManufacturer()">添加</a> <a
+							href="#" class="easyui-linkbutton"
+							iconCls="icon-remove" plain="true"
+							onclick="delManufacturers()">删除</a></td>
+						<td align="right"><input
+							id="keyWordForManufacturerTextInput"
+							class="easyui-textbox"
+							data-options="prompt:'厂家名称',validType:'length[0,25]'"
+							style="width: 200px"> <a href="#"
+							class="easyui-linkbutton" iconCls="icon-search"
+							onclick="queryManufacturerPagesForSearch()">查询</a>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</div>

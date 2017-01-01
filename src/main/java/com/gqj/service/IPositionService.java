@@ -5,14 +5,18 @@ import java.util.Map;
 import com.gqj.entity.Position;
 
 public interface IPositionService {
-	int deleteByPrimaryKeys(Position position);
+	Map<String, Object> deletePositions(
+			Position position);
 
-	int insertSelective(Position position);
+	Map<String, Object> addNewPosition(Position position);
 
-	int updateByPrimaryKeySelective(Position position);
+	Map<String, Object> updatePosition(
+			Position position);
 
-	Map<String, Object> selectPositionsForPage(Position position);
+	Map<String, Object> selectPositionsForPage(
+			Position position);
 
-	Map<String, Object> selectPositionsForObject(Position position);
+	Map<String, Object> selectPositionsForObject(
+			Position position);
 
 }

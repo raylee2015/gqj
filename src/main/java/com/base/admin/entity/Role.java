@@ -1,7 +1,11 @@
 package com.base.admin.entity;
 
 import com.base.entity.Base;
-
+/**
+ * 改用岗位，不用角色
+ * @author Administrator
+ *
+ */
 @Deprecated
 public class Role extends Base {
 	private Long roleId;

@@ -5,11 +5,13 @@ import java.util.Map;
 import com.gqj.entity.Manufacturer;
 
 public interface IManufacturerService {
-	int deleteByPrimaryKeys(Manufacturer manufacturer);
+	Map<String, Object> deleteManufacturers(
+			Manufacturer manufacturer);
 
-	int insertSelective(Manufacturer manufacturer);
+	Map<String, Object> addNewManufacturer(
+			Manufacturer manufacturer);
 
-	int updateByPrimaryKeySelective(
+	Map<String, Object> updateManufacturer(
 			Manufacturer manufacturer);
 
 	Map<String, Object> selectManufacturersForPage(

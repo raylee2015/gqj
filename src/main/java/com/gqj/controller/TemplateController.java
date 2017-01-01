@@ -1,7 +1,6 @@
 package com.gqj.controller;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,9 +19,11 @@ import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
 import com.gqj.entity.Template;
 import com.gqj.entity.ToolDemand;
+import com.gqj.entity.ToolType;
 import com.gqj.service.ITemplateDetailService;
 import com.gqj.service.ITemplateService;
 import com.gqj.service.IToolDemandService;
+import com.gqj.service.IToolTypeService;
 
 @Controller
 @RequestMapping("/gqj/template")
@@ -35,6 +36,27 @@ public class TemplateController extends BaseController {
 
 	@Autowired
 	private IToolDemandService toolDemandService;
+
+	@Autowired
+	private IToolTypeService toolTypeService;
+
+	/**
+	 * 查询下拉列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryToolDemandTypeDropList.do")
+	@ResponseBody
+	public void queryToolDemandTypeDropList(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter().print(toolTypeService
+				.selectToolTypesForList(new ToolType()));
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
 
 	/**
 	 * 分页查询工器具列表
@@ -52,10 +74,14 @@ public class TemplateController extends BaseController {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
+		String toolTypeId = request
+				.getParameter("TOOL_TYPE_ID");
 		ToolDemand toolDemand = new ToolDemand();
 		toolDemand.setCurrPage(Integer.parseInt(page));
 		toolDemand.setPageSize(Integer.parseInt(rows));
 		toolDemand.setKeyWord(keyWord);
+		toolDemand
+				.setTypeId(BaseUtil.strToLong(toolTypeId));
 		return toolDemandService
 				.selectToolDemandsForPage(toolDemand);
 	}
@@ -79,7 +105,6 @@ public class TemplateController extends BaseController {
 		String toolIds = request.getParameter("TOOL_IDS");
 		long templateDeptId = getSessionUser(request,
 				response).getUserDeptId();
-		Map<String, Object> map = new HashMap<String, Object>();
 		Template template = new Template();
 		template.setTemplateId(-1l);
 		template.setTemplateName(templateName);
@@ -88,16 +113,8 @@ public class TemplateController extends BaseController {
 				getSessionUser(request, response)
 						.getUserId());
 		template.setTemplateCreateDate(new Date());
-		int bool = templateService
+		return templateService
 				.addTemplatesAndDetails(template, toolIds);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
 	}
 
 	/**
@@ -115,19 +132,10 @@ public class TemplateController extends BaseController {
 			HttpServletResponse response) throws Exception {
 		String templateIds = request
 				.getParameter("TEMPLATE_IDS");
-		Map<String, Object> map = new HashMap<>();
 		Template template = new Template();
 		template.setIds(templateIds);
-		int bool = templateService
+		return templateService
 				.deleteTemplatesAndDetails(template);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
-		return map;
 	}
 
 	/**
@@ -225,7 +233,6 @@ public class TemplateController extends BaseController {
 		String toolIds = request.getParameter("TOOL_IDS");
 		long templateDeptId = getSessionUser(request,
 				response).getUserDeptId();
-		Map<String, Object> map = new HashMap<String, Object>();
 		Template template = new Template();
 		template.setTemplateId(
 				BaseUtil.strToLong(templateId));
@@ -236,17 +243,8 @@ public class TemplateController extends BaseController {
 				getSessionUser(request, response)
 						.getUserId());
 		template.setTemplateCreateDate(new Date());
-		int bool = templateService
-				.updateTemplatesAndDetails(template,
-						toolIds);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return templateService.updateTemplatesAndDetails(
+				template, toolIds);
 	}
 
 }

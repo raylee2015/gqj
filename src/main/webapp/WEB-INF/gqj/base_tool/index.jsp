@@ -171,6 +171,9 @@
 										title : '备注',
 										width : 150,
 									} ] ],
+							onBeforeLoad : function(param) {
+								param.keyWord = getTextBoxValue('keyWordForBaseToolTextInput');
+							},
 							onLoadError : function() {
 								errorFunctionForQuery();
 							}
@@ -185,24 +188,25 @@
 			<table id="datagridForBaseTool" class="easyui-datagrid">
 			</table>
 			<div id="toolbarForBaseTool">
-				<div>
-					<a href="#" class="easyui-linkbutton"
-						iconCls="icon-reload" plain="true"
-						onclick="refreshDataGrid('datagridForBaseTool')">刷新</a>
-					<a href="#" class="easyui-linkbutton"
-						iconCls="icon-add" plain="true"
-						onclick="openAddUIForBaseTool()">添加</a> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-remove"
-						plain="true" onclick="delBaseTools()">删除</a>
-				</div>
-				<div>
-					<input id="keyWordForBaseToolTextInput"
-						class="easyui-textbox"
-						data-options="prompt:'工器具基础名称',validType:'length[0,25]'"
-						style="width: 200px"> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-search"
-						onclick="queryBaseToolPagesForSearch()">查询</a>
-				</div>
+				<table style="width: 100%">
+					<tr>
+						<td><a href="#" class="easyui-linkbutton"
+							iconCls="icon-reload" plain="true"
+							onclick="refreshDataGrid('datagridForBaseTool')">刷新</a>
+							<a href="#" class="easyui-linkbutton"
+							iconCls="icon-add" plain="true"
+							onclick="openAddUIForBaseTool()">添加</a> <a href="#"
+							class="easyui-linkbutton" iconCls="icon-remove"
+							plain="true" onclick="delBaseTools()">删除</a></td>
+						<td align="right"><input
+							id="keyWordForBaseToolTextInput"
+							class="easyui-textbox"
+							data-options="prompt:'工器具基础名称',validType:'length[0,25]'"
+							style="width: 200px"> <a href="#"
+							class="easyui-linkbutton" iconCls="icon-search"
+							onclick="queryBaseToolPagesForSearch()">查询</a>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</div>

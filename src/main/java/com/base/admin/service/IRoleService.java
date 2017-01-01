@@ -4,6 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.base.admin.entity.Role;
+
+/**
+ * 改用岗位，不用角色
+ * 
+ * @author Administrator
+ *
+ */
 @Deprecated
 public interface IRoleService {
 	int deleteByPrimaryKeys(Role role);

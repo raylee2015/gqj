@@ -1,6 +1,5 @@
 package com.base.admin.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,9 +49,10 @@ public class PostController {
 	@RequestMapping("/addMenusToPost.do")
 	@ResponseBody
 	public Map<String, Object> addMenusToPost(
-			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
-		return postMenuController.addMenusToPost(request, response);
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		return postMenuController.addMenusToPost(request,
+				response);
 	}
 
 	/**
@@ -71,28 +71,20 @@ public class PostController {
 	 */
 	@RequestMapping("/addNewPost.do")
 	@ResponseBody
-	public Map<String, Object> addNewPost(HttpServletRequest request,
+	public Map<String, Object> addNewPost(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String postName = request.getParameter("POST_NAME");
 		String postDesp = request.getParameter("POST_DESP");
 		String deptId = request.getParameter("DEPT_ID");
 		String postSort = request.getParameter("POST_SORT");
-		Map<String, Object> map = new HashMap<String, Object>();
 		Post post = new Post();
 		post.setPostId(-1l);
 		post.setPostName(postName);
 		post.setPostSort(BaseUtil.strToLong(postSort));
 		post.setDeptId(BaseUtil.strToLong(deptId));
 		post.setPostDesp(postDesp);
-		int bool = postService.insertSelective(post);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return postService.addNewPost(post);
 	}
 
 	/**
@@ -108,9 +100,10 @@ public class PostController {
 	@RequestMapping("/addUsersToPost.do")
 	@ResponseBody
 	public Map<String, Object> addUsersToPost(
-			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
-		return postUserController.addUsersToPost(request, response);
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		return postUserController.addUsersToPost(request,
+				response);
 	}
 
 	/**
@@ -126,9 +119,10 @@ public class PostController {
 	@RequestMapping("/delMenusToPost.do")
 	@ResponseBody
 	public Map<String, Object> delMenusToPost(
-			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
-		return postMenuController.delMenusToPost(request, response);
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		return postMenuController.delMenusToPost(request,
+				response);
 	}
 
 	/**
@@ -141,21 +135,13 @@ public class PostController {
 	 */
 	@RequestMapping("/delPosts.do")
 	@ResponseBody
-	public Map<String, Object> delPosts(HttpServletRequest request,
+	public Map<String, Object> delPosts(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String postIds = request.getParameter("POST_IDS");
-		Map<String, Object> map = new HashMap<>();
 		Post post = new Post();
 		post.setIds(postIds);
-		int bool = postService.deleteByPrimaryKeys(post);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
-		return map;
+		return postService.deletePosts(post);
 	}
 
 	/**
@@ -171,9 +157,10 @@ public class PostController {
 	@RequestMapping("/delUsersToPost.do")
 	@ResponseBody
 	public Map<String, Object> delUsersToPost(
-			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
-		return postUserController.delUsersToPost(request, response);
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		return postUserController.delUsersToPost(request,
+				response);
 	}
 
 	/**
@@ -186,7 +173,8 @@ public class PostController {
 	 */
 	@RequestMapping("/queryPostPage.do")
 	@ResponseBody
-	public Map<String, Object> queryPostPage(HttpServletRequest request,
+	public Map<String, Object> queryPostPage(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
@@ -211,7 +199,8 @@ public class PostController {
 	@ResponseBody
 	public void queryDeptTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter().print(deptService.selectDeptsForTree());
+		response.getWriter()
+				.print(deptService.selectDeptsForTree());
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -226,9 +215,11 @@ public class PostController {
 	 */
 	@RequestMapping("/querySelectedMenusForTree.do")
 	@ResponseBody
-	public void querySelectedMenusForTree(HttpServletRequest request,
+	public void querySelectedMenusForTree(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		postMenuController.querySelectedMenusForTree(request, response);
+		postMenuController.querySelectedMenusForTree(
+				request, response);
 	}
 
 	/**
@@ -242,10 +233,10 @@ public class PostController {
 	@RequestMapping("/querySelectedUsersForPage.do")
 	@ResponseBody
 	public Map<String, Object> querySelectedUsersForPage(
-			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
-		return postUserController.querySelectedUsersForPage(request,
-				response);
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		return postUserController.querySelectedUsersForPage(
+				request, response);
 	}
 
 	/**
@@ -258,10 +249,11 @@ public class PostController {
 	 */
 	@RequestMapping("/queryUnSelectedMenusForTree.do")
 	@ResponseBody
-	public void queryUnSelectedMenusForTree(HttpServletRequest request,
+	public void queryUnSelectedMenusForTree(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		postMenuController.queryUnSelectedMenusForTree(request,
-				response);
+		postMenuController.queryUnSelectedMenusForTree(
+				request, response);
 	}
 
 	/**
@@ -275,10 +267,11 @@ public class PostController {
 	@RequestMapping("/queryUnSelectedUsersForPage.do")
 	@ResponseBody
 	public Map<String, Object> queryUnSelectedUsersForPage(
-			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
-		return postUserController.queryUnSelectedUsersForPage(request,
-				response);
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		return postUserController
+				.queryUnSelectedUsersForPage(request,
+						response);
 	}
 
 	/**
@@ -297,7 +290,8 @@ public class PostController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(HttpServletRequest request,
+	public ModelAndView openEditUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView("/base/admin/post/editUI");
 	}
@@ -308,9 +302,11 @@ public class PostController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openChooseUserUI.do", method = RequestMethod.GET)
-	public ModelAndView openChooseUserUI(HttpServletRequest request,
+	public ModelAndView openChooseUserUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
-		return new ModelAndView("/base/admin/post/chooseUserUI");
+		return new ModelAndView(
+				"/base/admin/post/chooseUserUI");
 	}
 
 	/**
@@ -319,9 +315,11 @@ public class PostController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openChooseMenuUI.do", method = RequestMethod.GET)
-	public ModelAndView openChooseMenuUI(HttpServletRequest request,
+	public ModelAndView openChooseMenuUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
-		return new ModelAndView("/base/admin/post/chooseMenuUI");
+		return new ModelAndView(
+				"/base/admin/post/chooseMenuUI");
 	}
 
 	/**
@@ -334,29 +332,22 @@ public class PostController {
 	 */
 	@RequestMapping("/updatePost.do")
 	@ResponseBody
-	public Map<String, Object> updatePost(HttpServletRequest request,
+	public Map<String, Object> updatePost(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String postId = request.getParameter("POST_ID");
 		String postName = request.getParameter("POST_NAME");
 		String postDesp = request.getParameter("POST_DESP");
 		String deptId = request.getParameter("DEPT_ID");
 		String postSort = request.getParameter("POST_SORT");
-		Map<String, Object> map = new HashMap<String, Object>();
 		Post post = new Post();
 		post.setPostId(BaseUtil.strToLong(postId));
 		post.setPostName(postName);
 		post.setPostSort(BaseUtil.strToLong(postSort));
 		post.setDeptId(BaseUtil.strToLong(deptId));
 		post.setPostDesp(postDesp);
-		int bool = postService.updateByPrimaryKeySelective(post);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return postService
+				.updatePost(post);
 	}
 
 }

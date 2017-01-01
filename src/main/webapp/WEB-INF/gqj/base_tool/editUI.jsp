@@ -185,6 +185,10 @@
 
 	//查询
 	function queryToolDemands(toolTypeId) {
+		if (toolTypeId == '') {
+			var typeId = getComboBoxValue('toolTypeComboBox');
+			toolTypeId = typeId;
+		}
 		var params = {
 			TOOL_TYPE_ID : toolTypeId,
 			keyWord : getTextBoxValue('keyWordForToolDemandTextInput'),

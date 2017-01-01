@@ -5,13 +5,16 @@ import java.util.Map;
 import com.gqj.entity.ToolType;
 
 public interface IToolTypeService {
-	int deleteByPrimaryKeys(ToolType toolType);
+	Map<String, Object> deleteToolTypes(
+			ToolType toolType);
 
-	int insertSelective(ToolType toolType);
+	Map<String, Object> addNewToolType(ToolType toolType);
 
-	int updateByPrimaryKeySelective(ToolType toolType);
+	Map<String, Object> updateToolType(
+			ToolType toolType);
 
-	Map<String, Object> selectToolTypesForPage(ToolType toolType);
+	Map<String, Object> selectToolTypesForPage(
+			ToolType toolType);
 
 	String selectToolTypesForList(ToolType toolType);
 }

@@ -15,7 +15,8 @@ import com.base.admin.service.IPostService;
 import com.base.admin.service.IPostUserService;
 
 @Service
-public class PostUserServiceImpl implements IPostUserService {
+public class PostUserServiceImpl
+		implements IPostUserService {
 
 	@Autowired
 	private IPostService postService;
@@ -27,18 +28,41 @@ public class PostUserServiceImpl implements IPostUserService {
 	private PostUserMapper postUserMapper;
 
 	@Override
-	public Map<String, Object> selectPostsForPage(Post post) {
+	public Map<String, Object> selectPostsForPage(
+			Post post) {
 		return postService.selectPostsForPage(post);
 	}
 
 	@Override
-	public int deleteUsersByPost(PostUser postUser) {
-		return postUserMapper.deleteUsersByPost(postUser);
+	public Map<String, Object> deleteUsersByPost(
+			PostUser postUser) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = postUserMapper
+				.deleteUsersByPost(postUser);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 	@Override
-	public int insertUsersByPost(PostUser postUser) {
-		return postUserMapper.insertUsersByPost(postUser);
+	public Map<String, Object> insertUsersByPost(
+			PostUser postUser) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = postUserMapper
+				.insertUsersByPost(postUser);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 	@Override
@@ -61,7 +85,8 @@ public class PostUserServiceImpl implements IPostUserService {
 			PostUser postUser) {
 		List<Map<String, Object>> postUsers = postUserMapper
 				.querySelectedUsers(postUser);
-		int count = postUserMapper.queryCountOfSelectedUsers(postUser);
+		int count = postUserMapper
+				.queryCountOfSelectedUsers(postUser);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", postUsers);
 		map.put("total", count);
@@ -86,7 +111,8 @@ public class PostUserServiceImpl implements IPostUserService {
 			PostUser postUser) {
 		List<Map<String, Object>> postUsers = postUserMapper
 				.querySelectedPosts(postUser);
-		int count = postUserMapper.queryCountOfSelectedPosts(postUser);
+		int count = postUserMapper
+				.queryCountOfSelectedPosts(postUser);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", postUsers);
 		map.put("total", count);

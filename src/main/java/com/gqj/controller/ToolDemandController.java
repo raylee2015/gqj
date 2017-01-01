@@ -1,6 +1,5 @@
 package com.gqj.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,7 +59,6 @@ public class ToolDemandController extends BaseController {
 		String toolUnit = request.getParameter("TOOL_UNIT");
 		String toolRemark = request
 				.getParameter("TOOL_REMARK");
-		Map<String, Object> map = new HashMap<String, Object>();
 		ToolDemand toolDemand = new ToolDemand();
 		toolDemand.setToolId(-1l);
 		toolDemand.setTypeId(BaseUtil.strToLong(typeId));
@@ -71,16 +69,8 @@ public class ToolDemandController extends BaseController {
 		toolDemand
 				.setToolUnit(BaseUtil.strToLong(toolUnit));
 		toolDemand.setToolRemark(toolRemark);
-		int bool = toolDemandService
-				.insertSelective(toolDemand);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return toolDemandService
+				.addNewToolDemand(toolDemand);
 	}
 
 	/**
@@ -98,19 +88,10 @@ public class ToolDemandController extends BaseController {
 			HttpServletResponse response) throws Exception {
 		String toolDemandIds = request
 				.getParameter("TOOL_IDS");
-		Map<String, Object> map = new HashMap<>();
 		ToolDemand toolDemand = new ToolDemand();
 		toolDemand.setIds(toolDemandIds);
-		int bool = toolDemandService
-				.deleteByPrimaryKeys(toolDemand);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
-		return map;
+		return toolDemandService
+				.deleteToolDemands(toolDemand);
 	}
 
 	/**
@@ -223,7 +204,6 @@ public class ToolDemandController extends BaseController {
 		String toolUnit = request.getParameter("TOOL_UNIT");
 		String toolRemark = request
 				.getParameter("TOOL_REMARK");
-		Map<String, Object> map = new HashMap<String, Object>();
 		ToolDemand toolDemand = new ToolDemand();
 		toolDemand.setToolId(BaseUtil.strToLong(toolId));
 		toolDemand.setTypeId(BaseUtil.strToLong(typeId));
@@ -234,16 +214,8 @@ public class ToolDemandController extends BaseController {
 		toolDemand
 				.setToolUnit(BaseUtil.strToLong(toolUnit));
 		toolDemand.setToolRemark(toolRemark);
-		int bool = toolDemandService
-				.updateByPrimaryKeySelective(toolDemand);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return toolDemandService
+				.updateToolDemand(toolDemand);
 	}
 
 }

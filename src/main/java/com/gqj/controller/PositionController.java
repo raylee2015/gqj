@@ -1,6 +1,5 @@
 package com.gqj.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,27 +43,18 @@ public class PositionController extends BaseController {
 	@RequestMapping("/addNewPosition.do")
 	@ResponseBody
 	public Map<String, Object> addNewPosition(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String posName = request.getParameter("POS_NAME");
 		String storeId = request.getParameter("STORE_ID");
 		long posDeptId = getSessionUser(request, response)
 				.getUserDeptId();
-		Map<String, Object> map = new HashMap<String, Object>();
 		Position position = new Position();
 		position.setPosId(-1l);
 		position.setStoreId(BaseUtil.strToLong(storeId));
 		position.setPosName(posName);
 		position.setPosDeptId(posDeptId);
-		int bool = positionService.insertSelective(position);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return positionService.addNewPosition(position);
 	}
 
 	/**
@@ -77,21 +67,14 @@ public class PositionController extends BaseController {
 	 */
 	@RequestMapping("/delPositions.do")
 	@ResponseBody
-	public Map<String, Object> delPositions(HttpServletRequest request,
+	public Map<String, Object> delPositions(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String positionIds = request.getParameter("POS_IDS");
-		Map<String, Object> map = new HashMap<>();
+		String positionIds = request
+				.getParameter("POS_IDS");
 		Position position = new Position();
 		position.setIds(positionIds);
-		int bool = positionService.deleteByPrimaryKeys(position);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
-		return map;
+		return positionService.deletePositions(position);
 	}
 
 	/**
@@ -105,8 +88,8 @@ public class PositionController extends BaseController {
 	@RequestMapping("/queryPositionsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryPositionsPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		long posDeptId = getSessionUser(request, response)
@@ -117,7 +100,8 @@ public class PositionController extends BaseController {
 		position.setPageSize(Integer.parseInt(rows));
 		position.setKeyWord(keyWord);
 		position.setPosDeptId(posDeptId);
-		return positionService.selectPositionsForPage(position);
+		return positionService
+				.selectPositionsForPage(position);
 	}
 
 	/**
@@ -131,8 +115,8 @@ public class PositionController extends BaseController {
 	@RequestMapping("/queryStoragePage.do")
 	@ResponseBody
 	public Map<String, Object> queryStoragePage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		long storeDeptId = getSessionUser(request, response)
@@ -143,7 +127,8 @@ public class PositionController extends BaseController {
 		storage.setPageSize(Integer.parseInt(rows));
 		storage.setKeyWord(keyWord);
 		storage.setStoreDeptId(storeDeptId);
-		return storageService.selectStoragesForPage(storage);
+		return storageService
+				.selectStoragesForPage(storage);
 	}
 
 	/**
@@ -157,12 +142,13 @@ public class PositionController extends BaseController {
 	@RequestMapping("/queryPositionObject.do")
 	@ResponseBody
 	public Map<String, Object> queryPositionObject(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String posId = request.getParameter("POS_ID");
 		Position position = new Position();
 		position.setPosId(BaseUtil.strToLong(posId));
-		return positionService.selectPositionsForObject(position);
+		return positionService
+				.selectPositionsForObject(position);
 	}
 
 	/**
@@ -181,7 +167,8 @@ public class PositionController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(HttpServletRequest request,
+	public ModelAndView openEditUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView("/gqj/position/editUI");
 	}
@@ -197,29 +184,19 @@ public class PositionController extends BaseController {
 	@RequestMapping("/updatePosition.do")
 	@ResponseBody
 	public Map<String, Object> updatePosition(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String posId = request.getParameter("POS_ID");
 		String posName = request.getParameter("POS_NAME");
 		String storeId = request.getParameter("STORE_ID");
 		long posDeptId = getSessionUser(request, response)
 				.getUserDeptId();
-		Map<String, Object> map = new HashMap<String, Object>();
 		Position position = new Position();
 		position.setPosId(BaseUtil.strToLong(posId));
 		position.setStoreId(BaseUtil.strToLong(storeId));
 		position.setPosName(posName);
 		position.setPosDeptId(posDeptId);
-		int bool = positionService
-				.updateByPrimaryKeySelective(position);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return positionService.updatePosition(position);
 	}
 
 }

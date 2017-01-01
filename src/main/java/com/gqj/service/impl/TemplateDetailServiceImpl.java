@@ -64,7 +64,7 @@ public class TemplateDetailServiceImpl
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(TemplateDetail template) {
+	public int updateTemplateDetail(TemplateDetail template) {
 		return templateDetailMapper
 				.updateByPrimaryKeySelective(template);
 	}

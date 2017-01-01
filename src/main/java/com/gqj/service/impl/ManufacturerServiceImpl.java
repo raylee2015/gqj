@@ -19,16 +19,35 @@ public class ManufacturerServiceImpl
 	private ManufacturerMapper manufacturerMapper;
 
 	@Override
-	public int deleteByPrimaryKeys(
+	public Map<String, Object> deleteManufacturers(
 			Manufacturer manufacturer) {
-		return manufacturerMapper
+		Map<String, Object> map = new HashMap<>();
+		int bool = manufacturerMapper
 				.deleteByPrimaryKeys(manufacturer);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "删除失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "删除成功");
+		}
+		return map;
 	}
 
 	@Override
-	public int insertSelective(Manufacturer manufacturer) {
-		return manufacturerMapper
+	public Map<String, Object> addNewManufacturer(
+			Manufacturer manufacturer) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = manufacturerMapper
 				.insertSelective(manufacturer);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 	@Override
@@ -46,10 +65,19 @@ public class ManufacturerServiceImpl
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(
+	public Map<String, Object> updateManufacturer(
 			Manufacturer manufacturer) {
-		return manufacturerMapper
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = manufacturerMapper
 				.updateByPrimaryKeySelective(manufacturer);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 }

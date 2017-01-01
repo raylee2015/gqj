@@ -1,6 +1,5 @@
 package com.base.admin.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,23 +41,14 @@ public class PostMenuController {
 	@RequestMapping("/addMenusToPost.do")
 	@ResponseBody
 	public Map<String, Object> addMenusToPost(
-			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String menuIds = request.getParameter("MENU_IDS");
 		String postId = request.getParameter("POST_ID");
-		Map<String, Object> map = new HashMap<String, Object>();
 		PostMenu postMenu = new PostMenu();
 		postMenu.setPostId(BaseUtil.strToLong(postId));
 		postMenu.setIds(menuIds);
-		int bool = postMenuService.insert(postMenu);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return postMenuService.insert(postMenu);
 	}
 
 	/**
@@ -74,23 +64,15 @@ public class PostMenuController {
 	@RequestMapping("/delMenusToPost.do")
 	@ResponseBody
 	public Map<String, Object> delMenusToPost(
-			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String menuIds = request.getParameter("MENU_IDS");
 		String postId = request.getParameter("POST_ID");
-		Map<String, Object> map = new HashMap<String, Object>();
 		PostMenu postMenu = new PostMenu();
 		postMenu.setPostId(BaseUtil.strToLong(postId));
 		postMenu.setIds(menuIds);
-		int bool = postMenuService.deleteByPrimaryKeys(postMenu);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return postMenuService
+				.deleteByPrimaryKeys(postMenu);
 	}
 
 	/**
@@ -103,7 +85,8 @@ public class PostMenuController {
 	 */
 	@RequestMapping("/queryPostPage.do")
 	@ResponseBody
-	public Map<String, Object> queryPostPage(HttpServletRequest request,
+	public Map<String, Object> queryPostPage(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
@@ -128,8 +111,8 @@ public class PostMenuController {
 	@ResponseBody
 	public void queryPostTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter()
-				.print(postMenuService.selectDeptsForTree());
+		response.getWriter().print(
+				postMenuService.selectDeptsForTree());
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -144,13 +127,14 @@ public class PostMenuController {
 	 */
 	@RequestMapping("/querySelectedMenusForTree.do")
 	@ResponseBody
-	public void querySelectedMenusForTree(HttpServletRequest request,
+	public void querySelectedMenusForTree(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String postId = request.getParameter("POST_ID");
 		PostMenu postMenu = new PostMenu();
 		postMenu.setPostId(BaseUtil.strToLong(postId));
-		response.getWriter().print(
-				postMenuService.querySelectedMenusForTree(postMenu));
+		response.getWriter().print(postMenuService
+				.querySelectedMenusForTree(postMenu));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -165,10 +149,11 @@ public class PostMenuController {
 	 */
 	@RequestMapping("/queryUnSelectedMenusForTree.do")
 	@ResponseBody
-	public void queryUnSelectedMenusForTree(HttpServletRequest request,
+	public void queryUnSelectedMenusForTree(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter()
-				.print(postMenuService.queryUnSelectedMenusForTree());
+		response.getWriter().print(postMenuService
+				.queryUnSelectedMenusForTree());
 		response.getWriter().flush();
 		response.getWriter().close();
 	}

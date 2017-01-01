@@ -182,6 +182,9 @@
 										title : '备注',
 										width : 80,
 									} ] ],
+							onBeforeLoad : function(param) {
+								param.keyWord = getTextBoxValue('keyWordForTemplateTextInput');
+							},
 							onLoadError : function() {
 								errorFunctionForQuery();
 							}
@@ -199,10 +202,6 @@
 			}
 		}
 		dataGridLoadData('datagridForTemplateDetail', data);
-		//$('#datagridForTemplateDetail').datagrid('deleteRow', rowIndex);
-		//$('#datagridForTemplateDetail').datagrid('reload');
-		//var data = $('#datagridForTemplateDetail').datagrid('getData');
-		//alert(data.rows[0].MAT_NAME);
 	}
 
 	//操作类型
@@ -314,24 +313,25 @@
 				<table id="datagridForTemplate" class="easyui-datagrid">
 				</table>
 				<div id="toolbarForTemplate">
-					<div>
-						<a href="#" class="easyui-linkbutton"
-							iconCls="icon-reload" plain="true"
-							onclick="refreshDataGrid('datagridForTemplate')">刷新</a>
-						<a href="#" class="easyui-linkbutton"
-							iconCls="icon-add" plain="true" onclick="toDetail()">添加</a>
-						<a href="#" class="easyui-linkbutton"
-							iconCls="icon-remove" plain="true"
-							onclick="delTemplates()">删除</a>
-					</div>
-					<div>
-						<input id="keyWordForTemplateTextInput"
-							class="easyui-textbox"
-							data-options="prompt:'模板名称',validType:'length[0,50]'"
-							style="width: 200px"> <a href="#"
-							class="easyui-linkbutton" iconCls="icon-search"
-							onclick="queryTemplatePagesForSearch()">查询</a>
-					</div>
+					<table style="width: 100%">
+						<tr>
+							<td><a href="#" class="easyui-linkbutton"
+								iconCls="icon-reload" plain="true"
+								onclick="refreshDataGrid('datagridForTemplate')">刷新</a>
+								<a href="#" class="easyui-linkbutton"
+								iconCls="icon-add" plain="true" onclick="toDetail()">添加</a>
+								<a href="#" class="easyui-linkbutton"
+								iconCls="icon-remove" plain="true"
+								onclick="delTemplates()">删除</a></td>
+							<td align="right"><input
+								id="keyWordForTemplateTextInput"
+								class="easyui-textbox"
+								data-options="prompt:'模板名称',validType:'length[0,50]'"
+								style="width: 200px"> <a href="#"
+								class="easyui-linkbutton" iconCls="icon-search"
+								onclick="queryTemplatePagesForSearch()">查询</a>
+						</tr>
+					</table>
 				</div>
 			</div>
 		</div>

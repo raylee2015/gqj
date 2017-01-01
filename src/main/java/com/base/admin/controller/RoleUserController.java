@@ -20,6 +20,12 @@ import com.base.admin.service.IRoleUserService;
 import com.base.admin.service.IUserService;
 import com.base.util.BaseUtil;
 
+/**
+ * 改用岗位，不用角色
+ * 
+ * @author Administrator
+ *
+ */
 @Deprecated
 @Controller
 @RequestMapping("/base/admin/role_user")
@@ -57,11 +63,13 @@ public class RoleUserController {
 	 */
 	@RequestMapping("/queryUserPage.do")
 	@ResponseBody
-	public Map<String, Object> queryUserPage(HttpServletRequest request,
+	public Map<String, Object> queryUserPage(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		String userDeptId = request.getParameter("USER_DEPT_ID");
+		String userDeptId = request
+				.getParameter("USER_DEPT_ID");
 		String keyWord = request.getParameter("keyWord");
 		User user = new User();
 		user.setCurrPage(BaseUtil.strToInt(page));
@@ -85,7 +93,8 @@ public class RoleUserController {
 	@ResponseBody
 	public void queryRoles(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter().print(roleUserService.queryRoles());
+		response.getWriter()
+				.print(roleUserService.queryRoles());
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -117,8 +126,8 @@ public class RoleUserController {
 			@RequestParam("USER_PHONE") String userPhone,
 			@RequestParam("USER_SORT") String userSort,
 			@RequestParam("USER_DEPT_ID") long userDeptId,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		User user = new User();
 		user.setUserId(-1l);
@@ -128,14 +137,14 @@ public class RoleUserController {
 		user.setUserPhone(userPhone);
 		user.setUserSort(userSort);
 		user.setUserDeptId(userDeptId);
-		int bool = userService.insertSelective(user);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
+		// int bool = userService.insertSelective(user);
+		// if (bool == 0) {
+		// map.put("success", false);
+		// map.put("msg", "保存出错，请联系管理员");
+		// } else {
+		// map.put("success", true);
+		// map.put("msg", "保存成功");
+		// }
 		return map;
 	}
 
@@ -170,8 +179,8 @@ public class RoleUserController {
 			@RequestParam("USER_PHONE") String userPhone,
 			@RequestParam("USER_SORT") String userSort,
 			@RequestParam("USER_DEPT_ID") long userDeptId,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		User user = new User();
 		user.setUserId(userId);
@@ -180,14 +189,14 @@ public class RoleUserController {
 		user.setUserPhone(userPhone);
 		user.setUserSort(userSort);
 		user.setUserDeptId(userDeptId);
-		int bool = userService.updateByPrimaryKeysSelective(user);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
+		// int bool = userService.updateByPrimaryKeysSelective(user);
+		// if (bool == 0) {
+		// map.put("success", false);
+		// map.put("msg", "保存出错，请联系管理员");
+		// } else {
+		// map.put("success", true);
+		// map.put("msg", "保存成功");
+		// }
 		return map;
 	}
 
@@ -206,20 +215,20 @@ public class RoleUserController {
 	@ResponseBody
 	public Map<String, Object> initUserPassWord(
 			@RequestParam(value = "USER_IDS") String userIds,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		User user = new User();
 		user.setIds(userIds);
 		user.setUserPassWord(BaseUtil.initUserPassWord());
-		int bool = userService.updateByPrimaryKeysSelective(user);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "初始化出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "初始化成功");
-		}
+		// int bool = userService.updateByPrimaryKeysSelective(user);
+		// if (bool == 0) {
+		// map.put("success", false);
+		// map.put("msg", "初始化出错，请联系管理员");
+		// } else {
+		// map.put("success", true);
+		// map.put("msg", "初始化成功");
+		// }
 		return map;
 	}
 
@@ -237,17 +246,17 @@ public class RoleUserController {
 	@ResponseBody
 	public Map<String, Object> delDepts(
 			@RequestParam(value = "USER_IDS") String userIds,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		Map<String, Object> map = new HashMap<>();
-		int bool = userService.deleteByPrimaryKeys(userIds.split(","));
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
+		// int bool = userService.deleteByPrimaryKeys(userIds.split(","));
+		// if (bool == 0) {
+		// map.put("success", false);
+		// map.put("msg", "删除失败，请联系管理员");
+		// } else {
+		// map.put("success", true);
+		// map.put("msg", "删除成功");
+		// }
 		return map;
 	}
 

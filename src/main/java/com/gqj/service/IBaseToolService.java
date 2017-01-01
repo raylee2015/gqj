@@ -5,11 +5,11 @@ import java.util.Map;
 import com.gqj.entity.BaseTool;
 
 public interface IBaseToolService {
-	int deleteByPrimaryKeys(BaseTool baseTool);
+	Map<String, Object> deleteBaseTools(BaseTool baseTool);
 
-	int insertSelective(BaseTool baseTool);
+	Map<String, Object> addNewBaseTool(BaseTool baseTool);
 
-	int updateByPrimaryKeySelective(BaseTool baseTool);
+	Map<String, Object> updateBaseTool(BaseTool baseTool);
 
 	Map<String, Object> selectBaseToolsForPage(
 			BaseTool baseTool);

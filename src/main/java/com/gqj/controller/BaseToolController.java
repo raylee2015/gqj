@@ -1,6 +1,5 @@
 package com.gqj.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,7 +64,6 @@ public class BaseToolController extends BaseController {
 				.getParameter("BASE_TOOL_SPEC");
 		String baseToolRemark = request
 				.getParameter("BASE_TOOL_REMARK");
-		Map<String, Object> map = new HashMap<String, Object>();
 		BaseTool baseTool = new BaseTool();
 		baseTool.setBaseToolId(-1l);
 		baseTool.setBaseToolModel(baseToolModel);
@@ -74,17 +72,7 @@ public class BaseToolController extends BaseController {
 		baseTool.setManId(BaseUtil.strToLong(baseManId));
 		baseTool.setToolDemandId(
 				BaseUtil.strToLong(baseToolDemandId));
-
-		int bool = baseToolService
-				.insertSelective(baseTool);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return baseToolService.addNewBaseTool(baseTool);
 	}
 
 	/**
@@ -102,19 +90,9 @@ public class BaseToolController extends BaseController {
 			HttpServletResponse response) throws Exception {
 		String baseToolIds = request
 				.getParameter("BASE_TOOL_IDS");
-		Map<String, Object> map = new HashMap<>();
 		BaseTool baseTool = new BaseTool();
 		baseTool.setIds(baseToolIds);
-		int bool = baseToolService
-				.deleteByPrimaryKeys(baseTool);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
-		return map;
+		return baseToolService.deleteBaseTools(baseTool);
 	}
 
 	/**
@@ -257,7 +235,6 @@ public class BaseToolController extends BaseController {
 				.getParameter("BASE_TOOL_SPEC");
 		String baseToolRemark = request
 				.getParameter("BASE_TOOL_REMARK");
-		Map<String, Object> map = new HashMap<String, Object>();
 		BaseTool baseTool = new BaseTool();
 		baseTool.setBaseToolId(
 				BaseUtil.strToLong(baseToolId));
@@ -267,16 +244,7 @@ public class BaseToolController extends BaseController {
 		baseTool.setManId(BaseUtil.strToLong(baseManId));
 		baseTool.setToolDemandId(
 				BaseUtil.strToLong(baseToolDemandId));
-		int bool = baseToolService
-				.updateByPrimaryKeySelective(baseTool);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return baseToolService.updateBaseTool(baseTool);
 	}
 
 }

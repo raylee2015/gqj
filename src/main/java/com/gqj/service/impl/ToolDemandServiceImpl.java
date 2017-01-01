@@ -19,14 +19,35 @@ public class ToolDemandServiceImpl
 	private ToolDemandMapper toolDemandMapper;
 
 	@Override
-	public int deleteByPrimaryKeys(ToolDemand toolDemand) {
-		return toolDemandMapper
+	public Map<String, Object> deleteToolDemands(
+			ToolDemand toolDemand) {
+		Map<String, Object> map = new HashMap<>();
+		int bool = toolDemandMapper
 				.deleteByPrimaryKeys(toolDemand);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "删除失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "删除成功");
+		}
+		return map;
 	}
 
 	@Override
-	public int insertSelective(ToolDemand toolDemand) {
-		return toolDemandMapper.insertSelective(toolDemand);
+	public Map<String, Object> addNewToolDemand(
+			ToolDemand toolDemand) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = toolDemandMapper
+				.insertSelective(toolDemand);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 	@Override
@@ -44,10 +65,19 @@ public class ToolDemandServiceImpl
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(
+	public Map<String, Object> updateToolDemand(
 			ToolDemand toolDemand) {
-		return toolDemandMapper
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = toolDemandMapper
 				.updateByPrimaryKeySelective(toolDemand);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 }

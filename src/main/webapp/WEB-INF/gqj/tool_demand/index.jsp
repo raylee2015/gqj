@@ -161,6 +161,10 @@
 										title : '备注',
 										width : 80,
 									} ] ],
+							onBeforeLoad : function(param) {
+								param.keyWord = getTextBoxValue('keyWordForToolDemandTextInput');
+								param.TOOL_TYPE_ID = getComboBoxValue('toolTypeComboBox');
+							},
 							onLoadError : function() {
 								errorFunctionForQuery();
 							}
@@ -192,13 +196,7 @@
 							onclick="openAddUIForToolDemand()">添加</a> <a href="#"
 							class="easyui-linkbutton" iconCls="icon-remove"
 							plain="true" onclick="delToolDemands()">删除</a></td>
-						<td><input id="keyWordForToolDemandTextInput"
-							class="easyui-textbox"
-							data-options="prompt:'工器具名称',validType:'length[0,25]'"
-							style="width: 200px"> <a href="#"
-							class="easyui-linkbutton" iconCls="icon-search"
-							onclick="queryToolDemandPagesForSearch()">查询</a></td>
-						<td>工器具种类: <input id="toolTypeComboBox"
+						<td align="center">工器具种类: <input id="toolTypeComboBox"
 							name="TYPE_ID"
 							data-options="valueField : 'ID',textField : 'TEXT',require : true,
 							panelHeight : 'auto',	prompt : '工器具类型',
@@ -208,6 +206,13 @@
 							}
 							"
 							class="easyui-combobox" style="width: 200px;"></td>
+						<td align="right"><input
+							id="keyWordForToolDemandTextInput"
+							class="easyui-textbox"
+							data-options="prompt:'工器具名称',validType:'length[0,25]'"
+							style="width: 200px"> <a href="#"
+							class="easyui-linkbutton" iconCls="icon-search"
+							onclick="queryToolDemandPagesForSearch()">查询</a></td>
 					</tr>
 				</table>
 			</div>

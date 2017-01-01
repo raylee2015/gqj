@@ -9,6 +9,11 @@ import org.springframework.stereotype.Service;
 import com.base.admin.dao.RoleMapper;
 import com.base.admin.entity.Role;
 import com.base.admin.service.IRoleService;
+/**
+ * 改用岗位，不用角色
+ * @author Administrator
+ *
+ */
 @Deprecated
 @Service
 public class RoleServiceImpl implements IRoleService {

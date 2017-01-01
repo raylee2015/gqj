@@ -4,6 +4,12 @@ import java.util.List;
 
 import com.base.admin.entity.RoleUser;
 import com.base.admin.entity.User;
+
+/**
+ * 改用岗位，不用角色
+ * @author Administrator
+ *
+ */
 @Deprecated
 public interface IRoleUserService {
 	int selectByPrimaryKey(RoleUser roleUser);

@@ -18,15 +18,27 @@ public class UserServiceImpl implements IUserService {
 	private UserMapper userMapper;
 
 	@Override
-	public int deleteByPrimaryKeys(String[] userIds) {
-		return userMapper.deleteByPrimaryKeys(userIds);
+	public Map<String, Object> deleteByPrimaryKeys(
+			String[] userIds) {
+		Map<String, Object> map = new HashMap<>();
+		int bool = userMapper.deleteByPrimaryKeys(userIds);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "删除失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "删除成功");
+		}
+		return map;
 	}
 
 	@Override
-	public Map<String, Object> queryUsersForPage(User user) {
+	public Map<String, Object> queryUsersForPage(
+			User user) {
 		List<Map<String, Object>> users = userMapper
 				.queryUsersForPage(user);
-		int count = userMapper.queryCountOfUsersForPage(user);
+		int count = userMapper
+				.queryCountOfUsersForPage(user);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", users);
 		map.put("total", count);
@@ -34,18 +46,39 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public Map<String, Object> queryUserForObject(User user) {
+	public Map<String, Object> queryUserForObject(
+			User user) {
 		return userMapper.queryUsersForList(user).get(0);
 	}
 
 	@Override
-	public int insertSelective(User user) {
-		return userMapper.insertSelective(user);
+	public Map<String, Object> insertSelective(User user) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = userMapper.insertSelective(user);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 	@Override
-	public int updateByPrimaryKeysSelective(User user) {
-		return userMapper.updateByPrimaryKeysSelective(user);
+	public Map<String, Object> updateByPrimaryKeysSelective(
+			User user) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = userMapper
+				.updateByPrimaryKeysSelective(user);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "初始化出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "初始化成功");
+		}
+		return map;
 	}
 
 	@Override

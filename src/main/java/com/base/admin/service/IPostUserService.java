@@ -6,9 +6,9 @@ import com.base.admin.entity.Post;
 import com.base.admin.entity.PostUser;
 
 public interface IPostUserService {
-	int deleteUsersByPost(PostUser postUser);
+	Map<String, Object> deleteUsersByPost(PostUser postUser);
 
-	int insertUsersByPost(PostUser postUser);
+	Map<String, Object> insertUsersByPost(PostUser postUser);
 
 	Map<String, Object> selectPostsForPage(Post post);
 

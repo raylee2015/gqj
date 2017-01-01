@@ -12,19 +12,41 @@ import com.gqj.entity.Position;
 import com.gqj.service.IPositionService;
 
 @Service
-public class PositionServiceImpl implements IPositionService {
+public class PositionServiceImpl
+		implements IPositionService {
 
 	@Autowired
 	private PositionMapper positionMapper;
 
 	@Override
-	public int deleteByPrimaryKeys(Position position) {
-		return positionMapper.deleteByPrimaryKeys(position);
+	public Map<String, Object> deletePositions(
+			Position position) {
+		Map<String, Object> map = new HashMap<>();
+		int bool = positionMapper
+				.deleteByPrimaryKeys(position);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "删除失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "删除成功");
+		}
+		return map;
 	}
 
 	@Override
-	public int insertSelective(Position position) {
-		return positionMapper.insertSelective(position);
+	public Map<String, Object> addNewPosition(
+			Position position) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = positionMapper.insertSelective(position);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 	@Override
@@ -41,14 +63,26 @@ public class PositionServiceImpl implements IPositionService {
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(Position position) {
-		return positionMapper.updateByPrimaryKeySelective(position);
+	public Map<String, Object> updatePosition(
+			Position position) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = positionMapper
+				.updateByPrimaryKeySelective(position);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
 	}
 
 	@Override
 	public Map<String, Object> selectPositionsForObject(
 			Position position) {
-		return positionMapper.selectPositionsForObject(position);
+		return positionMapper
+				.selectPositionsForObject(position);
 	}
 
 }

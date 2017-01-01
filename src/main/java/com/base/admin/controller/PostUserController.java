@@ -1,6 +1,5 @@
 package com.base.admin.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,23 +41,14 @@ public class PostUserController {
 	@RequestMapping("/addUsersToPost.do")
 	@ResponseBody
 	public Map<String, Object> addUsersToPost(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String userIds = request.getParameter("USER_IDS");
 		String postId = request.getParameter("POST_ID");
-		Map<String, Object> map = new HashMap<String, Object>();
 		PostUser postUser = new PostUser();
 		postUser.setPostId(BaseUtil.strToLong(postId));
 		postUser.setIds(userIds);
-		int bool = postUserService.insertUsersByPost(postUser);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return postUserService.insertUsersByPost(postUser);
 	}
 
 	/**
@@ -74,23 +64,14 @@ public class PostUserController {
 	@RequestMapping("/delUsersToPost.do")
 	@ResponseBody
 	public Map<String, Object> delUsersToPost(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String userIds = request.getParameter("USER_IDS");
 		String postId = request.getParameter("POST_ID");
-		Map<String, Object> map = new HashMap<String, Object>();
 		PostUser postUser = new PostUser();
 		postUser.setPostId(BaseUtil.strToLong(postId));
 		postUser.setIds(userIds);
-		int bool = postUserService.deleteUsersByPost(postUser);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return postUserService.deleteUsersByPost(postUser);
 	}
 
 	/**
@@ -103,7 +84,8 @@ public class PostUserController {
 	 */
 	@RequestMapping("/queryPostPage.do")
 	@ResponseBody
-	public Map<String, Object> queryPostPage(HttpServletRequest request,
+	public Map<String, Object> queryPostPage(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
@@ -128,8 +110,8 @@ public class PostUserController {
 	@ResponseBody
 	public void queryPostTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter()
-				.print(postUserService.selectDeptsForTree());
+		response.getWriter().print(
+				postUserService.selectDeptsForTree());
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -145,8 +127,8 @@ public class PostUserController {
 	@RequestMapping("/querySelectedUsersForPage.do")
 	@ResponseBody
 	public Map<String, Object> querySelectedUsersForPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String keyWord = request.getParameter("KEY_WORD");
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
@@ -156,7 +138,8 @@ public class PostUserController {
 		postUser.setPageSize(Integer.parseInt(rows));
 		postUser.setPostId(BaseUtil.strToLong(postId));
 		postUser.setKeyWord(keyWord);
-		return postUserService.querySelectedUsersForPage(postUser);
+		return postUserService
+				.querySelectedUsersForPage(postUser);
 	}
 
 	/**
@@ -170,8 +153,8 @@ public class PostUserController {
 	@RequestMapping("/queryUnSelectedUsersForPage.do")
 	@ResponseBody
 	public Map<String, Object> queryUnSelectedUsersForPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String keyWord = request.getParameter("KEY_WORD");
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
@@ -181,7 +164,8 @@ public class PostUserController {
 		postUser.setPageSize(Integer.parseInt(rows));
 		postUser.setPostId(BaseUtil.strToLong(postId));
 		postUser.setKeyWord(keyWord);
-		return postUserService.queryUnSelectedUsersForPage(postUser);
+		return postUserService
+				.queryUnSelectedUsersForPage(postUser);
 	}
 
 	/**

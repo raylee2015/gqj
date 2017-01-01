@@ -5,12 +5,12 @@ import java.util.Map;
 import com.base.admin.entity.Post;
 
 public interface IPostService {
-	int deleteByPrimaryKeys(Post post);
+	Map<String, Object> deletePosts(Post post);
 
-	int insertSelective(Post post);
+	Map<String, Object> addNewPost(Post post);
 
-	int updateByPrimaryKeySelective(Post post);
+	Map<String, Object> updatePost(Post post);
 
-	Map<String, Object>  selectPostsForPage(Post post);
+	Map<String, Object> selectPostsForPage(Post post);
 
 }

@@ -1,6 +1,5 @@
 package com.gqj.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,20 +41,11 @@ public class ManufacturerController extends BaseController {
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String manName = request.getParameter("MAN_NAME");
-		Map<String, Object> map = new HashMap<String, Object>();
 		Manufacturer manufacturer = new Manufacturer();
 		manufacturer.setManId(-1l);
 		manufacturer.setManName(manName);
-		int bool = manufacturerService
-				.insertSelective(manufacturer);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return manufacturerService
+				.addNewManufacturer(manufacturer);
 	}
 
 	/**
@@ -73,19 +63,10 @@ public class ManufacturerController extends BaseController {
 			HttpServletResponse response) throws Exception {
 		String manufacturerIds = request
 				.getParameter("MAN_IDS");
-		Map<String, Object> map = new HashMap<>();
 		Manufacturer manufacturer = new Manufacturer();
 		manufacturer.setIds(manufacturerIds);
-		int bool = manufacturerService
-				.deleteByPrimaryKeys(manufacturer);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
-		return map;
+		return manufacturerService
+				.deleteManufacturers(manufacturer);
 	}
 
 	/**
@@ -149,20 +130,11 @@ public class ManufacturerController extends BaseController {
 			HttpServletResponse response) throws Exception {
 		String manId = request.getParameter("MAN_ID");
 		String manName = request.getParameter("MAN_NAME");
-		Map<String, Object> map = new HashMap<String, Object>();
 		Manufacturer manufacturer = new Manufacturer();
 		manufacturer.setManId(BaseUtil.strToLong(manId));
 		manufacturer.setManName(manName);
-		int bool = manufacturerService
-				.updateByPrimaryKeySelective(manufacturer);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return manufacturerService
+				.updateManufacturer(manufacturer);
 	}
 
 }

@@ -5,12 +5,15 @@ import java.util.Map;
 import com.gqj.entity.Storage;
 
 public interface IStorageService {
-	int deleteByPrimaryKeys(Storage storage);
+	Map<String, Object> deleteStorages(
+			Storage storage);
 
-	int insertSelective(Storage storage);
+	Map<String, Object> addNewStorage(Storage storage);
 
-	int updateByPrimaryKeySelective(Storage storage);
+	Map<String, Object> updateStorage(
+			Storage storage);
 
-	Map<String, Object> selectStoragesForPage(Storage storage);
+	Map<String, Object> selectStoragesForPage(
+			Storage storage);
 
 }

@@ -1,12 +1,13 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java"
+	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type"
+	content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -24,7 +25,8 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript"
+	src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	// 关闭编辑窗口
 	function closeEditUIForToolType() {
@@ -133,6 +135,9 @@
 										title : '工器具类型名称',
 										width : 150,
 									} ] ],
+							onBeforeLoad : function(param) {
+								param.keyWord = getTextBoxValue('keyWordForToolTypeTextInput');
+							},
 							onLoadError : function() {
 								errorFunctionForQuery();
 							}
@@ -147,21 +152,25 @@
 			<table id="datagridForToolType" class="easyui-datagrid">
 			</table>
 			<div id="toolbarForToolType">
-				<div>
-					<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
-						plain="true" onclick="refreshDataGrid('datagridForToolType')">刷新</a>
-					<a href="#" class="easyui-linkbutton" iconCls="icon-add"
-						plain="true" onclick="openAddUIForToolType()">添加</a> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
-						onclick="delToolTypes()">删除</a>
-				</div>
-				<div>
-					<input id="keyWordForToolTypeTextInput" class="easyui-textbox"
-						data-options="prompt:'工器具类型名称',validType:'length[0,25]'"
-						style="width: 200px"> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-search"
-						onclick="queryToolTypePagesForSearch()">查询</a>
-				</div>
+				<table width="100%">
+					<tr>
+						<td><a href="#" class="easyui-linkbutton"
+							iconCls="icon-reload" plain="true"
+							onclick="refreshDataGrid('datagridForToolType')">刷新</a>
+							<a href="#" class="easyui-linkbutton"
+							iconCls="icon-add" plain="true"
+							onclick="openAddUIForToolType()">添加</a> <a href="#"
+							class="easyui-linkbutton" iconCls="icon-remove"
+							plain="true" onclick="delToolTypes()">删除</a></td>
+						<td align="right"><input
+							id="keyWordForToolTypeTextInput"
+							class="easyui-textbox"
+							data-options="prompt:'工器具类型名称',validType:'length[0,25]'"
+							style="width: 200px"> <a href="#"
+							class="easyui-linkbutton" iconCls="icon-search"
+							onclick="queryToolTypePagesForSearch()">查询</a>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</div>

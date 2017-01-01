@@ -51,16 +51,20 @@ public class UserController {
 	 */
 	@RequestMapping("/addNewUser.do")
 	@ResponseBody
-	public Map<String, Object> addNewUser(HttpServletRequest request,
+	public Map<String, Object> addNewUser(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String userName = request.getParameter("USER_NAME");
 		String userCode = request.getParameter("USER_CODE");
-		String userPhone = request.getParameter("USER_PHONE");
+		String userPhone = request
+				.getParameter("USER_PHONE");
 		String userSort = request.getParameter("USER_SORT");
-		String userDeptId = request.getParameter("USER_DEPT_ID");
-		String userLockFlag = request.getParameter("USER_LOCK_FLAG");
-		String userUseFlag = request.getParameter("USER_USE_FLAG");
-		Map<String, Object> map = new HashMap<String, Object>();
+		String userDeptId = request
+				.getParameter("USER_DEPT_ID");
+		String userLockFlag = request
+				.getParameter("USER_LOCK_FLAG");
+		String userUseFlag = request
+				.getParameter("USER_USE_FLAG");
 		User user = new User();
 		user.setUserId(-1l);
 		user.setUserPassWord(BaseUtil.initUserPassWord());// 每个用户初始密码是123456
@@ -71,15 +75,7 @@ public class UserController {
 		user.setUserDeptId(BaseUtil.strToLong(userDeptId));
 		user.setUserLockFlag(userLockFlag);
 		user.setUserUseFlag(userUseFlag);
-		int bool = userService.insertSelective(user);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return userService.insertSelective(user);
 	}
 
 	/**
@@ -95,15 +91,16 @@ public class UserController {
 	@RequestMapping("/addPostsToUser.do")
 	@ResponseBody
 	public Map<String, Object> addPostsToUser(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String userId = request.getParameter("USER_ID");
 		String postIds = request.getParameter("POST_IDS");
 		Map<String, Object> map = new HashMap<String, Object>();
 		PostUser postUser = new PostUser();
 		postUser.setUserId(BaseUtil.strToLong(userId));
 		postUser.setIds(postIds);
-		int bool = postUserService.insertPostsByUser(postUser);
+		int bool = postUserService
+				.insertPostsByUser(postUser);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -126,19 +123,12 @@ public class UserController {
 	 */
 	@RequestMapping("/delUsers.do")
 	@ResponseBody
-	public Map<String, Object> delUsers(HttpServletRequest request,
+	public Map<String, Object> delUsers(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String userIds = request.getParameter("USER_IDS");
-		Map<String, Object> map = new HashMap<>();
-		int bool = userService.deleteByPrimaryKeys(userIds.split(","));
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
-		return map;
+		return userService
+				.deleteByPrimaryKeys(userIds.split(","));
 	}
 
 	/**
@@ -154,15 +144,16 @@ public class UserController {
 	@RequestMapping("/delPostsToUser.do")
 	@ResponseBody
 	public Map<String, Object> delPostsToUser(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String userId = request.getParameter("USER_ID");
 		String postIds = request.getParameter("POST_IDS");
 		Map<String, Object> map = new HashMap<String, Object>();
 		PostUser postUser = new PostUser();
 		postUser.setUserId(BaseUtil.strToLong(userId));
 		postUser.setIds(postIds);
-		int bool = postUserService.deletePostsByUser(postUser);
+		int bool = postUserService
+				.deletePostsByUser(postUser);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -187,22 +178,14 @@ public class UserController {
 	@RequestMapping("/initUsersPassWord.do")
 	@ResponseBody
 	public Map<String, Object> initUsersPassWord(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String userIds = request.getParameter("USER_IDS");
-		Map<String, Object> map = new HashMap<String, Object>();
 		User user = new User();
 		user.setIds(userIds);
 		user.setUserPassWord(BaseUtil.initUserPassWord());
-		int bool = userService.updateByPrimaryKeysSelective(user);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "初始化出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "初始化成功");
-		}
-		return map;
+		return userService
+				.updateByPrimaryKeysSelective(user);
 	}
 
 	/**
@@ -211,9 +194,11 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openChoosePostUI.do", method = RequestMethod.GET)
-	public ModelAndView openChoosePostUI(HttpServletRequest request,
+	public ModelAndView openChoosePostUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
-		return new ModelAndView("/base/admin/user/choosePostUI");
+		return new ModelAndView(
+				"/base/admin/user/choosePostUI");
 	}
 
 	/**
@@ -222,7 +207,8 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(HttpServletRequest request,
+	public ModelAndView openEditUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView("/base/admin/user/editUI");
 	}
@@ -238,8 +224,8 @@ public class UserController {
 	@ResponseBody
 	public void queryDeptTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter()
-				.print(deptService.selectDeptsForTree().toLowerCase());
+		response.getWriter().print(deptService
+				.selectDeptsForTree().toLowerCase());
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -255,8 +241,8 @@ public class UserController {
 	@RequestMapping("/querySelectedPostsForPage.do")
 	@ResponseBody
 	public Map<String, Object> querySelectedPostsForPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String keyWord = request.getParameter("KEY_WORD");
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
@@ -266,7 +252,8 @@ public class UserController {
 		postUser.setPageSize(Integer.parseInt(rows));
 		postUser.setUserId(BaseUtil.strToLong(userId));
 		postUser.setKeyWord(keyWord);
-		return postUserService.querySelectedPostsForPage(postUser);
+		return postUserService
+				.querySelectedPostsForPage(postUser);
 	}
 
 	/**
@@ -280,8 +267,8 @@ public class UserController {
 	@RequestMapping("/queryUnSelectedPostsForPage.do")
 	@ResponseBody
 	public Map<String, Object> queryUnSelectedPostsForPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String keyWord = request.getParameter("KEY_WORD");
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
@@ -291,7 +278,8 @@ public class UserController {
 		postUser.setPageSize(Integer.parseInt(rows));
 		postUser.setUserId(BaseUtil.strToLong(userId));
 		postUser.setKeyWord(keyWord);
-		return postUserService.queryUnSelectedPostsForPage(postUser);
+		return postUserService
+				.queryUnSelectedPostsForPage(postUser);
 	}
 
 	/**
@@ -303,10 +291,11 @@ public class UserController {
 	 */
 	@RequestMapping("/queryUserLockFlagDropList.do")
 	@ResponseBody
-	public void queryUserLockFlagDropList(HttpServletRequest request,
+	public void queryUserLockFlagDropList(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter().print(
-				dictionaryService.getDictionarysByDicCode("YESORNO"));
+		response.getWriter().print(dictionaryService
+				.getDictionarysByDicCode("YESORNO"));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -328,11 +317,12 @@ public class UserController {
 	@RequestMapping("/queryUsersPage.do")
 	@ResponseBody
 	public Map<String, Object> queryUsersPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		String userDeptId = request.getParameter("USER_DEPT_ID");
+		String userDeptId = request
+				.getParameter("USER_DEPT_ID");
 		String keyWord = request.getParameter("keyWord");
 		User user = new User();
 		user.setCurrPage(BaseUtil.strToInt(page));
@@ -351,10 +341,11 @@ public class UserController {
 	 */
 	@RequestMapping("/queryUserUseFlagDropList.do")
 	@ResponseBody
-	public void queryUserUseFlagDropList(HttpServletRequest request,
+	public void queryUserUseFlagDropList(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter().print(
-				dictionaryService.getDictionarysByDicCode("YESORNO"));
+		response.getWriter().print(dictionaryService
+				.getDictionarysByDicCode("YESORNO"));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -381,17 +372,21 @@ public class UserController {
 	 */
 	@RequestMapping("/updateUser.do")
 	@ResponseBody
-	public Map<String, Object> updateUser(HttpServletRequest request,
+	public Map<String, Object> updateUser(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String userId = request.getParameter("USER_ID");
 		String userName = request.getParameter("USER_NAME");
 		String userCode = request.getParameter("USER_CODE");
-		String userPhone = request.getParameter("USER_PHONE");
+		String userPhone = request
+				.getParameter("USER_PHONE");
 		String userSort = request.getParameter("USER_SORT");
-		String userDeptId = request.getParameter("USER_DEPT_ID");
-		String userLockFlag = request.getParameter("USER_LOCK_FLAG");
-		String userUseFlag = request.getParameter("USER_USE_FLAG");
-		Map<String, Object> map = new HashMap<String, Object>();
+		String userDeptId = request
+				.getParameter("USER_DEPT_ID");
+		String userLockFlag = request
+				.getParameter("USER_LOCK_FLAG");
+		String userUseFlag = request
+				.getParameter("USER_USE_FLAG");
 		User user = new User();
 		user.setUserId(BaseUtil.strToLong(userId));
 		user.setUserName(userName);
@@ -401,15 +396,8 @@ public class UserController {
 		user.setUserDeptId(BaseUtil.strToLong(userDeptId));
 		user.setUserLockFlag(userLockFlag);
 		user.setUserUseFlag(userUseFlag);
-		int bool = userService.updateByPrimaryKeysSelective(user);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
+		return userService
+				.updateByPrimaryKeysSelective(user);
 	}
 
 }
