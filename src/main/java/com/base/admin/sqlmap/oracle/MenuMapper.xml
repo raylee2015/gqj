@@ -61,7 +61,7 @@
 		<if test="menuInnerCode != null and menuInnerCode!=''">
 			AND MENU_ID IN (${menuInnerCode})
 		</if>
-		order by MENU_SORT,MENU_ID
+		order by MENU_LEVEL,MENU_SORT,MENU_ID
 		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
 		) WHERE num<![CDATA[>=]]>
 		(1+(${currPage}-1)*${pageSize})

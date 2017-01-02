@@ -6,6 +6,7 @@
 		<result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
 		<result column="USER_CODE" jdbcType="VARCHAR" property="userCode" />
 		<result column="USER_DEPT_ID" jdbcType="DECIMAL" property="userDeptId" />
+		<result column="USER_DEPT_NAME" jdbcType="VARCHAR" property="userDeptName" />
 		<result column="USER_PHONE" jdbcType="VARCHAR" property="userPhone" />
 		<result column="USER_SORT" jdbcType="VARCHAR" property="userSort" />
 		<result column="USER_LOCK_FLAG" jdbcType="VARCHAR" property="userLockFlag" />
@@ -33,7 +34,7 @@
 	</select>
 	<select id="queryUserForSession" parameterType="com.base.admin.entity.User"
 		resultMap="BaseResultMap">
-		select * from BASE_USER
+		select * from VIEW_BASE_USER
 		<where>
 			<if test="userCode != null and userCode !=''">
 				AND USER_CODE = #{userCode}

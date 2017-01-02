@@ -7,6 +7,8 @@ public class User extends Base {
 
 	private Long userDeptId;
 
+	private String userDeptName;
+
 	private Long userId;
 
 	private String userLockFlag;
@@ -27,6 +29,10 @@ public class User extends Base {
 
 	public Long getUserDeptId() {
 		return userDeptId;
+	}
+
+	public String getUserDeptName() {
+		return userDeptName;
 	}
 
 	public Long getUserId() {
@@ -58,11 +64,16 @@ public class User extends Base {
 	}
 
 	public void setUserCode(String userCode) {
-		this.userCode = userCode == null ? null : userCode.trim();
+		this.userCode = userCode == null ? null
+				: userCode.trim();
 	}
 
 	public void setUserDeptId(Long userDeptId) {
 		this.userDeptId = userDeptId;
+	}
+
+	public void setUserDeptName(String userDeptName) {
+		this.userDeptName = userDeptName;
 	}
 
 	public void setUserId(Long userId) {
@@ -74,7 +85,8 @@ public class User extends Base {
 	}
 
 	public void setUserName(String userName) {
-		this.userName = userName == null ? null : userName.trim();
+		this.userName = userName == null ? null
+				: userName.trim();
 	}
 
 	public void setUserPassWord(String userPassWord) {
@@ -82,11 +94,13 @@ public class User extends Base {
 	}
 
 	public void setUserPhone(String userPhone) {
-		this.userPhone = userPhone == null ? null : userPhone.trim();
+		this.userPhone = userPhone == null ? null
+				: userPhone.trim();
 	}
 
 	public void setUserSort(String userSort) {
-		this.userSort = userSort == null ? null : userSort.trim();
+		this.userSort = userSort == null ? null
+				: userSort.trim();
 	}
 
 	public void setUserUseFlag(String userUseFlag) {

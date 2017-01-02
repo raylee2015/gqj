@@ -111,14 +111,14 @@
 						});
 	}
 	//关闭编辑窗口
-	function closeChooseToolDemandUIForTemplate() {
-		parent.closeChooseToolDemandUIForTemplate();
+	function closeChooseToolDemandUIForDemandPlan() {
+		parent.closeChooseToolDemandUIForDemandPlan();
 	}
 
 	function choose() {
 		var selectedItems = $('#datagridForToolDemand').datagrid(
 				'getSelections');
-		var data = parent.$('#datagridForTemplateDetail').datagrid('getData');
+		var data = parent.$('#datagridForDemandPlanDetail').datagrid('getData');
 		if (data.rows.length == 0) {
 			data = selectedItems;
 		} else {
@@ -135,8 +135,8 @@
 				data.rows.push(selectedItems[j]);
 			}
 		}
-		parent.$('#datagridForTemplateDetail').datagrid('loadData', data);
-		closeChooseToolDemandUIForTemplate();
+		parent.$('#datagridForDemandPlanDetail').datagrid('loadData', data);
+		closeChooseToolDemandUIForDemandPlan();
 	}
 
 	//当下拉菜单变化时，触发的查询方法
@@ -180,7 +180,7 @@
 							onclick="choose()">选择</a> <a
 							class="easyui-linkbutton" iconCls="icon-cancel"
 							href="javascript:void(0)"
-							onclick="closeChooseToolDemandUIForTemplate()">关闭</a></td>
+							onclick="closeChooseToolDemandUIForDemandPlan()">关闭</a></td>
 						<td align="center">工器具种类: <input
 							id="toolTypeComboBox" name="TYPE_ID"
 							data-options="valueField : 'ID',textField : 'TEXT',require : true,

@@ -199,7 +199,6 @@
 		for (var i = 0; i < data.length; i++) {
 			if (rowData.TOOL_ID == data[i].TOOL_ID) {
 				data.splice(i, 1);
-				break;
 			}
 		}
 		dataGridLoadData('datagridForTemplateDetail', data);

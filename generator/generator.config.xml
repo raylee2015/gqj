@@ -35,7 +35,7 @@
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
 		<!--生成对应表及类名 -->
-		<table tableName="GQJ_BASE_TOOL" domainObjectName="BaseTool"
+		<table tableName="GQJ_DEMAND_PLAN_DETAIL" domainObjectName="DemandPlanDetail"
 		enableSelectByExample="false"
 		enableDeleteByExample="false"
 enableCountByExample="false" enableUpdateByExample="false"
