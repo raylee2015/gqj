@@ -149,7 +149,7 @@
 						<td width="30%">菜单链接:</td>
 						<td><input id="menuURLTextBox" name="MENU_URL"
 							class="easyui-textbox"
-							data-options="prompt:'菜单链接',required:true,validType:'length[0,50]'"
+							data-options="prompt:'菜单链接',required:true,validType:'length[0,200]'"
 							style="width: 100%; height: 32px"></td>
 					</tr>
 					<tr>
