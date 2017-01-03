@@ -39,6 +39,9 @@
 			<if test="planType != null and planType!=''">
 				AND PLAN_TYPE=#{planType}
 			</if>
+			<if test="planCreateUserId != null and planCreateUserId!=''">
+				AND PLAN_CREATE_USER_ID = #{planCreateUserId}
+			</if>
 		</where>
 		order by PLAN_ID DESC
 		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
@@ -54,6 +57,9 @@
 			</if>
 			<if test="planType != null and planType!=''">
 				AND PLAN_TYPE=#{planType}
+			</if>
+			<if test="planCreateUserId != null and planCreateUserId!=''">
+				AND PLAN_CREATE_USER_ID = #{planCreateUserId}
 			</if>
 		</where>
 	</select>

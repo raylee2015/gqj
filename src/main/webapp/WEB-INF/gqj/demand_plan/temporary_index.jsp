@@ -4,6 +4,7 @@
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
+	String opType = request.getParameter("OP_TYPE");
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -98,7 +99,8 @@
 		$('#datagridForDemandPlan')
 				.datagrid(
 						{
-							url : 'queryDemandPlansPage.do?PLAN_TYPE=1',
+							url : 'queryDemandPlansPage.do?PLAN_TYPE=1&OP_TYPE='
+									+ getTextBoxValue('opType'),
 							idField : 'PLAN_ID',
 							rownumbers : true,
 							toolbar : '#toolbarForDemandPlan',
@@ -131,7 +133,7 @@
 									}, {
 										field : 'PLAN_DEPT_NAME',
 										title : '创建部门',
-										width : 100,
+										width : 120,
 									}, {
 										field : 'PLAN_CODE',
 										title : '计划名称',
@@ -275,8 +277,11 @@
 			setTextBoxValue('demandPlanCodeTextInput', rowData.PLAN_CODE);
 			setTextBoxValue('demandPlanRemarkTextInput', rowData.PLAN_REMARK);
 		} else {
+			setTextBoxValue('demandPlanCodeTextInput',
+					getTextBoxValue('planCode'));
 			opType = 'add';
 		}
+
 		$('#demandPlanListUI').panel('collapse');
 		$('#demandPlanDetailUI').panel('expand');
 	}
@@ -369,6 +374,16 @@
 </script>
 </head>
 <body>
+	<div style="display: none">
+		<input id="opType" class="easyui-textbox"
+			value="<%=opType%>" /> <input id="planCode"
+			class="easyui-textbox"
+			value="<%=(DateUtil.getNow() + " "
+					+ ((User) request.getSession()
+							.getAttribute("user"))
+									.getUserDeptName()
+					+ "临时需求计划")%>" />
+	</div>
 	<div id="demandPlanListUI" class="easyui-panel"
 		data-options="fit:true,border:false">
 		<!-- 列表页面 -->
@@ -384,11 +399,15 @@
 							<td><a href="#" class="easyui-linkbutton"
 								iconCls="icon-reload" plain="true"
 								onclick="refreshDataGrid('datagridForDemandPlan')">刷新</a>
-								<a href="#" class="easyui-linkbutton"
+								<%
+									if ("EDIT".equals(opType)) {
+								%> <a href="#" class="easyui-linkbutton"
 								iconCls="icon-add" plain="true" onclick="toDetail()">添加</a>
 								<a href="#" class="easyui-linkbutton"
 								iconCls="icon-remove" plain="true"
-								onclick="delDemandPlans()">删除</a></td>
+								onclick="delDemandPlans()">删除</a> <%
+ 	}
+ %></td>
 							<td align="right"><input
 								id="keyWordForDemandPlanTextInput"
 								class="easyui-textbox"
@@ -410,25 +429,32 @@
 		<div id="toolbarForDemandPlanDetail">
 			<div>
 				<a href="#" class="easyui-linkbutton" plain="true"
-					onclick="toList()">返回</a> <a href="#"
-					class="easyui-linkbutton" iconCls="icon-ok"
+					onclick="toList()">返回</a>
+				<%
+					if ("EDIT".equals(opType)) {
+				%>
+				<a href="#" class="easyui-linkbutton" iconCls="icon-ok"
 					plain="true" onclick="saveDemandPlan()">保存</a><a
 					href="#" class="easyui-linkbutton" iconCls="icon-add"
 					plain="true"
 					onclick="openChooseToolDemandUIForDemandPlan()">添加工器具</a>
+				<a href="#" class="easyui-linkbutton" iconCls="icon-add"
+					plain="true"
+					onclick="openChooseToolDemandUIForDemandPlan()">提交</a>
+				<%
+					} else if ("AUDIT".equals(opType)) {
+				%>
+				<%
+					}
+				%>
 			</div>
 			<div>
 				<table>
 					<tr>
 						<td>需求计划名称： <input id="demandPlanCodeTextInput"
-							value="<%=(DateUtil.getNow() + " "
-					+ ((User) request.getSession()
-							.getAttribute("user"))
-									.getUserDeptName()
-					+ "临时需求计划")%>"
 							class="easyui-textbox"
 							data-options="prompt:'需求计划名称',validType:'length[0,50]'"
-							style="width: 200px"></td>
+							style="width: 300px"></td>
 						<td>备注： <input id="demandPlanRemarkTextInput"
 							class="easyui-textbox"
 							data-options="prompt:'备注',validType:'length[0,50]'"

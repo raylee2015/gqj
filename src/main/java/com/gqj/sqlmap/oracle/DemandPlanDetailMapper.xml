@@ -21,7 +21,7 @@
 				AND PLAN_ID = #{planId}
 			</if>
 		</where>
-		order by PLAN_ID
+		order by DETAIL_ID
 	</select>
 	<select id="selectDemandPlanDetailsForPage" parameterType="com.gqj.entity.DemandPlanDetail"
 		resultType="java.util.HashMap">
