@@ -76,6 +76,11 @@ function save(params, urlForSave, successFunction) {
 	ajaxFunction(params, urlForSave, successFunction, errorFunctionForOption);
 }
 
+// 更新数据
+function update(params, urlForUpdate, successFunction) {
+	ajaxFunction(params, urlForUpdate, successFunction, errorFunctionForOption);
+}
+
 // 关闭AJAX相应的缓存
 function closeCache() {
 	$.ajaxSetup({

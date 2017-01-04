@@ -19,4 +19,6 @@ public interface IDemandPlanService {
 	Map<String, Object> selectDemandPlansForPage(
 			DemandPlan demandPlan);
 
+	Map<String, Object> updateDemandPlan(DemandPlan demandPlan);
+
 }

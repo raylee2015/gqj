@@ -36,10 +36,16 @@
 			<if test="keyWord != null">
 				AND PLAN_CODE like '%${keyWord}%'
 			</if>
-			<if test="planType != null and planType!=''">
+			<if test="planType != null and planType != ''">
 				AND PLAN_TYPE=#{planType}
 			</if>
-			<if test="planCreateUserId != null and planCreateUserId!=''">
+			<if test="planStatus != null and planStatus != ''">
+				AND PLAN_STATUS=#{planStatus}
+			</if>
+			<if test="planDeptId != null and planDeptId != ''">
+				AND PLAN_DEPT_ID=#{planDeptId}
+			</if>
+			<if test="planCreateUserId != null and planCreateUserId != ''">
 				AND PLAN_CREATE_USER_ID = #{planCreateUserId}
 			</if>
 		</where>
@@ -55,10 +61,16 @@
 			<if test="keyWord != null">
 				AND PLAN_CODE like '%${keyWord}%'
 			</if>
-			<if test="planType != null and planType!=''">
+			<if test="planType != null and planType != ''">
 				AND PLAN_TYPE=#{planType}
 			</if>
-			<if test="planCreateUserId != null and planCreateUserId!=''">
+			<if test="planStatus != null and planStatus != ''">
+				AND PLAN_STATUS=#{planStatus}
+			</if>
+			<if test="planDeptId != null and planDeptId != ''">
+				AND PLAN_DEPT_ID=#{planDeptId}
+			</if>
+			<if test="planCreateUserId != null and planCreateUserId != ''">
 				AND PLAN_CREATE_USER_ID = #{planCreateUserId}
 			</if>
 		</where>
@@ -182,6 +194,13 @@
 				PLAN_REMARK = #{planRemark,jdbcType=VARCHAR},
 			</if>
 		</set>
-		where PLAN_ID = #{planId,jdbcType=DECIMAL}
+		<where>
+			<if test="planId != null and planId != ''">
+				PLAN_ID = #{planId,jdbcType=DECIMAL}
+			</if>
+			<if test="ids != null">
+				PLAN_ID in (${ids})
+			</if>
+		</where>
 	</update>
 </mapper>

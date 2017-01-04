@@ -20,3 +20,18 @@
 	background: url('../img/IconsExtension/control_power.png') no-repeat
 		center center;
 }
+
+.icon-arrow_left {
+	background: url('../img/IconsExtension/arrow_left.png') no-repeat center
+		center;
+}
+
+.icon-application_go {
+	background: url('../img/IconsExtension/application_go.png') no-repeat
+		center center;
+}
+
+.icon-cross {
+	background: url('../img/IconsExtension/cross.png') no-repeat center
+		center;
+}

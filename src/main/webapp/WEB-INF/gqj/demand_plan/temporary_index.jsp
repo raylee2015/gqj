@@ -1,16 +1,16 @@
 <%@page import="com.base.admin.entity.User"%>
 <%@page import="com.base.util.DateUtil"%>
-<%@ page language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 	String opType = request.getParameter("OP_TYPE");
+	String planType = request.getParameter("PLAN_TYPE");
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type"
-	content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -21,6 +21,8 @@
 <link rel="stylesheet" type="text/css"
 	href="<%=contextPath%>/jquery-easyui-1.5/themes/icon.css">
 <link rel="stylesheet" type="text/css"
+	href="<%=contextPath%>/css/base.css">
+<link rel="stylesheet" type="text/css"
 	href="<%=contextPath%>/jquery-easyui-1.5/demo/demo.css">
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.min.js"></script>
@@ -28,8 +30,7 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript"
-	src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//关闭编辑窗口
 	function closeChooseToolDemandUIForDemandPlan() {
@@ -39,13 +40,13 @@
 	//打开选择工器具窗口
 	function openChooseToolDemandUIForDemandPlan() {
 		createModalDialog("chooseToolDemandUIForDemandPlan",
-				"openChooseToolDemandUI.do?opType=add", "添加工器具", 1000, 600);
+				"openChooseToolDemandUI.do?opType=add", "添加工器具需求计划", 1000, 600);
 		openUI('chooseToolDemandUIForDemandPlan');
 	}
 
 	//删除
 	function delDemandPlans() {
-		if (checkSelectedItems('datagridForDemandPlan', '请选择工器具')) {
+		if (checkSelectedItems('datagridForDemandPlan', '请选择工器具需求计划')) {
 			var ids = getIdsOfSelectedItems('datagridForDemandPlan', 'PLAN_ID');
 			if (ids != null && ids != '') {
 				var params = {
@@ -100,7 +101,7 @@
 				.datagrid(
 						{
 							url : 'queryDemandPlansPage.do?PLAN_TYPE=1&OP_TYPE='
-									+ getTextBoxValue('opType'),
+									+ getTextBoxValue('opType'),//查询临时计划
 							idField : 'PLAN_ID',
 							rownumbers : true,
 							toolbar : '#toolbarForDemandPlan',
@@ -116,14 +117,24 @@
 										checkbox : true
 									},
 									{
-										field : 'op',
+										field : 'edit',
 										title : '操作',
 										formatter : function(fieldValue,
 												rowData, rowIndex) {
-											var btn = '<a class="easyui-linkbutton" '
-													+ ' onclick="toDetail(\''
-													+ rowIndex
-													+ '\')" href="javascript:void(0)">编辑</a>';
+											var status = rowData.PLAN_STATUS;
+											var btn = ''
+											if (status == 0 || status == 3
+													|| status == 5) {
+												btn = '<a class="easyui-linkbutton" '
+														+ ' onclick="toDetail(\''
+														+ rowIndex
+														+ '\')" href="javascript:void(0)">编辑</a>';
+											} else {
+												btn = '<a class="easyui-linkbutton" '
+														+ ' onclick="toDetail(\''
+														+ rowIndex
+														+ '\')" href="javascript:void(0)">查看</a>';
+											}
 											return btn;
 										}
 									}, {
@@ -153,6 +164,8 @@
 									} ] ],
 							onBeforeLoad : function(param) {
 								param.keyWord = getTextBoxValue('keyWordForDemandPlanTextInput');
+							},
+							onLoadSuccess : function(data) {
 							},
 							onLoadError : function() {
 								errorFunctionForQuery();
@@ -273,9 +286,19 @@
 			rowIndexOfDataGrid = rowIndex;
 			var rowData = getRowDataOfSelfDataGrid('datagridForDemandPlan',
 					rowIndex);
+			var planStatus = rowData.PLAN_STATUS;
 			queryDemandPlanDetailsForList(rowData);
 			setTextBoxValue('demandPlanCodeTextInput', rowData.PLAN_CODE);
 			setTextBoxValue('demandPlanRemarkTextInput', rowData.PLAN_REMARK);
+			if (planStatus == 1 || planStatus == 2 || planStatus == 4) {
+				$('#addToolBtn').linkbutton('disable');
+				$('#saveBtn').linkbutton('disable');
+				$('#submitBtn').linkbutton('disable');
+			} else {
+				$('#addToolBtn').linkbutton('enable');
+				$('#saveBtn').linkbutton('enable');
+				$('#submitBtn').linkbutton('enable');
+			}
 		} else {
 			setTextBoxValue('demandPlanCodeTextInput',
 					getTextBoxValue('planCode'));
@@ -366,50 +389,192 @@
 		save(params, url, successFunctionForSave);
 	}
 
+	// 提交计划
+	function submitDemandPlan() {
+		var ids = getRowDataOfSelfDataGrid('datagridForDemandPlan',
+				rowIndexOfDataGrid).PLAN_ID;
+		var params = {
+			PLAN_IDS : ids,
+			PLAN_STATUS : 1
+		};
+		showMessageBox(params, 'updateDemandPlanStatus.do', '是否提交所选需求计划?',
+				successFunctionForSave);
+	}
+
+	// 通过计划
+	function passDemandPlanByWorkGroup() {
+		var ids = getRowDataOfSelfDataGrid('datagridForDemandPlan',
+				rowIndexOfDataGrid).PLAN_ID;
+		var params = {
+			PLAN_IDS : ids,
+			PLAN_STATUS : 2
+		};
+		showMessageBox(params, 'updateDemandPlanStatus.do', '是否通过所选需求计划?',
+				successFunctionForSave);
+	}
+
+	// 不通过计划
+	function unPassDemandPlanByWorkGroup() {
+		var ids = getRowDataOfSelfDataGrid('datagridForDemandPlan',
+				rowIndexOfDataGrid).PLAN_ID;
+		var params = {
+			PLAN_IDS : ids,
+			PLAN_STATUS : 3
+		};
+		showMessageBox(params, 'updateDemandPlanStatus.do', '是否不通过所选需求计划?',
+				successFunctionForSave);
+	}
+
+	// 通过计划
+	function unPassDemandPlanByDept() {
+		var ids = getRowDataOfSelfDataGrid('datagridForDemandPlan',
+				rowIndexOfDataGrid).PLAN_ID;
+		var params = {
+			PLAN_IDS : ids,
+			PLAN_STATUS : 5
+		};
+		showMessageBox(params, 'updateDemandPlanStatus.do', '是否通过所选需求计划?',
+				successFunctionForSave);
+	}
+
+	// 不通过计划
+	function passDemandPlanByDept() {
+		var ids = getRowDataOfSelfDataGrid('datagridForDemandPlan',
+				rowIndexOfDataGrid).PLAN_ID;
+		var params = {
+			PLAN_IDS : ids,
+			PLAN_STATUS : 4
+		};
+		showMessageBox(params, 'updateDemandPlanStatus.do', '是否不通过所选需求计划?',
+				successFunctionForSave);
+	}
+
+	// 提交计划
+	function submitDemandPlans() {
+		if (checkSelectedItems('datagridForDemandPlan', '请选择需求计划')) {
+			var ids = getIdsOfSelectedItems('datagridForDemandPlan', 'PLAN_ID');
+			if (ids != null && ids != '') {
+				var params = {
+					PLAN_IDS : ids,
+					PLAN_STATUS : 1
+				};
+				showMessageBox(params, 'updateDemandPlanStatus.do',
+						'是否提交所选需求计划?', successFunctionForSave);
+			}
+		}
+	}
+
+	// 通过计划
+	function passDemandPlansByWorkGroup() {
+		if (checkSelectedItems('datagridForDemandPlan', '请选择需求计划')) {
+			var ids = getIdsOfSelectedItems('datagridForDemandPlan', 'PLAN_ID');
+			if (ids != null && ids != '') {
+				var params = {
+					PLAN_IDS : ids,
+					PLAN_STATUS : 2
+				};
+				showMessageBox(params, 'updateDemandPlanStatus.do',
+						'是否通过所选需求计划?', successFunctionForSave);
+			}
+		}
+	}
+
+	// 不通过计划
+	function unPassDemandPlansByWorkGroup() {
+		if (checkSelectedItems('datagridForDemandPlan', '请选择需求计划')) {
+			var ids = getIdsOfSelectedItems('datagridForDemandPlan', 'PLAN_ID');
+			if (ids != null && ids != '') {
+				var params = {
+					PLAN_IDS : ids,
+					PLAN_STATUS : 3
+				};
+				showMessageBox(params, 'updateDemandPlanStatus.do',
+						'是否不通过所选需求计划?', successFunctionForSave);
+			}
+		}
+	}
+
+	// 通过计划
+	function passDemandPlansByDept() {
+		if (checkSelectedItems('datagridForDemandPlan', '请选择需求计划')) {
+			var ids = getIdsOfSelectedItems('datagridForDemandPlan', 'PLAN_ID');
+			if (ids != null && ids != '') {
+				var params = {
+					PLAN_IDS : ids,
+					PLAN_STATUS : 4
+				};
+				showMessageBox(params, 'updateDemandPlanStatus.do',
+						'是否通过所选需求计划?', successFunctionForSave);
+			}
+		}
+	}
+
+	// 不通过计划
+	function unPassDemandPlansByDept() {
+		if (checkSelectedItems('datagridForDemandPlan', '请选择需求计划')) {
+			var ids = getIdsOfSelectedItems('datagridForDemandPlan', 'PLAN_ID');
+			if (ids != null && ids != '') {
+				var params = {
+					PLAN_IDS : ids,
+					PLAN_STATUS : 5
+				};
+				showMessageBox(params, 'updateDemandPlanStatus.do',
+						'是否不通过所选需求计划?', successFunctionForSave);
+			}
+		}
+	}
+
 	//回调函数，保存成功后执行
-	function successFunctionForSave() {
-		reloadDataGrid('datagridForDemandPlan');
+	function successFunctionForSave(result) {
+		successFunctionForOption(result);
 		toList();
 	}
 </script>
 </head>
 <body>
 	<div style="display: none">
-		<input id="opType" class="easyui-textbox"
-			value="<%=opType%>" /> <input id="planCode"
-			class="easyui-textbox"
+		<input id="opType" class="easyui-textbox" value="<%=opType%>" /><input
+			id="planType" class="easyui-textbox" value="<%=planType%>" /> <input
+			id="planCode" class="easyui-textbox"
 			value="<%=(DateUtil.getNow() + " "
-					+ ((User) request.getSession()
-							.getAttribute("user"))
-									.getUserDeptName()
-					+ "临时需求计划")%>" />
+							+ ((User) request.getSession()
+									.getAttribute("user"))
+											.getUserDeptName()
+							+ "临时需求计划")%>" />
 	</div>
 	<div id="demandPlanListUI" class="easyui-panel"
 		data-options="fit:true,border:false">
 		<!-- 列表页面 -->
-		<div class="easyui-layout"
-			data-options="fit:true,border:false">
+		<div class="easyui-layout" data-options="fit:true,border:false">
 			<div data-options="fit:true,border:false,region:'center'">
-				<table id="datagridForDemandPlan"
-					class="easyui-datagrid">
+				<table id="datagridForDemandPlan" class="easyui-datagrid">
 				</table>
 				<div id="toolbarForDemandPlan">
 					<table style="width: 100%">
 						<tr>
 							<td><a href="#" class="easyui-linkbutton"
 								iconCls="icon-reload" plain="true"
-								onclick="refreshDataGrid('datagridForDemandPlan')">刷新</a>
-								<%
-									if ("EDIT".equals(opType)) {
-								%> <a href="#" class="easyui-linkbutton"
-								iconCls="icon-add" plain="true" onclick="toDetail()">添加</a>
-								<a href="#" class="easyui-linkbutton"
-								iconCls="icon-remove" plain="true"
-								onclick="delDemandPlans()">删除</a> <%
+								onclick="refreshDataGrid('datagridForDemandPlan')">刷新</a> <%
+ 	if ("EDIT".equals(opType)) {
+ %> <a href="#" class="easyui-linkbutton" iconCls="icon-add"
+								plain="true" onclick="toDetail()">添加</a> <a href="#"
+								class="easyui-linkbutton" iconCls="icon-remove" plain="true"
+								onclick="delDemandPlans()">删除</a> <a href="#"
+								class="easyui-linkbutton" iconCls="icon-edit" plain="true"
+								onclick="submitDemandPlans()">提交</a> <%
+ 	} else if ("AUDIT_BY_WORK_GROUP".equals(opType)) {
+ %> <a href="#" class="easyui-linkbutton" iconCls="icon-application_go"
+								plain="true" onclick="passDemandPlansByWorkGroup()">通过</a> <a
+								href="#" class="easyui-linkbutton" iconCls="icon-cross"
+								plain="true" onclick="unPassDemandPlansByWorkGroup()">不通过</a> <%
+ 	} else if ("AUDIT_BY_DEPT".equals(opType)) {
+ %> <a href="#" class="easyui-linkbutton" iconCls="icon-application_go"
+								plain="true" onclick="passDemandPlansByDept()">通过</a> <a
+								href="#" class="easyui-linkbutton" iconCls="icon-cross"
+								plain="true" onclick="unPassDemandPlansByDept()">不通过</a> <%
  	}
  %></td>
-							<td align="right"><input
-								id="keyWordForDemandPlanTextInput"
+							<td align="right"><input id="keyWordForDemandPlanTextInput"
 								class="easyui-textbox"
 								data-options="prompt:'需求计划名称',validType:'length[0,50]'"
 								style="width: 200px"> <a href="#"
@@ -423,27 +588,35 @@
 	</div>
 	<div id="demandPlanDetailUI" class="easyui-panel"
 		data-options="fit:true,border:false">
-		<table id="datagridForDemandPlanDetail"
-			class="easyui-datagrid">
+		<table id="datagridForDemandPlanDetail" class="easyui-datagrid">
 		</table>
 		<div id="toolbarForDemandPlanDetail">
 			<div>
 				<a href="#" class="easyui-linkbutton" plain="true"
-					onclick="toList()">返回</a>
+					iconCls="icon-arrow_left" onclick="toList()">返回</a>
 				<%
 					if ("EDIT".equals(opType)) {
 				%>
-				<a href="#" class="easyui-linkbutton" iconCls="icon-ok"
-					plain="true" onclick="saveDemandPlan()">保存</a><a
-					href="#" class="easyui-linkbutton" iconCls="icon-add"
-					plain="true"
-					onclick="openChooseToolDemandUIForDemandPlan()">添加工器具</a>
-				<a href="#" class="easyui-linkbutton" iconCls="icon-add"
-					plain="true"
-					onclick="openChooseToolDemandUIForDemandPlan()">提交</a>
+				<a href="#" id="saveBtn" class="easyui-linkbutton" iconCls="icon-ok"
+					plain="true" onclick="saveDemandPlan()">保存</a><a href="#"
+					id="addToolBtn" class="easyui-linkbutton" iconCls="icon-add"
+					plain="true" onclick="openChooseToolDemandUIForDemandPlan()">添加工器具</a>
+				<a href="#" id="submitBtn" class="easyui-linkbutton"
+					iconCls="icon-add" plain="true" onclick="submitDemandPlan()">提交</a>
 				<%
-					} else if ("AUDIT".equals(opType)) {
-				%>
+					} else if ("AUDIT_BY_WORK_GROUP".equals(opType)) {
+				%><a href="#" class="easyui-linkbutton"
+					iconCls="icon-application_go" plain="true"
+					onclick="passDemandPlanByWorkGroup()">通过</a> <a href="#"
+					class="easyui-linkbutton" iconCls="icon-cross" plain="true"
+					onclick="unPassDemandPlanByWorkGroup()">不通过</a>
+				<%
+					} else if ("AUDIT_BY_DEPT".equals(opType)) {
+				%><a href="#" class="easyui-linkbutton"
+					iconCls="icon-application_go" plain="true"
+					onclick="passDemandPlanByDept()">通过</a> <a href="#"
+					class="easyui-linkbutton" iconCls="icon-cross" plain="true"
+					onclick="unPassDemandPlanByDept()">不通过</a>
 				<%
 					}
 				%>
