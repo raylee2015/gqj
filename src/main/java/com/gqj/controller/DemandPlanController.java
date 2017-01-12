@@ -56,26 +56,31 @@ public class DemandPlanController extends BaseController {
 	@ResponseBody
 	@Transactional
 	public Map<String, Object> addNewDemandPlansAndDetails(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String planCode = request.getParameter("PLAN_CODE");
 		String planType = request.getParameter("PLAN_TYPE");
 		String toolIds = request.getParameter("TOOL_IDS");
-		String toolAmounts = request.getParameter("TOOL_AMOUNTS");
-		String planRemark = request.getParameter("PLAN_REMARK");
+		String toolAmounts = request
+				.getParameter("TOOL_AMOUNTS");
+		String planRemark = request
+				.getParameter("PLAN_REMARK");
 		DemandPlan demandPlan = new DemandPlan();
 		demandPlan.setPlanId(-1l);
-		demandPlan.setPlanType(BaseUtil.strToLong(planType));
+		demandPlan
+				.setPlanType(BaseUtil.strToLong(planType));
 		demandPlan.setPlanCode(planCode);
 		demandPlan.setPlanCreateDate(new Date());
 		demandPlan.setPlanCreateUserId(
-				getSessionUser(request, response).getUserId());
+				getSessionUser(request, response)
+						.getUserId());
 		demandPlan.setPlanDeptId(
-				getSessionUser(request, response).getUserDeptId());
+				getSessionUser(request, response)
+						.getUserDeptId());
 		demandPlan.setPlanStatus(PlanStatus.UNSUBMIT);
 		demandPlan.setPlanRemark(planRemark);
-		return demandPlanService.addDemandPlansAndDetails(demandPlan,
-				toolIds, toolAmounts);
+		return demandPlanService.addDemandPlansAndDetails(
+				demandPlan, toolIds, toolAmounts);
 	}
 
 	/**
@@ -89,9 +94,10 @@ public class DemandPlanController extends BaseController {
 	@RequestMapping("/deleteDemandPlansAndDetails.do")
 	@ResponseBody
 	public Map<String, Object> deleteDemandPlansAndDetails(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		String demandPlanIds = request.getParameter("PLAN_IDS");
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String demandPlanIds = request
+				.getParameter("PLAN_IDS");
 		DemandPlan demandPlan = new DemandPlan();
 		demandPlan.setIds(demandPlanIds);
 		return demandPlanService
@@ -105,8 +111,10 @@ public class DemandPlanController extends BaseController {
 	 */
 	@RequestMapping(value = "/openChooseToolDemandUI.do", method = RequestMethod.GET)
 	public ModelAndView openChooseToolDemandUI(
-			HttpServletRequest request, HttpServletResponse response) {
-		return new ModelAndView("/gqj/demand_plan/chooseToolDemandUI");
+			HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView(
+				"/gqj/demand_plan/chooseToolDemandUI");
 	}
 
 	/**
@@ -120,11 +128,13 @@ public class DemandPlanController extends BaseController {
 	@RequestMapping("/queryDemandPlanDetailsForList.do")
 	@ResponseBody
 	public Map<String, Object> queryDemandPlanDetailsForList(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		String demandPlanId = request.getParameter("PLAN_ID");
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String demandPlanId = request
+				.getParameter("PLAN_ID");
 		DemandPlan demandPlan = new DemandPlan();
-		demandPlan.setPlanId(BaseUtil.strToLong(demandPlanId));
+		demandPlan.setPlanId(
+				BaseUtil.strToLong(demandPlanId));
 		return demandPlanDetailService
 				.selectDemandPlanDetailsForList(demandPlan);
 	}
@@ -140,8 +150,8 @@ public class DemandPlanController extends BaseController {
 	@RequestMapping("/queryDemandPlansPage.do")
 	@ResponseBody
 	public Map<String, Object> queryDemandPlansPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String opType = request.getParameter("OP_TYPE");
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
@@ -151,24 +161,25 @@ public class DemandPlanController extends BaseController {
 		demandPlan.setCurrPage(Integer.parseInt(page));
 		demandPlan.setPageSize(Integer.parseInt(rows));
 		demandPlan.setKeyWord(keyWord);
-		demandPlan.setPlanType(BaseUtil.strToLong(planType));
-		// 临时计划
-		if ("1".equals(planType)) {
-			if ("EDIT".equals(opType)) {
-				// 显示自己的所有计划
-				demandPlan.setPlanCreateUserId(
-						getSessionUser(request, response).getUserId());
-			} else if ("AUDIT_BY_WORK_GROUP".equals(opType)) {
-				// 显示自己部门提交的计划
-				demandPlan.setPlanStatus(PlanStatus.SUBMIT);
-				demandPlan
-						.setPlanDeptId(getSessionUser(request, response)
-								.getUserDeptId());
-			} else if ("AUDIT_BY_DEPT".equals(opType)) {
-				demandPlan.setPlanStatus(PlanStatus.PASS_BY_WORK_GROUP);
-			}
+		demandPlan
+				.setPlanType(BaseUtil.strToLong(planType));
+		if ("EDIT".equals(opType)) {
+			// 显示自己的所有计划
+			demandPlan.setPlanCreateUserId(
+					getSessionUser(request, response)
+							.getUserId());
+		} else if ("AUDIT_BY_WORK_GROUP".equals(opType)) {
+			// 显示自己部门提交的计划
+			demandPlan.setPlanStatus(PlanStatus.SUBMIT);
+			demandPlan.setPlanDeptId(
+					getSessionUser(request, response)
+							.getUserDeptId());
+		} else if ("AUDIT_BY_DEPT".equals(opType)) {
+			demandPlan.setPlanStatus(
+					PlanStatus.PASS_BY_WORK_GROUP);
 		}
-		return demandPlanService.selectDemandPlansForPage(demandPlan);
+		return demandPlanService
+				.selectDemandPlansForPage(demandPlan);
 	}
 
 	/**
@@ -182,18 +193,21 @@ public class DemandPlanController extends BaseController {
 	@RequestMapping("/queryToolDemandsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryToolDemandsPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
-		String toolTypeId = request.getParameter("TOOL_TYPE_ID");
+		String toolTypeId = request
+				.getParameter("TOOL_TYPE_ID");
 		ToolDemand toolDemand = new ToolDemand();
 		toolDemand.setCurrPage(Integer.parseInt(page));
 		toolDemand.setPageSize(Integer.parseInt(rows));
 		toolDemand.setKeyWord(keyWord);
-		toolDemand.setTypeId(BaseUtil.strToLong(toolTypeId));
-		return toolDemandService.selectToolDemandsForPage(toolDemand);
+		toolDemand
+				.setTypeId(BaseUtil.strToLong(toolTypeId));
+		return toolDemandService
+				.selectToolDemandsForPage(toolDemand);
 	}
 
 	/**
@@ -205,10 +219,11 @@ public class DemandPlanController extends BaseController {
 	 */
 	@RequestMapping("/queryToolDemandTypeDropList.do")
 	@ResponseBody
-	public void queryToolDemandTypeDropList(HttpServletRequest request,
+	public void queryToolDemandTypeDropList(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter().print(
-				toolTypeService.selectToolTypesForList(new ToolType()));
+		response.getWriter().print(toolTypeService
+				.selectToolTypesForList(new ToolType()));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -219,13 +234,15 @@ public class DemandPlanController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
-	public ModelAndView toIndex(HttpServletRequest request) {
+	public ModelAndView toIndex(
+			HttpServletRequest request) {
 		String planType = request.getParameter("PLAN_TYPE");
 		ModelAndView mv = new ModelAndView();
 		if ("ANNUAL".equals(planType)) {
 			mv.setViewName("/gqj/demand_plan/annual_index");
 		} else if ("TEMPORARY".equals(planType)) {
-			mv.setViewName("/gqj/demand_plan/temporary_index");
+			mv.setViewName(
+					"/gqj/demand_plan/temporary_index");
 		}
 		return mv;
 	}
@@ -241,28 +258,34 @@ public class DemandPlanController extends BaseController {
 	@RequestMapping("/updateDemandPlansAndDetails.do")
 	@ResponseBody
 	public Map<String, Object> updateDemandPlansAndDetails(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String planId = request.getParameter("PLAN_ID");
 		String planCode = request.getParameter("PLAN_CODE");
 		String planType = request.getParameter("PLAN_TYPE");
 		String toolIds = request.getParameter("TOOL_IDS");
-		String toolAmounts = request.getParameter("TOOL_AMOUNTS");
-		String planRemark = request.getParameter("PLAN_REMARK");
+		String toolAmounts = request
+				.getParameter("TOOL_AMOUNTS");
+		String planRemark = request
+				.getParameter("PLAN_REMARK");
 		DemandPlan demandPlan = new DemandPlan();
 		demandPlan.setPlanId(BaseUtil.strToLong(planId));
 		demandPlan.setIds(planId);
 		demandPlan.setPlanCode(planCode);
-		demandPlan.setPlanType(BaseUtil.strToLong(planType));
+		demandPlan
+				.setPlanType(BaseUtil.strToLong(planType));
 		demandPlan.setPlanCreateDate(new Date());
 		demandPlan.setPlanCreateUserId(
-				getSessionUser(request, response).getUserId());
+				getSessionUser(request, response)
+						.getUserId());
 		demandPlan.setPlanDeptId(
-				getSessionUser(request, response).getUserDeptId());
+				getSessionUser(request, response)
+						.getUserDeptId());
 		demandPlan.setPlanStatus(PlanStatus.UNSUBMIT);
 		demandPlan.setPlanRemark(planRemark);
-		return demandPlanService.updateDemandPlansAndDetails(demandPlan,
-				toolIds, toolAmounts);
+		return demandPlanService
+				.updateDemandPlansAndDetails(demandPlan,
+						toolIds, toolAmounts);
 	}
 
 	/**
@@ -276,14 +299,17 @@ public class DemandPlanController extends BaseController {
 	@RequestMapping("/updateDemandPlanStatus.do")
 	@ResponseBody
 	public Map<String, Object> updateDemandPlanStatus(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String planIds = request.getParameter("PLAN_IDS");
-		String planStatus = request.getParameter("PLAN_STATUS");
+		String planStatus = request
+				.getParameter("PLAN_STATUS");
 		DemandPlan demandPlan = new DemandPlan();
 		demandPlan.setIds(planIds);
-		demandPlan.setPlanStatus(BaseUtil.strToLong(planStatus));
-		return demandPlanService.updateDemandPlan(demandPlan);
+		demandPlan.setPlanStatus(
+				BaseUtil.strToLong(planStatus));
+		return demandPlanService
+				.updateDemandPlan(demandPlan);
 	}
 
 }
