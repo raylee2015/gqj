@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.base.admin.service.IDeptService;
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
 import com.gqj.entity.DemandPlan;
@@ -84,6 +85,32 @@ public class DemandPlanController extends BaseController {
 	}
 
 	/**
+	 * 添加需求计划信息
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/addAnnualDemandPlan.do")
+	@ResponseBody
+	@Transactional
+	public Map<String, Object> addAnnualDemandPlan(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String planCode = request.getParameter("PLAN_CODE");
+		String deptIds = request.getParameter("DEPT_IDS");
+		String deptNames = request
+				.getParameter("DEPT_NAMES");
+		DemandPlan demandPlan = new DemandPlan();
+		demandPlan.setPlanId(-1l);
+		demandPlan.setPlanCode(planCode);
+		return demandPlanService.addAnnualDemandPlan(
+				demandPlan, deptIds, deptNames,
+				getSessionUser(request, response));
+	}
+
+	/**
 	 * 删除需求计划
 	 * 
 	 * @param request
@@ -118,6 +145,19 @@ public class DemandPlanController extends BaseController {
 	}
 
 	/**
+	 * 跳转到需求计划管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openChooseDeptForAnnualPlanUI.do", method = RequestMethod.GET)
+	public ModelAndView openChooseDeptForAnnualPlanUI(
+			HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView(
+				"/gqj/demand_plan/chooseDeptForAnnualPlanUI");
+	}
+
+	/**
 	 * 查询需求计划明细列表
 	 * 
 	 * @param request
@@ -137,6 +177,26 @@ public class DemandPlanController extends BaseController {
 				BaseUtil.strToLong(demandPlanId));
 		return demandPlanDetailService
 				.selectDemandPlanDetailsForList(demandPlan);
+	}
+
+	@Autowired
+	private IDeptService deptService;
+
+	/**
+	 * 查询部门树
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryDeptTree.do")
+	@ResponseBody
+	public void queryDeptTree(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter().print(deptService
+				.selectDeptsForTree().toLowerCase());
+		response.getWriter().flush();
+		response.getWriter().close();
 	}
 
 	/**
@@ -175,8 +235,12 @@ public class DemandPlanController extends BaseController {
 					getSessionUser(request, response)
 							.getUserDeptId());
 		} else if ("AUDIT_BY_DEPT".equals(opType)) {
-			demandPlan.setPlanStatus(
-					PlanStatus.PASS_BY_WORK_GROUP);
+			if ("0".equals(planType)) {
+
+			} else {
+				demandPlan.setPlanStatus(
+						PlanStatus.PASS_BY_WORK_GROUP);
+			}
 		}
 		return demandPlanService
 				.selectDemandPlansForPage(demandPlan);

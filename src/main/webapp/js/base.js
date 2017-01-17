@@ -137,11 +137,20 @@ function checkSelectedItems(dataGridId, tipsForUnSelected) {
 	}
 }
 
+//重新加载列表
 function reloadDataGrid(dataGridId) {
 	var dataGrid = eval('$(\'#' + dataGridId + '\')');
 	dataGrid.datagrid('reload');
 	dataGrid.datagrid('unselectAll');
 	dataGrid.datagrid('uncheckAll');
+}
+
+//重新加载树形列表
+function reloadTreeGrid(treeGridId) {
+	var treeGrid = eval('$(\'#' + treeGridId + '\')');
+	treeGrid.treegrid('reload');
+	treeGrid.treegrid('unselectAll');
+	treeGrid.treegrid('uncheckAll');
 }
 
 function reloadTree(treeId) {
@@ -169,6 +178,14 @@ function dataGridLoadData(dataGridId, result) {
 	dataGrid.datagrid('loadData', result);
 	dataGrid.datagrid('uncheckAll');
 	dataGrid.datagrid('unselectAll');
+}
+
+// 为表格设置数据
+function treeGridLoadData(treeGridId, result) {
+	var treeGrid = eval('$(\'#' + treeGridId + '\')');
+	treeGrid.treegrid('loadData', result);
+	treeGrid.treegrid('uncheckAll');
+	treeGrid.treegrid('unselectAll');
 }
 
 // 关闭编辑窗口

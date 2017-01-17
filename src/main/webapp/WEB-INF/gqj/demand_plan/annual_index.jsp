@@ -34,12 +34,40 @@
 <script type="text/javascript"
 	src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
-	//关闭编辑窗口
+	//关闭选择部门窗口
+	function closeChooseDeptForAnnualPlanUI() {
+		closeEditUI('chooseDeptForAnnualPlanUI')
+	}
+
+	//打开选择部门窗口
+	function openChooseDeptForAnnualPlanUI() {
+		createModalDialog("chooseDeptForAnnualPlanUI",
+				"openChooseDeptForAnnualPlanUI.do", "添加年度需求计划", 500, 160);
+		openEditUI('chooseDeptForAnnualPlanUI');
+	}
+
+	// 编辑窗口变大
+	function makeChooseDeptForAnnualPlanUIBigger() {
+		$('#chooseDeptForAnnualPlanUI').panel('resize', {
+			height : 500
+		});
+		$('#chooseDeptForAnnualPlanUI').window('center');
+	}
+
+	// 编辑窗口变小
+	function makeChooseDeptForAnnualPlanUISmaller() {
+		$('#chooseDeptForAnnualPlanUI').panel('resize', {
+			height : 160
+		});
+		$('#chooseDeptForAnnualPlanUI').window('center');
+	}
+
+	//关闭选择工器具要求窗口
 	function closeChooseToolDemandUIForDemandPlan() {
 		closeUI('chooseToolDemandUIForDemandPlan')
 	}
 
-	//打开选择工器具窗口
+	//打开选择工器具要求窗口
 	function openChooseToolDemandUIForDemandPlan() {
 		createModalDialog("chooseToolDemandUIForDemandPlan",
 				"openChooseToolDemandUI.do?opType=add", "添加工器具需求计划", 1000, 600);
@@ -63,7 +91,7 @@
 	//回调函数，删除或其他操作成功后调用
 	function successFunctionForOption(result) {
 		showMessage(result.msg, result.msg);
-		reloadDataGrid('datagridForDemandPlan');
+		reloadTreeGrid('datagridForDemandPlan');
 	}
 
 	//用在点击查询按钮的时候
@@ -74,6 +102,7 @@
 	//查询
 	function queryDemandPlans() {
 		var params = {
+			OP_TYPE : getTextBoxValue('opType'),
 			PLAN_TYPE : 0,
 			keyWord : getTextBoxValue('keyWordForDemandPlanTextInput'),
 			page : 1,
@@ -85,7 +114,7 @@
 
 	//回调函数，查询成功后调用
 	function successFunctionForQueryDemandPlans(result) {
-		dataGridLoadData('datagridForDemandPlan', result);
+		treeGridLoadData('datagridForDemandPlan', result);
 	}
 
 	//页面加载完
@@ -101,12 +130,11 @@
 	//初始化列表元素
 	function initDataGridForDemandPlan() {
 		$('#datagridForDemandPlan')
-				.datagrid(
+				.treegrid(
 						{
 							url : 'queryDemandPlansPage.do?OP_TYPE='
 									+ getTextBoxValue('opType')
 									+ '&PLAN_TYPE=0',//查询临时计划
-							idField : 'PLAN_ID',
 							rownumbers : true,
 							toolbar : '#toolbarForDemandPlan',
 							pagination : true,
@@ -115,6 +143,8 @@
 							checkOnSelect : false,
 							fit : true,
 							method : 'get',
+							idField : 'PLAN_ID',
+							treeField : 'PLAN_CODE',
 							columns : [ [
 									{
 										field : 'ck',
@@ -166,11 +196,6 @@
 										title : '备注',
 										width : 100,
 									} ] ],
-							onBeforeLoad : function(param) {
-								param.keyWord = getTextBoxValue('keyWordForDemandPlanTextInput');
-							},
-							onLoadSuccess : function(data) {
-							},
 							onLoadError : function() {
 								errorFunctionForQuery();
 							}
@@ -554,7 +579,7 @@
 			data-options="fit:true,border:false">
 			<div data-options="fit:true,border:false,region:'center'">
 				<table id="datagridForDemandPlan"
-					class="easyui-datagrid">
+					class="easyui-treegrid">
 				</table>
 				<div id="toolbarForDemandPlan">
 					<table style="width: 100%">
@@ -580,7 +605,10 @@
 								iconCls="icon-cross" plain="true"
 								onclick="unPassDemandPlansByWorkGroup()">不通过</a> <%
  	} else if ("AUDIT_BY_DEPT".equals(opType)) {
- %> <a href="#" class="easyui-linkbutton"
+ %> <a href="#" class="easyui-linkbutton" iconCls="icon-add"
+								plain="true"
+								onclick="openChooseDeptForAnnualPlanUI()">发起年度计划</a><a
+								href="#" class="easyui-linkbutton"
 								iconCls="icon-application_go" plain="true"
 								onclick="passDemandPlansByDept()">通过</a> <a href="#"
 								class="easyui-linkbutton" iconCls="icon-cross"
