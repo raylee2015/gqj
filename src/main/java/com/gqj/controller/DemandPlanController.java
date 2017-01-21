@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.base.admin.entity.User;
 import com.base.admin.service.IDeptService;
+import com.base.admin.service.IUserService;
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
 import com.gqj.entity.DemandPlan;
@@ -132,7 +134,7 @@ public class DemandPlanController extends BaseController {
 	}
 
 	/**
-	 * 跳转到需求计划管理操作页面
+	 * 跳转到需求计划选择工器具操作页面
 	 * 
 	 * @return
 	 */
@@ -142,6 +144,19 @@ public class DemandPlanController extends BaseController {
 			HttpServletResponse response) {
 		return new ModelAndView(
 				"/gqj/demand_plan/chooseToolDemandUI");
+	}
+
+	/**
+	 * 跳转到选人页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openChooseUserForAnnualPlanUI.do", method = RequestMethod.GET)
+	public ModelAndView openChooseUserForAnnualPlanUI(
+			HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView(
+				"/gqj/demand_plan/chooseUserUI");
 	}
 
 	/**
@@ -229,8 +244,12 @@ public class DemandPlanController extends BaseController {
 					getSessionUser(request, response)
 							.getUserId());
 		} else if ("AUDIT_BY_WORK_GROUP".equals(opType)) {
-			// 显示自己部门提交的计划
-			demandPlan.setPlanStatus(PlanStatus.SUBMIT);
+			if ("0".equals(planType)) {
+
+			} else {
+				// 显示自己部门提交的计划
+				demandPlan.setPlanStatus(PlanStatus.SUBMIT);
+			}
 			demandPlan.setPlanDeptId(
 					getSessionUser(request, response)
 							.getUserDeptId());
@@ -272,6 +291,32 @@ public class DemandPlanController extends BaseController {
 				.setTypeId(BaseUtil.strToLong(toolTypeId));
 		return toolDemandService
 				.selectToolDemandsForPage(toolDemand);
+	}
+
+	@Autowired
+	private IUserService userService;
+
+	/**
+	 * 分页查询用户列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryUsersPage.do")
+	@ResponseBody
+	public Map<String, Object> queryUsersPage(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String keyWord = request.getParameter("keyWord");
+		User user = new User();
+		user.setCurrPage(BaseUtil.strToInt(page));
+		user.setPageSize(BaseUtil.strToInt(rows));
+		user.setKeyWord(keyWord);
+		return userService.queryUsersForPage(user);
 	}
 
 	/**

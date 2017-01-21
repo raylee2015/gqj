@@ -127,8 +127,10 @@ public class DemandPlanServiceImpl
 							item.get("PLAN_CREATE_DATE")
 									.toString()));
 			if (item.get("UP_PLAN_ID") != null) {
-				item.put("_parentId",
-						item.get("UP_PLAN_ID"));
+				if (demandPlan.getPlanDeptId() == null) {
+					item.put("_parentId",
+							item.get("UP_PLAN_ID"));
+				}
 			}
 		}
 		int count = demandPlanMapper

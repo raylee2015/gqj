@@ -34,6 +34,18 @@
 <script type="text/javascript"
 	src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
+	//关闭选择人员窗口
+	function closeChooseUserForAnnualPlanUI() {
+		closeEditUI('chooseUserForAnnualPlanUI')
+	}
+
+	//打开选择人员窗口
+	function openChooseUserForAnnualPlanUI() {
+		createModalDialog("chooseUserForAnnualPlanUI",
+				"openChooseUserForAnnualPlanUI.do", "选择人员", 400, 500);
+		openEditUI('chooseUserForAnnualPlanUI');
+	}
+
 	//关闭选择部门窗口
 	function closeChooseDeptForAnnualPlanUI() {
 		closeEditUI('chooseDeptForAnnualPlanUI')
@@ -125,6 +137,11 @@
 						queryDemandPlanPagesForSearch);
 				initDataGridForDemandPlan();
 				initDataGridForDemandPlanDetail();
+				var opType = getTextBoxValue('opType');
+				if (opType == 'AUDIT_BY_WORK_GROUP') {
+					$('#datagridForDemandPlan').treegrid('showColumn',
+							'chooseUser');
+				}
 			});
 
 	//初始化列表元素
@@ -145,6 +162,7 @@
 							method : 'get',
 							idField : 'PLAN_ID',
 							treeField : 'PLAN_CODE',
+							singleSelect : false,
 							columns : [ [
 									{
 										field : 'ck',
@@ -156,25 +174,91 @@
 										formatter : function(fieldValue,
 												rowData, rowIndex) {
 											var status = rowData.PLAN_STATUS;
-											var btn = ''
-											if (status == 0 || status == 3
-													|| status == 5) {
+											var btn = '';
+											var opType = getTextBoxValue('opType');
+											var planId = rowData.PLAN_ID;
+											var planCode = rowData.PLAN_CODE;
+											var planRemark = rowData.PLAN_REMARK;
+											if (planRemark == null) {
+												planRemark = '';
+											}
+											var planStatus = rowData.PLAN_STATUS;
+											if (opType == 'EDIT') {
 												btn = '<a class="easyui-linkbutton" '
-														+ ' onclick="toDetail(\''
-														+ rowIndex
-														+ '\')" href="javascript:void(0)">编辑</a>';
+														+ ' onclick="toDetail('
+														+ '\''
+														+ planId
+														+ '\','
+														+ '\''
+														+ planCode
+														+ '\','
+														+ '\''
+														+ planRemark
+														+ '\','
+														+ '\''
+														+ planStatus
+														+ '\''
+														+ ')" href="javascript:void(0)">编辑</a>';
 											} else {
 												btn = '<a class="easyui-linkbutton" '
-														+ ' onclick="toDetail(\''
-														+ rowIndex
-														+ '\')" href="javascript:void(0)">查看</a>';
+														+ ' onclick="toDetail('
+														+ '\''
+														+ planId
+														+ '\','
+														+ '\''
+														+ planCode
+														+ '\','
+														+ '\''
+														+ planRemark
+														+ '\','
+														+ '\''
+														+ planStatus
+														+ '\''
+														+ ')" href="javascript:void(0)">查看</a>';
+												//else {
+												//	btn = '<a class="easyui-linkbutton" '
+												//			+ ' onclick="toDetail(\''
+												//			+ rowIndex
+												//			+ '\')" href="javascript:void(0)">查看</a>';
+												//}
 											}
 											return btn;
 										}
-									}, {
+									},
+									{
+										field : 'chooseUser',
+										hidden : true,
+										title : '选人',
+										formatter : function(fieldValue,
+												rowData, rowIndex) {
+											btn = '<a class="easyui-linkbutton" '
+													+ ' onclick="openChooseUserForAnnualPlanUI()" '
+													+ ' href="javascript:void(0)">选人</a>';
+											return btn;
+										}
+									},
+									{
 										field : 'PLAN_STATUS_NAME',
 										title : '计划状态',
 										width : 100,
+										formatter : function(fieldValue,
+												rowData, rowIndex) {
+											var status = rowData.PLAN_STATUS;
+											var statusName = rowData.PLAN_STATUS_NAME;
+											var label = ''
+											if (status != null) {
+												if (status != 5) {
+													label = '<font color="blue">'
+															+ statusName
+															+ '</font>';
+												} else {
+													label = '<font color="green">'
+															+ statusName
+															+ '</font>';
+												}
+											}
+											return label;
+										}
 									}, {
 										field : 'PLAN_DEPT_NAME',
 										title : '创建部门',
@@ -185,11 +269,11 @@
 										width : 300,
 									}, {
 										field : 'PLAN_CREATE_USER_NAME',
-										title : '创建人',
+										title : '填报人',
 										width : 100,
 									}, {
 										field : 'PLAN_CREATE_DATE',
-										title : '创建日期',
+										title : '填报日期',
 										width : 100,
 									}, {
 										field : 'PLAN_REMARK',
@@ -309,39 +393,28 @@
 	var rowIndexOfDataGrid = 0;
 
 	//编辑界面
-	function toDetail(rowIndex) {
-		if (rowIndex != null) {
-			opType = 'edit';
-			rowIndexOfDataGrid = rowIndex;
-			var rowData = getRowDataOfSelfDataGrid('datagridForDemandPlan',
-					rowIndex);
-			var planStatus = rowData.PLAN_STATUS;
-			queryDemandPlanDetailsForList(rowData);
-			setTextBoxValue('demandPlanCodeTextInput', rowData.PLAN_CODE);
-			setTextBoxValue('demandPlanRemarkTextInput', rowData.PLAN_REMARK);
-			if (planStatus == 1 || planStatus == 2 || planStatus == 4) {
-				$('#addToolBtn').linkbutton('disable');
-				$('#saveBtn').linkbutton('disable');
-				$('#submitBtn').linkbutton('disable');
-			} else {
-				$('#addToolBtn').linkbutton('enable');
-				$('#saveBtn').linkbutton('enable');
-				$('#submitBtn').linkbutton('enable');
-			}
+	function toDetail(planId, planCode, planRemark, planStatus) {
+		opType = 'edit';
+		queryDemandPlanDetailsForList(planId);
+		setTextBoxValue('demandPlanCodeTextInput', planCode);
+		setTextBoxValue('demandPlanRemarkTextInput', planRemark);
+		if (planStatus != 0) {
+			$('#addToolBtn').linkbutton('disable');
+			$('#saveBtn').linkbutton('disable');
+			$('#submitBtn').linkbutton('disable');
 		} else {
-			setTextBoxValue('demandPlanCodeTextInput',
-					getTextBoxValue('planCode'));
-			opType = 'add';
+			$('#addToolBtn').linkbutton('enable');
+			$('#saveBtn').linkbutton('enable');
+			$('#submitBtn').linkbutton('enable');
 		}
-
 		$('#demandPlanListUI').panel('collapse');
 		$('#demandPlanDetailUI').panel('expand');
 	}
 
 	//根据需求计划id查询明细
-	function queryDemandPlanDetailsForList(rowData) {
+	function queryDemandPlanDetailsForList(planId) {
 		var params = {
-			PLAN_ID : rowData.PLAN_ID,
+			PLAN_ID : planId,
 		};
 		query(params, 'queryDemandPlanDetailsForList.do',
 				successFunctionForQueryDemandPlanDetails);
@@ -614,8 +687,13 @@
 								class="easyui-linkbutton" iconCls="icon-cross"
 								plain="true" onclick="unPassDemandPlansByDept()">不通过</a>
 								<%
-									}
-								%></td>
+									if ("ANNUAL".equals(planType)) {
+								%> <a href="#" class="easyui-linkbutton"
+								iconCls="icon-remove" plain="true"
+								onclick="delDemandPlans()">删除</a> <%
+ 	}
+ 	}
+ %></td>
 							<td align="right"><input
 								id="keyWordForDemandPlanTextInput"
 								class="easyui-textbox"

@@ -220,6 +220,12 @@ function getRowDataOfSelfDataGrid(dataGridId, rowIndex) {
 	return dataGrid.datagrid('getData').rows[rowIndex];
 }
 
+// 获取本页面列表的行的数据对象
+function getRowDataOfSelfTreeGrid(treeGridId, rowIndex) {
+	var treeGrid = eval('$(\'#' + treeGridId + '\')');
+	return treeGrid.treegrid('getData').rows[rowIndex];
+}
+
 // 获取父页面列表的行的数据对象
 function getRowDataOfParentDataGrid(dataGridId, rowIndex) {
 	var dataGrid = eval('parent.$(\'#' + dataGridId + '\')');
