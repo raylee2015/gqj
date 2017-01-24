@@ -77,29 +77,35 @@
 	}
 	//关闭编辑窗口
 	function closeChooseUserUIForDemandPlan() {
-		parent.closeChooseUserUIForDemandPlan();
+		parent.closeChooseUserForAnnualPlanUI();
 	}
 
 	function choose() {
 		var selectedItems = $('#datagridForUser').datagrid('getSelections');
-		var data = parent.$('#datagridForDemandPlanDetail').datagrid('getData');
-		if (data.rows.length == 0) {
-			data = selectedItems;
-		} else {
-			//排重
-			for (var i = 0; i < data.rows.length; i++) {
-				for (var j = 0; j < selectedItems.length; j++) {
-					if (selectedItems[j].TOOL_ID == data.rows[i].TOOL_ID) {
-						selectedItems.splice(j, 1);
-						break;
-					}
-				}
-			}
-			for (var j = 0; j < selectedItems.length; j++) {
-				data.rows.push(selectedItems[j]);
-			}
+		if (selectedItems.length == 0) {
+			alert('请选择人员');
+			return;
+		} else if (selectedItems.length > 1) {
+			alert('只能够选择一个人员');
+			return;
 		}
-		parent.$('#datagridForDemandPlanDetail').datagrid('loadData', data);
+		updateCreateUserForAnnualPlan(selectedItems[0].USER_ID);
+	}
+
+	var url = "updateCreateUserForAnnualPlan.do";
+
+	// 保存数据
+	function updateCreateUserForAnnualPlan(userId) {
+		var params = {
+			USER_ID : userId,
+			PLAN_ID : getTextBoxValue('planIdTextInput')
+		};
+		save(params, url, successFunctionForSavePosition);
+	}
+
+	//回调函数，保存后调用
+	function successFunctionForSavePosition(result) {
+		parent.successFunctionForOption(result);
 		closeChooseUserUIForDemandPlan();
 	}
 
@@ -122,6 +128,10 @@
 <body>
 	<div class="easyui-layout" data-options="fit:true">
 		<div region="north" fit="true" border="false">
+			<div style="display: none">
+				<input id="planIdTextInput" class="easyui-textbox"
+					value="<%=request.getParameter("planId")%>" /> 
+			</div>
 			<table id="datagridForUser" class="easyui-datagrid">
 			</table>
 			<div id="toolbarForUser">
@@ -135,7 +145,7 @@
 							onclick="closeChooseUserUIForDemandPlan()">关闭</a></td>
 						<td align="right"><input
 							id="keyWordForUserTextInput" class="easyui-textbox"
-							data-options="prompt:'人员名称|部门名称',validType:'length[0,25]'"
+							data-options="prompt:'人员名称',validType:'length[0,25]'"
 							style="width: 200px"> <a href="#"
 							class="easyui-linkbutton" iconCls="icon-search"
 							onclick="queryUserPagesForSearch()">查询</a>

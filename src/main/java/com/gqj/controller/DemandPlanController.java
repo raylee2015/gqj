@@ -421,4 +421,27 @@ public class DemandPlanController extends BaseController {
 				.updateDemandPlan(demandPlan);
 	}
 
+	/**
+	 * 更新需求计划信息
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/updateCreateUserForAnnualPlan.do")
+	@ResponseBody
+	public Map<String, Object> updateCreateUserForAnnualPlan(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String planId = request.getParameter("PLAN_ID");
+		String userId = request.getParameter("USER_ID");
+		DemandPlan demandPlan = new DemandPlan();
+		demandPlan.setPlanId(BaseUtil.strToLong(planId));
+		demandPlan.setPlanCreateUserId(
+				BaseUtil.strToLong(userId));
+		return demandPlanService
+				.updateDemandPlan(demandPlan);
+	}
+
 }

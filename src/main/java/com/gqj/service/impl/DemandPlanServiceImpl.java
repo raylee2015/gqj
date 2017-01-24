@@ -127,7 +127,12 @@ public class DemandPlanServiceImpl
 							item.get("PLAN_CREATE_DATE")
 									.toString()));
 			if (item.get("UP_PLAN_ID") != null) {
-				if (demandPlan.getPlanDeptId() == null) {
+				if (demandPlan.getPlanDeptId() != null) {
+					// 不增加_parentId才能显示
+				} else if (demandPlan
+						.getPlanCreateUserId() != null) {
+					// 不增加_parentId才能显示
+				} else {
 					item.put("_parentId",
 							item.get("UP_PLAN_ID"));
 				}

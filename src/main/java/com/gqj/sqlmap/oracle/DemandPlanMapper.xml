@@ -198,9 +198,6 @@
 			<if test="planId != null and planId != ''">
 				PLAN_ID = #{planId,jdbcType=DECIMAL}
 			</if>
-			<if test="ids != null">
-				PLAN_ID in (${ids})
-			</if>
 		</where>
 	</update>
 </mapper>

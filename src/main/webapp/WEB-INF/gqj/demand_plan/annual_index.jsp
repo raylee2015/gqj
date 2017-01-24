@@ -40,9 +40,10 @@
 	}
 
 	//打开选择人员窗口
-	function openChooseUserForAnnualPlanUI() {
+	function openChooseUserForAnnualPlanUI(planId) {
 		createModalDialog("chooseUserForAnnualPlanUI",
-				"openChooseUserForAnnualPlanUI.do", "选择人员", 400, 500);
+				"openChooseUserForAnnualPlanUI.do?planId=" + planId, "选择人员",
+				400, 500);
 		openEditUI('chooseUserForAnnualPlanUI');
 	}
 
@@ -232,7 +233,9 @@
 										formatter : function(fieldValue,
 												rowData, rowIndex) {
 											btn = '<a class="easyui-linkbutton" '
-													+ ' onclick="openChooseUserForAnnualPlanUI()" '
+													+ ' onclick="openChooseUserForAnnualPlanUI(\''
+													+ rowData.PLAN_ID
+													+ '\')" '
 													+ ' href="javascript:void(0)">选人</a>';
 											return btn;
 										}
@@ -464,30 +467,17 @@
 		}
 		toolIds = toolIds.substring(0, toolIds.length - 1);
 		toolAmounts = toolAmounts.substring(0, toolAmounts.length - 1);
-
-		if (opType == 'add') {
-			params = {
-				PLAN_ID : '',
-				PLAN_TYPE : 1,//临时计划
-				PLAN_CODE : demandPlanCode,
-				TOOL_IDS : toolIds,
-				TOOL_AMOUNTS : toolAmounts,
-				PLAN_REMARK : demandPlanRemark
-			};
-			url = "addNewDemandPlansAndDetails.do";
-		} else if (opType == 'edit') {
-			rowData = getRowDataOfSelfDataGrid('datagridForDemandPlan',
-					rowIndexOfDataGrid);
-			params = {
-				PLAN_ID : rowData.PLAN_ID,
-				PLAN_TYPE : 1,//临时计划
-				PLAN_CODE : demandPlanCode,
-				TOOL_IDS : toolIds,
-				TOOL_AMOUNTS : toolAmounts,
-				PLAN_REMARK : demandPlanRemark
-			};
-			url = "updateDemandPlansAndDetails.do";
-		}
+		rowData = getRowDataOfSelfTreeGrid('datagridForDemandPlan',
+				rowIndexOfDataGrid);
+		params = {
+			PLAN_ID : rowData.PLAN_ID,
+			PLAN_TYPE : 0,//年度计划
+			PLAN_CODE : demandPlanCode,
+			TOOL_IDS : toolIds,
+			TOOL_AMOUNTS : toolAmounts,
+			PLAN_REMARK : demandPlanRemark
+		};
+		url = "updateDemandPlansAndDetails.do";
 		save(params, url, successFunctionForSave);
 	}
 
