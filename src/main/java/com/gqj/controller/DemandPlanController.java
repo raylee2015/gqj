@@ -52,10 +52,10 @@ public class DemandPlanController extends BaseController {
 
 	@Autowired
 	private ITemplateService templateService;
-	
+
 	@Autowired
 	private ITemplateDetailService templateDetailService;
-	
+
 	/**
 	 * 查询模板明细列表
 	 * 
@@ -161,6 +161,26 @@ public class DemandPlanController extends BaseController {
 		return demandPlanService.addAnnualDemandPlan(
 				demandPlan, deptIds, deptNames,
 				getSessionUser(request, response));
+	}
+
+	/**
+	 * 汇总需求计划信息
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/totalToolForParentDemandPlan.do")
+	@ResponseBody
+	@Transactional
+	public Map<String, Object> totalToolForParentDemandPlan(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String planIds = request.getParameter("PLAN_IDS");
+		DemandPlan demandPlan = new DemandPlan();
+		demandPlan.setIds(planIds);
+		return demandPlanService.totalToolForParentDemandPlan(demandPlan);
 	}
 
 	/**
@@ -489,7 +509,7 @@ public class DemandPlanController extends BaseController {
 		String userId = request.getParameter("USER_ID");
 		DemandPlan demandPlan = new DemandPlan();
 		demandPlan.setPlanId(BaseUtil.strToLong(planId));
-		//由于需要整体配合，这里的update需要使用ids的修改
+		// 由于需要整体配合，这里的update需要使用ids的修改
 		demandPlan.setIds(planId);
 		demandPlan.setPlanCreateUserId(
 				BaseUtil.strToLong(userId));

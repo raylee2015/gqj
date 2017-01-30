@@ -15,6 +15,9 @@ public interface DemandPlanMapper {
 	List<Map<String, Object>> selectDemandPlansForPage(
 			DemandPlan demandPlan);
 
+	List<DemandPlan> selectDemandPlansForList(
+			DemandPlan demandPlan);
+
 	int selectCountOfDemandPlansForPage(
 			DemandPlan demandPlan);
 }

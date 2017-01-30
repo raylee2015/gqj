@@ -54,6 +54,18 @@
 		) WHERE num<![CDATA[>=]]>
 		(1+(${currPage}-1)*${pageSize})
 	</select>
+	<select id="selectDemandPlansForList" parameterType="com.gqj.entity.DemandPlan"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_DEMAND_PLAN
+		<where>
+			<if test="upPlanId != null">
+				AND UP_PLAN_ID = #{upPlanId}
+			</if>
+		</where>
+		order by PLAN_ID DESC
+	</select>
 	<select id="selectCountOfDemandPlansForPage" parameterType="com.gqj.entity.DemandPlan"
 		resultType="java.lang.Integer">
 		select count(t.PLAN_ID) from GQJ_DEMAND_PLAN t

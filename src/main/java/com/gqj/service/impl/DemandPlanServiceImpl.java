@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.base.admin.entity.User;
 import com.base.util.BaseUtil;
@@ -16,6 +17,8 @@ import com.gqj.entity.DemandPlan;
 import com.gqj.service.IDemandPlanDetailService;
 import com.gqj.service.IDemandPlanService;
 import com.gqj.util.PlanStatus;
+
+import oracle.net.aso.p;
 
 @Service
 public class DemandPlanServiceImpl
@@ -181,6 +184,70 @@ public class DemandPlanServiceImpl
 		} else {
 			map.put("success", true);
 			map.put("msg", "更新成功");
+		}
+		return map;
+	}
+
+	@Override
+	@Transactional
+	public Map<String, Object> totalToolForParentDemandPlan(
+			DemandPlan demandPlan) {
+		String planIds = demandPlan.getIds();
+		String[] planId_arr = planIds.split(",");
+		Map<String, Object> map = new HashMap<String, Object>();
+		for (int i = 0; i < planId_arr.length; i++) {
+			String planId = planId_arr[i];
+			// 修改计划状态
+			DemandPlan temp = new DemandPlan();
+			temp.setIds(planId);
+			temp.setPlanStatus(PlanStatus.TOTAL);
+			updateDemandPlan(temp);
+			// 查询子需求计划的id串
+			String parentPlanId = planId_arr[i];
+			temp = new DemandPlan();
+			temp.setUpPlanId(
+					BaseUtil.strToLong(parentPlanId));
+			List<DemandPlan> subDemandPlanList = demandPlanMapper
+					.selectDemandPlansForList(temp);
+			String subDemandPlanIds = "";
+			for (DemandPlan demandPlanItem : subDemandPlanList) {
+				subDemandPlanIds += demandPlanItem
+						.getPlanId() + ",";
+			}
+			subDemandPlanIds = subDemandPlanIds.substring(0,
+					subDemandPlanIds.length() - 1);
+			// 根据id串汇总父需求计划的明细
+			// 1.查询工器具id以及数量
+			String toolIds = "";
+			String toolAmounts = "";
+			temp = new DemandPlan();
+			temp.setIds(subDemandPlanIds);
+			List<Map<String, Object>> subDemandPlanDetailList = demandPlanDetailService
+					.selectSumDemandPlanDetailsForList(
+							temp);
+			for (Map<String, Object> demandPlanDetail : subDemandPlanDetailList) {
+				toolIds += demandPlanDetail.get("TOOL_ID")
+						.toString() + ",";
+				toolAmounts += demandPlanDetail
+						.get("TOOL_AMOUNT").toString()
+						+ ",";
+			}
+			// 2.插入汇总数据
+			temp = new DemandPlan();
+			temp.setIds(parentPlanId);
+			int bool = demandPlanDetailService
+					.deleteByDemandPlan(temp);
+			bool = demandPlanDetailService
+					.addDemandPlanDetails(
+							BaseUtil.strToInt(planIds),
+							toolIds, toolAmounts);
+			if (bool == 0) {
+				map.put("success", false);
+				map.put("msg", "更新出错，请联系管理员");
+			} else {
+				map.put("success", true);
+				map.put("msg", "更新成功");
+			}
 		}
 		return map;
 	}

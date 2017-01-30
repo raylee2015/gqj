@@ -1,5 +1,6 @@
 package com.gqj.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.gqj.entity.DemandPlan;
@@ -15,6 +16,9 @@ public interface IDemandPlanDetailService {
 			DemandPlanDetail demandPlanDetail);
 
 	Map<String, Object> selectDemandPlanDetailsForList(
+			DemandPlan demandPlan);
+
+	List<Map<String, Object>> selectSumDemandPlanDetailsForList(
 			DemandPlan demandPlan);
 
 }

@@ -10,6 +10,9 @@ public interface DemandPlanDetailMapper {
 	List<Map<String, Object>> selectDemandPlanDetailsForList(
 			DemandPlan demandPlan);
 
+	List<Map<String, Object>> selectSumDemandPlanDetailsForList(
+			DemandPlan demandPlan);
+
 	List<Map<String, Object>> selectDemandPlanDetailsForPage(
 			DemandPlanDetail demandPlanDetail);
 

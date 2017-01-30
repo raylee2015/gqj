@@ -27,4 +27,7 @@ public interface IDemandPlanService {
 			DemandPlan demandPlan, String deptIds,
 			String deptNames, User createUser);
 
+	Map<String, Object> totalToolForParentDemandPlan(
+			DemandPlan demandPlan);
+
 }

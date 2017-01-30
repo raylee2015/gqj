@@ -145,7 +145,7 @@
 					$('#datagridForDemandPlan').treegrid('showColumn',
 							'chooseUser');
 				}
-				if (opType == 'EDIT') {
+				if (opType == 'EDIT' || opType == 'AUDIT_BY_DEPT') {
 					$('#datagridForDemandPlanDetail').treegrid('showColumn',
 							'op');
 				}
@@ -303,9 +303,12 @@
 											} else if (opType == 'AUDIT_BY_DEPT') {
 												if (status != null) {
 													if (status == 6
-															|| status == 2
 															|| status == 4) {
 														label = '<font color="green">'
+																+ statusName
+																+ '</font>';
+													} else if (status == 2) {
+														label = '<font color="greenyellow">'
 																+ statusName
 																+ '</font>';
 													} else {
@@ -338,6 +341,9 @@
 										title : '备注',
 										width : 100,
 									} ] ],
+							onCheck : function(row) {
+								//alert(row.PLAN_CODE)
+							},
 							onLoadError : function() {
 								errorFunctionForQuery();
 							}
@@ -617,12 +623,23 @@
 	function passDemandPlanByWorkGroup() {
 		var ids = getRowDataOfSelfTreeGrid('datagridForDemandPlan',
 				rowIndexOfDataGrid).PLAN_ID;
-		alert(ids)
 		var params = {
 			PLAN_IDS : ids,
 			PLAN_STATUS : 2
 		};
 		showMessageBox(params, 'updateDemandPlanStatus.do', '是否通过所选需求计划?',
+				successFunctionForSave);
+	}
+
+	//完成年度计划
+	function finishDemandPlanByDept() {
+		var ids = getRowDataOfSelfTreeGrid('datagridForDemandPlan',
+				rowIndexOfDataGrid).PLAN_ID;
+		var params = {
+			PLAN_IDS : ids,
+			PLAN_STATUS : 6
+		};
+		showMessageBox(params, 'updateDemandPlanStatus.do', '是否完成所选需求计划?',
 				successFunctionForSave);
 	}
 
@@ -722,6 +739,21 @@
 		}
 	}
 
+	// 完成计划
+	function finishDemandPlansByDept() {
+		if (checkSelectedItems('datagridForDemandPlan', '请选择需求计划')) {
+			var ids = getIdsOfSelectedItems('datagridForDemandPlan', 'PLAN_ID');
+			if (ids != null && ids != '') {
+				var params = {
+					PLAN_IDS : ids,
+					PLAN_STATUS : 6
+				};
+				showMessageBox(params, 'updateDemandPlanStatus.do',
+						'是否完成所选需求计划?', successFunctionForSave);
+			}
+		}
+	}
+
 	// 不通过计划
 	function unPassDemandPlansByDept() {
 		if (checkSelectedItems('datagridForDemandPlan', '请选择需求计划')) {
@@ -741,6 +773,36 @@
 	function successFunctionForSave(result) {
 		successFunctionForOption(result);
 		toList();
+	}
+
+	//汇总年度计划
+	function totalToolForParentDemandPlan() {
+		//检查是否只是选择父需求计划
+		var dataGrid = eval('$(\'#datagridForDemandPlan\')');
+		var rowDatas = dataGrid.datagrid('getSelections');
+		if (rowDatas.length > 0) {
+			for (var i = 0; i < rowDatas.length; i++) {
+				if (rowDatas[i].UP_PLAN_ID != null) {
+					alert("所选记录包含子需求计划，请只选择父需求计划");
+					return;
+				}
+			}
+		}
+		if (checkSelectedItems('datagridForDemandPlan', '请选择年度需求计划')) {
+			var ids = getIdsOfSelectedItems('datagridForDemandPlan', 'PLAN_ID');
+			if (ids != null && ids != '') {
+				var params = {
+					PLAN_IDS : ids
+				};
+				showMessageBox(params, 'totalToolForParentDemandPlan.do',
+						'是否汇总所选需求计划?', successFunctionForOption);
+			}
+		}
+	}
+
+	//回调函数，保存成功后执行
+	function successFunctionForTotal(result) {
+		alert("汇总成功");
 	}
 </script>
 </head>
@@ -789,13 +851,18 @@
 								plain="true"
 								onclick="openChooseDeptForAnnualPlanUI()">发起年度计划</a><a
 								href="#" class="easyui-linkbutton"
+								iconCls="icon-add" plain="true"
+								onclick="totalToolForParentDemandPlan()">汇总年度计划</a><a
+								href="#" class="easyui-linkbutton"
 								iconCls="icon-application_go" plain="true"
 								onclick="passDemandPlansByDept()">通过</a> <a href="#"
 								class="easyui-linkbutton" iconCls="icon-cross"
 								plain="true" onclick="unPassDemandPlansByDept()">不通过</a>
-								<%
-									if ("ANNUAL".equals(planType)) {
-								%> <a href="#" class="easyui-linkbutton"
+								<a href="#" class="easyui-linkbutton"
+								iconCls="icon-application_go" plain="true"
+								onclick="finishDemandPlansByDept()">完成</a> <%
+ 	if ("ANNUAL".equals(planType)) {
+ %> <a href="#" class="easyui-linkbutton"
 								iconCls="icon-remove" plain="true"
 								onclick="delDemandPlans()">删除</a> <%
  	}
@@ -851,7 +918,10 @@
 					onclick="passDemandPlanByDept()">通过</a> <a href="#"
 					class="easyui-linkbutton" iconCls="icon-cross"
 					plain="true" onclick="unPassDemandPlanByDept()">不通过</a>
-				<span id="addTemplateBtnGroup"></span>
+				<a href="#" class="easyui-linkbutton"
+					iconCls="icon-application_go" plain="true"
+					onclick="finishDemandPlanByDept()">完成</a> <span
+					id="addTemplateBtnGroup"></span>
 				<%
 					}
 				%>

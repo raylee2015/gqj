@@ -61,6 +61,15 @@ public class DemandPlanDetailServiceImpl
 	}
 
 	@Override
+	public List<Map<String, Object>> selectSumDemandPlanDetailsForList(
+			DemandPlan demandPlan) {
+		List<Map<String, Object>> demandPlans = demandPlanDetailMapper
+				.selectSumDemandPlanDetailsForList(
+						demandPlan);
+		return demandPlans;
+	}
+
+	@Override
 	public Map<String, Object> selectDemandPlanDetailsForList(
 			DemandPlan demandPlan) {
 		List<Map<String, Object>> demandPlanDetails = demandPlanDetailMapper

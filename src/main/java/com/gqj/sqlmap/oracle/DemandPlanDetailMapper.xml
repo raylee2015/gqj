@@ -13,6 +13,17 @@
 		DETAIL_ID, PLAN_ID, TOOL_ID, TOOL_SUM_AMOUNT, TOOL_AMOUNT,
 		DETAIL_REMARK
 	</sql>
+	<select id="selectSumDemandPlanDetailsForList" parameterType="com.gqj.entity.DemandPlan"
+		resultType="java.util.HashMap">
+		select t.TOOL_ID,sum(t.TOOL_AMOUNT) AS TOOL_AMOUNT from
+		GQJ_DEMAND_PLAN_DETAIL t
+		<where>
+			<if test="ids != null">
+				AND PLAN_ID in (${ids})
+			</if>
+		</where>
+		group by t.tool_id
+	</select>
 	<select id="selectDemandPlanDetailsForList" parameterType="com.gqj.entity.DemandPlan"
 		resultType="java.util.HashMap">
 		select * from VIEW_GQJ_DEMAND_PLAN_DETAIL
