@@ -9,6 +9,9 @@ public interface TemplateMapper {
 	int deleteByPrimaryKeys(Template template);
 
 	List<Map<String, Object>> selectTemplatesForPage(Template template);
+	
+	List<Map<String, Object>> selectTemplatesForList(
+			Template template);
 
 	int selectCountOfTemplatesForPage(Template template);
 

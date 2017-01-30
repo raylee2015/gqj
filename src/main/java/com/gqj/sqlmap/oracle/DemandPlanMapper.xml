@@ -195,8 +195,9 @@
 			</if>
 		</set>
 		<where>
-			<if test="planId != null and planId != ''">
-				PLAN_ID = #{planId,jdbcType=DECIMAL}
+			<!-- 这里需要注意，由于更新的计划的时候和选人的时候都需要用到planId，因此这里同意使用ids -->
+			<if test="ids != null">
+				PLAN_ID in (${ids})
 			</if>
 		</where>
 	</update>

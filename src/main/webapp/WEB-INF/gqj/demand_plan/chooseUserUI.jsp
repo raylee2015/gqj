@@ -96,6 +96,8 @@
 
 	// 保存数据
 	function updateCreateUserForAnnualPlan(userId) {
+		alert(userId)
+		alert(getTextBoxValue('planIdTextInput'))
 		var params = {
 			USER_ID : userId,
 			PLAN_ID : getTextBoxValue('planIdTextInput')

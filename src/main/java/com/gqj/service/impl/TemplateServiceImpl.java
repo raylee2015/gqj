@@ -70,6 +70,17 @@ public class TemplateServiceImpl
 	}
 
 	@Override
+	public Map<String, Object> selectTemplatesForList(
+			Template template) {
+		List<Map<String, Object>> templates = templateMapper
+				.selectTemplatesForList(template);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("rows", templates);
+		map.put("total", templates.size());
+		return map;
+	}
+
+	@Override
 	public Map<String, Object> updateTemplatesAndDetails(
 			Template template, String toolIds) {
 		int bool = templateDetailService

@@ -138,10 +138,16 @@
 						queryDemandPlanPagesForSearch);
 				initDataGridForDemandPlan();
 				initDataGridForDemandPlanDetail();
+				initTemplateGroup();
+
 				var opType = getTextBoxValue('opType');
 				if (opType == 'AUDIT_BY_WORK_GROUP') {
 					$('#datagridForDemandPlan').treegrid('showColumn',
 							'chooseUser');
+				}
+				if (opType == 'EDIT') {
+					$('#datagridForDemandPlanDetail').treegrid('showColumn',
+							'op');
 				}
 			});
 
@@ -232,11 +238,15 @@
 										title : '选人',
 										formatter : function(fieldValue,
 												rowData, rowIndex) {
-											btn = '<a class="easyui-linkbutton" '
-													+ ' onclick="openChooseUserForAnnualPlanUI(\''
-													+ rowData.PLAN_ID
-													+ '\')" '
-													+ ' href="javascript:void(0)">选人</a>';
+											var planStatus = rowData.PLAN_STATUS;
+											var btn = '';
+											if (planStatus == 0) {
+												btn = '<a class="easyui-linkbutton" '
+														+ ' onclick="openChooseUserForAnnualPlanUI(\''
+														+ rowData.PLAN_ID
+														+ '\')" '
+														+ ' href="javascript:void(0)">选人</a>';
+											}
 											return btn;
 										}
 									},
@@ -249,15 +259,60 @@
 											var status = rowData.PLAN_STATUS;
 											var statusName = rowData.PLAN_STATUS_NAME;
 											var label = ''
-											if (status != null) {
-												if (status != 5) {
-													label = '<font color="blue">'
-															+ statusName
-															+ '</font>';
-												} else {
-													label = '<font color="green">'
-															+ statusName
-															+ '</font>';
+											var opType = getTextBoxValue('opType');
+											if (opType == 'EDIT') {
+												if (status != null) {
+													if (status == 0) {
+														label = '<font color="blue">'
+																+ statusName
+																+ '</font>';
+													} else if (status == 1
+															|| status == 2
+															|| status == 4
+															|| status == 6) {
+														label = '<font color="green">'
+																+ statusName
+																+ '</font>';
+													} else if (status == 3
+															|| status == 5) {
+														label = '<font color="red">'
+																+ statusName
+																+ '</font>';
+													}
+												}
+											} else if (opType == 'AUDIT_BY_WORK_GROUP') {
+												if (status != null) {
+													if (status == 0
+															|| status == 1) {
+														label = '<font color="blue">'
+																+ statusName
+																+ '</font>';
+													} else if (status == 2
+															|| status == 3
+															|| status == 4
+															|| status == 6) {
+														label = '<font color="green">'
+																+ statusName
+																+ '</font>';
+													} else if (status == 5) {
+														label = '<font color="red">'
+																+ statusName
+																+ '</font>';
+													}
+												}
+											} else if (opType == 'AUDIT_BY_DEPT') {
+												if (status != null) {
+													if (status == 6
+															|| status == 2
+															|| status == 4) {
+														label = '<font color="green">'
+																+ statusName
+																+ '</font>';
+													} else {
+														label = '<font color="blue">'
+																+ statusName
+																+ '</font>';
+													}
 												}
 											}
 											return label;
@@ -306,6 +361,7 @@
 									{
 										field : 'op',
 										title : '操作',
+										hidden : true,
 										formatter : function(fieldValue,
 												rowData, rowIndex) {
 											var btn = '<a class="easyui-linkbutton" '
@@ -428,6 +484,70 @@
 		dataGridLoadData('datagridForDemandPlanDetail', result);
 	}
 
+	//初始化模板
+	function initTemplateGroup() {
+		queryTemplateForList();
+	}
+
+	//查询模板明细
+	function queryTemplateForList() {
+		var params = {};
+		query(params, 'queryTemplateForList.do', successFunctionForTemplateList);
+	}
+
+	//回调函数，查询成功后调用
+	function successFunctionForTemplateList(result) {
+		var rows = result.rows;
+		var total = result.total;
+		var innerHTML = ""
+		for (var i = 0; i < rows.length; i++) {
+			innerHTML += '<a href="#" class="add_template_detail_for_demand_plan_button"'
+					+ '	onclick="addTemplateDetailToDemandPlanDetail('
+					+ rows[i].TEMPLATE_ID
+					+ ')">'
+					+ rows[i].TEMPLATE_NAME
+					+ '</a>';
+		}
+		$('#addTemplateBtnGroup').html(innerHTML);
+		$(".add_template_detail_for_demand_plan_button").linkbutton({
+			plain : true,
+			iconCls : 'icon-application_add'
+		});
+	}
+
+	//将模板里面的内容添加到计划里面
+	function addTemplateDetailToDemandPlanDetail(templateId) {
+		queryTemplateDetailsForList(templateId);
+	}
+
+	//根据模板明细查询明细
+	function queryTemplateDetailsForList(templateId) {
+		var params = {
+			TEMPLATE_ID : templateId
+		};
+		query(params, 'queryTemplateDetailsForList.do',
+				successFunctionForTemplateDetailList);
+	}
+
+	//回调函数，查询成功后调用
+	function successFunctionForTemplateDetailList(result) {
+		var selectedItems = result.rows;
+		var data = $('#datagridForDemandPlanDetail').datagrid('getData');
+		//排重
+		for (var i = 0; i < data.rows.length; i++) {
+			for (var j = 0; j < selectedItems.length; j++) {
+				if (selectedItems[j].TOOL_ID == data.rows[i].TOOL_ID) {
+					selectedItems.splice(j, 1);
+					break;
+				}
+			}
+		}
+		for (var j = 0; j < selectedItems.length; j++) {
+			data.rows.push(selectedItems[j]);
+		}
+		$('#datagridForDemandPlanDetail').datagrid('loadData', data);
+	}
+
 	//列表界面
 	function toList() {
 		$('#demandPlanListUI').panel('expand');
@@ -483,7 +603,7 @@
 
 	// 提交计划
 	function submitDemandPlan() {
-		var ids = getRowDataOfSelfDataGrid('datagridForDemandPlan',
+		var ids = getRowDataOfSelfTreeGrid('datagridForDemandPlan',
 				rowIndexOfDataGrid).PLAN_ID;
 		var params = {
 			PLAN_IDS : ids,
@@ -495,8 +615,9 @@
 
 	// 通过计划
 	function passDemandPlanByWorkGroup() {
-		var ids = getRowDataOfSelfDataGrid('datagridForDemandPlan',
+		var ids = getRowDataOfSelfTreeGrid('datagridForDemandPlan',
 				rowIndexOfDataGrid).PLAN_ID;
+		alert(ids)
 		var params = {
 			PLAN_IDS : ids,
 			PLAN_STATUS : 2
@@ -507,7 +628,7 @@
 
 	// 不通过计划
 	function unPassDemandPlanByWorkGroup() {
-		var ids = getRowDataOfSelfDataGrid('datagridForDemandPlan',
+		var ids = getRowDataOfSelfTreeGrid('datagridForDemandPlan',
 				rowIndexOfDataGrid).PLAN_ID;
 		var params = {
 			PLAN_IDS : ids,
@@ -519,7 +640,7 @@
 
 	// 通过计划
 	function unPassDemandPlanByDept() {
-		var ids = getRowDataOfSelfDataGrid('datagridForDemandPlan',
+		var ids = getRowDataOfSelfTreeGrid('datagridForDemandPlan',
 				rowIndexOfDataGrid).PLAN_ID;
 		var params = {
 			PLAN_IDS : ids,
@@ -531,7 +652,7 @@
 
 	// 不通过计划
 	function passDemandPlanByDept() {
-		var ids = getRowDataOfSelfDataGrid('datagridForDemandPlan',
+		var ids = getRowDataOfSelfTreeGrid('datagridForDemandPlan',
 				rowIndexOfDataGrid).PLAN_ID;
 		var params = {
 			PLAN_IDS : ids,
@@ -649,16 +770,12 @@
 						<tr>
 							<td><a href="#" class="easyui-linkbutton"
 								iconCls="icon-reload" plain="true"
-								onclick="refreshDataGrid('datagridForDemandPlan')">刷新</a>
+								onclick="reloadTreeGrid('datagridForDemandPlan')">刷新</a>
 								<%
 									if ("EDIT".equals(opType)) {
 								%> <a href="#" class="easyui-linkbutton"
-								iconCls="icon-add" plain="true" onclick="toDetail()">添加</a>
-								<a href="#" class="easyui-linkbutton"
-								iconCls="icon-remove" plain="true"
-								onclick="delDemandPlans()">删除</a> <a href="#"
-								class="easyui-linkbutton" iconCls="icon-edit"
-								plain="true" onclick="submitDemandPlans()">提交</a> <%
+								iconCls="icon-edit" plain="true"
+								onclick="submitDemandPlans()">提交</a> <%
  	} else if ("AUDIT_BY_WORK_GROUP"
  			.equals(opType)) {
  %> <a href="#" class="easyui-linkbutton"
@@ -717,7 +834,8 @@
 					onclick="openChooseToolDemandUIForDemandPlan()">添加工器具</a>
 				<a href="#" id="submitBtn" class="easyui-linkbutton"
 					iconCls="icon-add" plain="true"
-					onclick="submitDemandPlan()">提交</a>
+					onclick="submitDemandPlan()">提交</a> <span
+					id="addTemplateBtnGroup"></span>
 				<%
 					} else if ("AUDIT_BY_WORK_GROUP"
 							.equals(opType)) {
@@ -733,6 +851,7 @@
 					onclick="passDemandPlanByDept()">通过</a> <a href="#"
 					class="easyui-linkbutton" iconCls="icon-cross"
 					plain="true" onclick="unPassDemandPlanByDept()">不通过</a>
+				<span id="addTemplateBtnGroup"></span>
 				<%
 					}
 				%>

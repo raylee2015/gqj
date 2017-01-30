@@ -21,10 +21,13 @@ import com.base.admin.service.IUserService;
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
 import com.gqj.entity.DemandPlan;
+import com.gqj.entity.Template;
 import com.gqj.entity.ToolDemand;
 import com.gqj.entity.ToolType;
 import com.gqj.service.IDemandPlanDetailService;
 import com.gqj.service.IDemandPlanService;
+import com.gqj.service.ITemplateDetailService;
+import com.gqj.service.ITemplateService;
 import com.gqj.service.IToolDemandService;
 import com.gqj.service.IToolTypeService;
 import com.gqj.util.PlanStatus;
@@ -46,6 +49,54 @@ public class DemandPlanController extends BaseController {
 
 	@Autowired
 	private IToolTypeService toolTypeService;
+
+	@Autowired
+	private ITemplateService templateService;
+	
+	@Autowired
+	private ITemplateDetailService templateDetailService;
+	
+	/**
+	 * 查询模板明细列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryTemplateDetailsForList.do")
+	@ResponseBody
+	public Map<String, Object> queryTemplateDetailsForList(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String templateId = request
+				.getParameter("TEMPLATE_ID");
+		Template template = new Template();
+		template.setTemplateId(
+				BaseUtil.strToLong(templateId));
+		return templateDetailService
+				.selectTemplateDetailsForList(template);
+	}
+
+	/**
+	 * 分页查询模板列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryTemplateForList.do")
+	@ResponseBody
+	public Map<String, Object> queryTemplateForList(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		User user = getSessionUser(request, response);
+		Template template = new Template();
+		template.setTemplateDeptId(user.getUserDeptId());
+		return templateService
+				.selectTemplatesForList(template);
+	}
 
 	/**
 	 * 添加需求计划信息
@@ -438,6 +489,8 @@ public class DemandPlanController extends BaseController {
 		String userId = request.getParameter("USER_ID");
 		DemandPlan demandPlan = new DemandPlan();
 		demandPlan.setPlanId(BaseUtil.strToLong(planId));
+		//由于需要整体配合，这里的update需要使用ids的修改
+		demandPlan.setIds(planId);
 		demandPlan.setPlanCreateUserId(
 				BaseUtil.strToLong(userId));
 		return demandPlanService

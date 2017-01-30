@@ -17,4 +17,7 @@ public interface ITemplateService {
 	Map<String, Object> selectTemplatesForPage(
 			Template template);
 
+	Map<String, Object> selectTemplatesForList(
+			Template template);
+
 }

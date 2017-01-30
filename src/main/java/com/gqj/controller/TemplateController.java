@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.base.admin.entity.User;
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
 import com.gqj.entity.Template;
@@ -84,6 +85,26 @@ public class TemplateController extends BaseController {
 				.setTypeId(BaseUtil.strToLong(toolTypeId));
 		return toolDemandService
 				.selectToolDemandsForPage(toolDemand);
+	}
+
+	/**
+	 * 分页查询模板列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryTemplateForList.do")
+	@ResponseBody
+	public Map<String, Object> queryTemplateForList(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		User user = getSessionUser(request, response);
+		Template template = new Template();
+		template.setTemplateDeptId(user.getUserDeptId());
+		return templateService
+				.selectTemplatesForList(template);
 	}
 
 	/**

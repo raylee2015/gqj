@@ -35,3 +35,9 @@
 	background: url('../img/IconsExtension/cross.png') no-repeat center
 		center;
 }
+
+
+.icon-application_add {
+	background: url('../img/IconsExtension/application_add.png') no-repeat
+		center center;
+}
