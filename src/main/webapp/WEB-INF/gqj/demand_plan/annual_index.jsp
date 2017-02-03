@@ -343,6 +343,7 @@
 									} ] ],
 							onCheck : function(row) {
 								//alert(row.PLAN_CODE)
+								//只选父计划，删除的时候出现问题，待解决
 							},
 							onLoadError : function() {
 								errorFunctionForQuery();

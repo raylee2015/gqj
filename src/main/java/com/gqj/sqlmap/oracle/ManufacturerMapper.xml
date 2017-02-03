@@ -8,6 +8,19 @@
 	<sql id="Base_Column_List">
 		MAN_ID, MAN_NAME
 	</sql>
+	<select id="selectManufacturersForList" parameterType="com.gqj.entity.Manufacturer"
+		resultType="java.util.HashMap">
+		SELECT
+		MAN_ID AS ID,MAN_NAME AS TEXT,MAN_ID, MAN_NAME
+		from
+		GQJ_MANUFACTURER
+		<where>
+			<if test="keyWord != null">
+				AND MAN_NAME like '%${keyWord}%'
+			</if>
+		</where>
+		order by MAN_ID
+	</select>
 	<select id="selectManufacturersForPage" parameterType="com.gqj.entity.Manufacturer"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (

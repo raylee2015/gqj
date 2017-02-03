@@ -1,5 +1,6 @@
 package com.gqj.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,4 +17,10 @@ public interface BaseToolMapper {
 	int insertSelective(BaseTool baseTool);
 
 	int updateByPrimaryKeySelective(BaseTool baseTool);
+
+	List<Map<String, Object>> selectBaseToolsForPageWithMap(
+			HashMap<String, Object> param);
+
+	int selectCountOfBaseToolsForPageWithMap(
+			HashMap<String, Object> param);
 }

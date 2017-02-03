@@ -63,6 +63,20 @@ public class BaseToolServiceImpl
 	}
 
 	@Override
+	public Map<String, Object> selectBaseToolsForPage(
+			HashMap<String, Object> param) {
+		List<Map<String, Object>> baseTools = baseToolMapper
+				.selectBaseToolsForPageWithMap(param);
+		int count = baseToolMapper
+				.selectCountOfBaseToolsForPageWithMap(
+						param);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("rows", baseTools);
+		map.put("total", count);
+		return map;
+	}
+
+	@Override
 	public Map<String, Object> updateBaseTool(
 			BaseTool baseTool) {
 		Map<String, Object> map = new HashMap<String, Object>();

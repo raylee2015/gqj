@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gqj.dao.MaterialBillDetailMapper">
+	<resultMap id="BaseResultMap" type="com.gqj.entity.MaterialBillDetail">
+		<id column="DETAIL_ID" jdbcType="DECIMAL" property="detailId" />
+		<result column="BASE_TOOL_ID" jdbcType="DECIMAL" property="baseToolId" />
+		<result column="BILL_ID" jdbcType="DECIMAL" property="billId" />
+		<result column="DETAIL_BILL_AMOUNT" jdbcType="DECIMAL"
+			property="detailBillAmount" />
+		<result column="DETAIL_REMARK" jdbcType="VARCHAR" property="detailRemark" />
+		<result column="POS_ID" jdbcType="DECIMAL" property="posId" />
+	</resultMap>
+	<select id="selectMaterialBillDetailsForPage" parameterType="com.gqj.entity.MaterialBillDetail"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		DETAIL_ID,
+		DETAIL_BILL_AMOUNT,
+		DETAIL_REMARK,BILL_ID,BILL_CODE,BILL_TYPE,BILL_TYPE_NAME,
+		BASE_TOOL_ID,BASE_TOOL_MODEL,BASE_TOOL_SPEC,BASE_TOOL_REMARK,
+		TOOL_DEMAND_ID,BASE_TOOL_NAME,MAN_ID,MAN_NAME,
+		POS_ID,POS_NAME
+		from
+		VIEW_GQJ_MATERIAL_BILL_DETAIL
+		<where>
+			<if test="billId != null">
+				AND BILL_ID = #{billId}
+			</if>
+		</where>
+		order by DETAIL_ID DESC
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfMaterialBillDetailsForPage"
+		parameterType="com.gqj.entity.MaterialBillDetail" resultType="java.lang.Integer">
+		select count(t.DETAIL_ID) from VIEW_GQJ_MATERIAL_BILL_DETAIL t
+		<where>
+			<if test="billId != null">
+				AND BILL_ID =#{billId}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByMaterialBill" parameterType="com.gqj.entity.MaterialBill">
+		delete from
+		GQJ_MATERIAL_BILL_DETAIL
+		where BILL_ID in (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.gqj.entity.MaterialBillDetail">
+		insert into GQJ_MATERIAL_BILL_DETAIL
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="detailId != null">
+				DETAIL_ID,
+			</if>
+			<if test="baseToolId != null">
+				BASE_TOOL_ID,
+			</if>
+			<if test="billId != null">
+				BILL_ID,
+			</if>
+			<if test="detailBillAmount != null">
+				DETAIL_BILL_AMOUNT,
+			</if>
+			<if test="detailRemark != null">
+				DETAIL_REMARK,
+			</if>
+			<if test="posId != null">
+				POS_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="detailId != null">
+				GQJ_MATERIAL_BILL_DETAIL_SEQ.nextval,
+			</if>
+			<if test="baseToolId != null">
+				#{baseToolId,jdbcType=DECIMAL},
+			</if>
+			<if test="billId != null">
+				#{billId,jdbcType=DECIMAL},
+			</if>
+			<if test="detailBillAmount != null">
+				#{detailBillAmount,jdbcType=DECIMAL},
+			</if>
+			<if test="detailRemark != null">
+				#{detailRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="posId != null">
+				#{posId,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.MaterialBillDetail">
+		update GQJ_MATERIAL_BILL_DETAIL
+		<set>
+			<if test="baseToolId != null">
+				BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL},
+			</if>
+			<if test="billId != null">
+				BILL_ID = #{billId,jdbcType=DECIMAL},
+			</if>
+			<if test="detailBillAmount != null">
+				DETAIL_BILL_AMOUNT =
+				#{detailBillAmount,jdbcType=DECIMAL},
+			</if>
+			<if test="detailRemark != null">
+				DETAIL_REMARK = #{detailRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="posId != null">
+				POS_ID = #{posId,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where DETAIL_ID = #{detailId,jdbcType=DECIMAL}
+	</update>
+</mapper>

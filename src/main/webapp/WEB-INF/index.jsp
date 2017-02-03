@@ -1,6 +1,6 @@
 <%@page import="com.base.admin.entity.User"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java"
+	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 	User user = (User) request.getSession().getAttribute("user");
@@ -22,7 +22,8 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript"
+	src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//刷新当前标签Tabs
 	function refreshTab(currentTab) {
@@ -42,7 +43,7 @@
 			$('#tab').tabs('select', title);
 		} else {
 			var content = '<iframe scrolling="auto" frameborder="0"  src="'
-					+ url + '" style="width:100%;height:100%;"></iframe>';
+					+ url + '" style="width:100%;height:99.5%;"></iframe>';
 			$('#tab').tabs('add', {
 				title : title,
 				content : content,
@@ -124,10 +125,12 @@
 </style>
 </head>
 <body id="layout" class="easyui-layout">
-	<div id="content" region="center" style="width: 100%; height: 100%;">
+	<div id="content" region="center"
+		style="width: 100%; height: 100%;">
 		<form id="logoutForm" action="<%=contextPath%>/logout.do"
 			method="Post"></form>
-		<div id="tab" data-options="tools:'#tab-tools',toolPosition:'left'"
+		<div id="tab"
+			data-options="tools:'#tab-tools',toolPosition:'left'"
 			class="easyui-tabs" style="width: 100%; height: 100%;">
 			<div title="首页" style="width: 100%; height: 100%;">欢迎使用综合管理平台</div>
 		</div>
@@ -135,7 +138,8 @@
 			<a href="#" class="easyui-menubutton"
 				data-options="menu:'#menu',iconCls:'icon-person'"><b><%=userName%></b>，欢迎使用综合管理平台</a>
 			<a href="#" class="easyui-linkbutton"
-				data-options="iconCls:'icon-control_power'" onClick="logout()">注销</a>
+				data-options="iconCls:'icon-control_power'"
+				onClick="logout()">注销</a>
 			<div id="menu" class="easyui-menu" style="width: 206px;"></div>
 		</div>
 	</div>

@@ -11,6 +11,8 @@ import com.gqj.dao.ManufacturerMapper;
 import com.gqj.entity.Manufacturer;
 import com.gqj.service.IManufacturerService;
 
+import net.sf.json.JSONArray;
+
 @Service
 public class ManufacturerServiceImpl
 		implements IManufacturerService {
@@ -62,6 +64,20 @@ public class ManufacturerServiceImpl
 		map.put("rows", manufacturers);
 		map.put("total", count);
 		return map;
+	}
+
+	@Override
+	public String selectManufacturersForList(
+			Manufacturer manufacturer) {
+		List<Map<String, Object>> manufacturers = manufacturerMapper
+				.selectManufacturersForList(manufacturer);
+		String result = "";
+		if (manufacturers != null
+				&& manufacturers.size() != 0) {
+			result = JSONArray.fromObject(manufacturers)
+					.toString();
+		}
+		return result;
 	}
 
 	@Override

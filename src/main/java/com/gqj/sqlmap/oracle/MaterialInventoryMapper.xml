@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gqj.dao.MaterialInventoryMapper">
+	<resultMap id="BaseResultMap" type="com.gqj.entity.MaterialInventory">
+		<id column="STORE_ID" jdbcType="DECIMAL" property="storeId" />
+		<id column="BASE_TOOL_ID" jdbcType="DECIMAL" property="baseToolId" />
+		<id column="POS_ID" jdbcType="DECIMAL" property="posId" />
+		<result column="INVENT_AMOUNT" jdbcType="DECIMAL" property="inventAmount" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		STORE_ID, BASE_TOOL_ID, INVENT_AMOUNT,POS_ID,
+		STORE_NAME,BASE_TOOL_NAME,POS_NAME
+	</sql>
+	<select id="selectMaterialInventoryForPage" parameterType="com.gqj.entity.MaterialInventory"
+		resultMap="BaseResultMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_MATERIAL_INVENTORY
+		<where>
+			<if test="storeId != null">
+				STORE_ID =
+				#{storeId,jdbcType=DECIMAL}
+			</if>
+			<if test="posId != null">
+				POS_ID =
+				#{posId,jdbcType=DECIMAL}
+			</if>
+		</where>
+		order by BASE_TOOL_ID desc
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfMaterialInventoryForPage"
+		parameterType="com.gqj.entity.MaterialInventory" resultMap="BaseResultMap">
+		select count(*)
+		from VIEW_GQJ_MATERIAL_INVENTORY
+		<where>
+			<if test="storeId != null">
+				STORE_ID =
+				#{storeId,jdbcType=DECIMAL}
+			</if>
+			<if test="posId != null">
+				POS_ID =
+				#{posId,jdbcType=DECIMAL}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="com.gqj.entity.MaterialInventory">
+		delete from
+		GQJ_MATERIAL_INVENTORY
+		where STORE_ID = #{storeId,jdbcType=DECIMAL}
+		and
+		BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL}
+		and POS_ID = #{posId}
+	</delete>
+	<insert id="insertSelective" parameterType="com.gqj.entity.MaterialInventory">
+		insert into GQJ_MATERIAL_INVENTORY
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="storeId != null">
+				STORE_ID,
+			</if>
+			<if test="posId != null">
+				POS_ID,
+			</if>
+			<if test="baseToolId != null">
+				BASE_TOOL_ID,
+			</if>
+			<if test="inventAmount != null">
+				INVENT_AMOUNT,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="storeId != null">
+				#{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="posId != null">
+				#{posId,jdbcType=DECIMAL},
+			</if>
+			<if test="baseToolId != null">
+				#{baseToolId,jdbcType=DECIMAL},
+			</if>
+			<if test="inventAmount != null">
+				#{inventAmount,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.MaterialInventory">
+		update GQJ_MATERIAL_INVENTORY
+		<set>
+			<if test="inventAmount != null">
+				INVENT_AMOUNT = #{inventAmount,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where STORE_ID = #{storeId,jdbcType=DECIMAL}
+		and BASE_TOOL_ID =
+		#{baseToolId,jdbcType=DECIMAL}
+		and POS_ID =
+		#{posId,jdbcType=DECIMAL}
+	</update>
+</mapper>

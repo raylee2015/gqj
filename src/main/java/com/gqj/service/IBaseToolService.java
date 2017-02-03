@@ -1,5 +1,6 @@
 package com.gqj.service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.gqj.entity.BaseTool;
@@ -13,5 +14,8 @@ public interface IBaseToolService {
 
 	Map<String, Object> selectBaseToolsForPage(
 			BaseTool baseTool);
+
+	Map<String, Object> selectBaseToolsForPage(
+			HashMap<String, Object> param);
 
 }

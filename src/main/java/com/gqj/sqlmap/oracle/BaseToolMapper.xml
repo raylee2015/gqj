@@ -40,6 +40,55 @@
 			</if>
 		</where>
 	</select>
+	<select id="selectBaseToolsForPageWithMap" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_BASE_TOOL
+		<where>
+			<if test="keyWord != null">
+				AND BASE_TOOL_NAME like '%${keyWord}%'
+			</if>
+			<if test="baseToolModel != null">
+				AND BASE_TOOL_MODEL like '%${baseToolModel}%'
+			</if>
+			<if test="baseToolSpec != null">
+				AND BASE_TOOL_SPEC like '%${baseToolSpec}%'
+			</if>
+			<if test="baseToolTypeId != null and baseToolTypeId != ''">
+				AND BASE_TOOL_TYPE_ID = #{baseToolTypeId}
+			</if>
+			<if test="manufacturerId != null and manufacturerId != ''">
+				AND MAN_ID = #{manufacturerId}
+			</if>
+		</where>
+		order by BASE_TOOL_ID DESC
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfBaseToolsForPageWithMap" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+		select count(t.BASE_TOOL_ID) from VIEW_GQJ_BASE_TOOL t
+		<where>
+			<if test="keyWord != null">
+				AND BASE_TOOL_NAME like '%${keyWord}%'
+			</if>
+			<if test="baseToolModel != null">
+				AND BASE_TOOL_MODEL like '%${baseToolModel}%'
+			</if>
+			<if test="baseToolSpec != null">
+				AND BASE_TOOL_SPEC like '%${baseToolSpec}%'
+			</if>
+			<if test="baseToolTypeId != null and baseToolTypeId != ''">
+				AND BASE_TOOL_TYPE_ID = #{baseToolTypeId}
+			</if>
+			<if test="manufacturerId != null and manufacturerId != ''">
+				AND MAN_ID = #{manufacturerId}
+			</if>
+		</where>
+	</select>
 	<delete id="deleteByPrimaryKeys" parameterType="com.gqj.entity.BaseTool">
 		delete from
 		GQJ_BASE_TOOL

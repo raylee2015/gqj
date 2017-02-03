@@ -16,4 +16,7 @@ public interface IManufacturerService {
 
 	Map<String, Object> selectManufacturersForPage(
 			Manufacturer manufacturer);
+
+	String selectManufacturersForList(
+			Manufacturer manufacturer);
 }

@@ -18,4 +18,7 @@ public interface ManufacturerMapper {
 
 	int updateByPrimaryKeySelective(
 			Manufacturer manufacturer);
+
+	List<Map<String, Object>> selectManufacturersForList(
+			Manufacturer manufacturer);
 }
