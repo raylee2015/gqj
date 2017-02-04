@@ -20,4 +20,7 @@ public interface IMaterialBillService {
 			MaterialBill materialBill, String baseToolIds,
 			String baseToolPosIds, String baseToolAmounts);
 
+	Map<String, Object> confirmMaterialBillsAndDetails(
+			MaterialBill materialBill);
+
 }

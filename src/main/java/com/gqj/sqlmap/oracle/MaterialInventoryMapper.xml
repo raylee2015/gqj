@@ -11,6 +11,27 @@
 		STORE_ID, BASE_TOOL_ID, INVENT_AMOUNT,POS_ID,
 		STORE_NAME,BASE_TOOL_NAME,POS_NAME
 	</sql>
+	<select id="selectMaterialInventorysForList" parameterType="com.gqj.entity.MaterialInventory"
+		resultMap="BaseResultMap">
+		select STORE_ID,POS_ID,BASE_TOOL_ID,INVENT_AMOUNT
+		from
+		GQJ_MATERIAL_INVENTORY
+		<where>
+			<if test="storeId != null">
+				and STORE_ID =
+				#{storeId,jdbcType=DECIMAL}
+			</if>
+			<if test="posId != null">
+				and POS_ID =
+				#{posId,jdbcType=DECIMAL}
+			</if>
+			<if test="baseToolId != null">
+				and BASE_TOOL_ID =
+				#{baseToolId,jdbcType=DECIMAL}
+			</if>
+		</where>
+		order by BASE_TOOL_ID desc
+	</select>
 	<select id="selectMaterialInventoryForPage" parameterType="com.gqj.entity.MaterialInventory"
 		resultMap="BaseResultMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
@@ -19,11 +40,11 @@
 		from VIEW_GQJ_MATERIAL_INVENTORY
 		<where>
 			<if test="storeId != null">
-				STORE_ID =
+				and STORE_ID =
 				#{storeId,jdbcType=DECIMAL}
 			</if>
 			<if test="posId != null">
-				POS_ID =
+				and POS_ID =
 				#{posId,jdbcType=DECIMAL}
 			</if>
 		</where>
@@ -38,11 +59,11 @@
 		from VIEW_GQJ_MATERIAL_INVENTORY
 		<where>
 			<if test="storeId != null">
-				STORE_ID =
+				and STORE_ID =
 				#{storeId,jdbcType=DECIMAL}
 			</if>
 			<if test="posId != null">
-				POS_ID =
+				and POS_ID =
 				#{posId,jdbcType=DECIMAL}
 			</if>
 		</where>

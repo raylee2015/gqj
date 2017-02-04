@@ -3,7 +3,7 @@ package com.gqj.entity;
 import com.base.entity.Base;
 
 public class MaterialInventory extends Base {
-	private Long inventAmount;
+	private Double inventAmount;
 
 	private Long baseToolId;
 
@@ -27,7 +27,7 @@ public class MaterialInventory extends Base {
 		this.posId = posId;
 	}
 
-	public Long getInventAmount() {
+	public Double getInventAmount() {
 		return inventAmount;
 	}
 
@@ -35,7 +35,7 @@ public class MaterialInventory extends Base {
 		return storeId;
 	}
 
-	public void setInventAmount(Long inventAmount) {
+	public void setInventAmount(Double inventAmount) {
 		this.inventAmount = inventAmount;
 	}
 

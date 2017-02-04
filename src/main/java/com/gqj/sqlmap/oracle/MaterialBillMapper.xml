@@ -204,6 +204,13 @@
 				BILL_REMARK = #{billRemark,jdbcType=VARCHAR},
 			</if>
 		</set>
-		where BILL_ID = #{billId,jdbcType=DECIMAL}
+		<where>
+			<if test="billId != null">
+				AND BILL_ID =#{billId}
+			</if>
+			<if test="ids != null">
+				AND BILL_ID in (${ids})
+			</if>
+		</where>
 	</update>
 </mapper>

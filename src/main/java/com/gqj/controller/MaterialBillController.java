@@ -134,6 +134,36 @@ public class MaterialBillController extends BaseController {
 	}
 
 	/**
+	 * 确认出入库单据
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/confirmMaterialBills.do")
+	@ResponseBody
+	public Map<String, Object> confirmMaterialBills(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String materialBillIds = request
+				.getParameter("BILL_IDS");
+		String materialBillType = request
+				.getParameter("BILL_TYPE");
+		MaterialBill materialBill = new MaterialBill();
+		materialBill.setIds(materialBillIds);
+		materialBill.setBillType(
+				BaseUtil.strToLong(materialBillType));
+		materialBill.setBillConfirmTime(new Date());
+		materialBill.setBillConfirmUserId(
+				getSessionUser(request, response)
+						.getUserId());
+		return materialBillService
+				.confirmMaterialBillsAndDetails(
+						materialBill);
+	}
+
+	/**
 	 * 弹出选择工器具管理操作页面
 	 * 
 	 * @return

@@ -1,5 +1,6 @@
 package com.gqj.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import com.gqj.dao.MaterialBillMapper;
 import com.gqj.entity.MaterialBill;
 import com.gqj.service.IMaterialBillDetailService;
 import com.gqj.service.IMaterialBillService;
+import com.gqj.service.IMaterialInventoryService;
 
 @Service
 public class MaterialBillServiceImpl
@@ -19,6 +21,9 @@ public class MaterialBillServiceImpl
 
 	@Autowired
 	private MaterialBillMapper materialBillMapper;
+
+	@Autowired
+	private IMaterialInventoryService materialInventoryService;
 
 	@Autowired
 	private IMaterialBillDetailService materialBillDetailService;
@@ -117,6 +122,27 @@ public class MaterialBillServiceImpl
 			map.put("success", true);
 			map.put("msg", "保存成功");
 		}
+		return map;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public synchronized Map<String, Object> confirmMaterialBillsAndDetails(
+			MaterialBill materialBill) {
+		// a-修改单据
+		materialBillMapper
+				.updateByPrimaryKeySelective(materialBill);
+		// b-修改库存
+		// 1.查询单据明细
+		Map<String, Object> materialDetailMap = materialBillDetailService
+				.selectMaterialBillDetailsForList(
+						materialBill);
+		ArrayList<HashMap<String, Object>> materialBillDetailList = (ArrayList<HashMap<String, Object>>) materialDetailMap
+				.get("rows");
+		// 2.修改库存
+		Map<String, Object> map = materialInventoryService
+				.updateMaterialInventory(materialBill,
+						materialBillDetailList);
 		return map;
 	}
 

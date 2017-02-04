@@ -87,6 +87,22 @@
 		}
 	}
 
+	//确认
+	function confirmMaterialBills() {
+		if (checkSelectedItems('datagridForMaterialBill', '请选择批次')) {
+			var ids = getIdsOfSelectedItems('datagridForMaterialBill',
+					'BILL_ID');
+			if (ids != null && ids != '') {
+				var params = {
+					BILL_IDS : ids,
+					BILL_TYPE : getTextBoxValue('billTypeTextInput')
+				};
+				showMessageBox(params, 'confirmMaterialBills.do', '是否确认所选批次?',
+						successFunctionForOption);
+			}
+		}
+	}
+
 	//回调函数，删除或其他操作成功后调用
 	function successFunctionForOption(result) {
 		showMessage(result.msg, result.msg);
@@ -150,10 +166,19 @@
 										title : '操作',
 										formatter : function(fieldValue,
 												rowData, rowIndex) {
-											var btn = '<a class="easyui-linkbutton" '
-													+ ' onclick="toDetail(\''
-													+ rowIndex
-													+ '\')" href="javascript:void(0)">编辑</a>';
+											var billConfirmUserId = rowData.BILL_CONFIRM_USER_ID;
+											var btn = '';
+											if (billConfirmUserId == null) {
+												btn = '<a class="easyui-linkbutton" '
+														+ ' onclick="toDetail(\''
+														+ rowIndex
+														+ '\')" href="javascript:void(0)">编辑</a>';
+											} else {
+												btn = '<a class="easyui-linkbutton" '
+														+ ' onclick="toDetail(\''
+														+ rowIndex
+														+ '\')" href="javascript:void(0)">查看</a>';
+											}
 											return btn;
 										}
 									}, {
@@ -177,6 +202,26 @@
 										title : '确认时间',
 										width : 100,
 									} ] ],
+							onLoadSuccess : function(data) {
+								if (data.rows.length > 0) {
+									//循环判断操作为新增的不能选择
+									for (var i = 0; i < data.rows.length; i++) {
+										//根据operate让某些行不可选
+										if (data.rows[i].BILL_CONFIRM_USER_ID != null) {
+											$("input[type='checkbox']")[i + 1].disabled = true;
+											data.rows[i].disabled = true;
+										}
+									}
+								}
+							},
+							onCheckAll : function(rows) {
+								for (var i = 0; i < rows.length; i++) {
+									if (rows[i].disabled) {
+										$("#datagridForMaterialBill").datagrid(
+												'uncheckRow', i);
+									}
+								}
+							},
 							onLoadError : function() {
 								errorFunctionForQuery();
 							}
@@ -332,10 +377,12 @@
 	//编辑界面
 	function toDetail(rowIndex) {
 		if (rowIndex != null) {
-			opType = 'edit';
 			rowIndexOfDataGrid = rowIndex;
 			var rowData = getRowDataOfSelfDataGrid('datagridForMaterialBill',
 					rowIndex);
+			var billConfirmUserId = rowData.BILL_CONFIRM_USER_ID;
+
+			opType = 'edit';
 			queryMaterialBillDetailsForList(rowData);
 			setTextBoxValue('materialBillCodeTextInput', rowData.BILL_CODE);
 			setTextBoxValue('materialBillRemarkTextInput', rowData.BILL_REMARK);
@@ -344,6 +391,15 @@
 				text : rowData.STORE_NAME,
 				width : 200
 			});
+
+			if (billConfirmUserId != null) {
+				$('#saveBtn').linkbutton({
+					disabled : true
+				});
+				$('#addToolsBtn').linkbutton({
+					disabled : true
+				});
+			}
 		} else {
 			opType = 'add';
 			queryNewMaterialBillCode();
@@ -387,10 +443,21 @@
 		$('#materialBillDetailUI').panel('collapse');
 		rowIndexOfDataGrid = 0;
 		setTextBoxValue('materialBillCodeTextInput', '');
+		setTextBoxValue('materialBillRemarkTextInput', '');
+		setTextBoxValue('storageIdTextInput', '');
 		//清空明细列表
 		dataGridLoadData('datagridForMaterialBillDetail', {
 			total : 0,
 			rows : []
+		});
+		$('#saveBtn').linkbutton({
+			disabled : false
+		});
+		$('#addToolsBtn').linkbutton({
+			disabled : false
+		});
+		$('#storageNameBtn').linkbutton({
+			text : '选择仓库'
 		});
 	}
 
@@ -483,7 +550,10 @@
 						iconCls="icon-add" plain="true" onclick="toDetail()">添加</a>
 						<a href="#" class="easyui-linkbutton"
 						iconCls="icon-remove" plain="true"
-						onclick="delMaterialBills()">删除</a></td>
+						onclick="delMaterialBills()">删除</a><a href="#"
+						class="easyui-linkbutton"
+						iconCls="icon-application_go" plain="true"
+						onclick="confirmMaterialBills()">确认</a></td>
 					<td align="right"><input
 						id="keyWordForMaterialBillTextInput"
 						class="easyui-textbox"
@@ -504,8 +574,9 @@
 			<div>
 				<a href="#" class="easyui-linkbutton" plain="true"
 					iconCls="icon-arrow_left" onclick="toList()">返回</a> <a
-					href="#" class="easyui-linkbutton" iconCls="icon-ok"
-					plain="true" onclick="saveMaterialBill()">保存</a><a
+					id="saveBtn" href="#" class="easyui-linkbutton"
+					iconCls="icon-ok" plain="true"
+					onclick="saveMaterialBill()">保存</a><a id="addToolsBtn"
 					href="#" class="easyui-linkbutton" iconCls="icon-add"
 					plain="true"
 					onclick="openChooseBaseToolUIForMaterialBill()">添加工器具</a>

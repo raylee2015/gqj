@@ -14,6 +14,9 @@ public interface MaterialInventoryMapper {
 
 	List<Map<String, Object>> selectMaterialInventorysForPage(
 			MaterialInventory materialInventory);
+	
+	List<Map<String, Object>> selectMaterialInventorysForList(
+			MaterialInventory materialInventory);
 
 	int selectCountOfMaterialInventorysForPage(
 			MaterialInventory materialInventory);
