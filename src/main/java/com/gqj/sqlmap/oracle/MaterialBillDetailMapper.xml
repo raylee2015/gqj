@@ -10,16 +10,16 @@
 		<result column="DETAIL_REMARK" jdbcType="VARCHAR" property="detailRemark" />
 		<result column="POS_ID" jdbcType="DECIMAL" property="posId" />
 	</resultMap>
-	<select id="selectMaterialBillDetailsForPage" parameterType="com.gqj.entity.MaterialBillDetail"
+	<select id="selectMaterialBillDetailsForList" parameterType="com.gqj.entity.MaterialBill"
 		resultType="java.util.HashMap">
-		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select
 		DETAIL_ID,
 		DETAIL_BILL_AMOUNT,
 		DETAIL_REMARK,BILL_ID,BILL_CODE,BILL_TYPE,BILL_TYPE_NAME,
 		BASE_TOOL_ID,BASE_TOOL_MODEL,BASE_TOOL_SPEC,BASE_TOOL_REMARK,
-		TOOL_DEMAND_ID,BASE_TOOL_NAME,MAN_ID,MAN_NAME,
-		POS_ID,POS_NAME
+		TOOL_DEMAND_ID,BASE_TOOL_NAME,MAN_ID,MAN_NAME AS
+		BASE_TOOL_MANUFACTURER_NAME,
+		POS_ID,POS_NAME,BASE_TOOL_TYPE_NAME
 		from
 		VIEW_GQJ_MATERIAL_BILL_DETAIL
 		<where>
@@ -27,19 +27,7 @@
 				AND BILL_ID = #{billId}
 			</if>
 		</where>
-		order by DETAIL_ID DESC
-		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
-		) WHERE num<![CDATA[>=]]>
-		(1+(${currPage}-1)*${pageSize})
-	</select>
-	<select id="selectCountOfMaterialBillDetailsForPage"
-		parameterType="com.gqj.entity.MaterialBillDetail" resultType="java.lang.Integer">
-		select count(t.DETAIL_ID) from VIEW_GQJ_MATERIAL_BILL_DETAIL t
-		<where>
-			<if test="billId != null">
-				AND BILL_ID =#{billId}
-			</if>
-		</where>
+		order by DETAIL_ID
 	</select>
 	<delete id="deleteByMaterialBill" parameterType="com.gqj.entity.MaterialBill">
 		delete from

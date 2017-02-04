@@ -73,6 +73,10 @@
 		where BILL_ID in (${ids})
 	</delete>
 	<insert id="insertSelective" parameterType="com.gqj.entity.MaterialBill">
+		<selectKey resultType="java.lang.Long" order="BEFORE"
+			keyProperty="billId">
+			select GQJ_MATERIAL_BILL_SEQ.nextval from dual
+		</selectKey>
 		insert into GQJ_MATERIAL_BILL
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="billId != null">
@@ -117,7 +121,7 @@
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="billId != null">
-				GQJ_MATERIAL_BILL_SEQ.nextval,
+				#{billId},
 			</if>
 			<if test="storeId != null">
 				#{storeId,jdbcType=DECIMAL},

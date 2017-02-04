@@ -7,8 +7,8 @@ import com.gqj.entity.MaterialBill;
 import com.gqj.entity.MaterialBillDetail;
 
 public interface MaterialBillDetailMapper {
-	List<Map<String, Object>> selectMaterialBillDetailsForPage(
-			MaterialBillDetail materialBillDetail);
+	List<Map<String, Object>> selectMaterialBillDetailsForList(
+			MaterialBill materialBill);
 
 	int selectCountOfMaterialBillDetailsForPage(
 			MaterialBillDetail materialBillDetail);

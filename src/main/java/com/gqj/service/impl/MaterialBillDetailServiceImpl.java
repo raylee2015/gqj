@@ -1,97 +1,68 @@
 package com.gqj.service.impl;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.base.util.BaseUtil;
+import com.gqj.dao.MaterialBillDetailMapper;
 import com.gqj.entity.MaterialBill;
+import com.gqj.entity.MaterialBillDetail;
 import com.gqj.service.IMaterialBillDetailService;
 
 @Service
 public class MaterialBillDetailServiceImpl
 		implements IMaterialBillDetailService {
 
+	@Autowired
+	private MaterialBillDetailMapper materialBillDetailMapper;
+
 	@Override
 	public int deleteByMaterialBill(
 			MaterialBill materialBill) {
-		// TODO Auto-generated method stub
-		return 0;
+		return materialBillDetailMapper
+				.deleteByMaterialBill(materialBill);
 	}
 
 	@Override
 	public int addMaterialBillDetails(long materialBillId,
-			String tools) {
-		// TODO Auto-generated method stub
-		return 0;
+			String baseToolIds, String baseToolPosIds,
+			String detailBillAmounts) {
+		String[] baseToolId_arr = baseToolIds.split(",");
+		String[] baseToolPosId_arr = baseToolPosIds
+				.split(",");
+		String[] detailBillAmount_arr = detailBillAmounts
+				.split(",");
+		int bool = 0;
+		for (int i = 0; i < baseToolId_arr.length; i++) {
+			MaterialBillDetail materialBillDetail = new MaterialBillDetail();
+			materialBillDetail.setDetailId(-1l);
+			materialBillDetail.setBillId(materialBillId);
+			materialBillDetail.setBaseToolId(
+					BaseUtil.strToLong(baseToolId_arr[i]));
+			materialBillDetail.setPosId(BaseUtil
+					.strToLong(baseToolPosId_arr[i]));
+			materialBillDetail.setDetailBillAmount(BaseUtil
+					.strToDouble(detailBillAmount_arr[i]));
+			bool = materialBillDetailMapper
+					.insertSelective(materialBillDetail);
+		}
+		return bool;
 	}
 
 	@Override
 	public Map<String, Object> selectMaterialBillDetailsForList(
 			MaterialBill materialBill) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Map<String, Object>> materialBillDetails = materialBillDetailMapper
+				.selectMaterialBillDetailsForList(
+						materialBill);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("rows", materialBillDetails);
+		map.put("total", materialBillDetails.size());
+		return map;
 	}
-
-	// @Autowired
-	// private MaterialBillDetailMapper materialBillDetailMapper;
-	//
-	// @Override
-	// public int deleteByMaterialBill(
-	// MaterialBill materialBill) {
-	// return materialBillDetailMapper
-	// .deleteByMaterialBill(materialBill);
-	// }
-	//
-	// @Override
-	// public int addMaterialBillDetails(long materialBillId,
-	// String toolIds) {
-	// String[] toolId_arr = toolIds.split(",");
-	// int bool = 0;
-	// for (int i = 0; i < toolId_arr.length; i++) {
-	// MaterialBillDetail materialBillDetail = new MaterialBillDetail();
-	// materialBillDetail.setDetailId(-1l);
-	// materialBillDetail.setBillId(materialBillId);
-	// materialBillDetail.setBaseToolId(
-	// BaseUtil.strToLong(toolId_arr[i]));
-	// bool = materialBillDetailMapper
-	// .insertSelective(materialBillDetail);
-	// }
-	// return bool;
-	// }
-	//
-	// @Override
-	// public Map<String, Object> selectMaterialBillDetailsForPage(
-	// MaterialBillDetail materialBill) {
-	// List<Map<String, Object>> materialBills = materialBillDetailMapper
-	// .selectMaterialBillDetailsForPage(
-	// materialBill);
-	// int count = materialBillDetailMapper
-	// .selectCountOfMaterialBillDetailsForPage(
-	// materialBill);
-	// Map<String, Object> map = new HashMap<String, Object>();
-	// map.put("rows", materialBills);
-	// map.put("total", count);
-	// return map;
-	// }
-	//
-	// @Override
-	// public Map<String, Object> selectMaterialBillDetailsForList(
-	// MaterialBill materialBill) {
-	//// List<Map<String, Object>> materialBillDetails =
-	// materialBillDetailMapper
-	//// .selectMaterialBillDetailsForList(
-	//// materialBill);
-	// Map<String, Object> map = new HashMap<String, Object>();
-	// // map.put("rows", materialBillDetails);
-	// // map.put("total", materialBillDetails.size());
-	// return map;
-	// }
-	//
-	// @Override
-	// public int updateMaterialBillDetail(
-	// MaterialBillDetail materialBill) {
-	// return materialBillDetailMapper
-	// .updateByPrimaryKeySelective(materialBill);
-	// }
 
 }

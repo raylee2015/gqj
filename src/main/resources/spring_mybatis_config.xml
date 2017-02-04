@@ -62,7 +62,6 @@
 	<!-- 声明式事务 -->
 	<tx:advice id="txAdvice" transaction-manager="txManager">
 		<tx:attributes>
-			<tx:method name="get*" />
 			<tx:method name="insert*" rollback-for="Throwable" />
 			<tx:method name="update*" rollback-for="Throwable" />
 			<tx:method name="delete*" rollback-for="Throwable" />
@@ -72,8 +71,7 @@
 		</tx:attributes>
 	</tx:advice>
 	<aop:config>
-		<aop:pointcut id="serviceOperation" expression="execution(* com..*.impl.*.*(..))" />
+		<aop:pointcut id="serviceOperation" expression="execution(* *..service*..*(..))" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation" />
 	</aop:config>
-
 </beans>

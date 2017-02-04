@@ -8,16 +8,16 @@ public interface IMaterialBillService {
 	Map<String, Object> deleteMaterialBillsAndDetails(
 			MaterialBill materialBill);
 
-	Map<String, Object> addMaterialBillsAndDetails(
-			MaterialBill materialBill, String tools);
-
 	Map<String, Object> updateMaterialBillsAndDetails(
-			MaterialBill materialBill, String tools);
+			MaterialBill materialBill, String baseToolIds,
+			String baseToolPosIds,
+			String detailBillAmounts);
 
 	Map<String, Object> selectMaterialBillsForPage(
 			MaterialBill materialBill);
 
-	Map<String, Object> selectMaterialBillsForList(
-			MaterialBill materialBill);
+	Map<String, Object> addMaterialBillsAndDetails(
+			MaterialBill materialBill, String baseToolIds,
+			String baseToolPosIds, String baseToolAmounts);
 
 }

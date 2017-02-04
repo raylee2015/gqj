@@ -16,21 +16,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.base.admin.entity.User;
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
 import com.base.util.DateUtil;
-import com.gqj.entity.BaseTool;
 import com.gqj.entity.Manufacturer;
 import com.gqj.entity.MaterialBill;
-import com.gqj.entity.ToolDemand;
+import com.gqj.entity.Position;
+import com.gqj.entity.Storage;
 import com.gqj.entity.ToolType;
 import com.gqj.service.IBaseToolService;
 import com.gqj.service.IManufacturerService;
 import com.gqj.service.IMaterialBillDetailService;
 import com.gqj.service.IMaterialBillService;
+import com.gqj.service.IPositionService;
 import com.gqj.service.ISequenceService;
-import com.gqj.service.IToolDemandService;
+import com.gqj.service.IStorageService;
 import com.gqj.service.IToolTypeService;
 
 @Controller
@@ -40,22 +40,28 @@ public class MaterialBillController extends BaseController {
 			.getLogger(MaterialBillController.class);
 
 	@Autowired
+	private IBaseToolService baseToolService;
+
+	@Autowired
+	private IManufacturerService manufacturerService;
+
+	@Autowired
 	private IMaterialBillDetailService materialBillDetailService;
 
 	@Autowired
 	private IMaterialBillService materialBillService;
 
 	@Autowired
-	private IBaseToolService baseToolService;
-
-	@Autowired
-	private IToolTypeService toolTypeService;
+	private IPositionService positionService;
 
 	@Autowired
 	private ISequenceService sequenceService;
 
 	@Autowired
-	private IManufacturerService manufacturerService;
+	private IStorageService storageService;
+
+	@Autowired
+	private IToolTypeService toolTypeService;
 
 	/**
 	 * 添加出入库单据信息
@@ -71,23 +77,38 @@ public class MaterialBillController extends BaseController {
 	public Map<String, Object> addNewMaterialBillsAndDetails(
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String materialBillName = request
-				.getParameter("TEMPLATE_NAME");
-		String toolIds = request.getParameter("TOOL_IDS");
+		String materialBillCode = request
+				.getParameter("BILL_CODE");
+		String materialBillRemark = request
+				.getParameter("BILL_REMARK");
+		String materialBillType = request
+				.getParameter("BILL_TYPE");
+		String storeId = request.getParameter("STORE_ID");
+		String baseToolIds = request
+				.getParameter("BASE_TOOL_IDS");
+		String baseToolPosIds = request
+				.getParameter("BASE_TOOL_POS_IDS");
+		String detailBillAmounts = request
+				.getParameter("DETAIL_BILL_AMOUNTS");
 		long materialBillDeptId = getSessionUser(request,
 				response).getUserDeptId();
 		MaterialBill materialBill = new MaterialBill();
-		// materialBill.setMaterialBillId(-1l);
-		// materialBill.setMaterialBillName(materialBillName);
-		// materialBill
-		// .setMaterialBillDeptId(materialBillDeptId);
-		// materialBill.setMaterialBillCreateUserId(
-		// getSessionUser(request, response)
-		// .getUserId());
-		// materialBill.setMaterialBillCreateDate(new Date());
+		materialBill.setBillId(-1l);
+		materialBill.setBillCode(materialBillCode);
+		materialBill.setBillRemark(materialBillRemark);
+		materialBill
+				.setStoreId(BaseUtil.strToLong(storeId));
+		materialBill.setBillCreateUserId(
+				getSessionUser(request, response)
+						.getUserId());
+		materialBill.setBillType(
+				BaseUtil.strToLong(materialBillType));
+		materialBill.setBillDeptId(materialBillDeptId);
+		materialBill.setBillCreateTime(new Date());
 		return materialBillService
 				.addMaterialBillsAndDetails(materialBill,
-						toolIds);
+						baseToolIds, baseToolPosIds,
+						detailBillAmounts);
 	}
 
 	/**
@@ -113,7 +134,7 @@ public class MaterialBillController extends BaseController {
 	}
 
 	/**
-	 * 跳转到出入库单据管理操作页面
+	 * 弹出选择工器具管理操作页面
 	 * 
 	 * @return
 	 */
@@ -126,75 +147,49 @@ public class MaterialBillController extends BaseController {
 	}
 
 	/**
-	 * 查询出入库单据明细列表
+	 * 弹出选择仓位管理操作页面
 	 * 
-	 * @param request
-	 * @param response
 	 * @return
-	 * @throws Exception
 	 */
-	@RequestMapping("/queryMaterialBillDetailsForList.do")
-	@ResponseBody
-	public Map<String, Object> queryMaterialBillDetailsForList(
+	@RequestMapping(value = "/openChoosePositionUI.do", method = RequestMethod.GET)
+	public ModelAndView openChoosePositionUI(
 			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String materialBillId = request
-				.getParameter("BILL_ID");
-		MaterialBill materialBill = new MaterialBill();
-		materialBill.setBillId(
-				BaseUtil.strToLong(materialBillId));
-		return materialBillDetailService
-				.selectMaterialBillDetailsForList(
-						materialBill);
+			HttpServletResponse response) {
+		return new ModelAndView(
+				"/gqj/material_bill/choosePositionUI");
 	}
 
 	/**
-	 * 分页查询出入库单据列表
+	 * 弹出选择仓库管理操作页面
 	 * 
-	 * @param request
-	 * @param response
 	 * @return
-	 * @throws Exception
 	 */
-	@RequestMapping("/queryMaterialBillForList.do")
-	@ResponseBody
-	public Map<String, Object> queryMaterialBillForList(
+	@RequestMapping(value = "/openChooseStorageUI.do", method = RequestMethod.GET)
+	public ModelAndView openChooseStorageUI(
 			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		User user = getSessionUser(request, response);
-		MaterialBill materialBill = new MaterialBill();
-		return materialBillService
-				.selectMaterialBillsForList(materialBill);
+			HttpServletResponse response) {
+		return new ModelAndView(
+				"/gqj/material_bill/chooseStorageUI");
 	}
 
 	/**
-	 * 分页查询出入库单据列表
+	 * 查询下拉列表
 	 * 
 	 * @param request
 	 * @param response
-	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryMaterialBillsPage.do")
+	@RequestMapping("/queryBaseToolManufacturerDropList.do")
 	@ResponseBody
-	public Map<String, Object> queryMaterialBillsPage(
+	public void queryBaseToolManufacturerDropList(
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String page = request.getParameter("page");
-		String rows = request.getParameter("rows");
-		long materialBillDeptId = getSessionUser(request,
-				response).getUserDeptId();
-		String keyWord = request.getParameter("keyWord");
-		String billType = request.getParameter("BILL_TYPE");
-		MaterialBill materialBill = new MaterialBill();
-		materialBill.setCurrPage(Integer.parseInt(page));
-		materialBill.setPageSize(Integer.parseInt(rows));
-		materialBill.setBillDeptId(materialBillDeptId);
-		materialBill
-				.setBillType(BaseUtil.strToLong(billType));
-		materialBill.setKeyWord(keyWord);
-		return materialBillService
-				.selectMaterialBillsForPage(materialBill);
+		response.getWriter()
+				.print(manufacturerService
+						.selectManufacturersForList(
+								new Manufacturer()));
+		response.getWriter().flush();
+		response.getWriter().close();
 	}
 
 	/**
@@ -252,6 +247,59 @@ public class MaterialBillController extends BaseController {
 	}
 
 	/**
+	 * 查询出入库单据明细列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryMaterialBillDetailsForList.do")
+	@ResponseBody
+	public Map<String, Object> queryMaterialBillDetailsForList(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String materialBillId = request
+				.getParameter("BILL_ID");
+		MaterialBill materialBill = new MaterialBill();
+		materialBill.setBillId(
+				BaseUtil.strToLong(materialBillId));
+		return materialBillDetailService
+				.selectMaterialBillDetailsForList(
+						materialBill);
+	}
+
+	/**
+	 * 分页查询出入库单据列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryMaterialBillsPage.do")
+	@ResponseBody
+	public Map<String, Object> queryMaterialBillsPage(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		long materialBillDeptId = getSessionUser(request,
+				response).getUserDeptId();
+		String keyWord = request.getParameter("keyWord");
+		String billType = request.getParameter("BILL_TYPE");
+		MaterialBill materialBill = new MaterialBill();
+		materialBill.setCurrPage(Integer.parseInt(page));
+		materialBill.setPageSize(Integer.parseInt(rows));
+		materialBill.setBillDeptId(materialBillDeptId);
+		materialBill
+				.setBillType(BaseUtil.strToLong(billType));
+		materialBill.setKeyWord(keyWord);
+		return materialBillService
+				.selectMaterialBillsForPage(materialBill);
+	}
+
+	/**
 	 * 查询新的批次
 	 * 
 	 * @param request
@@ -287,23 +335,56 @@ public class MaterialBillController extends BaseController {
 	}
 
 	/**
-	 * 查询下拉列表
+	 * 分页查询仓位列表
 	 * 
 	 * @param request
 	 * @param response
+	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryBaseToolManufacturerDropList.do")
+	@RequestMapping("/queryPositionsPage.do")
 	@ResponseBody
-	public void queryBaseToolManufacturerDropList(
+	public Map<String, Object> queryPositionsPage(
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter()
-				.print(manufacturerService
-						.selectManufacturersForList(
-								new Manufacturer()));
-		response.getWriter().flush();
-		response.getWriter().close();
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String keyWord = request.getParameter("keyWord");
+		String storeId = request.getParameter("STORE_ID");
+		Position position = new Position();
+		position.setCurrPage(BaseUtil.strToInt(page));
+		position.setPageSize(BaseUtil.strToInt(rows));
+		position.setKeyWord(keyWord);
+		position.setStoreId(BaseUtil.strToLong(storeId));
+		return positionService
+				.selectPositionsForPage(position);
+	}
+
+	/**
+	 * 分页查询仓库列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryStoragesPage.do")
+	@ResponseBody
+	public Map<String, Object> queryStoragesPage(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		long storageDeptId = getSessionUser(request,
+				response).getUserDeptId();
+		String keyWord = request.getParameter("keyWord");
+		Storage storage = new Storage();
+		storage.setCurrPage(BaseUtil.strToInt(page));
+		storage.setPageSize(BaseUtil.strToInt(rows));
+		storage.setStoreDeptId(storageDeptId);
+		storage.setKeyWord(keyWord);
+		return storageService
+				.selectStoragesForPage(storage);
 	}
 
 	/**
@@ -331,25 +412,39 @@ public class MaterialBillController extends BaseController {
 			HttpServletResponse response) throws Exception {
 		String materialBillId = request
 				.getParameter("BILL_ID");
-		String materialBillName = request
-				.getParameter("TEMPLATE_NAME");
-		String toolIds = request.getParameter("TOOL_IDS");
+		String materialBillCode = request
+				.getParameter("BILL_CODE");
+		String materialBillRemark = request
+				.getParameter("BILL_REMARK");
+		String materialBillType = request
+				.getParameter("BILL_TYPE");
+		String storeId = request.getParameter("STORE_ID");
+		String baseToolIds = request
+				.getParameter("BASE_TOOL_IDS");
+		String baseToolPosIds = request
+				.getParameter("BASE_TOOL_POS_IDS");
+		String detailBillAmounts = request
+				.getParameter("DETAIL_BILL_AMOUNTS");
 		long materialBillDeptId = getSessionUser(request,
 				response).getUserDeptId();
 		MaterialBill materialBill = new MaterialBill();
-		// materialBill.setMaterialBillId(
-		// BaseUtil.strToLong(materialBillId));
-		// materialBill.setIds(materialBillId);
-		// materialBill.setMaterialBillName(materialBillName);
-		// materialBill
-		// .setMaterialBillDeptId(materialBillDeptId);
-		// materialBill.setMaterialBillCreateUserId(
-		// getSessionUser(request, response)
-		// .getUserId());
-		// materialBill.setMaterialBillCreateDate(new Date());
+		materialBill.setBillId(
+				BaseUtil.strToLong(materialBillId));
+		materialBill.setBillCode(materialBillCode);
+		materialBill.setBillRemark(materialBillRemark);
+		materialBill
+				.setStoreId(BaseUtil.strToLong(storeId));
+		materialBill.setBillCreateUserId(
+				getSessionUser(request, response)
+						.getUserId());
+		materialBill.setBillType(
+				BaseUtil.strToLong(materialBillType));
+		materialBill.setBillDeptId(materialBillDeptId);
+		materialBill.setBillCreateTime(new Date());
 		return materialBillService
 				.updateMaterialBillsAndDetails(materialBill,
-						toolIds);
+						baseToolIds, baseToolPosIds,
+						detailBillAmounts);
 	}
 
 }

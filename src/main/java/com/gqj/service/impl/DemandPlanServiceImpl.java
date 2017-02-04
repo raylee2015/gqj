@@ -18,8 +18,6 @@ import com.gqj.service.IDemandPlanDetailService;
 import com.gqj.service.IDemandPlanService;
 import com.gqj.util.PlanStatus;
 
-import oracle.net.aso.p;
-
 @Service
 public class DemandPlanServiceImpl
 		implements IDemandPlanService {

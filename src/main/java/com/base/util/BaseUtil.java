@@ -24,24 +24,26 @@ public class BaseUtil {
 	 *            孩子的名称
 	 * @return
 	 */
-	public static JSONArray list2Tree(JSONArray list, long parentId,
-			String idName, String upIdName, String childName) {
+	public static JSONArray list2Tree(JSONArray list,
+			long parentId, String idName, String upIdName,
+			String childName) {
 		JSONArray childMenu = new JSONArray();
 		for (Object object : list) {
-			JSONObject jsonMenu = JSONObject.fromObject(object);
-			long menuId = jsonMenu
-					.getLong(idName.toString().toUpperCase());
+			JSONObject jsonMenu = JSONObject
+					.fromObject(object);
+			long menuId = jsonMenu.getLong(
+					idName.toString().toUpperCase());
 			long pid = 0;
-			if (jsonMenu
-					.get(upIdName.toString().toUpperCase()) != null) {
-				pid = jsonMenu
-						.getLong(upIdName.toString().toUpperCase());
+			if (jsonMenu.get(upIdName.toString()
+					.toUpperCase()) != null) {
+				pid = jsonMenu.getLong(
+						upIdName.toString().toUpperCase());
 			} else {
 				pid = -1;
 			}
 			if (parentId == pid) {
-				JSONArray c_node = list2Tree(list, menuId, idName,
-						upIdName, childName);
+				JSONArray c_node = list2Tree(list, menuId,
+						idName, upIdName, childName);
 				if (!c_node.isEmpty()) {
 					jsonMenu.put(childName, c_node);
 				}
@@ -66,6 +68,23 @@ public class BaseUtil {
 	public static Integer strToInt(String param) {
 		if (param != null && param != "") {
 			return Integer.parseInt(param);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * @Description: 字符串转double
+	 * @Author: RayLee
+	 * @Version: 1.0
+	 * @date 2016年12月2日
+	 * @param param
+	 *            传入参数
+	 * @return
+	 */
+	public static Double strToDouble(String param) {
+		if (param != null && param != "") {
+			return Double.parseDouble(param);
 		} else {
 			return null;
 		}
@@ -98,12 +117,14 @@ public class BaseUtil {
 	 * @return
 	 */
 	public final static String MD5(String param) {
-		char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7',
-				'8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+		char hexDigits[] = { '0', '1', '2', '3', '4', '5',
+				'6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
+				'F' };
 		try {
 			byte[] btInput = param.getBytes();
 			// 获得MD5摘要算法的 MessageDigest 对象
-			MessageDigest mdInst = MessageDigest.getInstance("MD5");
+			MessageDigest mdInst = MessageDigest
+					.getInstance("MD5");
 			// 使用指定的字节更新摘要
 			mdInst.update(btInput);
 			// 获得密文
@@ -167,7 +188,8 @@ public class BaseUtil {
 						case '7':
 						case '8':
 						case '9':
-							value = (value << 4) + aChar - '0';
+							value = (value << 4) + aChar
+									- '0';
 							break;
 						case 'a':
 						case 'b':
@@ -175,7 +197,8 @@ public class BaseUtil {
 						case 'd':
 						case 'e':
 						case 'f':
-							value = (value << 4) + 10 + aChar - 'a';
+							value = (value << 4) + 10
+									+ aChar - 'a';
 							break;
 						case 'A':
 						case 'B':
@@ -183,7 +206,8 @@ public class BaseUtil {
 						case 'D':
 						case 'E':
 						case 'F':
-							value = (value << 4) + 10 + aChar - 'A';
+							value = (value << 4) + 10
+									+ aChar - 'A';
 							break;
 						default:
 							throw new IllegalArgumentException(

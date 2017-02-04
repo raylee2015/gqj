@@ -30,7 +30,7 @@
 <script type="text/javascript"
 	src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
-	//关闭编辑窗口
+	//关闭选择工器具窗口
 	function closeChooseBaseToolUIForMaterialBill() {
 		closeUI('chooseBaseToolUIForMaterialBill')
 	}
@@ -42,16 +42,46 @@
 		openUI('chooseBaseToolUIForMaterialBill');
 	}
 
+	//关闭选择仓库窗口
+	function closeChooseStorageUIForMaterialBill() {
+		closeUI('chooseStorageUIForMaterialBill')
+	}
+
+	//打开选择仓库窗口
+	function openChooseStorageUIForMaterialBill() {
+		createModalDialog("chooseStorageUIForMaterialBill",
+				"openChooseStorageUI.do?opType=add", "选择仓库", 500, 500);
+		openUI('chooseStorageUIForMaterialBill');
+	}
+
+	//关闭选择仓位窗口
+	function closeChoosePositionUIForMaterialBill() {
+		closeUI('choosePositionUIForMaterialBill')
+	}
+
+	//打开选择仓位窗口
+	function openChoosePositionUIForMaterialBill(rowIndex, storeId) {
+		var storeId = getTextBoxValue('storageIdTextInput');
+		if (storeId == null || storeId == '') {
+			alert("请选择仓库");
+			return;
+		}
+		createModalDialog("choosePositionUIForMaterialBill",
+				"openChoosePositionUI.do?rowIndex=" + rowIndex + "&STORE_ID="
+						+ storeId, "选择仓库", 500, 500);
+		openUI('choosePositionUIForMaterialBill');
+	}
+
 	//删除
 	function delMaterialBills() {
-		if (checkSelectedItems('datagridForMaterialBill', '请选择工器具')) {
+		if (checkSelectedItems('datagridForMaterialBill', '请选择批次')) {
 			var ids = getIdsOfSelectedItems('datagridForMaterialBill',
 					'BILL_ID');
 			if (ids != null && ids != '') {
 				var params = {
 					BILL_IDS : ids
 				};
-				showMessageBox(params, 'delMaterialBills.do', '是否删除所选工器具?',
+				showMessageBox(params, 'delMaterialBills.do', '是否删除所选批次?',
 						successFunctionForOption);
 			}
 		}
@@ -204,20 +234,48 @@
 										width : 100
 									},
 									{
-										field : 'BASE_TOOL_AMOUNT',
+										field : 'choosePosition',
+										title : '选择仓位',
+										align : 'center',
+										width : 150,
+										formatter : function(fieldValue,
+												rowData, rowIndex) {
+											var btn = '';
+											if (rowData.POS_NAME != null) {
+												btn = '<a class="choose_position_btn_class" width="100%" '
+														+ ' onclick="openChoosePositionUIForMaterialBill(\''
+														+ rowIndex
+														+ '\',\''
+														+ getTextBoxValue('storageIdTextInput')
+														+ '\')" href="javascript:void(0)">'
+														+ rowData.POS_NAME
+														+ '</a>';
+											} else {
+												btn = '<a class="choose_position_btn_class" width="100%" '
+														+ ' onclick="openChoosePositionUIForMaterialBill(\''
+														+ rowIndex
+														+ '\',\''
+														+ getTextBoxValue('storageIdTextInput')
+														+ '\')" href="javascript:void(0)">选择仓位</a>';
+											}
+											return btn;
+										}
+									},
+									{
+										field : 'DETAIL_BILL_AMOUNT',
 										title : '数量',
-										width : 100,
+										width : 150,
 										formatter : function(fieldValue,
 												rowData, rowIndex) {
 											var toolAmount = "";
-											if (typeof (rowData.BASE_TOOL_AMOUNT) == 'undefined') {
+											if (typeof (rowData.DETAIL_BILL_AMOUNT) == 'undefined') {
 												toolAmount = "";
 											} else {
-												toolAmount = rowData.BASE_TOOL_AMOUNT;
+												toolAmount = rowData.DETAIL_BILL_AMOUNT;
 											}
 											var textInput = '<input value="'
 													+ toolAmount
-													+ '" type="text" onchange="setToolAmount('
+													+ '" type="text" onChange="setToolAmount('
 													+ rowIndex
 													+ ',this.value)" />';
 											return textInput;
@@ -225,6 +283,15 @@
 									} ] ],
 							onBeforeLoad : function(param) {
 								param.keyWord = getTextBoxValue('keyWordForMaterialBillTextInput');
+							},
+							onLoadSuccess : function(param) {
+								$(".choose_position_btn_class").linkbutton({
+									plain : true,
+									width : 145
+								});
+								$(".set_tool_amount_textinput_class").textbox({
+									width : 145
+								});
 							},
 							onLoadError : function() {
 								errorFunctionForQuery();
@@ -236,7 +303,7 @@
 	function setToolAmount(rowIndex, newValue) {
 		var rowData = getRowDataOfSelfDataGrid('datagridForMaterialBillDetail',
 				rowIndex);
-		rowData.BASE_TOOL_AMOUNT = newValue;
+		rowData.DETAIL_BILL_AMOUNT = newValue;
 	}
 
 	//删除行数据
@@ -270,7 +337,13 @@
 			var rowData = getRowDataOfSelfDataGrid('datagridForMaterialBill',
 					rowIndex);
 			queryMaterialBillDetailsForList(rowData);
-			setTextBoxValue('materialBillTextInput', rowData.TEMPLATE_NAME);
+			setTextBoxValue('materialBillCodeTextInput', rowData.BILL_CODE);
+			setTextBoxValue('materialBillRemarkTextInput', rowData.BILL_REMARK);
+			setTextBoxValue('storageIdTextInput', rowData.STORE_ID);
+			$('#storageNameBtn').linkbutton({
+				text : rowData.STORE_NAME,
+				width : 200
+			});
 		} else {
 			opType = 'add';
 			queryNewMaterialBillCode();
@@ -290,7 +363,8 @@
 
 	//回调函数，查询成功后调用
 	function successFunctionForQueryMaterialBillCode(result) {
-		setTextBoxText('materialBillTextInput', result);
+		setTextBoxText('materialBillCodeTextInput', result);
+		setTextBoxValue('materialBillCodeTextInput', result);
 	}
 
 	//根据出入库单据id查询明细
@@ -312,7 +386,7 @@
 		$('#materialBillListUI').panel('expand');
 		$('#materialBillDetailUI').panel('collapse');
 		rowIndexOfDataGrid = 0;
-		setTextBoxValue('materialBillTextInput', '');
+		setTextBoxValue('materialBillCodeTextInput', '');
 		//清空明细列表
 		dataGridLoadData('datagridForMaterialBillDetail', {
 			total : 0,
@@ -324,28 +398,43 @@
 	function saveMaterialBill() {
 		var rowData = null;
 		var params = null;
-		var materialBillName = getTextBoxValue('materialBillTextInput');
-		if (materialBillName == null || materialBillName == '') {
-			alert('请填写出入库单据名称');
-			return;
-		}
+		var materialBillCode = getTextBoxValue('materialBillCodeTextInput');
+		var materialBillRemark = getTextBoxValue('materialBillRemarkTextInput');
 		var materialBillDetails = $('#datagridForMaterialBillDetail').datagrid(
 				'getData').rows;
 		if (materialBillDetails.length == 0) {
 			alert('请选中工器具');
 			return;
 		}
-		var toolIds = '';
+		var baseToolIds = '';
+		var baseToolPosIds = '';
+		var baseToolAmountIds = '';
 		for (var i = 0; i < materialBillDetails.length; i++) {
-			toolIds += materialBillDetails[i].BASE_TOOL_ID + ',';
+			if (materialBillDetails[i].POS_ID == null
+					|| materialBillDetails[i].POS_ID == '') {
+				alert('注意：第 ' + (i + 1) + ' 行请选择仓位');
+				return;
+			}
+			baseToolIds += materialBillDetails[i].BASE_TOOL_ID + ',';
+			baseToolPosIds += materialBillDetails[i].POS_ID + ',';
+			baseToolAmountIds += materialBillDetails[i].DETAIL_BILL_AMOUNT
+					+ ',';
 		}
-		toolIds = toolIds.substring(0, toolIds.length - 1);
+		baseToolIds = baseToolIds.substring(0, baseToolIds.length - 1);
+		baseToolPosIds = baseToolPosIds.substring(0, baseToolPosIds.length - 1);
+		baseToolAmountIds = baseToolAmountIds.substring(0,
+				baseToolAmountIds.length - 1);
 
 		if (opType == 'add') {
 			params = {
 				BILL_ID : '',
-				TEMPLATE_NAME : materialBillName,
-				BASE_TOOL_IDS : toolIds
+				BILL_TYPE : getTextBoxValue('billTypeTextInput'),
+				STORE_ID : getTextBoxValue('storageIdTextInput'),
+				BILL_CODE : materialBillCode,
+				BILL_REMARK : materialBillRemark,
+				BASE_TOOL_IDS : baseToolIds,
+				BASE_TOOL_POS_IDS : baseToolPosIds,
+				DETAIL_BILL_AMOUNTS : baseToolAmountIds
 			};
 			url = "addNewMaterialBillsAndDetails.do";
 		} else if (opType == 'edit') {
@@ -353,8 +442,13 @@
 					rowIndexOfDataGrid);
 			params = {
 				BILL_ID : rowData.BILL_ID,
-				TEMPLATE_NAME : materialBillName,
-				BASE_TOOL_IDS : toolIds
+				BILL_TYPE : getTextBoxValue('billTypeTextInput'),
+				STORE_ID : getTextBoxValue('storageIdTextInput'),
+				BILL_CODE : materialBillCode,
+				BILL_REMARK : materialBillRemark,
+				BASE_TOOL_IDS : baseToolIds,
+				BASE_TOOL_POS_IDS : baseToolPosIds,
+				DETAIL_BILL_AMOUNTS : baseToolAmountIds
 			};
 			url = "updateMaterialBillsAndDetails.do";
 		}
@@ -417,10 +511,28 @@
 					onclick="openChooseBaseToolUIForMaterialBill()">添加工器具</a>
 			</div>
 			<div>
-				批次号： <input id="materialBillTextInput"
-					class="easyui-textbox"
-					data-options="prompt:'批次号',validType:'length[0,50]',disabled:true"
-					style="width: 200px">
+				<table>
+					<tr>
+						<td>批次号： <input id="materialBillCodeTextInput"
+							class="easyui-textbox"
+							data-options="prompt:'批次号',validType:'length[0,50]',disabled:true"
+							style="width: 200px"></td>
+						<td>
+							<div style="display: none">
+								<input id="storageIdTextInput"
+									class="easyui-textbox" />
+							</div> 仓库：<a href="#" id="storageNameBtn"
+							class="easyui-linkbutton" style="width: 200px;"
+							onclick="openChooseStorageUIForMaterialBill()">
+								选择仓库</a>
+						</td>
+						<td>备注： <input id="materialBillRemarkTextInput"
+							class="easyui-textbox"
+							data-options="prompt:'备注',validType:'length[0,50]'"
+							style="width: 200px"></td>
+					</tr>
+				</table>
+
 			</div>
 		</div>
 	</div>
