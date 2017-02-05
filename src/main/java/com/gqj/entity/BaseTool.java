@@ -15,6 +15,16 @@ public class BaseTool extends Base {
 
 	private String baseToolRemark;
 
+	private String baseToolName;
+
+	public String getBaseToolName() {
+		return baseToolName;
+	}
+
+	public void setBaseToolName(String baseToolName) {
+		this.baseToolName = baseToolName;
+	}
+
 	public Long getToolDemandId() {
 		return toolDemandId;
 	}

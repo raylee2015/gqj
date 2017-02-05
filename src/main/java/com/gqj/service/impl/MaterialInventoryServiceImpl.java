@@ -21,46 +21,13 @@ public class MaterialInventoryServiceImpl
 	private MaterialInventoryMapper materialInventoryMapper;
 
 	@Override
-	public Map<String, Object> deleteMaterialInventorys(
-			MaterialInventory materialInventory) {
-		Map<String, Object> map = new HashMap<>();
-		int bool = materialInventoryMapper
-				.deleteByPrimaryKeys(materialInventory);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
-		return map;
-	}
-
-	@Override
-	public Map<String, Object> addNewMaterialInventory(
-			MaterialInventory materialInventory) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = materialInventoryMapper
-				.insertSelective(materialInventory);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "保存出错，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "保存成功");
-		}
-		return map;
-	}
-
-	@Override
 	public Map<String, Object> selectMaterialInventorysForPage(
-			MaterialInventory materialInventory) {
+			Map<String, Object> param) {
 		List<Map<String, Object>> materialInventorys = materialInventoryMapper
-				.selectMaterialInventorysForPage(
-						materialInventory);
+				.selectMaterialInventorysForPage(param);
 		int count = materialInventoryMapper
 				.selectCountOfMaterialInventorysForPage(
-						materialInventory);
+						param);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", materialInventorys);
 		map.put("total", count);

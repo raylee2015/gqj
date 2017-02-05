@@ -34,7 +34,8 @@
 	// 保存数据
 	function saveBaseTool() {
 		var params = {
-			BASE_TOOL_ID : getTextBoxValue('bastToolIdTextBox'),
+			BASE_TOOL_ID : getTextBoxValue('baseToolIdTextBox'),
+			BASE_TOOL_NAME : getTextBoxValue('baseToolNameTextBox'),
 			TOOL_DEMAND_ID : getTextBoxValue('baseToolDemandIdTextBox'),
 			MAN_ID : getTextBoxValue('manufacturerIdTextBox'),
 			BASE_TOOL_MODEL : getTextBoxValue('bastToolModelTextBox'),
@@ -65,7 +66,7 @@
 	//初始化表单
 	function initBaseToolForm() {
 		var opType = getTextBoxValue('opType');
-		var postId = getTextBoxValue('bastToolIdTextBox');
+		var postId = getTextBoxValue('baseToolIdTextBox');
 		if (opType == 'edit') {
 			url = "updateBaseTool.do";
 			var rowIndex = getTextBoxValue('rowIndex');
@@ -303,7 +304,7 @@
 					<div style="display: none">
 						<input id="opType" class="easyui-textbox"
 							value="<%=request.getParameter("opType")%>" /> <input
-							id="bastToolIdTextBox" class="easyui-textbox"
+							id="baseToolIdTextBox" class="easyui-textbox"
 							name="BASE_TOOL_ID" /> <input id="rowIndex"
 							class="easyui-textbox"
 							value="<%=request.getParameter("rowIndex")%>" /> <input
@@ -316,8 +317,7 @@
 						<tr>
 							<td width="22%">工器具名称:</td>
 							<td><input id="baseToolNameTextBox"
-								name="BASE_TOOL_NAME" disabled
-								class="easyui-textbox"
+								name="BASE_TOOL_NAME" class="easyui-textbox"
 								style="width: 70%; height: 32px" /> <a href="#"
 								class="easyui-linkbutton"
 								style="width: 29%; height: 32px;"
@@ -408,7 +408,7 @@
 						<tr>
 							<td><input id="keyWordForToolDemandTextInput"
 								class="easyui-textbox"
-								data-options="prompt:'工器具名称',validType:'length[0,50]'"
+								data-options="prompt:'工器具名称',validType:'length[0,50]',require : true"
 								style="width: 150px"> <a href="#"
 								class="easyui-linkbutton" iconCls="icon-search"
 								onclick="queryToolDemandPagesForSearch()">查询</a>

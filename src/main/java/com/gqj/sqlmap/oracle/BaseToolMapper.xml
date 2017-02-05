@@ -115,6 +115,9 @@
 			<if test="baseToolRemark != null">
 				BASE_TOOL_REMARK,
 			</if>
+			<if test="baseToolName != null">
+				BASE_TOOL_NAME,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="baseToolId != null">
@@ -135,6 +138,9 @@
 			<if test="baseToolRemark != null">
 				#{baseToolRemark,jdbcType=VARCHAR},
 			</if>
+			<if test="baseToolName != null">
+				#{baseToolName,jdbcType=VARCHAR},
+			</if>
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.BaseTool">
@@ -154,6 +160,9 @@
 			</if>
 			<if test="baseToolRemark != null">
 				BASE_TOOL_REMARK = #{baseToolRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolName != null">
+				BASE_TOOL_NAME = #{baseToolName,jdbcType=VARCHAR},
 			</if>
 		</set>
 		where BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL}

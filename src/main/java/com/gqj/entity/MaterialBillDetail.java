@@ -1,6 +1,8 @@
 package com.gqj.entity;
 
-public class MaterialBillDetail {
+import com.base.entity.Base;
+
+public class MaterialBillDetail extends Base{
 	private Long detailId;
 
 	private Long baseToolId;

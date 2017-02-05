@@ -32,18 +32,25 @@
 		</where>
 		order by BASE_TOOL_ID desc
 	</select>
-	<select id="selectMaterialInventoryForPage" parameterType="com.gqj.entity.MaterialInventory"
-		resultMap="BaseResultMap">
+	<select id="selectMaterialInventorysForPage" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select
 		<include refid="Base_Column_List" />
 		from VIEW_GQJ_MATERIAL_INVENTORY
 		<where>
-			<if test="storeId != null">
+			<if test="keyWord != null">
+				AND BASE_TOOL_NAME like '%${keyWord}%'
+			</if>
+			<if test="storeDeptId != null">
+				and STORE_DEPT_ID =
+				#{storeDeptId,jdbcType=DECIMAL}
+			</if>
+			<if test="storeId != null and storeId != ''">
 				and STORE_ID =
 				#{storeId,jdbcType=DECIMAL}
 			</if>
-			<if test="posId != null">
+			<if test="posId != null and posId != ''">
 				and POS_ID =
 				#{posId,jdbcType=DECIMAL}
 			</if>
@@ -53,16 +60,23 @@
 		) WHERE num<![CDATA[>=]]>
 		(1+(${currPage}-1)*${pageSize})
 	</select>
-	<select id="selectCountOfMaterialInventoryForPage"
-		parameterType="com.gqj.entity.MaterialInventory" resultMap="BaseResultMap">
+	<select id="selectCountOfMaterialInventorysForPage"
+		parameterType="java.util.HashMap" resultType="java.lang.Integer">
 		select count(*)
 		from VIEW_GQJ_MATERIAL_INVENTORY
 		<where>
-			<if test="storeId != null">
+			<if test="keyWord != null">
+				AND BASE_TOOL_NAME like '%${keyWord}%'
+			</if>
+			<if test="storeDeptId != null">
+				and STORE_DEPT_ID =
+				#{storeDeptId,jdbcType=DECIMAL}
+			</if>
+			<if test="storeId != null and storeId != ''">
 				and STORE_ID =
 				#{storeId,jdbcType=DECIMAL}
 			</if>
-			<if test="posId != null">
+			<if test="posId != null and posId != ''">
 				and POS_ID =
 				#{posId,jdbcType=DECIMAL}
 			</if>

@@ -64,6 +64,8 @@ public class BaseToolController extends BaseController {
 				.getParameter("BASE_TOOL_SPEC");
 		String baseToolRemark = request
 				.getParameter("BASE_TOOL_REMARK");
+		String baseToolName = request
+				.getParameter("BASE_TOOL_NAME");
 		BaseTool baseTool = new BaseTool();
 		baseTool.setBaseToolId(-1l);
 		baseTool.setBaseToolModel(baseToolModel);
@@ -72,6 +74,7 @@ public class BaseToolController extends BaseController {
 		baseTool.setManId(BaseUtil.strToLong(baseManId));
 		baseTool.setToolDemandId(
 				BaseUtil.strToLong(baseToolDemandId));
+		baseTool.setBaseToolName(baseToolName);
 		return baseToolService.addNewBaseTool(baseTool);
 	}
 
@@ -235,6 +238,8 @@ public class BaseToolController extends BaseController {
 				.getParameter("BASE_TOOL_SPEC");
 		String baseToolRemark = request
 				.getParameter("BASE_TOOL_REMARK");
+		String baseToolName = request
+				.getParameter("BASE_TOOL_NAME");
 		BaseTool baseTool = new BaseTool();
 		baseTool.setBaseToolId(
 				BaseUtil.strToLong(baseToolId));
@@ -244,6 +249,7 @@ public class BaseToolController extends BaseController {
 		baseTool.setManId(BaseUtil.strToLong(baseManId));
 		baseTool.setToolDemandId(
 				BaseUtil.strToLong(baseToolDemandId));
+		baseTool.setBaseToolName(baseToolName);
 		return baseToolService.updateBaseTool(baseTool);
 	}
 

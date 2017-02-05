@@ -13,13 +13,13 @@ public interface MaterialInventoryMapper {
 			MaterialInventory materialInventory);
 
 	List<Map<String, Object>> selectMaterialInventorysForPage(
-			MaterialInventory materialInventory);
-	
+			Map<String, Object> param);
+
 	List<Map<String, Object>> selectMaterialInventorysForList(
 			MaterialInventory materialInventory);
 
 	int selectCountOfMaterialInventorysForPage(
-			MaterialInventory materialInventory);
+			Map<String, Object> param);
 
 	int updateByPrimaryKeySelective(
 			MaterialInventory materialInventory);

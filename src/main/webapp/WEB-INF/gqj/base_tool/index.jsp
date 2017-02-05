@@ -44,7 +44,7 @@
 	// 编辑窗口变小
 	function makeEditUISmaller() {
 		$('#editUIForBaseTool').panel('resize', {
-			height : 280
+			height : 300
 		});
 		$('#editUIForBaseTool').window('center');
 	}
@@ -52,7 +52,7 @@
 	//打开编辑窗口
 	function openAddUIForBaseTool() {
 		createModalDialog("editUIForBaseTool", "openEditUI.do?opType=add",
-				"添加工器具基础", 500, 280);
+				"添加工器具基础", 500, 300);
 		openEditUI('editUIForBaseTool');
 	}
 

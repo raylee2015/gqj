@@ -65,4 +65,18 @@ public class MaterialBillDetailServiceImpl
 		return map;
 	}
 
+	@Override
+	public Map<String, Object> selectMaterialBillDetailsForPage(
+			Map<String, Object> param) {
+		List<Map<String, Object>> materialBillDetails = materialBillDetailMapper
+				.selectMaterialBillDetailsForPage(param);
+		int total = materialBillDetailMapper
+				.selectCountOfMaterialBillDetailsForPage(
+						param);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("rows", materialBillDetails);
+		map.put("total", total);
+		return map;
+	}
+
 }

@@ -17,7 +17,7 @@
 <link rel="stylesheet" type="text/css"
 	href="<%=contextPath%>/jquery-easyui-1.5/themes/icon.css">
 <link rel="stylesheet" type="text/css"
-	href="<%=contextPath%>/jquery-easyui-1.5/themes/icon.css">
+	href="<%=contextPath%>/css/base.css">
 <link rel="stylesheet" type="text/css"
 	href="<%=contextPath%>/jquery-easyui-1.5/demo/demo.css">
 <script type="text/javascript"

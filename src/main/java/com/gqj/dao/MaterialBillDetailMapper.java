@@ -10,8 +10,11 @@ public interface MaterialBillDetailMapper {
 	List<Map<String, Object>> selectMaterialBillDetailsForList(
 			MaterialBill materialBill);
 
+	List<Map<String, Object>> selectMaterialBillDetailsForPage(
+			Map<String, Object> param);
+
 	int selectCountOfMaterialBillDetailsForPage(
-			MaterialBillDetail materialBillDetail);
+			Map<String, Object> param);
 
 	int deleteByMaterialBill(MaterialBill materialBill);
 
