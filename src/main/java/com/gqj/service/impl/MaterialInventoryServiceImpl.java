@@ -71,24 +71,25 @@ public class MaterialInventoryServiceImpl
 				// 修改记录
 				long materialBillType = materialBill
 						.getBillType();
+				double amountOfInventory = Double
+						.parseDouble(materialInventoryList
+								.get(0).get("INVENT_AMOUNT")
+								.toString());
+				double amountOfBill = Double
+						.parseDouble(materialBillDetail
+								.get("DETAIL_BILL_AMOUNT")
+								.toString());
 				// 当入库、退仓时，增加库存
 				if (materialBillType == 0
 						|| materialBillType == 3) {
+
 					materialInventory.setInventAmount(
-							materialInventory
-									.getInventAmount()
-									+ Double.parseDouble(
-											materialBillDetail
-													.get("DETAIL_BILL_AMOUNT")
-													.toString()));
+							amountOfInventory
+									+ amountOfBill);
 				} else {// 当出库、转仓、报废时，减少库存
 					materialInventory.setInventAmount(
-							materialInventory
-									.getInventAmount()
-									- Double.parseDouble(
-											materialBillDetail
-													.get("DETAIL_BILL_AMOUNT")
-													.toString()));
+							amountOfInventory
+									- amountOfBill);
 				}
 				bool = materialInventoryMapper
 						.updateByPrimaryKeySelective(

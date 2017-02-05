@@ -30,6 +30,42 @@
 <script type="text/javascript"
 	src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
+	//关闭选择部门窗口
+	function closeChooseMaterialInventoryUIForMaterialBill() {
+		closeUI('chooseMaterialInventoryUIForMaterialBill')
+	}
+
+	//打开选择部门窗口
+	function openChooseMaterialInventoryUIForMaterialBill() {
+		createModalDialog("chooseMaterialInventoryUIForMaterialBill",
+				"openChooseMaterialInventoryUI.do", "选择工器具", 1000, 600);
+		openUI('chooseMaterialInventoryUIForMaterialBill');
+	}
+
+	//关闭选择部门窗口
+	function closeChooseDeptUIForMaterialBill() {
+		closeUI('chooseDeptUIForMaterialBill')
+	}
+
+	//打开选择部门窗口
+	function openChooseDeptUIForMaterialBill() {
+		createModalDialog("chooseDeptUIForMaterialBill", "openChooseDeptUI.do",
+				"选择部门", 500, 500);
+		openUI('chooseDeptUIForMaterialBill');
+	}
+
+	//关闭选择需求计划窗口
+	function closeChooseDemandPlanUIForMaterialBill() {
+		closeUI('chooseDemandPlanUIForMaterialBill')
+	}
+
+	//打开选择需求计划窗口
+	function openChooseDemandPlanUIForMaterialBill() {
+		createModalDialog("chooseDemandPlanUIForMaterialBill",
+				"openChooseDemandPlanUI.do", "选择需求计划", 700, 500);
+		openUI('chooseDemandPlanUIForMaterialBill');
+	}
+
 	//关闭选择工器具窗口
 	function closeChooseBaseToolUIForMaterialBill() {
 		closeUI('chooseBaseToolUIForMaterialBill')
@@ -38,7 +74,7 @@
 	//打开选择工器具窗口
 	function openChooseBaseToolUIForMaterialBill() {
 		createModalDialog("chooseBaseToolUIForMaterialBill",
-				"openChooseBaseToolUI.do?opType=add", "添加工器具", 800, 600);
+				"openChooseBaseToolUI.do?opType=add", "选择工器具", 800, 600);
 		openUI('chooseBaseToolUIForMaterialBill');
 	}
 
@@ -348,6 +384,12 @@
 	function setToolAmount(rowIndex, newValue) {
 		var rowData = getRowDataOfSelfDataGrid('datagridForMaterialBillDetail',
 				rowIndex);
+		if (getTextBoxValue('billTypeTextInput') == 1
+				|| getTextBoxValue('billTypeTextInput') == 2) {
+			if (newValue > rowData.INVENT_AMOUNT) {
+				alert('输入数量大于现有库存，请重新输入')
+			}
+		}
 		rowData.DETAIL_BILL_AMOUNT = newValue;
 	}
 
@@ -381,14 +423,18 @@
 			var rowData = getRowDataOfSelfDataGrid('datagridForMaterialBill',
 					rowIndex);
 			var billConfirmUserId = rowData.BILL_CONFIRM_USER_ID;
-
 			opType = 'edit';
 			queryMaterialBillDetailsForList(rowData);
 			setTextBoxValue('materialBillCodeTextInput', rowData.BILL_CODE);
 			setTextBoxValue('materialBillRemarkTextInput', rowData.BILL_REMARK);
 			setTextBoxValue('storageIdTextInput', rowData.STORE_ID);
+			setTextBoxValue('planIdTextInput', rowData.PLAN_ID);
 			$('#storageNameBtn').linkbutton({
 				text : rowData.STORE_NAME,
+				width : 200
+			});
+			$('#planNameBtn').linkbutton({
+				text : rowData.PLAN_CODE,
 				width : 200
 			});
 
@@ -445,6 +491,7 @@
 		setTextBoxValue('materialBillCodeTextInput', '');
 		setTextBoxValue('materialBillRemarkTextInput', '');
 		setTextBoxValue('storageIdTextInput', '');
+		setTextBoxValue('planIdTextInput', '');
 		//清空明细列表
 		dataGridLoadData('datagridForMaterialBillDetail', {
 			total : 0,
@@ -458,6 +505,9 @@
 		});
 		$('#storageNameBtn').linkbutton({
 			text : '选择仓库'
+		});
+		$('#planNameBtn').linkbutton({
+			text : '选择需求计划 '
 		});
 	}
 
@@ -491,12 +541,24 @@
 		baseToolPosIds = baseToolPosIds.substring(0, baseToolPosIds.length - 1);
 		baseToolAmountIds = baseToolAmountIds.substring(0,
 				baseToolAmountIds.length - 1);
-
+		//因为在入库的时候才有关联计划，因此需要特别处理
+		var planId = "";
+		if (getTextBoxValue('billTypeTextInput') == 0) {
+			planId = getTextBoxValue('planIdTextInput');
+		}
+		//因为在入库的时候没有领用部门，因此需要特别处理
+		var takeDeptId = "";
+		if (getTextBoxValue('billTypeTextInput') == 1
+				|| getTextBoxValue('billTypeTextInput') == 2) {
+			takeDeptId = getTextBoxValue('deptIdTextInput');
+		}
 		if (opType == 'add') {
 			params = {
 				BILL_ID : '',
+				PLAN_ID : planId,
 				BILL_TYPE : getTextBoxValue('billTypeTextInput'),
 				STORE_ID : getTextBoxValue('storageIdTextInput'),
+				BILL_TAKE_DEPT_ID : takeDeptId,
 				BILL_CODE : materialBillCode,
 				BILL_REMARK : materialBillRemark,
 				BASE_TOOL_IDS : baseToolIds,
@@ -509,8 +571,10 @@
 					rowIndexOfDataGrid);
 			params = {
 				BILL_ID : rowData.BILL_ID,
+				PLAN_ID : planId,
 				BILL_TYPE : getTextBoxValue('billTypeTextInput'),
 				STORE_ID : getTextBoxValue('storageIdTextInput'),
+				BILL_TAKE_DEPT_ID : takeDeptId,
 				BILL_CODE : materialBillCode,
 				BILL_REMARK : materialBillRemark,
 				BASE_TOOL_IDS : baseToolIds,
@@ -570,16 +634,34 @@
 		<table id="datagridForMaterialBillDetail"
 			class="easyui-datagrid">
 		</table>
+		<%
+			String billType = request
+					.getParameter("BILL_TYPE");
+			String deptType = request
+					.getParameter("DEPT_TYPE");
+		%>
 		<div id="toolbarForMaterialBillDetail">
 			<div>
 				<a href="#" class="easyui-linkbutton" plain="true"
 					iconCls="icon-arrow_left" onclick="toList()">返回</a> <a
 					id="saveBtn" href="#" class="easyui-linkbutton"
 					iconCls="icon-ok" plain="true"
-					onclick="saveMaterialBill()">保存</a><a id="addToolsBtn"
-					href="#" class="easyui-linkbutton" iconCls="icon-add"
-					plain="true"
+					onclick="saveMaterialBill()">保存</a>
+				<%
+					if ("0".equals(billType)) {
+				%>
+				<a id="addToolsBtn" href="#" class="easyui-linkbutton"
+					iconCls="icon-add" plain="true"
 					onclick="openChooseBaseToolUIForMaterialBill()">添加工器具</a>
+				<%
+					} else {
+				%>
+				<a id="addToolsBtn" href="#" class="easyui-linkbutton"
+					iconCls="icon-add" plain="true"
+					onclick="openChooseMaterialInventoryUIForMaterialBill()">添加工器具</a>
+				<%
+					}
+				%>
 			</div>
 			<div>
 				<table>
@@ -597,6 +679,34 @@
 							onclick="openChooseStorageUIForMaterialBill()">
 								选择仓库</a>
 						</td>
+						<%
+							if ("0".equals(billType)
+									&& "DEPT".equals(deptType)) {
+						%>
+						<td>
+							<div style="display: none">
+								<input id="planIdTextInput" class="easyui-textbox" />
+							</div> 关联需求计划：<a href="#" id="planNameBtn"
+							class="easyui-linkbutton" style="width: 200px;"
+							onclick="openChooseDemandPlanUIForMaterialBill()">
+								选择需求计划</a>
+						</td>
+						<%
+							}
+							if ("1".equals(billType)
+									|| "2".equals(billType)) {
+						%>
+						<td>
+							<div style="display: none">
+								<input id="deptIdTextInput" class="easyui-textbox" />
+							</div> 领用部门：<a href="#" id="deptNameBtn"
+							class="easyui-linkbutton" style="width: 200px;"
+							onclick="openChooseDeptUIForMaterialBill()">
+								选择领用部门</a>
+						</td>
+						<%
+							}
+						%>
 						<td>备注： <input id="materialBillRemarkTextInput"
 							class="easyui-textbox"
 							data-options="prompt:'备注',validType:'length[0,50]'"

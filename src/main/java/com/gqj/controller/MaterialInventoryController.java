@@ -16,12 +16,16 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
+import com.gqj.entity.Manufacturer;
 import com.gqj.entity.Position;
 import com.gqj.entity.Storage;
+import com.gqj.entity.ToolType;
+import com.gqj.service.IManufacturerService;
 import com.gqj.service.IMaterialBillDetailService;
 import com.gqj.service.IMaterialInventoryService;
 import com.gqj.service.IPositionService;
 import com.gqj.service.IStorageService;
+import com.gqj.service.IToolTypeService;
 
 @Controller
 @RequestMapping("/gqj/material_inventory")
@@ -41,6 +45,50 @@ public class MaterialInventoryController
 
 	@Autowired
 	private IStorageService storageService;
+
+	@Autowired
+	private IManufacturerService manufacturerService;
+
+	@Autowired
+	private IToolTypeService toolTypeService;
+
+	/**
+	 * 查询下拉列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryBaseToolTypeDropList.do")
+	@ResponseBody
+	public void queryBaseToolTypeDropList(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter().print(toolTypeService
+				.selectToolTypesForList(new ToolType()));
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
+
+	/**
+	 * 查询下拉列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryBaseToolManufacturerDropList.do")
+	@ResponseBody
+	public void queryBaseToolManufacturerDropList(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter()
+				.print(manufacturerService
+						.selectManufacturersForList(
+								new Manufacturer()));
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
 
 	/**
 	 * 弹出选择仓位管理操作页面
@@ -167,6 +215,14 @@ public class MaterialInventoryController
 		String keyWord = request.getParameter("keyWord");
 		String storeId = request.getParameter("STORE_ID");
 		String posId = request.getParameter("POS_ID");
+		String baseToolTypeId = request
+				.getParameter("BASE_TOOL_TYPE_ID");
+		String manufacturerId = request
+				.getParameter("MANUFACTURER_ID");
+		String baseToolModel = request
+				.getParameter("BASE_TOOL_MODEL");
+		String baseToolSpec = request
+				.getParameter("BASE_TOOL_SPEC");
 		HashMap<String, Object> param = new HashMap<>();
 		param.put("currPage", page);
 		param.put("pageSize", rows);
@@ -176,6 +232,10 @@ public class MaterialInventoryController
 		param.put("storeDeptId",
 				getSessionUser(request, response)
 						.getUserDeptId());
+		param.put("baseToolTypeId", baseToolTypeId);
+		param.put("manufacturerId", manufacturerId);
+		param.put("baseToolModel", baseToolModel);
+		param.put("baseToolSpec", baseToolSpec);
 		return materialInventoryService
 				.selectMaterialInventorysForPage(param);
 	}

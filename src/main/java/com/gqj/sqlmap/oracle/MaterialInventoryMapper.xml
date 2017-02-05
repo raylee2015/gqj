@@ -8,11 +8,15 @@
 		<result column="INVENT_AMOUNT" jdbcType="DECIMAL" property="inventAmount" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		STORE_ID, BASE_TOOL_ID, INVENT_AMOUNT,POS_ID,
-		STORE_NAME,BASE_TOOL_NAME,POS_NAME
+		INVENT_AMOUNT,DETAIL_BILL_AMOUNT,
+		STORE_ID, STORE_NAME,
+		BASE_TOOL_ID,BASE_TOOL_NAME,BASE_TOOL_MODEL,BASE_TOOL_SPEC,
+		POS_ID,POS_NAME,STORE_DEPT_ID,
+		MAN_ID,BASE_TOOL_MANUFACTURER_NAME,
+		BASE_TOOL_TYPE_ID,BASE_TOOL_TYPE_NAME
 	</sql>
 	<select id="selectMaterialInventorysForList" parameterType="com.gqj.entity.MaterialInventory"
-		resultMap="BaseResultMap">
+		resultType="java.util.HashMap">
 		select STORE_ID,POS_ID,BASE_TOOL_ID,INVENT_AMOUNT
 		from
 		GQJ_MATERIAL_INVENTORY
@@ -42,6 +46,12 @@
 			<if test="keyWord != null">
 				AND BASE_TOOL_NAME like '%${keyWord}%'
 			</if>
+			<if test="baseToolModel != null">
+				AND BASE_TOOL_MODEL like '%${baseToolModel}%'
+			</if>
+			<if test="baseToolSpec != null">
+				AND BASE_TOOL_SPEC like '%${baseToolSpec}%'
+			</if>
 			<if test="storeDeptId != null">
 				and STORE_DEPT_ID =
 				#{storeDeptId,jdbcType=DECIMAL}
@@ -53,6 +63,14 @@
 			<if test="posId != null and posId != ''">
 				and POS_ID =
 				#{posId,jdbcType=DECIMAL}
+			</if>
+			<if test="baseToolTypeId != null and baseToolTypeId != ''">
+				and BASE_TOOL_TYPE_ID =
+				#{baseToolTypeId,jdbcType=DECIMAL}
+			</if>
+			<if test="manufacturerId != null and manufacturerId != ''">
+				and MAN_ID =
+				#{manufacturerId,jdbcType=DECIMAL}
 			</if>
 		</where>
 		order by BASE_TOOL_ID desc
@@ -68,6 +86,12 @@
 			<if test="keyWord != null">
 				AND BASE_TOOL_NAME like '%${keyWord}%'
 			</if>
+			<if test="baseToolModel != null">
+				AND BASE_TOOL_MODEL like '%${baseToolModel}%'
+			</if>
+			<if test="baseToolSpec != null">
+				AND BASE_TOOL_SPEC like '%${baseToolSpec}%'
+			</if>
 			<if test="storeDeptId != null">
 				and STORE_DEPT_ID =
 				#{storeDeptId,jdbcType=DECIMAL}
@@ -79,6 +103,14 @@
 			<if test="posId != null and posId != ''">
 				and POS_ID =
 				#{posId,jdbcType=DECIMAL}
+			</if>
+			<if test="baseToolTypeId != null and baseToolTypeId != ''">
+				and BASE_TOOL_TYPE_ID =
+				#{baseToolTypeId,jdbcType=DECIMAL}
+			</if>
+			<if test="manufacturerId != null and manufacturerId != ''">
+				and MAN_ID =
+				#{manufacturerId,jdbcType=DECIMAL}
 			</if>
 		</where>
 	</select>

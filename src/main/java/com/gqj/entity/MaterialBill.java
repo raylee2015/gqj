@@ -5,50 +5,88 @@ import java.util.Date;
 import com.base.entity.Base;
 
 public class MaterialBill extends Base {
-	private Long billId;
-
-	private Long storeId;
-
 	private String billCode;
 
-	private Long billType;
+	private Date billConfirmTime;
+
+	private Long billConfirmUserId;
+
+	private Date billCreateTime;
 
 	private Long billCreateUserId;
 
 	private Long billDeptId;
 
-	private Date billCreateTime;
+	private Long billId;
 
-	private Long billConfirmUserId;
-
-	private Date billConfirmTime;
-
-	private Long billTakeUserId;
+	private String billRemark;
 
 	private Long billTakeDeptId;
 
 	private Date billTakeTime;
 
-	private String billRemark;
+	private Long billTakeUserId;
+
+	private Long billType;
+
+	private Long planId;
+
+	private Long storeId;
+
+	public String getBillCode() {
+		return billCode;
+	}
+
+	public Date getBillConfirmTime() {
+		return billConfirmTime;
+	}
+
+	public Long getBillConfirmUserId() {
+		return billConfirmUserId;
+	}
+
+	public Date getBillCreateTime() {
+		return billCreateTime;
+	}
+
+	public Long getBillCreateUserId() {
+		return billCreateUserId;
+	}
+
+	public Long getBillDeptId() {
+		return billDeptId;
+	}
 
 	public Long getBillId() {
 		return billId;
 	}
 
-	public void setBillId(Long billId) {
-		this.billId = billId;
+	public String getBillRemark() {
+		return billRemark;
+	}
+
+	public Long getBillTakeDeptId() {
+		return billTakeDeptId;
+	}
+
+	public Date getBillTakeTime() {
+		return billTakeTime;
+	}
+
+	public Long getBillTakeUserId() {
+		return billTakeUserId;
+	}
+
+	public Long getBillType() {
+		return billType;
+	}
+
+	public Long getPlanId() {
+		return planId;
 	}
 
 	public Long getStoreId() {
 		return storeId;
-	}
-
-	public void setStoreId(Long storeId) {
-		this.storeId = storeId;
-	}
-
-	public String getBillCode() {
-		return billCode;
 	}
 
 	public void setBillCode(String billCode) {
@@ -56,40 +94,8 @@ public class MaterialBill extends Base {
 				: billCode.trim();
 	}
 
-	public Long getBillType() {
-		return billType;
-	}
-
-	public void setBillType(Long billType) {
-		this.billType = billType;
-	}
-
-	public Long getBillCreateUserId() {
-		return billCreateUserId;
-	}
-
-	public void setBillCreateUserId(Long billCreateUserId) {
-		this.billCreateUserId = billCreateUserId;
-	}
-
-	public Long getBillDeptId() {
-		return billDeptId;
-	}
-
-	public void setBillDeptId(Long billDeptId) {
-		this.billDeptId = billDeptId;
-	}
-
-	public Date getBillCreateTime() {
-		return billCreateTime;
-	}
-
-	public void setBillCreateTime(Date billCreateTime) {
-		this.billCreateTime = billCreateTime;
-	}
-
-	public Long getBillConfirmUserId() {
-		return billConfirmUserId;
+	public void setBillConfirmTime(Date billConfirmTime) {
+		this.billConfirmTime = billConfirmTime;
 	}
 
 	public void setBillConfirmUserId(
@@ -97,44 +103,48 @@ public class MaterialBill extends Base {
 		this.billConfirmUserId = billConfirmUserId;
 	}
 
-	public Date getBillConfirmTime() {
-		return billConfirmTime;
+	public void setBillCreateTime(Date billCreateTime) {
+		this.billCreateTime = billCreateTime;
 	}
 
-	public void setBillConfirmTime(Date billConfirmTime) {
-		this.billConfirmTime = billConfirmTime;
+	public void setBillCreateUserId(Long billCreateUserId) {
+		this.billCreateUserId = billCreateUserId;
 	}
 
-	public Long getBillTakeUserId() {
-		return billTakeUserId;
+	public void setBillDeptId(Long billDeptId) {
+		this.billDeptId = billDeptId;
 	}
 
-	public void setBillTakeUserId(Long billTakeUserId) {
-		this.billTakeUserId = billTakeUserId;
+	public void setBillId(Long billId) {
+		this.billId = billId;
 	}
 
-	public Long getBillTakeDeptId() {
-		return billTakeDeptId;
+	public void setBillRemark(String billRemark) {
+		this.billRemark = billRemark == null ? null
+				: billRemark.trim();
 	}
 
 	public void setBillTakeDeptId(Long billTakeDeptId) {
 		this.billTakeDeptId = billTakeDeptId;
 	}
 
-	public Date getBillTakeTime() {
-		return billTakeTime;
-	}
-
 	public void setBillTakeTime(Date billTakeTime) {
 		this.billTakeTime = billTakeTime;
 	}
 
-	public String getBillRemark() {
-		return billRemark;
+	public void setBillTakeUserId(Long billTakeUserId) {
+		this.billTakeUserId = billTakeUserId;
 	}
 
-	public void setBillRemark(String billRemark) {
-		this.billRemark = billRemark == null ? null
-				: billRemark.trim();
+	public void setBillType(Long billType) {
+		this.billType = billType;
+	}
+
+	public void setPlanId(Long planId) {
+		this.planId = planId;
+	}
+
+	public void setStoreId(Long storeId) {
+		this.storeId = storeId;
 	}
 }

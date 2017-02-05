@@ -16,18 +16,23 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.base.admin.entity.Dept;
+import com.base.admin.service.IDeptService;
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
 import com.base.util.DateUtil;
+import com.gqj.entity.DemandPlan;
 import com.gqj.entity.Manufacturer;
 import com.gqj.entity.MaterialBill;
 import com.gqj.entity.Position;
 import com.gqj.entity.Storage;
 import com.gqj.entity.ToolType;
 import com.gqj.service.IBaseToolService;
+import com.gqj.service.IDemandPlanService;
 import com.gqj.service.IManufacturerService;
 import com.gqj.service.IMaterialBillDetailService;
 import com.gqj.service.IMaterialBillService;
+import com.gqj.service.IMaterialInventoryService;
 import com.gqj.service.IPositionService;
 import com.gqj.service.ISequenceService;
 import com.gqj.service.IStorageService;
@@ -43,6 +48,9 @@ public class MaterialBillController extends BaseController {
 	private IBaseToolService baseToolService;
 
 	@Autowired
+	private IMaterialInventoryService materialInventoryService;
+
+	@Autowired
 	private IManufacturerService manufacturerService;
 
 	@Autowired
@@ -53,6 +61,12 @@ public class MaterialBillController extends BaseController {
 
 	@Autowired
 	private IPositionService positionService;
+
+	@Autowired
+	private IDeptService deptService;
+
+	@Autowired
+	private IDemandPlanService demandPlanService;
 
 	@Autowired
 	private ISequenceService sequenceService;
@@ -79,6 +93,7 @@ public class MaterialBillController extends BaseController {
 			HttpServletResponse response) throws Exception {
 		String materialBillCode = request
 				.getParameter("BILL_CODE");
+		String planId = request.getParameter("PLAN_ID");
 		String materialBillRemark = request
 				.getParameter("BILL_REMARK");
 		String materialBillType = request
@@ -90,6 +105,8 @@ public class MaterialBillController extends BaseController {
 				.getParameter("BASE_TOOL_POS_IDS");
 		String detailBillAmounts = request
 				.getParameter("DETAIL_BILL_AMOUNTS");
+		String billTakeDeptId = request
+				.getParameter("BILL_TAKE_DEPT_ID");
 		long materialBillDeptId = getSessionUser(request,
 				response).getUserDeptId();
 		MaterialBill materialBill = new MaterialBill();
@@ -105,6 +122,9 @@ public class MaterialBillController extends BaseController {
 				BaseUtil.strToLong(materialBillType));
 		materialBill.setBillDeptId(materialBillDeptId);
 		materialBill.setBillCreateTime(new Date());
+		materialBill.setPlanId(BaseUtil.strToLong(planId));
+		materialBill.setBillTakeDeptId(
+				BaseUtil.strToLong(billTakeDeptId));
 		return materialBillService
 				.addMaterialBillsAndDetails(materialBill,
 						baseToolIds, baseToolPosIds,
@@ -177,6 +197,32 @@ public class MaterialBillController extends BaseController {
 	}
 
 	/**
+	 * 弹出选择库存工器具管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openChooseMaterialInventoryUI.do", method = RequestMethod.GET)
+	public ModelAndView openChooseMaterialInventoryUI(
+			HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView(
+				"/gqj/material_bill/chooseMaterialInventoryUI");
+	}
+
+	/**
+	 * 弹出选择需求计划管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openChooseDemandPlanUI.do", method = RequestMethod.GET)
+	public ModelAndView openChooseDemandPlanUI(
+			HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView(
+				"/gqj/material_bill/chooseDemandPlanUI");
+	}
+
+	/**
 	 * 弹出选择仓位管理操作页面
 	 * 
 	 * @return
@@ -187,6 +233,19 @@ public class MaterialBillController extends BaseController {
 			HttpServletResponse response) {
 		return new ModelAndView(
 				"/gqj/material_bill/choosePositionUI");
+	}
+
+	/**
+	 * 弹出选择部门管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openChooseDeptUI.do", method = RequestMethod.GET)
+	public ModelAndView openChooseDeptUI(
+			HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView(
+				"/gqj/material_bill/chooseDeptUI");
 	}
 
 	/**
@@ -256,6 +315,45 @@ public class MaterialBillController extends BaseController {
 		param.put("baseToolSpec", baseToolSpec);
 		return baseToolService
 				.selectBaseToolsForPage(param);
+	}
+
+	/**
+	 * 分页查询库存工器具列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryMaterialInventorysPage.do")
+	@ResponseBody
+	public Map<String, Object> queryMaterialInventorysPage(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String keyWord = request.getParameter("keyWord");
+		String baseToolTypeId = request
+				.getParameter("BASE_TOOL_TYPE_ID");
+		String manufacturerId = request
+				.getParameter("MANUFACTURER_ID");
+		String baseToolModel = request
+				.getParameter("BASE_TOOL_MODEL");
+		String baseToolSpec = request
+				.getParameter("BASE_TOOL_SPEC");
+		HashMap<String, Object> param = new HashMap<>();
+		param.put("keyWord", keyWord);
+		param.put("currPage", page);
+		param.put("pageSize", rows);
+		param.put("STORE_DEPT_ID",
+				getSessionUser(request, response)
+						.getUserDeptId());
+		param.put("baseToolTypeId", baseToolTypeId);
+		param.put("manufacturerId", manufacturerId);
+		param.put("baseToolModel", baseToolModel);
+		param.put("baseToolSpec", baseToolSpec);
+		return materialInventoryService
+				.selectMaterialInventorysForPage(param);
 	}
 
 	/**
@@ -391,6 +489,53 @@ public class MaterialBillController extends BaseController {
 	}
 
 	/**
+	 * 分页查询部门列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryDeptsPage.do")
+	@ResponseBody
+	public Map<String, Object> queryDeptsPage(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String keyWord = request.getParameter("keyWord");
+		Dept dept = new Dept();
+		dept.setCurrPage(BaseUtil.strToInt(page));
+		dept.setPageSize(BaseUtil.strToInt(rows));
+		dept.setKeyWord(keyWord);
+		return deptService.selectDeptsForPage(dept);
+	}
+
+	/**
+	 * 分页查询需求计划列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryDemandPlansPage.do")
+	@ResponseBody
+	public Map<String, Object> queryDemandPlansPage(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String keyWord = request.getParameter("keyWord");
+		DemandPlan demandPlan = new DemandPlan();
+		demandPlan.setCurrPage(BaseUtil.strToInt(page));
+		demandPlan.setPageSize(BaseUtil.strToInt(rows));
+		demandPlan.setKeyWord(keyWord);
+		return demandPlanService
+				.selectDemandPlansForPage(demandPlan);
+	}
+
+	/**
 	 * 分页查询仓库列表
 	 * 
 	 * @param request
@@ -440,6 +585,7 @@ public class MaterialBillController extends BaseController {
 	public Map<String, Object> updateMaterialBillsAndDetails(
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		String planId = request.getParameter("PLAN_ID");
 		String materialBillId = request
 				.getParameter("BILL_ID");
 		String materialBillCode = request
@@ -455,6 +601,8 @@ public class MaterialBillController extends BaseController {
 				.getParameter("BASE_TOOL_POS_IDS");
 		String detailBillAmounts = request
 				.getParameter("DETAIL_BILL_AMOUNTS");
+		String billTakeDeptId = request
+				.getParameter("BILL_TAKE_DEPT_ID");
 		long materialBillDeptId = getSessionUser(request,
 				response).getUserDeptId();
 		MaterialBill materialBill = new MaterialBill();
@@ -471,6 +619,9 @@ public class MaterialBillController extends BaseController {
 				BaseUtil.strToLong(materialBillType));
 		materialBill.setBillDeptId(materialBillDeptId);
 		materialBill.setBillCreateTime(new Date());
+		materialBill.setPlanId(BaseUtil.strToLong(planId));
+		materialBill.setBillTakeDeptId(
+				BaseUtil.strToLong(billTakeDeptId));
 		return materialBillService
 				.updateMaterialBillsAndDetails(materialBill,
 						baseToolIds, baseToolPosIds,

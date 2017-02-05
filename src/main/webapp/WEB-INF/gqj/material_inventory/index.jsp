@@ -68,6 +68,10 @@
 	//查询
 	function queryMaterialInventorys() {
 		var params = {
+			BASE_TOOL_TYPE_ID : getComboBoxValue('baseToolTypeComboBox'),
+			MANUFACTURER_ID : getComboBoxValue('baseToolManufacturerComboBox'),
+			BASE_TOOL_MODEL : getTextBoxValue('baseToolModelTextBox'),
+			BASE_TOOL_SPEC : getTextBoxValue('baseToolSpecTextBox'),
 			POS_ID : getTextBoxValue('posIdTextInput'),
 			STORE_ID : getTextBoxValue('storageIdTextInput'),
 			keyWord : getTextBoxValue('keyWordForMaterialInventoryTextInput'),
@@ -89,6 +93,10 @@
 				closeCache();
 				registerKeyPressForTextInput(
 						'keyWordForMaterialInventoryTextInput',
+						queryMaterialInventoryPagesForSearch);
+				registerKeyPressForTextInput('baseToolSpecTextBox',
+						queryMaterialInventoryPagesForSearch);
+				registerKeyPressForTextInput('baseToolModelTextBox',
 						queryMaterialInventoryPagesForSearch);
 				initDataGridForMaterialInventory();
 				initDataGridForMaterialBillDetail();
@@ -123,9 +131,25 @@
 											return btn;
 										}
 									}, {
+										field : 'BASE_TOOL_TYPE_NAME',
+										title : '工器具类型',
+										width : 100,
+									}, {
 										field : 'BASE_TOOL_NAME',
 										title : '工器具名称',
 										width : 200,
+									}, {
+										field : 'BASE_TOOL_MODEL',
+										title : '型号',
+										width : 100,
+									}, {
+										field : 'BASE_TOOL_SPEC',
+										title : '规格',
+										width : 100,
+									}, {
+										field : 'BASE_TOOL_MANUFACTURER_NAME',
+										title : '厂家',
+										width : 100,
 									}, {
 										field : 'STORE_NAME',
 										title : '仓库',
@@ -143,6 +167,10 @@
 								param.POS_ID = getTextBoxValue('posIdTextInput');
 								param.STORE_ID = getTextBoxValue('storageIdTextInput');
 								param.keyWord = getTextBoxValue('keyWordForMaterialInventoryTextInput');
+								param.BASE_TOOL_TYPE_ID = getComboBoxValue('baseToolTypeComboBox');
+								param.MANUFACTURER_ID = getComboBoxValue('baseToolManufacturerComboBox');
+								param.BASE_TOOL_MODEL = getTextBoxValue('baseToolModelTextBox');
+								param.BASE_TOOL_SPEC = getTextBoxValue('baseToolSpecTextBox');
 							},
 							onLoadError : function() {
 								errorFunctionForQuery();
@@ -247,7 +275,17 @@
 								iconCls="icon-reload" plain="true"
 								onclick="refreshDataGrid('datagridForMaterialInventory')">刷新</a>
 							</td>
-							<td align="center">
+							<td></td>
+							<td align="right"><input
+								id="keyWordForMaterialInventoryTextInput"
+								class="easyui-textbox"
+								data-options="prompt:'工器具',validType:'length[0,50]'"
+								style="width: 200px"> <a href="#"
+								class="easyui-linkbutton" iconCls="icon-search"
+								onclick="queryMaterialInventoryPagesForSearch()">查询</a>
+						</tr>
+						<tr>
+							<td align="left">
 								<div style="display: none">
 									<input id="storageIdTextInput"
 										class="easyui-textbox" />
@@ -256,7 +294,7 @@
 								onclick="openChooseStorageUIForMaterialBill()">
 									选择仓库</a>
 							</td>
-							<td align="center">
+							<td>
 								<div style="display: none">
 									<input id="posIdTextInput" class="easyui-textbox" />
 								</div> 仓位：<a href="#" id="posNameBtn"
@@ -264,13 +302,32 @@
 								onclick="openChoosePositionUIForMaterialBill()">
 									选择仓位</a>
 							</td>
-							<td align="right"><input
-								id="keyWordForMaterialInventoryTextInput"
-								class="easyui-textbox"
-								data-options="prompt:'工器具',validType:'length[0,50]'"
-								style="width: 200px"> <a href="#"
-								class="easyui-linkbutton" iconCls="icon-search"
-								onclick="queryMaterialInventoryPagesForSearch()">查询</a>
+							<td>类型: <input id="baseToolTypeComboBox"
+								data-options="valueField : 'ID',textField : 'TEXT',require : true,
+							panelHeight : 'auto',	prompt : '工器具类型',
+							url : 'queryBaseToolTypeDropList.do',
+							onChange : function(newValue, oldValue){
+								queryMaterialInventorys();
+							}
+							"
+								class="easyui-combobox" style="width: 200px;"></td>
+						</tr>
+						<tr>
+							<td>厂家: <input id="baseToolManufacturerComboBox"
+								data-options="valueField : 'ID',textField : 'TEXT',require : true,
+							panelHeight : 'auto',	prompt : '厂家',
+							url : 'queryBaseToolManufacturerDropList.do',
+							onChange : function(newValue, oldValue){
+								queryMaterialInventorys();
+							}
+							"
+								class="easyui-combobox" style="width: 200px;"></td>
+							<td>型号: <input id="baseToolModelTextBox"
+								data-options="prompt : '型号'" class="easyui-textbox"
+								style="width: 200px;"></td>
+							<td>规格: <input id="baseToolSpecTextBox"
+								data-options="prompt : '规格'" class="easyui-textbox"
+								style="width: 200px;"></td>
 						</tr>
 					</table>
 				</div>
