@@ -3,7 +3,6 @@ package com.gqj.service;
 import java.util.Map;
 
 import com.gqj.entity.MaterialBill;
-import com.gqj.entity.MaterialBillDetail;
 
 public interface IMaterialBillDetailService {
 	int deleteByMaterialBill(MaterialBill materialBill);

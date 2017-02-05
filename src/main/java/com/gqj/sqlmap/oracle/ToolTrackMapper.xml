@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gqj.dao.ToolTrackMapper">
+	<resultMap id="BaseResultMap" type="com.gqj.entity.ToolTrack">
+		<id column="TRACK_ID" jdbcType="DECIMAL" property="trackId" />
+		<result column="TOOL_ID" jdbcType="DECIMAL" property="toolId" />
+		<result column="STORE_ID" jdbcType="DECIMAL" property="storeId" />
+		<result column="POS_ID" jdbcType="DECIMAL" property="posId" />
+		<result column="BATCH_ID" jdbcType="DECIMAL" property="batchId" />
+		<result column="BASE_TOOL_ID" jdbcType="DECIMAL" property="baseToolId" />
+		<result column="TOOL_BOX" jdbcType="VARCHAR" property="toolBox" />
+		<result column="TOOL_STATUS" jdbcType="DECIMAL" property="toolStatus" />
+		<result column="TRACK_CREATE_USER_ID" jdbcType="DECIMAL"
+			property="trackCreateUserId" />
+		<result column="TRACK_CREATE_TIME" jdbcType="TIMESTAMP"
+			property="trackCreateTime" />
+		<result column="TOOL_TEST_DATE" jdbcType="TIMESTAMP" property="toolTestDate" />
+		<result column="TOOL_REJECT_DATE" jdbcType="TIMESTAMP"
+			property="toolRejectDate" />
+		<result column="TOOL_TEST_DATE_CIRCLE" jdbcType="DECIMAL"
+			property="toolTestDateCircle" />
+		<result column="TOOL_NEXT_TEST_DATE" jdbcType="TIMESTAMP"
+			property="toolNextTestDate" />
+		<result column="TOOL_CODE" jdbcType="VARCHAR" property="toolCode" />
+		<result column="STORE_NAME" jdbcType="VARCHAR" property="storeName" />
+		<result column="POS_NAME" jdbcType="VARCHAR" property="posName" />
+		<result column="BATCH_CODE" jdbcType="VARCHAR" property="batchCode" />
+		<result column="BASE_TOOL_NAME" jdbcType="VARCHAR" property="baseToolName" />
+		<result column="BASE_TOOL_TYPE_ID" jdbcType="DECIMAL" property="baseToolTypeId" />
+		<result column="BASE_TOOL_TYPE_NAME" jdbcType="VARCHAR"
+			property="baseToolTypeName" />
+		<result column="BASE_TOOL_MODEL" jdbcType="VARCHAR" property="baseToolModel" />
+		<result column="BASE_TOOL_SPEC" jdbcType="VARCHAR" property="baseToolSpec" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		TRACK_ID, TOOL_ID, STORE_ID, POS_ID, BATCH_ID, BASE_TOOL_ID, TOOL_BOX,
+		TOOL_STATUS,
+		TRACK_CREATE_USER_ID, TRACK_CREATE_TIME, TOOL_TEST_DATE, TOOL_REJECT_DATE,
+		TOOL_TEST_DATE_CIRCLE,
+		TOOL_NEXT_TEST_DATE, TOOL_CODE, STORE_NAME, POS_NAME, BATCH_CODE, BASE_TOOL_NAME,
+		BASE_TOOL_TYPE_ID, BASE_TOOL_TYPE_NAME, BASE_TOOL_MODEL,
+		BASE_TOOL_SPEC
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from GQJ_TOOL_TRACK
+		where TRACK_ID = #{trackId,jdbcType=DECIMAL}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from GQJ_TOOL_TRACK
+		where TRACK_ID = #{trackId,jdbcType=DECIMAL}
+	</delete>
+	<insert id="insert" parameterType="com.gqj.entity.ToolTrack">
+		insert into GQJ_TOOL_TRACK (TRACK_ID, TOOL_ID, STORE_ID,
+		POS_ID, BATCH_ID, BASE_TOOL_ID,
+		TOOL_BOX, TOOL_STATUS, TRACK_CREATE_USER_ID,
+		TRACK_CREATE_TIME, TOOL_TEST_DATE, TOOL_REJECT_DATE,
+		TOOL_TEST_DATE_CIRCLE, TOOL_NEXT_TEST_DATE,
+		TOOL_CODE, STORE_NAME, POS_NAME,
+		BATCH_CODE, BASE_TOOL_NAME, BASE_TOOL_TYPE_ID,
+		BASE_TOOL_TYPE_NAME, BASE_TOOL_MODEL, BASE_TOOL_SPEC
+		)
+		values (#{trackId,jdbcType=DECIMAL}, #{toolId,jdbcType=DECIMAL},
+		#{storeId,jdbcType=DECIMAL},
+		#{posId,jdbcType=DECIMAL}, #{batchId,jdbcType=DECIMAL}, #{baseToolId,jdbcType=DECIMAL},
+		#{toolBox,jdbcType=VARCHAR}, #{toolStatus,jdbcType=DECIMAL},
+		#{trackCreateUserId,jdbcType=DECIMAL},
+		#{trackCreateTime,jdbcType=TIMESTAMP},
+		#{toolTestDate,jdbcType=TIMESTAMP},
+		#{toolRejectDate,jdbcType=TIMESTAMP},
+		#{toolTestDateCircle,jdbcType=DECIMAL},
+		#{toolNextTestDate,jdbcType=TIMESTAMP},
+		#{toolCode,jdbcType=VARCHAR}, #{storeName,jdbcType=VARCHAR}, #{posName,jdbcType=VARCHAR},
+		#{batchCode,jdbcType=VARCHAR}, #{baseToolName,jdbcType=VARCHAR},
+		#{baseToolTypeId,jdbcType=DECIMAL},
+		#{baseToolTypeName,jdbcType=VARCHAR},
+		#{baseToolModel,jdbcType=VARCHAR}, #{baseToolSpec,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.gqj.entity.ToolTrack">
+		insert into GQJ_TOOL_TRACK
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="trackId != null">
+				TRACK_ID,
+			</if>
+			<if test="toolId != null">
+				TOOL_ID,
+			</if>
+			<if test="storeId != null">
+				STORE_ID,
+			</if>
+			<if test="posId != null">
+				POS_ID,
+			</if>
+			<if test="batchId != null">
+				BATCH_ID,
+			</if>
+			<if test="baseToolId != null">
+				BASE_TOOL_ID,
+			</if>
+			<if test="toolBox != null">
+				TOOL_BOX,
+			</if>
+			<if test="toolStatus != null">
+				TOOL_STATUS,
+			</if>
+			<if test="trackCreateUserId != null">
+				TRACK_CREATE_USER_ID,
+			</if>
+			<if test="trackCreateTime != null">
+				TRACK_CREATE_TIME,
+			</if>
+			<if test="toolTestDate != null">
+				TOOL_TEST_DATE,
+			</if>
+			<if test="toolRejectDate != null">
+				TOOL_REJECT_DATE,
+			</if>
+			<if test="toolTestDateCircle != null">
+				TOOL_TEST_DATE_CIRCLE,
+			</if>
+			<if test="toolNextTestDate != null">
+				TOOL_NEXT_TEST_DATE,
+			</if>
+			<if test="toolCode != null">
+				TOOL_CODE,
+			</if>
+			<if test="storeName != null">
+				STORE_NAME,
+			</if>
+			<if test="posName != null">
+				POS_NAME,
+			</if>
+			<if test="batchCode != null">
+				BATCH_CODE,
+			</if>
+			<if test="baseToolName != null">
+				BASE_TOOL_NAME,
+			</if>
+			<if test="baseToolTypeId != null">
+				BASE_TOOL_TYPE_ID,
+			</if>
+			<if test="baseToolTypeName != null">
+				BASE_TOOL_TYPE_NAME,
+			</if>
+			<if test="baseToolModel != null">
+				BASE_TOOL_MODEL,
+			</if>
+			<if test="baseToolSpec != null">
+				BASE_TOOL_SPEC,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="trackId != null">
+				#{trackId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolId != null">
+				#{toolId,jdbcType=DECIMAL},
+			</if>
+			<if test="storeId != null">
+				#{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="posId != null">
+				#{posId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchId != null">
+				#{batchId,jdbcType=DECIMAL},
+			</if>
+			<if test="baseToolId != null">
+				#{baseToolId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolBox != null">
+				#{toolBox,jdbcType=VARCHAR},
+			</if>
+			<if test="toolStatus != null">
+				#{toolStatus,jdbcType=DECIMAL},
+			</if>
+			<if test="trackCreateUserId != null">
+				#{trackCreateUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="trackCreateTime != null">
+				#{trackCreateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolTestDate != null">
+				#{toolTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolRejectDate != null">
+				#{toolRejectDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolTestDateCircle != null">
+				#{toolTestDateCircle,jdbcType=DECIMAL},
+			</if>
+			<if test="toolNextTestDate != null">
+				#{toolNextTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolCode != null">
+				#{toolCode,jdbcType=VARCHAR},
+			</if>
+			<if test="storeName != null">
+				#{storeName,jdbcType=VARCHAR},
+			</if>
+			<if test="posName != null">
+				#{posName,jdbcType=VARCHAR},
+			</if>
+			<if test="batchCode != null">
+				#{batchCode,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolName != null">
+				#{baseToolName,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolTypeId != null">
+				#{baseToolTypeId,jdbcType=DECIMAL},
+			</if>
+			<if test="baseToolTypeName != null">
+				#{baseToolTypeName,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolModel != null">
+				#{baseToolModel,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolSpec != null">
+				#{baseToolSpec,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.ToolTrack">
+		update GQJ_TOOL_TRACK
+		<set>
+			<if test="toolId != null">
+				TOOL_ID = #{toolId,jdbcType=DECIMAL},
+			</if>
+			<if test="storeId != null">
+				STORE_ID = #{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="posId != null">
+				POS_ID = #{posId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchId != null">
+				BATCH_ID = #{batchId,jdbcType=DECIMAL},
+			</if>
+			<if test="baseToolId != null">
+				BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolBox != null">
+				TOOL_BOX = #{toolBox,jdbcType=VARCHAR},
+			</if>
+			<if test="toolStatus != null">
+				TOOL_STATUS = #{toolStatus,jdbcType=DECIMAL},
+			</if>
+			<if test="trackCreateUserId != null">
+				TRACK_CREATE_USER_ID = #{trackCreateUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="trackCreateTime != null">
+				TRACK_CREATE_TIME = #{trackCreateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolTestDate != null">
+				TOOL_TEST_DATE = #{toolTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolRejectDate != null">
+				TOOL_REJECT_DATE = #{toolRejectDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolTestDateCircle != null">
+				TOOL_TEST_DATE_CIRCLE = #{toolTestDateCircle,jdbcType=DECIMAL},
+			</if>
+			<if test="toolNextTestDate != null">
+				TOOL_NEXT_TEST_DATE = #{toolNextTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolCode != null">
+				TOOL_CODE = #{toolCode,jdbcType=VARCHAR},
+			</if>
+			<if test="storeName != null">
+				STORE_NAME = #{storeName,jdbcType=VARCHAR},
+			</if>
+			<if test="posName != null">
+				POS_NAME = #{posName,jdbcType=VARCHAR},
+			</if>
+			<if test="batchCode != null">
+				BATCH_CODE = #{batchCode,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolName != null">
+				BASE_TOOL_NAME = #{baseToolName,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolTypeId != null">
+				BASE_TOOL_TYPE_ID = #{baseToolTypeId,jdbcType=DECIMAL},
+			</if>
+			<if test="baseToolTypeName != null">
+				BASE_TOOL_TYPE_NAME = #{baseToolTypeName,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolModel != null">
+				BASE_TOOL_MODEL = #{baseToolModel,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolSpec != null">
+				BASE_TOOL_SPEC = #{baseToolSpec,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where TRACK_ID = #{trackId,jdbcType=DECIMAL}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.gqj.entity.ToolTrack">
+		update GQJ_TOOL_TRACK
+		set TOOL_ID = #{toolId,jdbcType=DECIMAL},
+		STORE_ID = #{storeId,jdbcType=DECIMAL},
+		POS_ID = #{posId,jdbcType=DECIMAL},
+		BATCH_ID = #{batchId,jdbcType=DECIMAL},
+		BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL},
+		TOOL_BOX = #{toolBox,jdbcType=VARCHAR},
+		TOOL_STATUS = #{toolStatus,jdbcType=DECIMAL},
+		TRACK_CREATE_USER_ID = #{trackCreateUserId,jdbcType=DECIMAL},
+		TRACK_CREATE_TIME = #{trackCreateTime,jdbcType=TIMESTAMP},
+		TOOL_TEST_DATE = #{toolTestDate,jdbcType=TIMESTAMP},
+		TOOL_REJECT_DATE = #{toolRejectDate,jdbcType=TIMESTAMP},
+		TOOL_TEST_DATE_CIRCLE = #{toolTestDateCircle,jdbcType=DECIMAL},
+		TOOL_NEXT_TEST_DATE = #{toolNextTestDate,jdbcType=TIMESTAMP},
+		TOOL_CODE = #{toolCode,jdbcType=VARCHAR},
+		STORE_NAME = #{storeName,jdbcType=VARCHAR},
+		POS_NAME = #{posName,jdbcType=VARCHAR},
+		BATCH_CODE = #{batchCode,jdbcType=VARCHAR},
+		BASE_TOOL_NAME = #{baseToolName,jdbcType=VARCHAR},
+		BASE_TOOL_TYPE_ID = #{baseToolTypeId,jdbcType=DECIMAL},
+		BASE_TOOL_TYPE_NAME = #{baseToolTypeName,jdbcType=VARCHAR},
+		BASE_TOOL_MODEL = #{baseToolModel,jdbcType=VARCHAR},
+		BASE_TOOL_SPEC = #{baseToolSpec,jdbcType=VARCHAR}
+		where TRACK_ID = #{trackId,jdbcType=DECIMAL}
+	</update>
+	<resultMap id="BaseResultMap" type="com.gqj.entity.ToolTrack">
+		<id column="TRACK_ID" jdbcType="DECIMAL" property="trackId" />
+		<result column="TOOL_ID" jdbcType="DECIMAL" property="toolId" />
+		<result column="STORE_ID" jdbcType="DECIMAL" property="storeId" />
+		<result column="POS_ID" jdbcType="DECIMAL" property="posId" />
+		<result column="BATCH_ID" jdbcType="DECIMAL" property="batchId" />
+		<result column="MAT_ID" jdbcType="DECIMAL" property="matId" />
+		<result column="TOOL_BOX" jdbcType="VARCHAR" property="toolBox" />
+		<result column="TOOL_STATUS" jdbcType="DECIMAL" property="toolStatus" />
+		<result column="TRACK_CREATE_USER_ID" jdbcType="DECIMAL"
+			property="trackCreateUserId" />
+		<result column="TRACK_CREATE_TIME" jdbcType="TIMESTAMP"
+			property="trackCreateTime" />
+		<result column="TOOL_TEST_DATE" jdbcType="TIMESTAMP" property="toolTestDate" />
+		<result column="TOOL_REJECT_DATE" jdbcType="TIMESTAMP"
+			property="toolRejectDate" />
+		<result column="TOOL_TEST_DATE_CIRCLE" jdbcType="DECIMAL"
+			property="toolTestDateCircle" />
+		<result column="TOOL_NEXT_TEST_DATE" jdbcType="TIMESTAMP"
+			property="toolNextTestDate" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		TRACK_ID, TOOL_ID, STORE_ID, POS_ID, BATCH_ID, MAT_ID,
+		TOOL_BOX, TOOL_STATUS,
+		TRACK_CREATE_USER_ID,
+		TRACK_CREATE_TIME,
+		TOOL_TEST_DATE, TOOL_REJECT_DATE, TOOL_TEST_DATE_CIRCLE,
+		TOOL_NEXT_TEST_DATE
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from GQJ_TOOL_TRACK
+		where TRACK_ID = #{trackId,jdbcType=DECIMAL}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from
+		GQJ_TOOL_TRACK
+		where TRACK_ID = #{trackId,jdbcType=DECIMAL}
+	</delete>
+	<insert id="insert" parameterType="com.gqj.entity.ToolTrack">
+		insert into GQJ_TOOL_TRACK
+		(TRACK_ID, TOOL_ID, STORE_ID,
+		POS_ID, BATCH_ID, MAT_ID,
+		TOOL_BOX,
+		TOOL_STATUS, TRACK_CREATE_USER_ID,
+		TRACK_CREATE_TIME, TOOL_TEST_DATE,
+		TOOL_REJECT_DATE,
+		TOOL_TEST_DATE_CIRCLE, TOOL_NEXT_TEST_DATE)
+		values
+		(#{trackId,jdbcType=DECIMAL}, #{toolId,jdbcType=DECIMAL},
+		#{storeId,jdbcType=DECIMAL},
+		#{posId,jdbcType=DECIMAL},
+		#{batchId,jdbcType=DECIMAL}, #{matId,jdbcType=DECIMAL},
+		#{toolBox,jdbcType=VARCHAR}, #{toolStatus,jdbcType=DECIMAL},
+		#{trackCreateUserId,jdbcType=DECIMAL},
+		#{trackCreateTime,jdbcType=TIMESTAMP},
+		#{toolTestDate,jdbcType=TIMESTAMP},
+		#{toolRejectDate,jdbcType=TIMESTAMP},
+		#{toolTestDateCircle,jdbcType=DECIMAL},
+		#{toolNextTestDate,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.gqj.entity.ToolTrack">
+		insert into GQJ_TOOL_TRACK
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="trackId != null">
+				TRACK_ID,
+			</if>
+			<if test="toolId != null">
+				TOOL_ID,
+			</if>
+			<if test="storeId != null">
+				STORE_ID,
+			</if>
+			<if test="posId != null">
+				POS_ID,
+			</if>
+			<if test="batchId != null">
+				BATCH_ID,
+			</if>
+			<if test="matId != null">
+				MAT_ID,
+			</if>
+			<if test="toolBox != null">
+				TOOL_BOX,
+			</if>
+			<if test="toolStatus != null">
+				TOOL_STATUS,
+			</if>
+			<if test="trackCreateUserId != null">
+				TRACK_CREATE_USER_ID,
+			</if>
+			<if test="trackCreateTime != null">
+				TRACK_CREATE_TIME,
+			</if>
+			<if test="toolTestDate != null">
+				TOOL_TEST_DATE,
+			</if>
+			<if test="toolRejectDate != null">
+				TOOL_REJECT_DATE,
+			</if>
+			<if test="toolTestDateCircle != null">
+				TOOL_TEST_DATE_CIRCLE,
+			</if>
+			<if test="toolNextTestDate != null">
+				TOOL_NEXT_TEST_DATE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="trackId != null">
+				#{trackId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolId != null">
+				#{toolId,jdbcType=DECIMAL},
+			</if>
+			<if test="storeId != null">
+				#{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="posId != null">
+				#{posId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchId != null">
+				#{batchId,jdbcType=DECIMAL},
+			</if>
+			<if test="matId != null">
+				#{matId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolBox != null">
+				#{toolBox,jdbcType=VARCHAR},
+			</if>
+			<if test="toolStatus != null">
+				#{toolStatus,jdbcType=DECIMAL},
+			</if>
+			<if test="trackCreateUserId != null">
+				#{trackCreateUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="trackCreateTime != null">
+				#{trackCreateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolTestDate != null">
+				#{toolTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolRejectDate != null">
+				#{toolRejectDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolTestDateCircle != null">
+				#{toolTestDateCircle,jdbcType=DECIMAL},
+			</if>
+			<if test="toolNextTestDate != null">
+				#{toolNextTestDate,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.ToolTrack">
+		update GQJ_TOOL_TRACK
+		<set>
+			<if test="toolId != null">
+				TOOL_ID = #{toolId,jdbcType=DECIMAL},
+			</if>
+			<if test="storeId != null">
+				STORE_ID = #{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="posId != null">
+				POS_ID = #{posId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchId != null">
+				BATCH_ID = #{batchId,jdbcType=DECIMAL},
+			</if>
+			<if test="matId != null">
+				MAT_ID = #{matId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolBox != null">
+				TOOL_BOX = #{toolBox,jdbcType=VARCHAR},
+			</if>
+			<if test="toolStatus != null">
+				TOOL_STATUS = #{toolStatus,jdbcType=DECIMAL},
+			</if>
+			<if test="trackCreateUserId != null">
+				TRACK_CREATE_USER_ID =
+				#{trackCreateUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="trackCreateTime != null">
+				TRACK_CREATE_TIME =
+				#{trackCreateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolTestDate != null">
+				TOOL_TEST_DATE = #{toolTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolRejectDate != null">
+				TOOL_REJECT_DATE = #{toolRejectDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolTestDateCircle != null">
+				TOOL_TEST_DATE_CIRCLE =
+				#{toolTestDateCircle,jdbcType=DECIMAL},
+			</if>
+			<if test="toolNextTestDate != null">
+				TOOL_NEXT_TEST_DATE =
+				#{toolNextTestDate,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where TRACK_ID = #{trackId,jdbcType=DECIMAL}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.gqj.entity.ToolTrack">
+		update
+		GQJ_TOOL_TRACK
+		set TOOL_ID = #{toolId,jdbcType=DECIMAL},
+		STORE_ID =
+		#{storeId,jdbcType=DECIMAL},
+		POS_ID = #{posId,jdbcType=DECIMAL},
+		BATCH_ID = #{batchId,jdbcType=DECIMAL},
+		MAT_ID =
+		#{matId,jdbcType=DECIMAL},
+		TOOL_BOX = #{toolBox,jdbcType=VARCHAR},
+		TOOL_STATUS = #{toolStatus,jdbcType=DECIMAL},
+		TRACK_CREATE_USER_ID =
+		#{trackCreateUserId,jdbcType=DECIMAL},
+		TRACK_CREATE_TIME =
+		#{trackCreateTime,jdbcType=TIMESTAMP},
+		TOOL_TEST_DATE =
+		#{toolTestDate,jdbcType=TIMESTAMP},
+		TOOL_REJECT_DATE =
+		#{toolRejectDate,jdbcType=TIMESTAMP},
+		TOOL_TEST_DATE_CIRCLE =
+		#{toolTestDateCircle,jdbcType=DECIMAL},
+		TOOL_NEXT_TEST_DATE =
+		#{toolNextTestDate,jdbcType=TIMESTAMP}
+		where TRACK_ID =
+		#{trackId,jdbcType=DECIMAL}
+	</update>
+</mapper>

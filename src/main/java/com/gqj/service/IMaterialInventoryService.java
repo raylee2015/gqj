@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.gqj.entity.MaterialBill;
-import com.gqj.entity.MaterialInventory;
 
 public interface IMaterialInventoryService {
 	Map<String, Object> updateMaterialInventory(

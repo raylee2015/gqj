@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gqj.dao.ToolMapper">
+	<resultMap id="BaseResultMap" type="com.gqj.entity.Tool">
+		<id column="TOOL_ID" jdbcType="DECIMAL" property="toolId" />
+		<result column="TOOL_CODE" jdbcType="VARCHAR" property="toolCode" />
+		<result column="STORE_ID" jdbcType="DECIMAL" property="storeId" />
+		<result column="POS_ID" jdbcType="DECIMAL" property="posId" />
+		<result column="BATCH_ID" jdbcType="DECIMAL" property="batchId" />
+		<result column="TOOL_BOX" jdbcType="VARCHAR" property="toolBox" />
+		<result column="TOOL_STATUS" jdbcType="DECIMAL" property="toolStatus" />
+		<result column="TOOL_DEPT_ID" jdbcType="DECIMAL" property="toolDeptId" />
+		<result column="TOOL_TEST_DATE" jdbcType="TIMESTAMP" property="toolTestDate" />
+		<result column="TOOL_REJECT_DATE" jdbcType="TIMESTAMP"
+			property="toolRejectDate" />
+		<result column="TOOL_TEST_DATE_CIRCLE" jdbcType="DECIMAL"
+			property="toolTestDateCircle" />
+		<result column="TOOL_REMARK" jdbcType="VARCHAR" property="toolRemark" />
+		<result column="TOOL_NEXT_TEST_DATE" jdbcType="TIMESTAMP"
+			property="toolNextTestDate" />
+		<result column="BASE_TOOL_ID" jdbcType="DECIMAL" property="baseToolId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		TOOL_ID, TOOL_CODE, STORE_ID, POS_ID, BATCH_ID, TOOL_BOX,
+		TOOL_STATUS,
+		TOOL_DEPT_ID,
+		TOOL_TEST_DATE, TOOL_REJECT_DATE,
+		TOOL_TEST_DATE_CIRCLE, TOOL_REMARK,
+		TOOL_NEXT_TEST_DATE,
+		BASE_TOOL_ID,
+		STORE_NAME,POS_NAME,BASE_TOOL_NAME,BASE_TOOL_TYPE_NAME,
+		BASE_TOOL_MANUFACTURER_NAME
+	</sql>
+	<select id="selectToolsForList" parameterType="com.gqj.entity.Tool"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_TOOL
+		<where>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+			<if test="keyWord != null">
+				AND TOOL_CODE like '%${keyWord}%'
+			</if>
+		</where>
+		order by TOOL_ID
+	</select>
+	<select id="selectToolsForPage" parameterType="com.gqj.entity.Tool"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_TOOL
+		<where>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+			<if test="keyWord != null">
+				AND TOOL_CODE like '%${keyWord}%'
+			</if>
+		</where>
+		order by TOOL_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfToolsForPage" parameterType="com.gqj.entity.Tool"
+		resultType="java.lang.Integer">
+		select count(t.TOOL_ID) from VIEW_GQJ_TOOL t
+		<where>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+			<if test="keyWord != null">
+				AND TOOL_CODE like '%${keyWord}%'
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="com.gqj.entity.Tool">
+		delete from
+		GQJ_TOOL
+		where TOOL_ID in (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.gqj.entity.Tool">
+		insert into GQJ_TOOL
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="toolId != null">
+				TOOL_ID,
+			</if>
+			<if test="toolCode != null">
+				TOOL_CODE,
+			</if>
+			<if test="storeId != null">
+				STORE_ID,
+			</if>
+			<if test="posId != null">
+				POS_ID,
+			</if>
+			<if test="batchId != null">
+				BATCH_ID,
+			</if>
+			<if test="toolBox != null">
+				TOOL_BOX,
+			</if>
+			<if test="toolStatus != null">
+				TOOL_STATUS,
+			</if>
+			<if test="toolDeptId != null">
+				TOOL_DEPT_ID,
+			</if>
+			<if test="toolTestDate != null">
+				TOOL_TEST_DATE,
+			</if>
+			<if test="toolRejectDate != null">
+				TOOL_REJECT_DATE,
+			</if>
+			<if test="toolTestDateCircle != null">
+				TOOL_TEST_DATE_CIRCLE,
+			</if>
+			<if test="toolRemark != null">
+				TOOL_REMARK,
+			</if>
+			<if test="toolNextTestDate != null">
+				TOOL_NEXT_TEST_DATE,
+			</if>
+			<if test="baseToolId != null">
+				BASE_TOOL_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="toolId != null">
+				GQJ_TOOL_SEQ.nextval,
+			</if>
+			<if test="toolCode != null">
+				#{toolCode,jdbcType=VARCHAR},
+			</if>
+			<if test="storeId != null">
+				#{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="posId != null">
+				#{posId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchId != null">
+				#{batchId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolBox != null">
+				#{toolBox,jdbcType=VARCHAR},
+			</if>
+			<if test="toolStatus != null">
+				#{toolStatus,jdbcType=DECIMAL},
+			</if>
+			<if test="toolDeptId != null">
+				#{toolDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolTestDate != null">
+				#{toolTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolRejectDate != null">
+				#{toolRejectDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolTestDateCircle != null">
+				#{toolTestDateCircle,jdbcType=DECIMAL},
+			</if>
+			<if test="toolRemark != null">
+				#{toolRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="toolNextTestDate != null">
+				#{toolNextTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="baseToolId != null">
+				#{baseToolId,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.Tool">
+		update GQJ_TOOL
+		<set>
+			<if test="toolCode != null">
+				TOOL_CODE = #{toolCode,jdbcType=VARCHAR},
+			</if>
+			<if test="storeId != null">
+				STORE_ID = #{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="posId != null">
+				POS_ID = #{posId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchId != null">
+				BATCH_ID = #{batchId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolBox != null">
+				TOOL_BOX = #{toolBox,jdbcType=VARCHAR},
+			</if>
+			<if test="toolStatus != null">
+				TOOL_STATUS = #{toolStatus,jdbcType=DECIMAL},
+			</if>
+			<if test="toolDeptId != null">
+				TOOL_DEPT_ID = #{toolDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolTestDate != null">
+				TOOL_TEST_DATE = #{toolTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolRejectDate != null">
+				TOOL_REJECT_DATE = #{toolRejectDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolTestDateCircle != null">
+				TOOL_TEST_DATE_CIRCLE =
+				#{toolTestDateCircle,jdbcType=DECIMAL},
+			</if>
+			<if test="toolRemark != null">
+				TOOL_REMARK = #{toolRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="toolNextTestDate != null">
+				TOOL_NEXT_TEST_DATE =
+				#{toolNextTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="baseToolId != null">
+				BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where TOOL_ID = #{toolId,jdbcType=DECIMAL}
+	</update>
+</mapper>

@@ -32,17 +32,6 @@
 		) WHERE num<![CDATA[>=]]>
 		(1+(${currPage}-1)*${pageSize})
 	</select>
-	<select id="selectPositionsForObject" parameterType="com.gqj.entity.Position"
-		resultType="java.util.HashMap">
-		select
-		<include refid="Base_Column_List" />
-		from VIEW_GQJ_POSITION
-		<where>
-			<if test="posId != null">
-				and POS_ID = #{posId}
-			</if>
-		</where>
-	</select>
 	<select id="selectCountOfPositionsForPage" parameterType="com.gqj.entity.Position"
 		resultType="java.lang.Integer">
 		select count(t.POS_ID) from VIEW_GQJ_POSITION t
@@ -55,6 +44,17 @@
 			</if>
 			<if test="keyWord != null">
 				AND POS_NAME like '%${keyWord}%'
+			</if>
+		</where>
+	</select>
+	<select id="selectPositionsForObject" parameterType="com.gqj.entity.Position"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_POSITION
+		<where>
+			<if test="posId != null">
+				and POS_ID = #{posId}
 			</if>
 		</where>
 	</select>
