@@ -23,4 +23,7 @@ public interface IMaterialBillService {
 	Map<String, Object> confirmMaterialBillsAndDetails(
 			MaterialBill materialBill);
 
+	Map<String, Object> takeMaterialBills(
+			MaterialBill materialBill);
+
 }

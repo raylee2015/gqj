@@ -68,6 +68,8 @@
 			<tx:method name="del*" rollback-for="Throwable" />
 			<tx:method name="save*" rollback-for="Throwable" />
 			<tx:method name="add*" rollback-for="Throwable" />
+			<tx:method name="take*" rollback-for="Throwable" />
+			<tx:method name="confirm*" rollback-for="Throwable" />
 		</tx:attributes>
 	</tx:advice>
 	<aop:config>

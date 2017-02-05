@@ -46,6 +46,9 @@
 			<if test="billDeptId != null">
 				AND BILL_DEPT_ID =#{billDeptId}
 			</if>
+			<if test="billTakeDeptId != null">
+				AND BILL_TAKE_DEPT_ID =#{billTakeDeptId}
+			</if>
 		</where>
 		order by BILL_ID DESC
 		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
@@ -64,6 +67,9 @@
 			</if>
 			<if test="billDeptId != null">
 				AND BILL_DEPT_ID =#{billDeptId}
+			</if>
+			<if test="billTakeDeptId != null">
+				AND BILL_TAKE_DEPT_ID =#{billTakeDeptId}
 			</if>
 		</where>
 	</select>

@@ -48,7 +48,10 @@ public class MaterialBillController extends BaseController {
 	private IBaseToolService baseToolService;
 
 	@Autowired
-	private IMaterialInventoryService materialInventoryService;
+	private IDemandPlanService demandPlanService;
+
+	@Autowired
+	private IDeptService deptService;
 
 	@Autowired
 	private IManufacturerService manufacturerService;
@@ -60,13 +63,10 @@ public class MaterialBillController extends BaseController {
 	private IMaterialBillService materialBillService;
 
 	@Autowired
+	private IMaterialInventoryService materialInventoryService;
+
+	@Autowired
 	private IPositionService positionService;
-
-	@Autowired
-	private IDeptService deptService;
-
-	@Autowired
-	private IDemandPlanService demandPlanService;
 
 	@Autowired
 	private ISequenceService sequenceService;
@@ -132,28 +132,6 @@ public class MaterialBillController extends BaseController {
 	}
 
 	/**
-	 * 删除出入库单据
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/delMaterialBills.do")
-	@ResponseBody
-	public Map<String, Object> delMaterialBills(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String materialBillIds = request
-				.getParameter("BILL_IDS");
-		MaterialBill materialBill = new MaterialBill();
-		materialBill.setIds(materialBillIds);
-		return materialBillService
-				.deleteMaterialBillsAndDetails(
-						materialBill);
-	}
-
-	/**
 	 * 确认出入库单据
 	 * 
 	 * @param request
@@ -184,6 +162,53 @@ public class MaterialBillController extends BaseController {
 	}
 
 	/**
+	 * 领用出入库单据
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/takeMaterialBills.do")
+	@ResponseBody
+	public Map<String, Object> takeMaterialBills(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String materialBillIds = request
+				.getParameter("BILL_IDS");
+		MaterialBill materialBill = new MaterialBill();
+		materialBill.setIds(materialBillIds);
+		materialBill.setBillTakeTime(new Date());
+		materialBill.setBillTakeUserId(
+				getSessionUser(request, response)
+						.getUserId());
+		return materialBillService
+				.takeMaterialBills(materialBill);
+	}
+
+	/**
+	 * 删除出入库单据
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/delMaterialBills.do")
+	@ResponseBody
+	public Map<String, Object> delMaterialBills(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String materialBillIds = request
+				.getParameter("BILL_IDS");
+		MaterialBill materialBill = new MaterialBill();
+		materialBill.setIds(materialBillIds);
+		return materialBillService
+				.deleteMaterialBillsAndDetails(
+						materialBill);
+	}
+
+	/**
 	 * 弹出选择工器具管理操作页面
 	 * 
 	 * @return
@@ -194,19 +219,6 @@ public class MaterialBillController extends BaseController {
 			HttpServletResponse response) {
 		return new ModelAndView(
 				"/gqj/material_bill/chooseBaseToolUI");
-	}
-
-	/**
-	 * 弹出选择库存工器具管理操作页面
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/openChooseMaterialInventoryUI.do", method = RequestMethod.GET)
-	public ModelAndView openChooseMaterialInventoryUI(
-			HttpServletRequest request,
-			HttpServletResponse response) {
-		return new ModelAndView(
-				"/gqj/material_bill/chooseMaterialInventoryUI");
 	}
 
 	/**
@@ -223,19 +235,6 @@ public class MaterialBillController extends BaseController {
 	}
 
 	/**
-	 * 弹出选择仓位管理操作页面
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/openChoosePositionUI.do", method = RequestMethod.GET)
-	public ModelAndView openChoosePositionUI(
-			HttpServletRequest request,
-			HttpServletResponse response) {
-		return new ModelAndView(
-				"/gqj/material_bill/choosePositionUI");
-	}
-
-	/**
 	 * 弹出选择部门管理操作页面
 	 * 
 	 * @return
@@ -246,6 +245,32 @@ public class MaterialBillController extends BaseController {
 			HttpServletResponse response) {
 		return new ModelAndView(
 				"/gqj/material_bill/chooseDeptUI");
+	}
+
+	/**
+	 * 弹出选择库存工器具管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openChooseMaterialInventoryUI.do", method = RequestMethod.GET)
+	public ModelAndView openChooseMaterialInventoryUI(
+			HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView(
+				"/gqj/material_bill/chooseMaterialInventoryUI");
+	}
+
+	/**
+	 * 弹出选择仓位管理操作页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/openChoosePositionUI.do", method = RequestMethod.GET)
+	public ModelAndView openChoosePositionUI(
+			HttpServletRequest request,
+			HttpServletResponse response) {
+		return new ModelAndView(
+				"/gqj/material_bill/choosePositionUI");
 	}
 
 	/**
@@ -318,45 +343,6 @@ public class MaterialBillController extends BaseController {
 	}
 
 	/**
-	 * 分页查询库存工器具列表
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryMaterialInventorysPage.do")
-	@ResponseBody
-	public Map<String, Object> queryMaterialInventorysPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String page = request.getParameter("page");
-		String rows = request.getParameter("rows");
-		String keyWord = request.getParameter("keyWord");
-		String baseToolTypeId = request
-				.getParameter("BASE_TOOL_TYPE_ID");
-		String manufacturerId = request
-				.getParameter("MANUFACTURER_ID");
-		String baseToolModel = request
-				.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request
-				.getParameter("BASE_TOOL_SPEC");
-		HashMap<String, Object> param = new HashMap<>();
-		param.put("keyWord", keyWord);
-		param.put("currPage", page);
-		param.put("pageSize", rows);
-		param.put("STORE_DEPT_ID",
-				getSessionUser(request, response)
-						.getUserDeptId());
-		param.put("baseToolTypeId", baseToolTypeId);
-		param.put("manufacturerId", manufacturerId);
-		param.put("baseToolModel", baseToolModel);
-		param.put("baseToolSpec", baseToolSpec);
-		return materialInventoryService
-				.selectMaterialInventorysForPage(param);
-	}
-
-	/**
 	 * 查询下拉列表
 	 * 
 	 * @param request
@@ -372,6 +358,53 @@ public class MaterialBillController extends BaseController {
 				.selectToolTypesForList(new ToolType()));
 		response.getWriter().flush();
 		response.getWriter().close();
+	}
+
+	/**
+	 * 分页查询需求计划列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryDemandPlansPage.do")
+	@ResponseBody
+	public Map<String, Object> queryDemandPlansPage(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String keyWord = request.getParameter("keyWord");
+		DemandPlan demandPlan = new DemandPlan();
+		demandPlan.setCurrPage(BaseUtil.strToInt(page));
+		demandPlan.setPageSize(BaseUtil.strToInt(rows));
+		demandPlan.setKeyWord(keyWord);
+		return demandPlanService
+				.selectDemandPlansForPage(demandPlan);
+	}
+
+	/**
+	 * 分页查询部门列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryDeptsPage.do")
+	@ResponseBody
+	public Map<String, Object> queryDeptsPage(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String keyWord = request.getParameter("keyWord");
+		Dept dept = new Dept();
+		dept.setCurrPage(BaseUtil.strToInt(page));
+		dept.setPageSize(BaseUtil.strToInt(rows));
+		dept.setKeyWord(keyWord);
+		return deptService.selectDeptsForPage(dept);
 	}
 
 	/**
@@ -419,12 +452,57 @@ public class MaterialBillController extends BaseController {
 		MaterialBill materialBill = new MaterialBill();
 		materialBill.setCurrPage(Integer.parseInt(page));
 		materialBill.setPageSize(Integer.parseInt(rows));
-		materialBill.setBillDeptId(materialBillDeptId);
-		materialBill
-				.setBillType(BaseUtil.strToLong(billType));
 		materialBill.setKeyWord(keyWord);
+		if (!"5".equals(billType)) {
+			materialBill.setBillType(
+					BaseUtil.strToLong(billType));
+			materialBill.setBillDeptId(materialBillDeptId);
+		} else {
+			materialBill.setBillTakeDeptId(
+					getSessionUser(request, response)
+							.getUserDeptId());
+		}
 		return materialBillService
 				.selectMaterialBillsForPage(materialBill);
+	}
+
+	/**
+	 * 分页查询库存工器具列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryMaterialInventorysPage.do")
+	@ResponseBody
+	public Map<String, Object> queryMaterialInventorysPage(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String keyWord = request.getParameter("keyWord");
+		String baseToolTypeId = request
+				.getParameter("BASE_TOOL_TYPE_ID");
+		String manufacturerId = request
+				.getParameter("MANUFACTURER_ID");
+		String baseToolModel = request
+				.getParameter("BASE_TOOL_MODEL");
+		String baseToolSpec = request
+				.getParameter("BASE_TOOL_SPEC");
+		HashMap<String, Object> param = new HashMap<>();
+		param.put("keyWord", keyWord);
+		param.put("currPage", page);
+		param.put("pageSize", rows);
+		param.put("STORE_DEPT_ID",
+				getSessionUser(request, response)
+						.getUserDeptId());
+		param.put("baseToolTypeId", baseToolTypeId);
+		param.put("manufacturerId", manufacturerId);
+		param.put("baseToolModel", baseToolModel);
+		param.put("baseToolSpec", baseToolSpec);
+		return materialInventoryService
+				.selectMaterialInventorysForPage(param);
 	}
 
 	/**
@@ -486,53 +564,6 @@ public class MaterialBillController extends BaseController {
 		position.setStoreId(BaseUtil.strToLong(storeId));
 		return positionService
 				.selectPositionsForPage(position);
-	}
-
-	/**
-	 * 分页查询部门列表
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryDeptsPage.do")
-	@ResponseBody
-	public Map<String, Object> queryDeptsPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String page = request.getParameter("page");
-		String rows = request.getParameter("rows");
-		String keyWord = request.getParameter("keyWord");
-		Dept dept = new Dept();
-		dept.setCurrPage(BaseUtil.strToInt(page));
-		dept.setPageSize(BaseUtil.strToInt(rows));
-		dept.setKeyWord(keyWord);
-		return deptService.selectDeptsForPage(dept);
-	}
-
-	/**
-	 * 分页查询需求计划列表
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryDemandPlansPage.do")
-	@ResponseBody
-	public Map<String, Object> queryDemandPlansPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String page = request.getParameter("page");
-		String rows = request.getParameter("rows");
-		String keyWord = request.getParameter("keyWord");
-		DemandPlan demandPlan = new DemandPlan();
-		demandPlan.setCurrPage(BaseUtil.strToInt(page));
-		demandPlan.setPageSize(BaseUtil.strToInt(rows));
-		demandPlan.setKeyWord(keyWord);
-		return demandPlanService
-				.selectDemandPlansForPage(demandPlan);
 	}
 
 	/**

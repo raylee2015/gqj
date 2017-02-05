@@ -88,6 +88,12 @@ public class MaterialBillServiceImpl
 								.get("BILL_CONFIRM_TIME")
 								.toString()));
 			}
+			if (item.get("BILL_TAKE_TIME") != null) {
+				item.put("BILL_TAKE_TIME",
+						DateUtil.getDate(
+								item.get("BILL_TAKE_TIME")
+										.toString()));
+			}
 		}
 		int count = materialBillMapper
 				.selectCountOfMaterialBillsForPage(
@@ -114,6 +120,22 @@ public class MaterialBillServiceImpl
 						materialBill.getBillId(),
 						baseToolIds, baseToolPosIds,
 						detailBillAmounts);
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> takeMaterialBills(
+			MaterialBill materialBill) {
+		int bool = materialBillMapper
+				.updateByPrimaryKeySelective(materialBill);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (bool == 0) {
 			map.put("success", false);

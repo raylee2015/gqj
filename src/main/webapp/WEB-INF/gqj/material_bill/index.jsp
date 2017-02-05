@@ -2,6 +2,8 @@
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
+	String billType = request.getParameter("BILL_TYPE");
+	String deptType = request.getParameter("DEPT_TYPE");
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -30,6 +32,7 @@
 <script type="text/javascript"
 	src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
+
 	//关闭选择部门窗口
 	function closeChooseMaterialInventoryUIForMaterialBill() {
 		closeUI('chooseMaterialInventoryUIForMaterialBill')
@@ -139,6 +142,21 @@
 		}
 	}
 
+	//领用
+	function takeMaterialBills() {
+		if (checkSelectedItems('datagridForMaterialBill', '请选择批次')) {
+			var ids = getIdsOfSelectedItems('datagridForMaterialBill',
+					'BILL_ID');
+			if (ids != null && ids != '') {
+				var params = {
+					BILL_IDS : ids
+				};
+				showMessageBox(params, 'takeMaterialBills.do', '是否领用所选批次?',
+						successFunctionForOption);
+			}
+		}
+	}
+
 	//回调函数，删除或其他操作成功后调用
 	function successFunctionForOption(result) {
 		showMessage(result.msg, result.msg);
@@ -153,6 +171,7 @@
 	//查询
 	function queryMaterialBills() {
 		var params = {
+			BILL_TYPE : getTextBoxValue('billTypeTextInput'),
 			keyWord : getTextBoxValue('keyWordForMaterialBillTextInput'),
 			page : 1,
 			rows : getPageSizeOfDataGrid('datagridForMaterialBill')
@@ -174,6 +193,15 @@
 						queryMaterialBillPagesForSearch);
 				initDataGridForMaterialBill();
 				initDataGridForMaterialBillDetail();
+				var billType = getTextBoxValue('billTypeTextInput');
+				if (billType == 1 || billType == 2 || billType == 5) {
+					$('#datagridForMaterialBill').treegrid('showColumn',
+							'BILL_TAKE_DEPT_NAME');
+					$('#datagridForMaterialBill').treegrid('showColumn',
+							'BILL_TAKE_USER_NAME');
+					$('#datagridForMaterialBill').treegrid('showColumn',
+							'BILL_TAKE_TIME');
+				}
 			});
 
 	//初始化列表元素
@@ -237,15 +265,33 @@
 										field : 'BILL_CONFIRM_TIME',
 										title : '确认时间',
 										width : 100,
+									}, {
+										field : 'BILL_TAKE_DEPT_NAME',
+										title : '领用部门',
+										width : 100,
+										hidden : true
+									}, {
+										field : 'BILL_TAKE_USER_NAME',
+										title : '领用人',
+										width : 100,
+										hidden : true
+									}, {
+										field : 'BILL_TAKE_TIME',
+										title : '领用时间',
+										width : 100,
+										hidden : true
 									} ] ],
 							onLoadSuccess : function(data) {
-								if (data.rows.length > 0) {
-									//循环判断操作为新增的不能选择
-									for (var i = 0; i < data.rows.length; i++) {
-										//根据operate让某些行不可选
-										if (data.rows[i].BILL_CONFIRM_USER_ID != null) {
-											$("input[type='checkbox']")[i + 1].disabled = true;
-											data.rows[i].disabled = true;
+								var billType = getTextBoxValue('billTypeTextInput');
+								if (billType != 5) {
+									if (data.rows.length > 0) {
+										//循环判断操作为新增的不能选择
+										for (var i = 0; i < data.rows.length; i++) {
+											//根据operate让某些行不可选
+											if (data.rows[i].BILL_CONFIRM_USER_ID != null) {
+												$("input[type='checkbox']")[i + 1].disabled = true;
+												data.rows[i].disabled = true;
+											}
 										}
 									}
 								}
@@ -594,6 +640,7 @@
 </script>
 </head>
 <body>
+
 	<div id="materialBillListUI" class="easyui-panel"
 		data-options="fit:true,border:false">
 		<!-- 列表页面 -->
@@ -610,14 +657,22 @@
 					<td><a href="#" class="easyui-linkbutton"
 						iconCls="icon-reload" plain="true"
 						onclick="refreshDataGrid('datagridForMaterialBill')">刷新</a>
-						<a href="#" class="easyui-linkbutton"
+						<%
+							if (!"5".equals(billType)) {
+						%> <a href="#" class="easyui-linkbutton"
 						iconCls="icon-add" plain="true" onclick="toDetail()">添加</a>
 						<a href="#" class="easyui-linkbutton"
 						iconCls="icon-remove" plain="true"
 						onclick="delMaterialBills()">删除</a><a href="#"
 						class="easyui-linkbutton"
 						iconCls="icon-application_go" plain="true"
-						onclick="confirmMaterialBills()">确认</a></td>
+						onclick="confirmMaterialBills()">确认</a> <%
+ 	} else {
+ %> <a href="#" class="easyui-linkbutton"
+						iconCls="icon-application_go" plain="true"
+						onclick="takeMaterialBills()">领用</a> <%
+ 	}
+ %></td>
 					<td align="right"><input
 						id="keyWordForMaterialBillTextInput"
 						class="easyui-textbox"
@@ -634,12 +689,7 @@
 		<table id="datagridForMaterialBillDetail"
 			class="easyui-datagrid">
 		</table>
-		<%
-			String billType = request
-					.getParameter("BILL_TYPE");
-			String deptType = request
-					.getParameter("DEPT_TYPE");
-		%>
+
 		<div id="toolbarForMaterialBillDetail">
 			<div>
 				<a href="#" class="easyui-linkbutton" plain="true"
