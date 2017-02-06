@@ -1,17 +1,22 @@
 package com.gqj.dao;
 
+import java.util.List;
+import java.util.Map;
+
+import com.gqj.entity.Tool;
 import com.gqj.entity.ToolTrack;
 
 public interface ToolTrackMapper {
-    int deleteByPrimaryKey(Long trackId);
+	int deleteByPrimaryKeys(Tool tool);
 
-    int insert(ToolTrack record);
+	List<Map<String, Object>> selectToolTracksForPage(
+			ToolTrack toolTrack);
 
-    int insertSelective(ToolTrack record);
+	Map<String, Object> selectToolTracksForObject(ToolTrack toolTrack);
 
-    ToolTrack selectByPrimaryKey(Long trackId);
+	int selectCountOfToolTracksForPage(ToolTrack toolTrack);
 
-    int updateByPrimaryKeySelective(ToolTrack record);
+	int insertSelective(ToolTrack toolTrack);
 
-    int updateByPrimaryKey(ToolTrack record);
+	int updateByPrimaryKeySelective(ToolTrack toolTrack);
 }

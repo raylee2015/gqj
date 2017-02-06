@@ -1,17 +1,20 @@
 package com.gqj.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.gqj.entity.Batch;
 
 public interface BatchMapper {
-    int deleteByPrimaryKey(Long batchId);
+	int deleteByPrimaryKeys(Batch batch);
 
-    int insert(Batch record);
+	List<Map<String, Object>> selectBatchsForPage(Batch batch);
 
-    int insertSelective(Batch record);
+	Map<String, Object> selectBatchsForObject(Batch batch);
 
-    Batch selectByPrimaryKey(Long batchId);
+	int selectCountOfBatchsForPage(Batch batch);
 
-    int updateByPrimaryKeySelective(Batch record);
+	int insertSelective(Batch batch);
 
-    int updateByPrimaryKey(Batch record);
+	int updateByPrimaryKeySelective(Batch batch);
 }

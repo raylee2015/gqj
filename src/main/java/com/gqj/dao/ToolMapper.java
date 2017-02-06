@@ -1,17 +1,20 @@
 package com.gqj.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.gqj.entity.Tool;
 
 public interface ToolMapper {
-    int deleteByPrimaryKey(Long toolId);
+	int deleteByPrimaryKeys(Tool tool);
 
-    int insert(Tool record);
+	List<Map<String, Object>> selectToolsForPage(Tool tool);
 
-    int insertSelective(Tool record);
+	Map<String, Object> selectToolsForObject(Tool tool);
 
-    Tool selectByPrimaryKey(Long toolId);
+	int selectCountOfToolsForPage(Tool tool);
 
-    int updateByPrimaryKeySelective(Tool record);
+	int insertSelective(Tool tool);
 
-    int updateByPrimaryKey(Tool record);
+	int updateByPrimaryKeySelective(Tool tool);
 }
