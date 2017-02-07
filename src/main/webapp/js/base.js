@@ -15,6 +15,12 @@ function getComboBoxValue(comboBoxId) {
 	return comboBox.combobox('getValue');
 }
 
+// 获取ComboBox里面的值
+function getDateBoxValue(dateBoxId) {
+	var dateBox = eval('$(\'#' + dateBoxId + '\')');
+	return dateBox.datebox('getValue');
+}
+
 // 获取COMBOTREE里面的值
 function getComboTreeValue(comboTreeId) {
 	var comboTree = eval('$(\'#' + comboTreeId + '\')');
