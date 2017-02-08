@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java"
+	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 	String batchType = request.getParameter("BATCH_TYPE");
@@ -8,7 +8,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type"
+	content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -28,7 +29,8 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript"
+	src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//关闭选择部门窗口
 	function closeAddToolsUIForBatch() {
@@ -36,7 +38,7 @@
 	}
 
 	//打开选择部门窗口
-	function openAddToolsUIForBatch() {
+	function openAddToolsUIForBatch(batchCode) {
 		var panelHeight = 0;
 		var batchType = getTextBoxValue('batchTypeTextInput');
 		if (batchType == 0) {
@@ -44,7 +46,8 @@
 		} else {
 			panelHeight = 500;
 		}
-		createModalDialog("addToolsUIForBatch", "openAddToolsUI.do?BATCH_TYPE="
+		createModalDialog("addToolsUIForBatch", "openAddToolsUI.do?BATCH_CODE="
+				+ batchCode + "&BATCH_TYPE="
 				+ getTextBoxValue('batchTypeTextInput'), "扫描入库", 700,
 				panelHeight);
 		openUI('addToolsUIForBatch');
@@ -167,6 +170,22 @@
 									{
 										field : 'ck',
 										checkbox : true
+									},
+									{
+										field : 'addToolColumn',
+										title : '再添工器具',
+										formatter : function(fieldValue,
+												rowData, rowIndex) {
+											var batchConfirmUserId = rowData.BATCH_CONFIRM_USER_ID;
+											var btn = '';
+											if (batchConfirmUserId == null) {
+												btn = '<a class="easyui-linkbutton" '
+														+ ' onclick="openAddToolsUIForBatch(\''
+														+ rowData.BATCH_CODE
+														+ '\')" href="javascript:void(0)">再添工器具</a>';
+											}
+											return btn;
+										}
 									},
 									{
 										field : 'op',
@@ -491,18 +510,21 @@
 						onclick="refreshDataGrid('datagridForBatch')">刷新</a> <%
  	if (!"7".equals(batchType)) {
  %> <a href="#" class="easyui-linkbutton" iconCls="icon-add"
-						plain="true" onclick="openAddToolsUIForBatch()">扫描入库</a> <a
-						href="#" class="easyui-linkbutton" iconCls="icon-remove"
-						plain="true" onclick="delBatchs()">删除</a><a href="#"
-						class="easyui-linkbutton" iconCls="icon-application_go"
-						plain="true" onclick="confirmBatchs()">确认</a> <%
+						plain="true" onclick="openAddToolsUIForBatch('')">扫描入库</a>
+						<a href="#" class="easyui-linkbutton"
+						iconCls="icon-remove" plain="true"
+						onclick="delBatchs()">删除</a><a href="#"
+						class="easyui-linkbutton"
+						iconCls="icon-application_go" plain="true"
+						onclick="confirmBatchs()">确认</a> <%
  	} else {
- %> <a href="#" class="easyui-linkbutton" iconCls="icon-application_go"
-						plain="true" onclick="takeBatchs()">领用</a> <%
+ %> <a href="#" class="easyui-linkbutton"
+						iconCls="icon-application_go" plain="true"
+						onclick="takeBatchs()">领用</a> <%
  	}
  %></td>
-					<td align="right"><input id="keyWordForBatchTextInput"
-						class="easyui-textbox"
+					<td align="right"><input
+						id="keyWordForBatchTextInput" class="easyui-textbox"
 						data-options="prompt:'批次号',validType:'length[0,50]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
@@ -529,14 +551,15 @@
 							data-options="prompt:'批次号',validType:'length[0,50]',disabled:true"
 							style="width: 200px"></td>
 						<%
-							if ("1".equals(batchType) || "2".equals(batchType)) {
+							if ("1".equals(batchType)
+									|| "2".equals(batchType)) {
 						%>
 						<td>
 							<div style="display: none">
 								<input id="deptIdTextInput" class="easyui-textbox" />
-							</div> 领用部门：<a href="#" id="deptNameBtn" class="easyui-linkbutton"
-							style="width: 200px;" onclick="openChooseDeptUIForBatch()">
-								选择领用部门</a>
+							</div> 领用部门：<a href="#" id="deptNameBtn"
+							class="easyui-linkbutton" style="width: 200px;"
+							onclick="openChooseDeptUIForBatch()"> 选择领用部门</a>
 						</td>
 						<%
 							}

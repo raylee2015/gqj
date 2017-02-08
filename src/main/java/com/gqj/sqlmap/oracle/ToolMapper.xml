@@ -43,8 +43,8 @@
 		BASE_TOOL_ID
 		from GQJ_TOOL
 		<where>
-			<if test="keyWord != null">
-				AND TOOL_CODE like '%${keyWord}%'
+			<if test="toolCode != null">
+				AND TOOL_CODE=#{toolCode}
 			</if>
 		</where>
 		order by TOOL_ID

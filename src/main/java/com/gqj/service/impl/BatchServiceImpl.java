@@ -43,7 +43,8 @@ public class BatchServiceImpl implements IBatchService {
 	public synchronized Map<String, Object> addNewBatchsAndDetails(
 			Batch batch, Tool tool, ToolTrack toolTrack) {
 		int bool = 0;
-		Batch temp = batchMapper.selectBatchsForObject(batch);
+		Batch temp = batchMapper
+				.selectBatchsForObject(batch);
 		if (temp == null) {
 			batch.setBatchCount(0L);
 			bool = batchMapper.insertSelective(batch);
@@ -51,21 +52,27 @@ public class BatchServiceImpl implements IBatchService {
 			batch = temp;
 		}
 		Map<String, Object> resultMap = null;
+		boolean success = false;
+		String msg = "程序发生错误，请联系系统管理员";
 		long batchType = batch.getBatchType();
 		tool.setBatchId(batch.getBatchId());
 		if (batchType == BatchType.CHECK_IN) {
 			tool.setToolId(-1L);
 			tool.setToolStatus(ToolStatus.CHECK_IN_COMING);
-			resultMap = toolService.checkInNewTool(batch, tool,
-					toolTrack);
+			resultMap = toolService.checkInNewTool(batch,
+					tool, toolTrack);
+
 		}
-		boolean success = (boolean) resultMap.get("success");
-		String msg = resultMap.get("msg").toString();
+		if (resultMap != null) {
+			success = (boolean) resultMap.get("success");
+			msg = resultMap.get("msg").toString();
+		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (success) {
 			// 批次更新数量
 			batch.setBatchCount(batch.getBatchCount() + 1);
-			bool = batchMapper.updateByPrimaryKeySelective(batch);
+			bool = batchMapper
+					.updateByPrimaryKeySelective(batch);
 
 			if (bool == 0) {
 				map.put("success", false);
@@ -73,6 +80,7 @@ public class BatchServiceImpl implements IBatchService {
 			} else {
 				map.put("success", true);
 				map.put("msg", "保存成功");
+				map.put("count", batch.getBatchCount());
 			}
 		} else {
 			map.put("success", false);
@@ -83,10 +91,12 @@ public class BatchServiceImpl implements IBatchService {
 	}
 
 	@Override
-	public Map<String, Object> selectBatchsForPage(Batch batch) {
+	public Map<String, Object> selectBatchsForPage(
+			Batch batch) {
 		List<Map<String, Object>> batchs = batchMapper
 				.selectBatchsForPage(batch);
-		int count = batchMapper.selectCountOfBatchsForPage(batch);
+		int count = batchMapper
+				.selectCountOfBatchsForPage(batch);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", batchs);
 		map.put("total", count);
@@ -96,7 +106,8 @@ public class BatchServiceImpl implements IBatchService {
 	@Override
 	public Map<String, Object> updateBatch(Batch batch) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = batchMapper.updateByPrimaryKeySelective(batch);
+		int bool = batchMapper
+				.updateByPrimaryKeySelective(batch);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
