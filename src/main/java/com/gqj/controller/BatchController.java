@@ -1,5 +1,6 @@
 package com.gqj.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,11 +19,14 @@ import com.base.admin.entity.Dept;
 import com.base.admin.service.IDeptService;
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
+import com.base.util.DateStyle;
 import com.base.util.DateUtil;
 import com.gqj.entity.Batch;
 import com.gqj.entity.Manufacturer;
 import com.gqj.entity.Position;
 import com.gqj.entity.Storage;
+import com.gqj.entity.Tool;
+import com.gqj.entity.ToolTrack;
 import com.gqj.entity.ToolType;
 import com.gqj.service.IBaseToolService;
 import com.gqj.service.IBatchService;
@@ -67,12 +71,89 @@ public class BatchController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/addNewBatch.do")
+	@RequestMapping("/addNewBatchsAndDetails.do")
 	@ResponseBody
-	public Map<String, Object> addNewBatch(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public Map<String, Object> addNewBatchsAndDetails(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String batchCode = request.getParameter("BATCH_CODE");
+		String batchType = request.getParameter("BATCH_TYPE");
+		String storeId = request.getParameter("STORE_ID");
+		String posId = request.getParameter("POS_ID");
+		String baseToolId = request.getParameter("BASE_TOOL_ID");
+		String baseToolName = request.getParameter("BASE_TOOL_NAME");
+		String baseToolTypeId = request
+				.getParameter("BASE_TOOL_TYPE_ID");
+		String baseToolTypeName = request
+				.getParameter("BASE_TOOL_TYPE_NAME");
+		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
+		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
+		String batchRemark = request.getParameter("BATCH_REMARK");
+		String batchTakeDeptId = request
+				.getParameter("BATCH_TAKE_DEPT_ID");
+		String toolCode = request.getParameter("TOOL_CODE");
+		String toolBox = request.getParameter("TOOL_BOX");
+		String toolTestDate = request.getParameter("TOOL_TEST_DATE");
+		String toolRejectDate = request
+				.getParameter("TOOL_REJECT_DATE");
+		String toolTestDateCircle = request
+				.getParameter("TOOL_TEST_DATE_CIRCLE");
 		Batch batch = new Batch();
-		return batchService.addNewBatch(batch);
+		batch.setBatchCode(batchCode);
+		batch.setBatchType(BaseUtil.strToLong(batchType));
+		batch.setBatchType(BaseUtil.strToLong(baseToolTypeId));
+		batch.setBatchDeptId(
+				getSessionUser(request, response).getUserDeptId());
+		batch.setBatchCreateUserId(
+				getSessionUser(request, response).getUserId());
+		batch.setBatchCreateTime(new Date());
+		batch.setBatchTakeDeptId(BaseUtil.strToLong(batchTakeDeptId));
+		batch.setBatchRemark(batchRemark);
+		Tool tool = new Tool();
+		tool.setToolCode(toolCode);
+		tool.setStoreId(BaseUtil.strToLong(storeId));
+		tool.setPosId(BaseUtil.strToLong(posId));
+		tool.setToolBox(toolBox);
+		tool.setToolDeptId(
+				getSessionUser(request, response).getUserDeptId());
+		tool.setToolTestDate(DateUtil.StringToDate(toolTestDate,
+				DateStyle.YYYY_MM_DD));
+		tool.setToolRejectDate(DateUtil.StringToDate(toolRejectDate,
+				DateStyle.YYYY_MM_DD));
+		tool.setToolTestDateCircle(
+				Double.parseDouble(toolTestDateCircle));
+		int month = (int) (Double.parseDouble(toolTestDateCircle) * 12);
+		tool.setToolNextTestDate(
+				DateUtil.addMonth(DateUtil.StringToDate(toolRejectDate,
+						DateStyle.YYYY_MM_DD), month));
+		tool.setToolRemark(batchRemark);
+		tool.setBaseToolId(BaseUtil.strToLong(baseToolId));
+		ToolTrack toolTrack = new ToolTrack();
+		toolTrack.setStoreId(BaseUtil.strToLong(storeId));
+		toolTrack.setPosId(BaseUtil.strToLong(posId));
+		toolTrack.setBatchCode(batchCode);
+		toolTrack.setBaseToolId(BaseUtil.strToLong(baseToolId));
+		toolTrack.setToolCode(toolCode);
+		toolTrack.setToolBox(toolBox);
+		toolTrack.setTrackCreateUserId(
+				getSessionUser(request, response).getUserId());
+		toolTrack.setTrackCreateTime(new Date());
+		toolTrack.setToolTestDate(DateUtil.StringToDate(toolTestDate,
+				DateStyle.YYYY_MM_DD));
+		toolTrack.setToolRejectDate(DateUtil
+				.StringToDate(toolRejectDate, DateStyle.YYYY_MM_DD));
+		toolTrack.setToolTestDateCircle(
+				Double.parseDouble(toolTestDateCircle));
+		toolTrack.setToolNextTestDate(
+				DateUtil.addMonth(DateUtil.StringToDate(toolRejectDate,
+						DateStyle.YYYY_MM_DD), month));
+		toolTrack.setBaseToolName(baseToolName);
+		toolTrack.setBaseToolTypeId(BaseUtil.strToLong(baseToolTypeId));
+		toolTrack.setBaseToolTypeName(baseToolTypeName);
+		toolTrack.setBaseToolModel(baseToolModel);
+		toolTrack.setBaseToolSpec(baseToolSpec);
+		return batchService.addNewBatchsAndDetails(batch, tool,
+				toolTrack);
 	}
 
 	/**

@@ -10,7 +10,7 @@ public interface ToolMapper {
 
 	List<Map<String, Object>> selectToolsForPage(Tool tool);
 
-	Map<String, Object> selectToolsForObject(Tool tool);
+	Tool selectToolForObject(Tool tool);
 
 	int selectCountOfToolsForPage(Tool tool);
 

@@ -2,7 +2,9 @@ package com.gqj.service;
 
 import java.util.Map;
 
+import com.gqj.entity.Batch;
 import com.gqj.entity.Tool;
+import com.gqj.entity.ToolTrack;
 
 public interface IToolService {
 	Map<String, Object> deleteTools(Tool tool);
@@ -13,6 +15,7 @@ public interface IToolService {
 
 	Map<String, Object> selectToolsForPage(Tool tool);
 
-	Map<String, Object> selectToolsForObject(Tool tool);
+	Map<String, Object> checkInNewTool(Batch batch, Tool tool,
+			ToolTrack toolTrack);
 
 }

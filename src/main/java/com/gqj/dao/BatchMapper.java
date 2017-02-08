@@ -10,7 +10,7 @@ public interface BatchMapper {
 
 	List<Map<String, Object>> selectBatchsForPage(Batch batch);
 
-	Map<String, Object> selectBatchsForObject(Batch batch);
+	Batch selectBatchsForObject(Batch batch);
 
 	int selectCountOfBatchsForPage(Batch batch);
 

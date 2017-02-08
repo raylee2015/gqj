@@ -31,15 +31,18 @@
 		STORE_NAME,POS_NAME,BASE_TOOL_NAME,BASE_TOOL_TYPE_NAME,
 		BASE_TOOL_MANUFACTURER_NAME
 	</sql>
-	<select id="selectToolsForList" parameterType="com.gqj.entity.Tool"
-		resultType="java.util.HashMap">
+	<select id="selectToolForObject" parameterType="com.gqj.entity.Tool"
+		resultMap="BaseResultMap">
 		select
-		<include refid="Base_Column_List" />
-		from VIEW_GQJ_TOOL
+		TOOL_ID, TOOL_CODE, STORE_ID, POS_ID, BATCH_ID, TOOL_BOX,
+		TOOL_STATUS,
+		TOOL_DEPT_ID,
+		TOOL_TEST_DATE, TOOL_REJECT_DATE,
+		TOOL_TEST_DATE_CIRCLE, TOOL_REMARK,
+		TOOL_NEXT_TEST_DATE,
+		BASE_TOOL_ID
+		from GQJ_TOOL
 		<where>
-			<if test="batchId != null">
-				and BATCH_ID = #{batchId}
-			</if>
 			<if test="keyWord != null">
 				AND TOOL_CODE like '%${keyWord}%'
 			</if>
@@ -83,6 +86,10 @@
 		where TOOL_ID in (${ids})
 	</delete>
 	<insert id="insertSelective" parameterType="com.gqj.entity.Tool">
+		<selectKey resultType="java.lang.Long" order="BEFORE"
+			keyProperty="toolId">
+			select GQJ_TOOL_SEQ.nextval from dual
+		</selectKey>
 		insert into GQJ_TOOL
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="toolId != null">
@@ -130,7 +137,7 @@
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="toolId != null">
-				GQJ_TOOL_SEQ.nextval,
+				#{toolId},
 			</if>
 			<if test="toolCode != null">
 				#{toolCode,jdbcType=VARCHAR},

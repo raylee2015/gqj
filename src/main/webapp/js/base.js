@@ -15,7 +15,7 @@ function getComboBoxValue(comboBoxId) {
 	return comboBox.combobox('getValue');
 }
 
-// 获取ComboBox里面的值
+// 获取datebox里面的值
 function getDateBoxValue(dateBoxId) {
 	var dateBox = eval('$(\'#' + dateBoxId + '\')');
 	return dateBox.datebox('getValue');
@@ -143,7 +143,7 @@ function checkSelectedItems(dataGridId, tipsForUnSelected) {
 	}
 }
 
-//重新加载列表
+// 重新加载列表
 function reloadDataGrid(dataGridId) {
 	var dataGrid = eval('$(\'#' + dataGridId + '\')');
 	dataGrid.datagrid('reload');
@@ -151,7 +151,7 @@ function reloadDataGrid(dataGridId) {
 	dataGrid.datagrid('uncheckAll');
 }
 
-//重新加载树形列表
+// 重新加载树形列表
 function reloadTreeGrid(treeGridId) {
 	var treeGrid = eval('$(\'#' + treeGridId + '\')');
 	treeGrid.treegrid('reload');

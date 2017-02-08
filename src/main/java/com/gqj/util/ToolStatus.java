@@ -47,15 +47,4 @@ public class ToolStatus {
 	 * 借用
 	 */
 	public static Long BORROW = 8L;
-
-	/**
-	 * 归还打单
-	 */
-	public static Long RETURN_COMING = 9L;
-
-	/**
-	 * 归还
-	 */
-	public static Long RETURN = 10L;
-
 }
