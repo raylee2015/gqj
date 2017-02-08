@@ -32,24 +32,19 @@
 		BATCH_DEPT_NAME,BATCH_CREATE_USER_NAME,
 		BATCH_CONFIRM_USER_NAME,BATCH_TAKE_USER_NAME,BATCH_TAKE_DEPT_NAME
 	</sql>
-	<select id="selectBatchsForList" parameterType="com.gqj.entity.Batch"
-		resultType="java.util.HashMap">
+	<select id="selectBatchsForObject" parameterType="com.gqj.entity.Batch"
+		resultMap="BaseResultMap">
 		select
-		<include refid="Base_Column_List" />
-		from VIEW_GQJ_BATCH
+		BATCH_ID, BATCH_CODE, BATCH_TYPE, BATCH_COUNT,
+		BATCH_DEPT_ID,
+		BATCH_CREATE_USER_ID,
+		BATCH_CREATE_TIME,
+		BATCH_CONFIRM_USER_ID,
+		BATCH_CONFIRM_TIME, BATCH_TAKE_DEPT_ID,
+		BATCH_TAKE_USER_ID,
+		BATCH_TAKE_TIME, BATCH_REMARK
+		from GQJ_BATCH
 		<where>
-			<if test="batchDeptId != null">
-				and BATCH_DEPT_ID = #{batchDeptId}
-			</if>
-			<if test="batchTakeDeptId != null">
-				and BATCH_TAKE_DEPT_ID = #{batchTakeDeptId}
-			</if>
-			<if test="batchType != null">
-				and BATCH_TYPE = #{batchType}
-			</if>
-			<if test="keyWord != null">
-				AND BATCH_CODE like '%${keyWord}%'
-			</if>
 			<if test="batchCode != null">
 				AND BATCH_CODE = #{batchCode}
 			</if>
@@ -111,6 +106,10 @@
 		where BATCH_ID in (${ids})
 	</delete>
 	<insert id="insertSelective" parameterType="com.gqj.entity.Batch">
+		<selectKey resultType="java.lang.Long" order="BEFORE"
+			keyProperty="batchId">
+			select GQJ_BATCH_SEQ.nextval from dual
+		</selectKey>
 		insert into GQJ_BATCH
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="batchId != null">
@@ -155,7 +154,7 @@
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="batchId != null">
-				GQJ_BATCH_SEQ.nextval,
+				#{batchId},
 			</if>
 			<if test="batchCode != null">
 				#{batchCode,jdbcType=VARCHAR},

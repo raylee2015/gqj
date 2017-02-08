@@ -18,8 +18,8 @@ public class DateUtil {
 	 * @throws RuntimeException
 	 *             异常：非法日期格式
 	 */
-	private static SimpleDateFormat getDateFormat(
-			String parttern) throws RuntimeException {
+	private static SimpleDateFormat getDateFormat(String parttern)
+			throws RuntimeException {
 		return new SimpleDateFormat(parttern);
 	}
 
@@ -49,8 +49,8 @@ public class DateUtil {
 	 *            数值
 	 * @return 计算后日期字符串
 	 */
-	private static String addInteger(String date,
-			int dateType, int amount) {
+	private static String addInteger(String date, int dateType,
+			int amount) {
 		String dateString = null;
 		DateStyle dateStyle = getDateStyle(date);
 		if (dateStyle != null) {
@@ -91,8 +91,7 @@ public class DateUtil {
 	 *            时间long集合
 	 * @return 日期
 	 */
-	private static Date getAccurateDate(
-			List<Long> timestamps) {
+	private static Date getAccurateDate(List<Long> timestamps) {
 		Date date = null;
 		long timestamp = 0;
 		Map<Long, long[]> map = new HashMap<Long, long[]>();
@@ -100,20 +99,14 @@ public class DateUtil {
 
 		if (timestamps != null && timestamps.size() > 0) {
 			if (timestamps.size() > 1) {
-				for (int i = 0; i < timestamps
-						.size(); i++) {
-					for (int j = i + 1; j < timestamps
-							.size(); j++) {
-						long absoluteValue = Math
-								.abs(timestamps.get(i)
-										- timestamps
-												.get(j));
+				for (int i = 0; i < timestamps.size(); i++) {
+					for (int j = i + 1; j < timestamps.size(); j++) {
+						long absoluteValue = Math.abs(
+								timestamps.get(i) - timestamps.get(j));
 						absoluteValues.add(absoluteValue);
-						long[] timestampTmp = {
-								timestamps.get(i),
+						long[] timestampTmp = { timestamps.get(i),
 								timestamps.get(j) };
-						map.put(absoluteValue,
-								timestampTmp);
+						map.put(absoluteValue, timestampTmp);
 					}
 				}
 
@@ -121,21 +114,16 @@ public class DateUtil {
 				long minAbsoluteValue = -1;
 				if (!absoluteValues.isEmpty()) {
 					// 如果timestamps的size为2，这是差值只有一个，因此要给默认值
-					minAbsoluteValue = absoluteValues
-							.get(0);
+					minAbsoluteValue = absoluteValues.get(0);
 				}
-				for (int i = 0; i < absoluteValues
-						.size(); i++) {
+				for (int i = 0; i < absoluteValues.size(); i++) {
 					for (int j = i + 1; j < absoluteValues
 							.size(); j++) {
-						if (absoluteValues
-								.get(i) > absoluteValues
-										.get(j)) {
-							minAbsoluteValue = absoluteValues
-									.get(j);
+						if (absoluteValues.get(i) > absoluteValues
+								.get(j)) {
+							minAbsoluteValue = absoluteValues.get(j);
 						} else {
-							minAbsoluteValue = absoluteValues
-									.get(i);
+							minAbsoluteValue = absoluteValues.get(i);
 						}
 					}
 				}
@@ -144,23 +132,20 @@ public class DateUtil {
 					long[] timestampsLastTmp = map
 							.get(minAbsoluteValue);
 					if (absoluteValues.size() > 1) {
-						timestamp = Math.max(
-								timestampsLastTmp[0],
+						timestamp = Math.max(timestampsLastTmp[0],
 								timestampsLastTmp[1]);
 					} else if (absoluteValues.size() == 1) {
 						// 当timestamps的size为2，需要与当前时间作为参照
 						long dateOne = timestampsLastTmp[0];
 						long dateTwo = timestampsLastTmp[1];
-						if ((Math.abs(dateOne
-								- dateTwo)) < 100000000000L) {
-							timestamp = Math.max(
-									timestampsLastTmp[0],
+						if ((Math.abs(
+								dateOne - dateTwo)) < 100000000000L) {
+							timestamp = Math.max(timestampsLastTmp[0],
 									timestampsLastTmp[1]);
 						} else {
 							long now = new Date().getTime();
-							if (Math.abs(dateOne
-									- now) <= Math.abs(
-											dateTwo - now)) {
+							if (Math.abs(dateOne - now) <= Math
+									.abs(dateTwo - now)) {
 								timestamp = dateOne;
 							} else {
 								timestamp = dateTwo;
@@ -208,15 +193,13 @@ public class DateUtil {
 		Map<Long, DateStyle> map = new HashMap<Long, DateStyle>();
 		List<Long> timestamps = new ArrayList<Long>();
 		for (DateStyle style : DateStyle.values()) {
-			Date dateTmp = StringToDate(date,
-					style.getValue());
+			Date dateTmp = StringToDate(date, style.getValue());
 			if (dateTmp != null) {
 				timestamps.add(dateTmp.getTime());
 				map.put(dateTmp.getTime(), style);
 			}
 		}
-		dateStyle = map
-				.get(getAccurateDate(timestamps).getTime());
+		dateStyle = map.get(getAccurateDate(timestamps).getTime());
 		return dateStyle;
 	}
 
@@ -241,13 +224,11 @@ public class DateUtil {
 	 *            日期格式
 	 * @return 日期
 	 */
-	public static Date StringToDate(String date,
-			String parttern) {
+	public static Date StringToDate(String date, String parttern) {
 		Date myDate = null;
 		if (date != null) {
 			try {
-				myDate = getDateFormat(parttern)
-						.parse(date);
+				myDate = getDateFormat(parttern).parse(date);
 			} catch (Exception e) {
 			}
 		}
@@ -263,22 +244,19 @@ public class DateUtil {
 	 *            日期风格
 	 * @return 日期
 	 */
-	public static Date StringToDate(String date,
-			DateStyle dateStyle) {
+	public static Date StringToDate(String date, DateStyle dateStyle) {
 		Date myDate = null;
 		if (dateStyle == null) {
 			List<Long> timestamps = new ArrayList<Long>();
 			for (DateStyle style : DateStyle.values()) {
-				Date dateTmp = StringToDate(date,
-						style.getValue());
+				Date dateTmp = StringToDate(date, style.getValue());
 				if (dateTmp != null) {
 					timestamps.add(dateTmp.getTime());
 				}
 			}
 			myDate = getAccurateDate(timestamps);
 		} else {
-			myDate = StringToDate(date,
-					dateStyle.getValue());
+			myDate = StringToDate(date, dateStyle.getValue());
 		}
 		return myDate;
 	}
@@ -292,13 +270,11 @@ public class DateUtil {
 	 *            日期格式
 	 * @return 日期字符串
 	 */
-	public static String DateToString(Date date,
-			String parttern) {
+	public static String DateToString(Date date, String parttern) {
 		String dateString = null;
 		if (date != null) {
 			try {
-				dateString = getDateFormat(parttern)
-						.format(date);
+				dateString = getDateFormat(parttern).format(date);
 			} catch (Exception e) {
 			}
 		}
@@ -314,12 +290,10 @@ public class DateUtil {
 	 *            日期风格
 	 * @return 日期字符串
 	 */
-	public static String DateToString(Date date,
-			DateStyle dateStyle) {
+	public static String DateToString(Date date, DateStyle dateStyle) {
 		String dateString = null;
 		if (dateStyle != null) {
-			dateString = DateToString(date,
-					dateStyle.getValue());
+			dateString = DateToString(date, dateStyle.getValue());
 		}
 		return dateString;
 	}
@@ -333,8 +307,7 @@ public class DateUtil {
 	 *            新日期格式
 	 * @return 新日期字符串
 	 */
-	public static String StringToString(String date,
-			String parttern) {
+	public static String StringToString(String date, String parttern) {
 		return StringToString(date, null, parttern);
 	}
 
@@ -369,10 +342,8 @@ public class DateUtil {
 		if (olddParttern == null) {
 			DateStyle style = getDateStyle(date);
 			if (style != null) {
-				Date myDate = StringToDate(date,
-						style.getValue());
-				dateString = DateToString(myDate,
-						newParttern);
+				Date myDate = StringToDate(date, style.getValue());
+				dateString = DateToString(myDate, newParttern);
 			}
 		} else {
 			Date myDate = StringToDate(date, olddParttern);
@@ -393,17 +364,14 @@ public class DateUtil {
 	 * @return 新日期字符串
 	 */
 	public static String StringToString(String date,
-			DateStyle olddDteStyle,
-			DateStyle newDateStyle) {
+			DateStyle olddDteStyle, DateStyle newDateStyle) {
 		String dateString = null;
 		if (olddDteStyle == null) {
 			DateStyle style = getDateStyle(date);
-			dateString = StringToString(date,
-					style.getValue(),
+			dateString = StringToString(date, style.getValue(),
 					newDateStyle.getValue());
 		} else {
-			dateString = StringToString(date,
-					olddDteStyle.getValue(),
+			dateString = StringToString(date, olddDteStyle.getValue(),
 					newDateStyle.getValue());
 		}
 		return dateString;
@@ -418,8 +386,7 @@ public class DateUtil {
 	 *            增加数量。可为负数
 	 * @return 增加年份后的日期字符串
 	 */
-	public static String addYear(String date,
-			int yearAmount) {
+	public static String addYear(String date, int yearAmount) {
 		return addInteger(date, Calendar.YEAR, yearAmount);
 	}
 
@@ -441,13 +408,12 @@ public class DateUtil {
 	 * 
 	 * @param date
 	 *            日期
-	 * @param yearAmount
+	 * @param monthAmount
 	 *            增加数量。可为负数
 	 * @return 增加月份后的日期字符串
 	 */
-	public static String addMonth(String date,
-			int yearAmount) {
-		return addInteger(date, Calendar.MONTH, yearAmount);
+	public static String addMonth(String date, int monthAmount) {
+		return addInteger(date, Calendar.MONTH, monthAmount);
 	}
 
 	/**
@@ -455,12 +421,12 @@ public class DateUtil {
 	 * 
 	 * @param date
 	 *            日期
-	 * @param yearAmount
+	 * @param monthAmount
 	 *            增加数量。可为负数
 	 * @return 增加月份后的日期
 	 */
-	public static Date addMonth(Date date, int yearAmount) {
-		return addInteger(date, Calendar.MONTH, yearAmount);
+	public static Date addMonth(Date date, int monthAmount) {
+		return addInteger(date, Calendar.MONTH, monthAmount);
 	}
 
 	/**
@@ -472,8 +438,7 @@ public class DateUtil {
 	 *            增加数量。可为负数
 	 * @return 增加天数后的日期字符串
 	 */
-	public static String addDay(String date,
-			int dayAmount) {
+	public static String addDay(String date, int dayAmount) {
 		return addInteger(date, Calendar.DATE, dayAmount);
 	}
 
@@ -499,10 +464,8 @@ public class DateUtil {
 	 *            增加数量。可为负数
 	 * @return 增加小时后的日期字符串
 	 */
-	public static String addHour(String date,
-			int hourAmount) {
-		return addInteger(date, Calendar.HOUR_OF_DAY,
-				hourAmount);
+	public static String addHour(String date, int hourAmount) {
+		return addInteger(date, Calendar.HOUR_OF_DAY, hourAmount);
 	}
 
 	/**
@@ -515,8 +478,7 @@ public class DateUtil {
 	 * @return 增加小时后的日期
 	 */
 	public static Date addHour(Date date, int hourAmount) {
-		return addInteger(date, Calendar.HOUR_OF_DAY,
-				hourAmount);
+		return addInteger(date, Calendar.HOUR_OF_DAY, hourAmount);
 	}
 
 	/**
@@ -528,10 +490,8 @@ public class DateUtil {
 	 *            增加数量。可为负数
 	 * @return 增加分钟后的日期字符串
 	 */
-	public static String addMinute(String date,
-			int hourAmount) {
-		return addInteger(date, Calendar.MINUTE,
-				hourAmount);
+	public static String addMinute(String date, int hourAmount) {
+		return addInteger(date, Calendar.MINUTE, hourAmount);
 	}
 
 	/**
@@ -543,10 +503,8 @@ public class DateUtil {
 	 *            增加数量。可为负数
 	 * @return 增加分钟后的日期
 	 */
-	public static Date addMinute(Date date,
-			int hourAmount) {
-		return addInteger(date, Calendar.MINUTE,
-				hourAmount);
+	public static Date addMinute(Date date, int hourAmount) {
+		return addInteger(date, Calendar.MINUTE, hourAmount);
 	}
 
 	/**
@@ -558,10 +516,8 @@ public class DateUtil {
 	 *            增加数量。可为负数
 	 * @return 增加秒钟后的日期字符串
 	 */
-	public static String addSecond(String date,
-			int hourAmount) {
-		return addInteger(date, Calendar.SECOND,
-				hourAmount);
+	public static String addSecond(String date, int hourAmount) {
+		return addInteger(date, Calendar.SECOND, hourAmount);
 	}
 
 	/**
@@ -573,10 +529,8 @@ public class DateUtil {
 	 *            增加数量。可为负数
 	 * @return 增加秒钟后的日期
 	 */
-	public static Date addSecond(Date date,
-			int hourAmount) {
-		return addInteger(date, Calendar.SECOND,
-				hourAmount);
+	public static Date addSecond(Date date, int hourAmount) {
+		return addInteger(date, Calendar.SECOND, hourAmount);
 	}
 
 	/**
@@ -783,8 +737,7 @@ public class DateUtil {
 		Week week = null;
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		int weekNumber = calendar.get(Calendar.DAY_OF_WEEK)
-				- 1;
+		int weekNumber = calendar.get(Calendar.DAY_OF_WEEK) - 1;
 		switch (weekNumber) {
 		case 0:
 			week = Week.SUNDAY;
@@ -820,8 +773,7 @@ public class DateUtil {
 	 *            另一个日期字符串
 	 * @return 相差天数
 	 */
-	public static int getIntervalDays(String date,
-			String otherDate) {
+	public static int getIntervalDays(String date, String otherDate) {
 		return getIntervalDays(StringToDate(date),
 				StringToDate(otherDate));
 	}
@@ -833,12 +785,9 @@ public class DateUtil {
 	 *            另一个日期
 	 * @return 相差天数
 	 */
-	public static int getIntervalDays(Date date,
-			Date otherDate) {
-		date = DateUtil
-				.StringToDate(DateUtil.getDate(date));
-		long time = Math
-				.abs(date.getTime() - otherDate.getTime());
+	public static int getIntervalDays(Date date, Date otherDate) {
+		date = DateUtil.StringToDate(DateUtil.getDate(date));
+		long time = Math.abs(date.getTime() - otherDate.getTime());
 		return (int) time / (24 * 60 * 60 * 1000);
 	}
 
@@ -848,8 +797,7 @@ public class DateUtil {
 	 * @return
 	 */
 	public static String getNow() {
-		return getDateFormat(
-				DateStyle.YYYY_MM_DD.getValue())
-						.format(new Date());
+		return getDateFormat(DateStyle.YYYY_MM_DD.getValue())
+				.format(new Date());
 	}
 }

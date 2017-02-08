@@ -1,6 +1,5 @@
 package com.gqj.entity;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 import com.base.entity.Base;
@@ -26,7 +25,7 @@ public class Tool extends Base {
 
 	private Date toolRejectDate;
 
-	private BigDecimal toolTestDateCircle;
+	private Double toolTestDateCircle;
 
 	private String toolRemark;
 
@@ -47,8 +46,7 @@ public class Tool extends Base {
 	}
 
 	public void setToolCode(String toolCode) {
-		this.toolCode = toolCode == null ? null
-				: toolCode.trim();
+		this.toolCode = toolCode == null ? null : toolCode.trim();
 	}
 
 	public Long getStoreId() {
@@ -80,8 +78,7 @@ public class Tool extends Base {
 	}
 
 	public void setToolBox(String toolBox) {
-		this.toolBox = toolBox == null ? null
-				: toolBox.trim();
+		this.toolBox = toolBox == null ? null : toolBox.trim();
 	}
 
 	public Long getToolStatus() {
@@ -116,12 +113,11 @@ public class Tool extends Base {
 		this.toolRejectDate = toolRejectDate;
 	}
 
-	public BigDecimal getToolTestDateCircle() {
+	public Double getToolTestDateCircle() {
 		return toolTestDateCircle;
 	}
 
-	public void setToolTestDateCircle(
-			BigDecimal toolTestDateCircle) {
+	public void setToolTestDateCircle(Double toolTestDateCircle) {
 		this.toolTestDateCircle = toolTestDateCircle;
 	}
 
@@ -130,8 +126,7 @@ public class Tool extends Base {
 	}
 
 	public void setToolRemark(String toolRemark) {
-		this.toolRemark = toolRemark == null ? null
-				: toolRemark.trim();
+		this.toolRemark = toolRemark == null ? null : toolRemark.trim();
 	}
 
 	public Date getToolNextTestDate() {

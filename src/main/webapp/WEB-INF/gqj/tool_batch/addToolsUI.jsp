@@ -131,6 +131,7 @@
 		}
 		setTextBoxText('storageIdTextInput', selectedItems[0].STORE_ID);
 		setTextBoxValue('storageIdTextInput', selectedItems[0].STORE_ID);
+		setTextBoxValue('storageNameTextInput', selectedItems[0].STORE_NAME);
 		$('#storageNameBtn').linkbutton({
 			text : selectedItems[0].STORE_NAME,
 		});
@@ -198,6 +199,7 @@
 		}
 		setTextBoxText('positionIdTextInput', selectedItems[0].POS_ID);
 		setTextBoxValue('positionIdTextInput', selectedItems[0].POS_ID);
+		setTextBoxValue('positionNameTextInput', selectedItems[0].POS_NAME);
 		$('#positionNameBtn').linkbutton({
 			text : selectedItems[0].POS_NAME,
 		});
@@ -282,8 +284,17 @@
 
 	function chooseBaseTool() {
 		var selectedItems = $('#datagridForBaseTool').datagrid('getSelections');
-		setTextBoxText('baseToolIdTextInput', selectedItems[0].BASE_TOOL_ID);
 		setTextBoxValue('baseToolIdTextInput', selectedItems[0].BASE_TOOL_ID);
+		setTextBoxValue('baseToolNameTextInput',
+				selectedItems[0].BASE_TOOL_NAME);
+		setTextBoxValue('baseToolTypeIdTextInput',
+				selectedItems[0].BASE_TOOL_TYPE_ID);
+		setTextBoxValue('baseToolTypeNameTextInput',
+				selectedItems[0].BASE_TOOL_TYPE_NAME);
+		setTextBoxValue('baseToolModelTextInput',
+				selectedItems[0].BASE_TOOL_MODEL);
+		setTextBoxValue('baseToolSpecTextInput',
+				selectedItems[0].BASE_TOOL_SPEC);
 		$('#baseToolNameBtn').linkbutton({
 			text : selectedItems[0].BASE_TOOL_NAME,
 		});
@@ -343,25 +354,47 @@
 
 	// 保存数据
 	function saveBatch() {
-		var rowData = null;
 		var params = null;
 		var batchCode = getTextBoxValue('batchCodeTextInput');
 		var batchRemark = getTextBoxValue('batchRemarkTextInput');
 		var batchType = getTextBoxValue('batchTypeTextInput');
-		var takeDeptId = '';
+		var storeId = getTextBoxValue('storageIdTextInput');
+		var positionId = getTextBoxValue('positionIdTextInput');
+		var baseToolId = getTextBoxValue('baseToolIdTextInput');
+		var baseToolName = getTextBoxValue('baseToolNameTextInput');
+		var baseToolTypeId = getTextBoxValue('baseToolTypeIdTextInput');
+		var baseToolTypeName = getTextBoxValue('baseToolTypeNameTextInput');
+		var baseToolModel = getTextBoxValue('baseToolModelTextInput');
+		var baseToolSpec = getTextBoxValue('baseToolSpecTextInput');
+		var toolCode = getTextBoxValue('toolCodeTextInput');
+		var toolBox = getTextBoxValue('toolBoxTextInput');
+		var toolTestDateCircle = getTextBoxValue('toolTestDateCircleTextInput');
+		var toolRejectDate = getDateBoxValue('toolRejectDateBox');
+		var toolTestDate = getDateBoxValue('toolTestDateBox');
+
+		var batchTakeDeptId = '';
 		if (batchType == 1 || batchType == 2) {
-			takeDeptId = getTextBoxValue('takeDeptIdTextInput');
+			batchTakeDeptId = getTextBoxValue('deptIdTextInput');
 		}
+
 		params = {
 			BATCH_CODE : batchCode,
-			BATCH_TYPE : getTextBoxValue('batchTypeTextInput'),
-			STORE_ID : getTextBoxValue('storageIdTextInput'),
-			POS_ID : getTextBoxValue('positionIdTextInput'),
-			BASE_TOOL_ID : getTextBoxValue('bastToolIdTextInput'),
+			BATCH_TYPE : batchType,
+			STORE_ID : storeId,
+			POS_ID : positionId,
+			BASE_TOOL_ID : baseToolId,
+			BASE_TOOL_NAME : baseToolName,
+			BASE_TOOL_TYPE_ID : baseToolTypeId,
+			BASE_TOOL_TYPE_NAME : baseToolTypeName,
+			BASE_TOOL_MODEL : baseToolModel,
+			BASE_TOOL_SPEC : baseToolSpec,
 			BATCH_REMARK : batchRemark,
-			TOOL_TEST_DATE : getDateBoxValue('toolTestDateBox'),
-			TOOL_REJECT_DATE : getDateBoxValue('toolRejectDateBox'),
-			TOOL_TEST_DATE_CIRCLE : getDateBoxValue('toolTestDateBox')
+			BATCH_TAKE_DEPT_ID : batchTakeDeptId,
+			TOOL_CODE : toolCode,
+			TOOL_BOX : toolBox,
+			TOOL_TEST_DATE : toolTestDate,
+			TOOL_REJECT_DATE : toolRejectDate,
+			TOOL_TEST_DATE_CIRCLE : toolTestDateCircle
 		};
 		url = "addNewBatchsAndDetails.do";
 		save(params, url, successFunctionForSave);
@@ -369,7 +402,7 @@
 
 	//回调函数，保存成功后执行
 	function successFunctionForSave() {
-		reloadDataGrid('datagridForBatch');
+		//更新提示
 	}
 
 	//关闭编辑窗口
@@ -451,8 +484,15 @@
 			<input id="batchTypeTextInput" class="easyui-textbox"
 				value="<%=request.getParameter("BATCH_TYPE")%>" /> <input
 				id="storageIdTextInput" class="easyui-textbox" /> <input
+				id="storageNameTextInput" class="easyui-textbox" /> <input
 				id="positionIdTextInput" class="easyui-textbox" /><input
-				id="bastToolIdTextInput" class="easyui-textbox" /><input
+				id="positionNameTextInput" class="easyui-textbox" /><input
+				id="baseToolIdTextInput" class="easyui-textbox" /><input
+				id="baseToolNameTextInput" class="easyui-textbox" /><input
+				id="baseToolTypeIdTextInput" class="easyui-textbox" /><input
+				id="baseToolTypeNameTextInput" class="easyui-textbox" /><input
+				id="baseToolModelTextInput" class="easyui-textbox" /><input
+				id="baseToolSpecTextInput" class="easyui-textbox" /><input
 				id="deptIdTextInput" class="easyui-textbox" />
 		</div>
 		<table style="width: 100%">
@@ -509,8 +549,9 @@
 			</tr>
 			<tr>
 				<td width="15%">试验周期:</td>
-				<td><input id="toolRejectDateBox" class="easyui-datebox"
-					data-options="required:true" style="width: 100%; height: 32px" /></td>
+				<td><input id="toolTestDateCircleTextInput"
+					class="easyui-textbox" data-options="required:true"
+					style="width: 100%; height: 32px" /></td>
 			</tr>
 			<%
 				}
@@ -523,7 +564,7 @@
 			</tr>
 			<tr>
 				<td width="15%">备注:</td>
-				<td><input id="toolRemarkTextInput" class="easyui-textbox"
+				<td><input id="batchRemarkTextInput" class="easyui-textbox"
 					data-options="validType:'length[0,200]'"
 					style="width: 100%; height: 32px" /></td>
 			</tr>
