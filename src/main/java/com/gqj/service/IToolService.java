@@ -18,4 +18,6 @@ public interface IToolService {
 	Map<String, Object> checkInNewTool(Batch batch, Tool tool,
 			ToolTrack toolTrack);
 
+	Map<String, Object> resetTool(Tool tool, ToolTrack toolTrack);
+
 }

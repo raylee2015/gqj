@@ -31,7 +31,27 @@ public class Tool extends Base {
 
 	private Date toolNextTestDate;
 
+	private Date toolPurchaseDate;
+
+	private Date toolManufactureDate;
+
 	private Long baseToolId;
+
+	public Date getToolPurchaseDate() {
+		return toolPurchaseDate;
+	}
+
+	public void setToolPurchaseDate(Date toolPurchaseDate) {
+		this.toolPurchaseDate = toolPurchaseDate;
+	}
+
+	public Date getToolManufactureDate() {
+		return toolManufactureDate;
+	}
+
+	public void setToolManufactureDate(Date toolManufactureDate) {
+		this.toolManufactureDate = toolManufactureDate;
+	}
 
 	public Long getToolId() {
 		return toolId;

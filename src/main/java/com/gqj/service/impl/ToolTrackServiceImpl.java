@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gqj.dao.ToolTrackMapper;
-import com.gqj.entity.Tool;
 import com.gqj.entity.ToolTrack;
 import com.gqj.service.IToolTrackService;
 
@@ -19,9 +18,9 @@ public class ToolTrackServiceImpl implements IToolTrackService {
 	private ToolTrackMapper toolTrackMapper;
 
 	@Override
-	public Map<String, Object> deleteToolTracks(Tool tool) {
+	public Map<String, Object> deleteToolTracks(ToolTrack toolTrack) {
 		Map<String, Object> map = new HashMap<>();
-		int bool = toolTrackMapper.deleteByPrimaryKeys(tool);
+		int bool = toolTrackMapper.deleteByPrimaryKeys(toolTrack);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");

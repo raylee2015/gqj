@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.base.util.DateUtil;
 import com.gqj.dao.BatchMapper;
 import com.gqj.entity.Batch;
 import com.gqj.entity.Tool;
@@ -43,8 +44,7 @@ public class BatchServiceImpl implements IBatchService {
 	public synchronized Map<String, Object> addNewBatchsAndDetails(
 			Batch batch, Tool tool, ToolTrack toolTrack) {
 		int bool = 0;
-		Batch temp = batchMapper
-				.selectBatchsForObject(batch);
+		Batch temp = batchMapper.selectBatchsForObject(batch);
 		if (temp == null) {
 			batch.setBatchCount(0L);
 			bool = batchMapper.insertSelective(batch);
@@ -59,8 +59,8 @@ public class BatchServiceImpl implements IBatchService {
 		if (batchType == BatchType.CHECK_IN) {
 			tool.setToolId(-1L);
 			tool.setToolStatus(ToolStatus.CHECK_IN_COMING);
-			resultMap = toolService.checkInNewTool(batch,
-					tool, toolTrack);
+			resultMap = toolService.checkInNewTool(batch, tool,
+					toolTrack);
 
 		}
 		if (resultMap != null) {
@@ -71,8 +71,7 @@ public class BatchServiceImpl implements IBatchService {
 		if (success) {
 			// 批次更新数量
 			batch.setBatchCount(batch.getBatchCount() + 1);
-			bool = batchMapper
-					.updateByPrimaryKeySelective(batch);
+			bool = batchMapper.updateByPrimaryKeySelective(batch);
 
 			if (bool == 0) {
 				map.put("success", false);
@@ -91,12 +90,24 @@ public class BatchServiceImpl implements IBatchService {
 	}
 
 	@Override
-	public Map<String, Object> selectBatchsForPage(
-			Batch batch) {
+	public Map<String, Object> selectBatchsForPage(Batch batch) {
 		List<Map<String, Object>> batchs = batchMapper
 				.selectBatchsForPage(batch);
-		int count = batchMapper
-				.selectCountOfBatchsForPage(batch);
+		for (Map<String, Object> item : batchs) {
+			if (item.get("BATCH_CREATE_TIME") != null) {
+				item.put("BATCH_CREATE_TIME", DateUtil.getDate(
+						item.get("BATCH_CREATE_TIME").toString()));
+			}
+			if (item.get("BATCH_CONFIRM_TIME") != null) {
+				item.put("BATCH_CONFIRM_TIME", DateUtil.getDate(
+						item.get("BATCH_CONFIRM_TIME").toString()));
+			}
+			if (item.get("BATCH_TAKE_TIME") != null) {
+				item.put("BATCH_TAKE_TIME", DateUtil.getDate(
+						item.get("BATCH_TAKE_TIME").toString()));
+			}
+		}
+		int count = batchMapper.selectCountOfBatchsForPage(batch);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", batchs);
 		map.put("total", count);
@@ -104,13 +115,36 @@ public class BatchServiceImpl implements IBatchService {
 	}
 
 	@Override
+	public Batch selectBatchsForObject(Batch batch) {
+		return batchMapper.selectBatchsForObject(batch);
+	}
+
+	@Override
 	public Map<String, Object> updateBatch(Batch batch) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = batchMapper
-				.updateByPrimaryKeySelective(batch);
+		int bool = batchMapper.updateByPrimaryKeySelective(batch);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "保存成功");
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> delToolAndTrack(Tool tool,
+			ToolTrack toolTrack, Batch batch) {
+		Map<String, Object> map = toolService.resetTool(tool,
+				toolTrack);
+		batch = batchMapper.selectBatchsForObject(batch);
+		batch.setBatchCount(batch.getBatchCount() - 1);
+		int bool = batchMapper.updateByPrimaryKeySelective(batch);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "保存出错，请联系管理员");
+			map.put("batchId", batch.getBatchId());
 		} else {
 			map.put("success", true);
 			map.put("msg", "保存成功");

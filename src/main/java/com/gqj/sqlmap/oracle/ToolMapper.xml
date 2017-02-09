@@ -83,7 +83,14 @@
 	<delete id="deleteByPrimaryKeys" parameterType="com.gqj.entity.Tool">
 		delete from
 		GQJ_TOOL
-		where TOOL_ID in (${ids})
+		<where>
+			<if test="ids != null">
+				and TOOL_ID in (${ids})
+			</if>
+			<if test="toolId != null">
+				AND TOOL_ID=#{toolId}
+			</if>
+		</where>
 	</delete>
 	<insert id="insertSelective" parameterType="com.gqj.entity.Tool">
 		<selectKey resultType="java.lang.Long" order="BEFORE"
@@ -124,6 +131,12 @@
 			</if>
 			<if test="toolTestDateCircle != null">
 				TOOL_TEST_DATE_CIRCLE,
+			</if>
+			<if test="toolPurchaseDate != null">
+				TOOL_PURCHASE_DATE,
+			</if>
+			<if test="toolManufactureDate != null">
+				TOOL_MANUFACTURE_DATE,
 			</if>
 			<if test="toolRemark != null">
 				TOOL_REMARK,
@@ -169,6 +182,12 @@
 			<if test="toolTestDateCircle != null">
 				#{toolTestDateCircle,jdbcType=DECIMAL},
 			</if>
+			<if test="toolPurchaseDate != null">
+				#{toolPurchaseDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolManufactureDate != null">
+				#{toolManufactureDate,jdbcType=TIMESTAMP},
+			</if>
 			<if test="toolRemark != null">
 				#{toolRemark,jdbcType=VARCHAR},
 			</if>
@@ -209,6 +228,14 @@
 			</if>
 			<if test="toolRejectDate != null">
 				TOOL_REJECT_DATE = #{toolRejectDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolManufactureDate != null">
+				TOOL_MANUFACTURE_DATE =
+				#{toolManufactureDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolPurchaseDate != null">
+				TOOL_PURCHASE_DATE =
+				#{toolPurchaseDate,jdbcType=TIMESTAMP},
 			</if>
 			<if test="toolTestDateCircle != null">
 				TOOL_TEST_DATE_CIRCLE =

@@ -1,6 +1,5 @@
 package com.gqj.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +34,8 @@ import com.gqj.service.IManufacturerService;
 import com.gqj.service.IPositionService;
 import com.gqj.service.ISequenceService;
 import com.gqj.service.IStorageService;
+import com.gqj.service.IToolService;
+import com.gqj.service.IToolTrackService;
 import com.gqj.service.IToolTypeService;
 
 @Controller
@@ -48,6 +49,15 @@ public class BatchController extends BaseController {
 
 	@Autowired
 	private IBatchService batchService;
+
+	@Autowired
+	private IToolTrackService toolTrackService;
+
+	@Autowired
+	private IToolService toolService;
+
+	@Autowired
+	private IDeptService deptService;
 
 	@Autowired
 	private IManufacturerService manufacturerService;
@@ -75,102 +85,102 @@ public class BatchController extends BaseController {
 	@RequestMapping("/addNewBatchsAndDetails.do")
 	@ResponseBody
 	public Map<String, Object> addNewBatchsAndDetails(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String batchCode = request
-				.getParameter("BATCH_CODE");
-		String batchType = request
-				.getParameter("BATCH_TYPE");
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String batchCode = request.getParameter("BATCH_CODE");
+		String batchType = request.getParameter("BATCH_TYPE");
 		String storeId = request.getParameter("STORE_ID");
 		String posId = request.getParameter("POS_ID");
-		String baseToolId = request
-				.getParameter("BASE_TOOL_ID");
-		String baseToolName = request
-				.getParameter("BASE_TOOL_NAME");
+		String storeName = request.getParameter("STORE_NAME");
+		String posName = request.getParameter("POS_NAME");
+		String baseToolId = request.getParameter("BASE_TOOL_ID");
+		String baseToolName = request.getParameter("BASE_TOOL_NAME");
+		String baseToolManName = request
+				.getParameter("BASE_TOOL_MANUFACTURER_NAME");
 		String baseToolTypeId = request
 				.getParameter("BASE_TOOL_TYPE_ID");
 		String baseToolTypeName = request
 				.getParameter("BASE_TOOL_TYPE_NAME");
-		String baseToolModel = request
-				.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request
-				.getParameter("BASE_TOOL_SPEC");
-		String batchRemark = request
-				.getParameter("BATCH_REMARK");
+		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
+		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
+		String batchRemark = request.getParameter("BATCH_REMARK");
 		String batchTakeDeptId = request
 				.getParameter("BATCH_TAKE_DEPT_ID");
 		String toolCode = request.getParameter("TOOL_CODE");
 		String toolBox = request.getParameter("TOOL_BOX");
-		String toolTestDate = request
-				.getParameter("TOOL_TEST_DATE");
+		String toolTestDate = request.getParameter("TOOL_TEST_DATE");
 		String toolRejectDate = request
 				.getParameter("TOOL_REJECT_DATE");
+		String toolManufactureDate = request
+				.getParameter("TOOL_MANUFACTURE_DATE");
+		String toolPurchaseDate = request
+				.getParameter("TOOL_PURCHASE_DATE");
 		String toolTestDateCircle = request
 				.getParameter("TOOL_TEST_DATE_CIRCLE");
 		Batch batch = new Batch();
 		batch.setBatchCode(batchCode);
 		batch.setBatchType(BaseUtil.strToLong(batchType));
 		batch.setBatchDeptId(
-				getSessionUser(request, response)
-						.getUserDeptId());
+				getSessionUser(request, response).getUserDeptId());
 		batch.setBatchCreateUserId(
-				getSessionUser(request, response)
-						.getUserId());
+				getSessionUser(request, response).getUserId());
 		batch.setBatchCreateTime(new Date());
-		batch.setBatchTakeDeptId(
-				BaseUtil.strToLong(batchTakeDeptId));
+		batch.setBatchTakeDeptId(BaseUtil.strToLong(batchTakeDeptId));
 		batch.setBatchRemark(batchRemark);
 		Tool tool = new Tool();
 		tool.setToolCode(toolCode);
 		tool.setStoreId(BaseUtil.strToLong(storeId));
 		tool.setPosId(BaseUtil.strToLong(posId));
 		tool.setToolBox(toolBox);
-		tool.setToolDeptId(getSessionUser(request, response)
-				.getUserDeptId());
-		tool.setToolTestDate(DateUtil.StringToDate(
-				toolTestDate, DateStyle.YYYY_MM_DD));
-		tool.setToolRejectDate(DateUtil.StringToDate(
-				toolRejectDate, DateStyle.YYYY_MM_DD));
+		tool.setToolDeptId(
+				getSessionUser(request, response).getUserDeptId());
+		tool.setToolTestDate(DateUtil.StringToDate(toolTestDate,
+				DateStyle.YYYY_MM_DD));
+		tool.setToolRejectDate(DateUtil.StringToDate(toolRejectDate,
+				DateStyle.YYYY_MM_DD));
 		tool.setToolTestDateCircle(
 				Double.parseDouble(toolTestDateCircle));
-		int month = (int) (Double
-				.parseDouble(toolTestDateCircle) * 12);
-		tool.setToolNextTestDate(DateUtil.addMonth(
-				DateUtil.StringToDate(toolRejectDate,
-						DateStyle.YYYY_MM_DD),
-				month));
+		tool.setToolManufactureDate(DateUtil.StringToDate(
+				toolManufactureDate, DateStyle.YYYY_MM_DD));
+		tool.setToolPurchaseDate(DateUtil.StringToDate(toolPurchaseDate,
+				DateStyle.YYYY_MM_DD));
+		int month = (int) (Double.parseDouble(toolTestDateCircle) * 12);
+		tool.setToolNextTestDate(
+				DateUtil.addMonth(DateUtil.StringToDate(toolRejectDate,
+						DateStyle.YYYY_MM_DD), month));
 		tool.setToolRemark(batchRemark);
 		tool.setBaseToolId(BaseUtil.strToLong(baseToolId));
 		ToolTrack toolTrack = new ToolTrack();
 		toolTrack.setStoreId(BaseUtil.strToLong(storeId));
 		toolTrack.setPosId(BaseUtil.strToLong(posId));
 		toolTrack.setBatchCode(batchCode);
-		toolTrack.setBaseToolId(
-				BaseUtil.strToLong(baseToolId));
+		toolTrack.setBaseToolId(BaseUtil.strToLong(baseToolId));
 		toolTrack.setToolCode(toolCode);
 		toolTrack.setToolBox(toolBox);
 		toolTrack.setTrackCreateUserId(
-				getSessionUser(request, response)
-						.getUserId());
+				getSessionUser(request, response).getUserId());
 		toolTrack.setTrackCreateTime(new Date());
-		toolTrack.setToolTestDate(DateUtil.StringToDate(
-				toolTestDate, DateStyle.YYYY_MM_DD));
-		toolTrack.setToolRejectDate(DateUtil.StringToDate(
-				toolRejectDate, DateStyle.YYYY_MM_DD));
+		toolTrack.setToolTestDate(DateUtil.StringToDate(toolTestDate,
+				DateStyle.YYYY_MM_DD));
+		toolTrack.setToolRejectDate(DateUtil
+				.StringToDate(toolRejectDate, DateStyle.YYYY_MM_DD));
 		toolTrack.setToolTestDateCircle(
 				Double.parseDouble(toolTestDateCircle));
-		toolTrack.setToolNextTestDate(DateUtil.addMonth(
-				DateUtil.StringToDate(toolRejectDate,
-						DateStyle.YYYY_MM_DD),
-				month));
+		toolTrack.setToolNextTestDate(
+				DateUtil.addMonth(DateUtil.StringToDate(toolRejectDate,
+						DateStyle.YYYY_MM_DD), month));
 		toolTrack.setBaseToolName(baseToolName);
-		toolTrack.setBaseToolTypeId(
-				BaseUtil.strToLong(baseToolTypeId));
+		toolTrack.setBaseToolTypeId(BaseUtil.strToLong(baseToolTypeId));
 		toolTrack.setBaseToolTypeName(baseToolTypeName);
 		toolTrack.setBaseToolModel(baseToolModel);
 		toolTrack.setBaseToolSpec(baseToolSpec);
-		return batchService.addNewBatchsAndDetails(batch,
-				tool, toolTrack);
+		toolTrack.setPosName(posName);
+		toolTrack.setStoreName(storeName);
+		toolTrack.setBaseToolManufacturerName(baseToolManName);
+		toolTrack.setToolDeptId(
+				getSessionUser(request, response).getUserDeptId());
+		return batchService.addNewBatchsAndDetails(batch, tool,
+				toolTrack);
 	}
 
 	/**
@@ -183,8 +193,7 @@ public class BatchController extends BaseController {
 	 */
 	@RequestMapping("/delBatchs.do")
 	@ResponseBody
-	public Map<String, Object> delBatchs(
-			HttpServletRequest request,
+	public Map<String, Object> delBatchs(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String batchIds = request.getParameter("POS_IDS");
 		Batch batch = new Batch();
@@ -193,26 +202,47 @@ public class BatchController extends BaseController {
 	}
 
 	/**
+	 * 删除出入库记录
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/delToolAndTrack.do")
+	@ResponseBody
+	public Map<String, Object> delToolAndTrack(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String toolId = request.getParameter("TOOL_ID");
+		String trackId = request.getParameter("TRACK_ID");
+		String batchId = request.getParameter("BATCH_ID");
+		Tool tool = new Tool();
+		tool.setToolId(BaseUtil.strToLong(toolId));
+		ToolTrack toolTrack = new ToolTrack();
+		toolTrack.setTrackId(BaseUtil.strToLong(trackId));
+		toolTrack.setToolId(BaseUtil.strToLong(toolId));
+		Batch batch = new Batch();
+		batch.setBatchId(BaseUtil.strToLong(batchId));
+		return batchService.delToolAndTrack(tool, toolTrack, batch);
+	}
+
+	/**
 	 * 弹出选择工器具管理操作页面
 	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/openAddToolsUI.do", method = RequestMethod.GET)
-	public ModelAndView openAddToolsUI(
-			HttpServletRequest request,
+	public ModelAndView openAddToolsUI(HttpServletRequest request,
 			HttpServletResponse response) {
-		try {
-			String batchCode = new String(
-					request.getParameter("BATCH_CODE")
-							.getBytes("iso-8859-1"),
-					"utf-8");
-			request.setAttribute("BATCH_CODE", batchCode);
-			System.out.println(batchCode);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+		String batchId = request.getParameter("BATCH_ID");
+		if (!"".equals(batchId)) {
+			Batch param = new Batch();
+			param.setBatchId(BaseUtil.strToLong(batchId));
+			Batch batch = batchService.selectBatchsForObject(param);
+			request.setAttribute("BATCH_CODE", batch.getBatchCode());
 		}
-		return new ModelAndView(
-				"/gqj/tool_batch/addToolsUI");
+		return new ModelAndView("/gqj/tool_batch/addToolsUI");
 	}
 
 	/**
@@ -221,8 +251,7 @@ public class BatchController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(
-			HttpServletRequest request,
+	public ModelAndView openEditUI(HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView("/gqj/tool_batch/editUI");
 	}
@@ -237,40 +266,12 @@ public class BatchController extends BaseController {
 	@RequestMapping("/queryBaseToolManufacturerDropList.do")
 	@ResponseBody
 	public void queryBaseToolManufacturerDropList(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		response.getWriter()
-				.print(manufacturerService
-						.selectManufacturersForList(
-								new Manufacturer()));
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		response.getWriter().print(manufacturerService
+				.selectManufacturersForList(new Manufacturer()));
 		response.getWriter().flush();
 		response.getWriter().close();
-	}
-
-	@Autowired
-	private IDeptService deptService;
-
-	/**
-	 * 分页查询部门列表
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryDeptsPage.do")
-	@ResponseBody
-	public Map<String, Object> queryDeptsPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String page = request.getParameter("page");
-		String rows = request.getParameter("rows");
-		String keyWord = request.getParameter("keyWord");
-		Dept dept = new Dept();
-		dept.setCurrPage(BaseUtil.strToInt(page));
-		dept.setPageSize(BaseUtil.strToInt(rows));
-		dept.setKeyWord(keyWord);
-		return deptService.selectDeptsForPage(dept);
 	}
 
 	/**
@@ -284,19 +285,16 @@ public class BatchController extends BaseController {
 	@RequestMapping("/queryBaseToolsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryBaseToolsPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
 		String baseToolTypeId = request
 				.getParameter("BASE_TOOL_TYPE_ID");
-		String manufacturerId = request
-				.getParameter("MANUFACTURER_ID");
-		String baseToolModel = request
-				.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request
-				.getParameter("BASE_TOOL_SPEC");
+		String manufacturerId = request.getParameter("MANUFACTURER_ID");
+		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
+		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
 		HashMap<String, Object> param = new HashMap<>();
 		param.put("keyWord", keyWord);
 		param.put("currPage", page);
@@ -305,8 +303,7 @@ public class BatchController extends BaseController {
 		param.put("manufacturerId", manufacturerId);
 		param.put("baseToolModel", baseToolModel);
 		param.put("baseToolSpec", baseToolSpec);
-		return baseToolService
-				.selectBaseToolsForPage(param);
+		return baseToolService.selectBaseToolsForPage(param);
 	}
 
 	/**
@@ -318,11 +315,10 @@ public class BatchController extends BaseController {
 	 */
 	@RequestMapping("/queryBaseToolTypeDropList.do")
 	@ResponseBody
-	public void queryBaseToolTypeDropList(
-			HttpServletRequest request,
+	public void queryBaseToolTypeDropList(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter().print(toolTypeService
-				.selectToolTypesForList(new ToolType()));
+		response.getWriter().print(
+				toolTypeService.selectToolTypesForList(new ToolType()));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -338,30 +334,75 @@ public class BatchController extends BaseController {
 	@RequestMapping("/queryBatchsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryBatchsPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
-		String batchType = request
-				.getParameter("BATCH_TYPE");
+		String batchType = request.getParameter("BATCH_TYPE");
 		Batch batch = new Batch();
 		batch.setCurrPage(Integer.parseInt(page));
 		batch.setPageSize(Integer.parseInt(rows));
 		batch.setKeyWord(keyWord);
 		if ("7".equals(batchType)) {
 			batch.setBatchTakeDeptId(
-					getSessionUser(request, response)
-							.getUserDeptId());
+					getSessionUser(request, response).getUserDeptId());
 		} else {
 			batch.setBatchDeptId(
-					getSessionUser(request, response)
-							.getUserDeptId());
-			batch.setBatchType(
-					BaseUtil.strToLong(batchType));
+					getSessionUser(request, response).getUserDeptId());
+			batch.setBatchType(BaseUtil.strToLong(batchType));
 		}
 
 		return batchService.selectBatchsForPage(batch);
+	}
+
+	/**
+	 * 分页查询仓位列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryToolTracksPage.do")
+	@ResponseBody
+	public Map<String, Object> queryToolTracksPage(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String keyWord = request.getParameter("keyWord");
+		String batchId = request.getParameter("BATCH_ID");
+		ToolTrack toolTrack = new ToolTrack();
+		toolTrack.setCurrPage(Integer.parseInt(page));
+		toolTrack.setPageSize(Integer.parseInt(rows));
+		toolTrack.setKeyWord(keyWord);
+		toolTrack.setToolCode(keyWord);
+		toolTrack.setBatchId(BaseUtil.strToLong(batchId));
+		return toolTrackService.selectToolTracksForPage(toolTrack);
+	}
+
+	/**
+	 * 分页查询部门列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryDeptsPage.do")
+	@ResponseBody
+	public Map<String, Object> queryDeptsPage(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String keyWord = request.getParameter("keyWord");
+		Dept dept = new Dept();
+		dept.setCurrPage(BaseUtil.strToInt(page));
+		dept.setPageSize(BaseUtil.strToInt(rows));
+		dept.setKeyWord(keyWord);
+		return deptService.selectDeptsForPage(dept);
 	}
 
 	/**
@@ -373,11 +414,9 @@ public class BatchController extends BaseController {
 	 */
 	@RequestMapping("/queryNewBatchCode.do")
 	@ResponseBody
-	public String queryNewBatchCode(
-			HttpServletRequest request,
+	public String queryNewBatchCode(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String batchType = request
-				.getParameter("BATCH_TYPE");
+		String batchType = request.getParameter("BATCH_TYPE");
 		HashMap<String, Object> param = new HashMap<>();
 		String rule1 = "";
 		if ("0".equals(batchType)) {
@@ -411,8 +450,8 @@ public class BatchController extends BaseController {
 	@RequestMapping("/queryPositionsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryPositionsPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -422,8 +461,7 @@ public class BatchController extends BaseController {
 		position.setPageSize(BaseUtil.strToInt(rows));
 		position.setKeyWord(keyWord);
 		position.setStoreId(BaseUtil.strToLong(storeId));
-		return positionService
-				.selectPositionsForPage(position);
+		return positionService.selectPositionsForPage(position);
 	}
 
 	/**
@@ -437,20 +475,19 @@ public class BatchController extends BaseController {
 	@RequestMapping("/queryStoragesPage.do")
 	@ResponseBody
 	public Map<String, Object> queryStoragesPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		long storageDeptId = getSessionUser(request,
-				response).getUserDeptId();
+		long storageDeptId = getSessionUser(request, response)
+				.getUserDeptId();
 		String keyWord = request.getParameter("keyWord");
 		Storage storage = new Storage();
 		storage.setCurrPage(BaseUtil.strToInt(page));
 		storage.setPageSize(BaseUtil.strToInt(rows));
 		storage.setStoreDeptId(storageDeptId);
 		storage.setKeyWord(keyWord);
-		return storageService
-				.selectStoragesForPage(storage);
+		return storageService.selectStoragesForPage(storage);
 	}
 
 	/**
@@ -473,8 +510,7 @@ public class BatchController extends BaseController {
 	 */
 	@RequestMapping("/updateBatch.do")
 	@ResponseBody
-	public Map<String, Object> updateBatch(
-			HttpServletRequest request,
+	public Map<String, Object> updateBatch(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		Batch batch = new Batch();
 		return batchService.updateBatch(batch);

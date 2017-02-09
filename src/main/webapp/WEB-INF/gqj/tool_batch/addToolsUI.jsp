@@ -1,15 +1,17 @@
-<%@ page language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 	String batchType = request.getParameter("BATCH_TYPE");
-	String batchCode = request.getAttribute("BATCH_CODE").toString();
+	String batchCode = "";
+	if (request.getAttribute("BATCH_CODE") != null) {
+		batchCode = request.getAttribute("BATCH_CODE").toString();
+	}
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type"
-	content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -27,8 +29,7 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript"
-	src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//页面加载完
 	$(document).ready(
@@ -302,6 +303,8 @@
 				selectedItems[0].BASE_TOOL_MODEL);
 		setTextBoxValue('baseToolSpecTextInput',
 				selectedItems[0].BASE_TOOL_SPEC);
+		setTextBoxValue('baseToolManNameTextInput',
+				selectedItems[0].BASE_TOOL_MANUFACTURER_NAME);
 		$('#baseToolNameBtn').linkbutton({
 			text : selectedItems[0].BASE_TOOL_NAME,
 		});
@@ -375,9 +378,14 @@
 		var baseToolSpec = getTextBoxValue('baseToolSpecTextInput');
 		var toolCode = getTextBoxValue('toolCodeTextInput');
 		var toolBox = getTextBoxValue('toolBoxTextInput');
+		var storageName = getTextBoxValue('storageNameTextInput');
+		var positionName = getTextBoxValue('positionNameTextInput');
+		var baseToolManName = getTextBoxValue('baseToolManNameTextInput');
 		var toolTestDateCircle = getTextBoxValue('toolTestDateCircleTextInput');
 		var toolRejectDate = getDateBoxValue('toolRejectDateBox');
 		var toolTestDate = getDateBoxValue('toolTestDateBox');
+		var toolManufactureDate = getDateBoxValue('toolManufactureDateBox');
+		var toolPurchaseDate = getDateBoxValue('toolPurchaseDateBox');
 
 		var batchTakeDeptId = '';
 		if (batchType == 1 || batchType == 2) {
@@ -389,8 +397,11 @@
 			BATCH_TYPE : batchType,
 			STORE_ID : storeId,
 			POS_ID : positionId,
+			STORE_NAME : storageName,
+			POS_NAME : positionName,
 			BASE_TOOL_ID : baseToolId,
 			BASE_TOOL_NAME : baseToolName,
+			BASE_TOOL_MANUFACTURER_NAME : baseToolManName,
 			BASE_TOOL_TYPE_ID : baseToolTypeId,
 			BASE_TOOL_TYPE_NAME : baseToolTypeName,
 			BASE_TOOL_MODEL : baseToolModel,
@@ -401,6 +412,8 @@
 			TOOL_BOX : toolBox,
 			TOOL_TEST_DATE : toolTestDate,
 			TOOL_REJECT_DATE : toolRejectDate,
+			TOOL_MANUFACTURE_DATE : toolManufactureDate,
+			TOOL_PURCHASE_DATE : toolPurchaseDate,
 			TOOL_TEST_DATE_CIRCLE : toolTestDateCircle
 		};
 		url = "addNewBatchsAndDetails.do";
@@ -417,9 +430,9 @@
 		if (batchType == 0) {
 			opText = "入库"
 		}
-		var tip1 = "<font color='#0000ff' size=15>" + toolCode + " 已经" + opText
+		var tip1 = "<font color='#0000ff' >" + toolCode + " 已经" + opText
 				+ "</font>";
-		var tip2 = "<font size=10>已经" + opText + count + "个工器具</font>";
+		var tip2 = "<font >已经" + opText + count + "个工器具</font>";
 		$("#tip1").html(tip1);
 		$("#tip2").html(tip2);
 	}
@@ -499,8 +512,7 @@
 </script>
 </head>
 <body>
-	<div id="formPanel" class="easyui-panel"
-		data-options="fit:true">
+	<div id="formPanel" class="easyui-panel" data-options="fit:true">
 		<div style="display: none">
 			<input id="batchTypeTextInput" class="easyui-textbox"
 				value="<%=request.getParameter("BATCH_TYPE")%>" /> <input
@@ -514,52 +526,45 @@
 				id="baseToolTypeNameTextInput" class="easyui-textbox" /><input
 				id="baseToolModelTextInput" class="easyui-textbox" /><input
 				id="baseToolSpecTextInput" class="easyui-textbox" /><input
-				id="deptIdTextInput" class="easyui-textbox" />
+				id="deptIdTextInput" class="easyui-textbox" /> <input
+				id="baseToolManNameTextInput" class="easyui-textbox" />
 		</div>
 		<table style="width: 100%">
 			<tr>
 				<td width="15%">批次编号:</td>
-				<td><input id="batchCodeTextInput"
-					value="<%=request.getParameter("BATCH_CODE")%>"
-					class="easyui-textbox"
-					data-options="required:true,disabled:true"
+				<td><input id="batchCodeTextInput" value="<%=batchCode%>"
+					class="easyui-textbox" data-options="required:true,disabled:true"
 					style="width: 100%; height: 32px" /></td>
 			</tr>
 			<tr>
 				<td width="15%">工器具类型:</td>
-				<td><a href="#" id="baseToolNameBtn"
-					class="easyui-linkbutton"
+				<td><a href="#" id="baseToolNameBtn" class="easyui-linkbutton"
 					data-options="required:true,prompt:'选择工器具类型'"
 					onclick="openChooseBaseToolPanel()"
 					style="width: 100%; height: 32px">选择工器具类型</a></td>
 			</tr>
 			<tr>
 				<td width="15%">选择仓库:</td>
-				<td><a href="#" id="storageNameBtn"
-					class="easyui-linkbutton"
+				<td><a href="#" id="storageNameBtn" class="easyui-linkbutton"
 					data-options="required:true,prompt:'选择仓库'"
 					onclick="openChooseStoragePanel()"
 					style="width: 100%; height: 32px">选择仓库</a></td>
 			</tr>
 			<tr>
 				<td width="15%">选择仓位:</td>
-				<td><a href="#" id="positionNameBtn"
-					class="easyui-linkbutton"
+				<td><a href="#" id="positionNameBtn" class="easyui-linkbutton"
 					data-options="required:true,prompt:'选择仓位'"
 					onclick="openChoosePositionPanel()"
 					style="width: 100%; height: 32px">选择仓位</a></td>
 			</tr>
 			<%
-				if ("1".equals(batchType)
-						|| "2".equals(batchType)) {
+				if ("1".equals(batchType) || "2".equals(batchType)) {
 			%>
 			<tr>
 				<td width="15%">选择领用部门:</td>
-				<td><a href="#" id="deptNameBtn"
-					class="easyui-linkbutton"
+				<td><a href="#" id="deptNameBtn" class="easyui-linkbutton"
 					data-options="required:true,prompt:'选择领用部门'"
-					onclick="openChooseDeptPanel()"
-					style="width: 100%; height: 32px">选择领用部门</a></td>
+					onclick="openChooseDeptPanel()" style="width: 100%; height: 32px">选择领用部门</a></td>
 			</tr>
 
 			<%
@@ -567,16 +572,24 @@
 				if ("0".equals(batchType)) {
 			%>
 			<tr>
+				<td width="15%">出厂日期:</td>
+				<td><input id="toolManufactureDateBox" class="easyui-datebox"
+					data-options="required:true" style="width: 100%; height: 32px" /></td>
+			</tr>
+			<tr>
+				<td width="15%">购买日期:</td>
+				<td><input id="toolPurchaseDateBox" class="easyui-datebox"
+					data-options="required:true" style="width: 100%; height: 32px" /></td>
+			</tr>
+			<tr>
 				<td width="15%">初试日期:</td>
-				<td><input id="toolTestDateBox"
-					class="easyui-datebox" data-options="required:true"
-					style="width: 100%; height: 32px" /></td>
+				<td><input id="toolTestDateBox" class="easyui-datebox"
+					data-options="required:true" style="width: 100%; height: 32px" /></td>
 			</tr>
 			<tr>
 				<td width="15%">报废日期:</td>
-				<td><input id="toolRejectDateBox"
-					class="easyui-datebox" data-options="required:true"
-					style="width: 100%; height: 32px" /></td>
+				<td><input id="toolRejectDateBox" class="easyui-datebox"
+					data-options="required:true" style="width: 100%; height: 32px" /></td>
 			</tr>
 			<tr>
 				<td width="15%">试验周期:</td>
@@ -589,31 +602,27 @@
 			%>
 			<tr>
 				<td width="15%">箱号:</td>
-				<td><input id="toolBoxTextInput"
-					class="easyui-textbox"
+				<td><input id="toolBoxTextInput" class="easyui-textbox"
 					data-options="required:true,validType:'length[0,200]'"
 					style="width: 100%; height: 32px" /></td>
 			</tr>
 			<tr>
 				<td width="15%">备注:</td>
-				<td><input id="batchRemarkTextInput"
-					class="easyui-textbox"
+				<td><input id="batchRemarkTextInput" class="easyui-textbox"
 					data-options="validType:'length[0,200]'"
 					style="width: 100%; height: 32px" /></td>
 			</tr>
 			<tr>
 				<td width="15%">工器具编号:</td>
-				<td><input id="toolCodeTextInput"
-					class="easyui-textbox"
+				<td><input id="toolCodeTextInput" class="easyui-textbox"
 					data-options="required:true,validType:'length[0,50]'"
 					style="width: 100%; height: 32px" /></td>
 			</tr>
 			<tr>
-				<td width="100%" align="right" colspan="2"><a
-					href="#" id="saveBtn" class="easyui-linkbutton"
-					onclick="saveBatch()" style="width: 60px; height: 32px">入库</a><a
-					href="#" id="saveBtn" class="easyui-linkbutton"
-					onclick="closeAddToolsUIForBatch()"
+				<td width="100%" align="right" colspan="2"><a href="#"
+					id="saveBtn" class="easyui-linkbutton" onclick="saveBatch()"
+					style="width: 60px; height: 32px">入库</a><a href="#" id="saveBtn"
+					class="easyui-linkbutton" onclick="closeAddToolsUIForBatch()"
 					style="width: 100px; height: 32px">关闭并刷新列表</a></td>
 			</tr>
 			<tr>
@@ -635,11 +644,10 @@
 			<table style="width: 100%">
 				<tr>
 					<td><a class="easyui-linkbutton" iconCls="icon-ok"
-						href="javascript:void(0)" onclick="chooseBaseTool()">选择</a>
-						<a class="easyui-linkbutton" iconCls="icon-cancel"
+						href="javascript:void(0)" onclick="chooseBaseTool()">选择</a> <a
+						class="easyui-linkbutton" iconCls="icon-cancel"
 						href="javascript:void(0)" onclick="openFormPanel()">返回</a></td>
-					<td align="right"><input
-						id="keyWordForBaseToolTextInput"
+					<td align="right"><input id="keyWordForBaseToolTextInput"
 						class="easyui-textbox"
 						data-options="prompt:'工器具名称',validType:'length[0,25]'"
 						style="width: 200px"> <a href="#"
@@ -685,11 +693,10 @@
 			<table style="width: 100%">
 				<tr>
 					<td><a class="easyui-linkbutton" iconCls="icon-ok"
-						href="javascript:void(0)" onclick="choosePosition()">选择</a>
-						<a class="easyui-linkbutton" iconCls="icon-cancel"
+						href="javascript:void(0)" onclick="choosePosition()">选择</a> <a
+						class="easyui-linkbutton" iconCls="icon-cancel"
 						href="javascript:void(0)" onclick="openFormPanel()">返回</a></td>
-					<td align="right"><input
-						id="keyWordForPositionTextInput"
+					<td align="right"><input id="keyWordForPositionTextInput"
 						class="easyui-textbox"
 						data-options="prompt:'仓位名称',validType:'length[0,25]'"
 						style="width: 200px"> <a href="#"
@@ -707,11 +714,11 @@
 			<table style="width: 100%">
 				<tr>
 					<td><a class="easyui-linkbutton" iconCls="icon-ok"
-						href="javascript:void(0)" onclick="chooseStorage()">选择</a>
-						<a class="easyui-linkbutton" iconCls="icon-cancel"
+						href="javascript:void(0)" onclick="chooseStorage()">选择</a> <a
+						class="easyui-linkbutton" iconCls="icon-cancel"
 						href="javascript:void(0)" onclick="openFormPanel()">返回</a></td>
-					<td align="right"><input
-						id="keyWordForStorageTextInput" class="easyui-textbox"
+					<td align="right"><input id="keyWordForStorageTextInput"
+						class="easyui-textbox"
 						data-options="prompt:'仓库名称',validType:'length[0,25]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
@@ -720,19 +727,18 @@
 			</table>
 		</div>
 	</div>
-	<div id="chooseDeptPanel" class="easyui-panel"
-		data-options="fit:true">
+	<div id="chooseDeptPanel" class="easyui-panel" data-options="fit:true">
 		<table id="datagridForDept" class="easyui-datagrid">
 		</table>
 		<div id="toolbarForDept">
 			<table style="width: 100%">
 				<tr>
 					<td><a class="easyui-linkbutton" iconCls="icon-ok"
-						href="javascript:void(0)" onclick="chooseDept()">选择</a>
-						<a class="easyui-linkbutton" iconCls="icon-cancel"
+						href="javascript:void(0)" onclick="chooseDept()">选择</a> <a
+						class="easyui-linkbutton" iconCls="icon-cancel"
 						href="javascript:void(0)" onclick="openFormPanel()">返回</a></td>
-					<td align="right"><input
-						id="keyWordForDeptTextInput" class="easyui-textbox"
+					<td align="right"><input id="keyWordForDeptTextInput"
+						class="easyui-textbox"
 						data-options="prompt:'部门名称',validType:'length[0,25]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"

@@ -38,6 +38,39 @@ public class ToolServiceImpl implements IToolService {
 	}
 
 	@Override
+	public Map<String, Object> resetTool(Tool tool,
+			ToolTrack toolTrack) {
+		int bool = 1;
+		// 查询track的条数
+		List<ToolTrack> toolTracks = toolTrackMapper
+				.selectToolTracksForList(toolTrack);
+		if (toolTracks.size() == 1) {// 1.=1，删掉tool与track
+			bool = toolTrackMapper.deleteByPrimaryKeys(toolTrack);
+			bool = toolMapper.deleteByPrimaryKeys(tool);
+		} else {// 2.>1，删掉track，然后用tooltrack的状态替换当前tool的状态
+			ToolTrack temp = toolTracks.get(1);
+			tool.setPosId(temp.getPosId());
+			tool.setStoreId(temp.getStoreId());
+			tool.setToolDeptId(temp.getToolDeptId());
+			tool.setToolStatus(temp.getToolStatus());
+			tool.setToolBox(temp.getToolBox());
+			tool.setBatchId(temp.getBatchId());
+			bool = toolMapper.updateByPrimaryKeySelective(tool);
+		}
+
+		Map<String, Object> map = new HashMap<>();
+
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "删除失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "删除成功");
+		}
+		return map;
+	}
+
+	@Override
 	public Map<String, Object> addNewTool(Tool tool) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = toolMapper.insertSelective(tool);

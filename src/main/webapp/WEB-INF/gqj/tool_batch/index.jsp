@@ -1,15 +1,13 @@
-<%@ page language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 	String batchType = request.getParameter("BATCH_TYPE");
-	String deptType = request.getParameter("DEPT_TYPE");
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type"
-	content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -29,8 +27,7 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript"
-	src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//关闭选择部门窗口
 	function closeAddToolsUIForBatch() {
@@ -38,7 +35,7 @@
 	}
 
 	//打开选择部门窗口
-	function openAddToolsUIForBatch(batchCode) {
+	function openAddToolsUIForBatch(batchId) {
 		var panelHeight = 0;
 		var batchType = getTextBoxValue('batchTypeTextInput');
 		if (batchType == 0) {
@@ -46,8 +43,8 @@
 		} else {
 			panelHeight = 500;
 		}
-		createModalDialog("addToolsUIForBatch", "openAddToolsUI.do?BATCH_CODE="
-				+ batchCode + "&BATCH_TYPE="
+		createModalDialog("addToolsUIForBatch", "openAddToolsUI.do?BATCH_ID="
+				+ batchId + "&BATCH_TYPE="
 				+ getTextBoxValue('batchTypeTextInput'), "扫描入库", 700,
 				panelHeight);
 		openUI('addToolsUIForBatch');
@@ -65,6 +62,17 @@
 						successFunctionForOption);
 			}
 		}
+	}
+
+	//删除
+	function delToolAndTrack(toolId, trackId, batchId) {
+		var params = {
+			TOOL_ID : toolId,
+			TRACK_ID : trackId,
+			BATCH_ID : batchId
+		};
+		showMessageBox(params, 'delToolAndTrack.do', '是否删除所选工器具?',
+				successFunctionForOptionToolTrack);
 	}
 
 	//确认
@@ -102,15 +110,26 @@
 		reloadDataGrid('datagridForBatch');
 	}
 
+	//回调函数，删除或其他操作成功后调用
+	function successFunctionForOptionToolTrack(result) {
+		showMessage(result.msg, result.msg);
+		queryToolTracks(result.batchId);
+	}
+
 	//用在点击查询按钮的时候
 	function queryBatchPagesForSearch() {
 		queryBatchs();
 	}
 
+	//用在点击查询按钮的时候
+	function queryToolTrackPagesForSearch() {
+		queryToolTracks('');
+	}
+
 	//查询
-	function queryBatchs() {
+	function queryBatchs(batchId) {
 		var params = {
-			BATCH_TYPE : getTextBoxValue('batchTypeTextInput'),
+			BATCH_ID : batchId,
 			keyWord : getTextBoxValue('keyWordForBatchTextInput'),
 			page : 1,
 			rows : getPageSizeOfDataGrid('datagridForBatch')
@@ -123,15 +142,35 @@
 		dataGridLoadData('datagridForBatch', result);
 	}
 
+	//查询
+	function queryToolTracks(batchId) {
+		var params = {
+			BATCH_ID : batchId,
+			keyWord : getTextBoxValue('keyWordForToolTrackTextInput'),
+			page : 1,
+			rows : getPageSizeOfDataGrid('datagridForToolTrack')
+		};
+		query(params, 'queryToolTracksPage.do',
+				successFunctionForQueryToolTracks);
+	}
+
+	//回调函数，查询成功后调用
+	function successFunctionForQueryToolTracks(result) {
+		dataGridLoadData('datagridForToolTrack', result);
+	}
+
 	//页面加载完
 	$(document).ready(
 			function() {
 				closeCache();
 				registerKeyPressForTextInput('keyWordForBatchTextInput',
 						queryBatchPagesForSearch);
+				registerKeyPressForTextInput('keyWordForToolTrackTextInput',
+						queryToolTrackPagesForSearch);
 				initDataGridForBatch();
-				initDataGridForBatchDetail();
-				initBatchDetailPanel();
+				initDataGridForToolTrackDetail();
+				initToolTrackPanel();
+
 				var batchType = getTextBoxValue('batchTypeTextInput');
 				if (batchType == 1 || batchType == 2 || batchType == 5) {
 					$('#datagridForBatch').treegrid('showColumn',
@@ -144,8 +183,8 @@
 			});
 
 	//初始化明细界面
-	function initBatchDetailPanel() {
-		$('#batchDetailUI').panel({
+	function initToolTrackPanel() {
+		$('#toolTrackUI').panel({
 			closed : true
 		});
 	}
@@ -181,7 +220,7 @@
 											if (batchConfirmUserId == null) {
 												btn = '<a class="easyui-linkbutton" '
 														+ ' onclick="openAddToolsUIForBatch(\''
-														+ rowData.BATCH_CODE
+														+ rowData.BATCH_ID
 														+ '\')" href="javascript:void(0)">再添工器具</a>';
 											}
 											return btn;
@@ -190,6 +229,7 @@
 									{
 										field : 'op',
 										title : '操作',
+										align : 'center',
 										formatter : function(fieldValue,
 												rowData, rowIndex) {
 											var batchConfirmUserId = rowData.BATCH_CONFIRM_USER_ID;
@@ -198,12 +238,12 @@
 												btn = '<a class="easyui-linkbutton" '
 														+ ' onclick="toDetail(\''
 														+ rowIndex
-														+ '\')" href="javascript:void(0)">编辑</a>';
+														+ '\')" href="javascript:void(0)">编辑明细</a>';
 											} else {
 												btn = '<a class="easyui-linkbutton" '
 														+ ' onclick="toDetail(\''
 														+ rowIndex
-														+ '\')" href="javascript:void(0)">查看</a>';
+														+ '\')" href="javascript:void(0)">查看明细</a>';
 											}
 											return btn;
 										}
@@ -211,6 +251,10 @@
 										field : 'BATCH_CODE',
 										title : '批次号',
 										width : 250,
+									}, {
+										field : 'BATCH_COUNT',
+										title : '工器具数量',
+										width : 100,
 									}, {
 										field : 'BATCH_CREATE_USER_NAME',
 										title : '创建人',
@@ -245,7 +289,7 @@
 									} ] ],
 							onLoadSuccess : function(data) {
 								var batchType = getTextBoxValue('batchTypeTextInput');
-								if (batchType != 5) {
+								if (batchType != 7) {
 									if (data.rows.length > 0) {
 										//循环判断操作为新增的不能选择
 										for (var i = 0; i < data.rows.length; i++) {
@@ -273,146 +317,95 @@
 	}
 
 	//初始化列表元素
-	function initDataGridForBatchDetail() {
-		$('#datagridForBatchDetail')
+	function initDataGridForToolTrackDetail() {
+		$('#datagridForToolTrack')
 				.datagrid(
 						{
-							idField : 'DETAIL_ID',
+							idField : 'TRACK_ID',
 							rownumbers : true,
-							toolbar : '#toolbarForBatchDetail',
-							pagination : false,
+							toolbar : '#toolbarForToolTrack',
+							pagination : true,
+							pageSize : 30,
+							pageNumber : 1,
 							checkOnSelect : false,
 							fit : true,
 							method : 'get',
 							columns : [ [
 									{
-										field : 'op',
-										title : '操作',
+										field : 'del',
+										title : '删除',
 										formatter : function(fieldValue,
 												rowData, rowIndex) {
-											var btn = '<a class="easyui-linkbutton" '
-													+ ' onclick="delRowData(\''
-													+ rowIndex
-													+ '\')" href="javascript:void(0)">删除</a>';
+											var toolStatus = rowData.TOOL_STATUS;
+											var btn = '';
+											if (toolStatus == 0
+													|| toolStatus == 2
+													|| toolStatus == 5
+													|| toolStatus == 7) {
+												btn = '<a class="del_btn_class" '
+														+ ' onclick="delToolAndTrack(\''
+														+ rowData.TOOL_ID
+														+ '\',\''
+														+ rowData.TRACK_ID
+														+ '\',\''
+														+ rowData.BATCH_ID
+														+ '\')" href="javascript:void(0)"></a>';
+											}
 											return btn;
 										}
-									},
-									{
+
+									}, {
+										field : 'TOOL_CODE',
+										title : '工器具编号',
+										width : 100
+									}, {
 										field : 'BASE_TOOL_TYPE_NAME',
 										title : '工器具类型',
 										width : 100
-									},
-									{
+									}, {
 										field : 'BASE_TOOL_NAME',
 										title : '工器具名称',
 										width : 150
-									},
-									{
+									}, {
 										field : 'BASE_TOOL_MANUFACTURER_NAME',
 										title : '厂家名称',
 										width : 150
-									},
-									{
+									}, {
 										field : 'BASE_TOOL_MODEL',
 										title : '型号',
 										width : 100
-									},
-									{
+									}, {
 										field : 'BASE_TOOL_SPEC',
 										title : '规格',
 										width : 100
-									},
-									{
-										field : 'choosePosition',
-										title : '选择仓位',
+									}, {
+										field : 'STORE_NAME',
+										title : '仓库',
 										align : 'center',
 										width : 150,
-										formatter : function(fieldValue,
-												rowData, rowIndex) {
-											var btn = '';
-											if (rowData.POS_NAME != null) {
-												btn = '<a class="choose_position_btn_class" width="100%" '
-														+ ' onclick="openChoosePositionUIForBatch(\''
-														+ rowIndex
-														+ '\',\''
-														+ getTextBoxValue('storageIdTextInput')
-														+ '\')" href="javascript:void(0)">'
-														+ rowData.POS_NAME
-														+ '</a>';
-											} else {
-												btn = '<a class="choose_position_btn_class" width="100%" '
-														+ ' onclick="openChoosePositionUIForBatch(\''
-														+ rowIndex
-														+ '\',\''
-														+ getTextBoxValue('storageIdTextInput')
-														+ '\')" href="javascript:void(0)">选择仓位</a>';
-											}
-											return btn;
-										}
-									},
-									{
-										field : 'DETAIL_BATCH_AMOUNT',
-										title : '数量',
-										width : 150,
-										formatter : function(fieldValue,
-												rowData, rowIndex) {
-											var toolAmount = "";
-											if (typeof (rowData.DETAIL_BATCH_AMOUNT) == 'undefined') {
-												toolAmount = "";
-											} else {
-												toolAmount = rowData.DETAIL_BATCH_AMOUNT;
-											}
-											var textInput = '<input value="'
-													+ toolAmount
-													+ '" type="text" onChange="setToolAmount('
-													+ rowIndex
-													+ ',this.value)" />';
-											return textInput;
-										}
+									}, {
+										field : 'POS_NAME',
+										title : '仓位',
+										align : 'center',
+										width : 150
+									}, {
+										field : 'TOOL_BOX',
+										title : '箱号',
+										align : 'center',
+										width : 150
 									} ] ],
 							onBeforeLoad : function(param) {
-								param.keyWord = getTextBoxValue('keyWordForBatchTextInput');
+								param.keyWord = getTextBoxValue('keyWordForToolTrackTextInput');
 							},
 							onLoadSuccess : function(param) {
-								$(".choose_position_btn_class").linkbutton({
-									plain : true,
-									width : 145
-								});
-								$(".set_tool_amount_textinput_class").textbox({
-									width : 145
+								$(".del_btn_class").linkbutton({
+									iconCls : 'icon-cross'
 								});
 							},
 							onLoadError : function() {
 								errorFunctionForQuery();
 							}
 						});
-	}
-
-	//设置工器具数量
-	function setToolAmount(rowIndex, newValue) {
-		var rowData = getRowDataOfSelfDataGrid('datagridForBatchDetail',
-				rowIndex);
-		if (getTextBoxValue('batchTypeTextInput') == 1
-				|| getTextBoxValue('batchTypeTextInput') == 2) {
-			if (newValue > rowData.INVENT_AMOUNT) {
-				alert('输入数量大于现有库存，请重新输入')
-			}
-		}
-		rowData.DETAIL_BATCH_AMOUNT = newValue;
-	}
-
-	//删除行数据
-	function delRowData(rowIndex) {
-		var rowData = getRowDataOfSelfDataGrid('datagridForBatchDetail',
-				rowIndex);
-		var data = $('#datagridForBatchDetail').datagrid('getData').rows;
-		for (var i = 0; i < data.length; i++) {
-			if (rowData.BASE_TOOL_ID == data[i].BASE_TOOL_ID) {
-				data.splice(i, 1);
-				break;
-			}
-		}
-		dataGridLoadData('datagridForBatchDetail', data);
 	}
 
 	//操作类型
@@ -425,68 +418,25 @@
 
 	//编辑界面
 	function toDetail(rowIndex) {
-		if (rowIndex != null) {
-			rowIndexOfDataGrid = rowIndex;
-			var rowData = getRowDataOfSelfDataGrid('datagridForBatch', rowIndex);
-			var batchConfirmUserId = rowData.BATCH_CONFIRM_USER_ID;
-			opType = 'edit';
-			queryBatchDetailsForList(rowData);
-			setTextBoxValue('batchCodeTextInput', rowData.BATCH_CODE);
-			setTextBoxValue('batchRemarkTextInput', rowData.BATCH_REMARK);
-			setTextBoxValue('storageIdTextInput', rowData.STORE_ID);
-			setTextBoxValue('planIdTextInput', rowData.PLAN_ID);
-			$('#storageNameBtn').linkbutton({
-				text : rowData.STORE_NAME,
-				width : 200
-			});
-			$('#planNameBtn').linkbutton({
-				text : rowData.PLAN_CODE,
-				width : 200
-			});
-
-			if (batchConfirmUserId != null) {
-				$('#saveBtn').linkbutton({
-					disabled : true
-				});
-				$('#addToolsBtn').linkbutton({
-					disabled : true
-				});
-			}
-		} else {
-			opType = 'add';
-		}
-		$('#batchListUI').panel('collapse');
-		$('#batchDetailUI').panel('expand');
-	}
-
-	//根据出入库单据id查询明细
-	function queryBatchDetailsForList(rowData) {
-		var params = {
-			BATCH_ID : rowData.BATCH_ID,
-		};
-		query(params, 'queryBatchDetailsForList.do',
-				successFunctionForQueryBatchDetails);
-	}
-
-	//回调函数，查询成功后调用
-	function successFunctionForQueryBatchDetails(result) {
-		dataGridLoadData('datagridForBatchDetail', result);
+		rowIndexOfDataGrid = rowIndex;
+		var rowData = getRowDataOfSelfDataGrid('datagridForBatch', rowIndex);
+		queryToolTracks(rowData.BATCH_ID);
+		$('#batchListUI').panel('close');
+		$('#toolTrackUI').panel('open');
+		$('#toolTrackUI').panel('maximize');
 	}
 
 	//列表界面
 	function toList() {
-		$('#batchListUI').panel('expand');
-		$('#batchDetailUI').panel('collapse');
+		$('#batchListUI').panel('open');
+		$('#toolTrackUI').panel('close');
+		$('#batchListUI').panel('maximize');
+
 		rowIndexOfDataGrid = 0;
-		setTextBoxValue('batchCodeTextInput', '');
-		setTextBoxValue('batchRemarkTextInput', '');
 		//清空明细列表
-		dataGridLoadData('datagridForBatchDetail', {
+		dataGridLoadData('datagridForToolTrack', {
 			total : 0,
 			rows : []
-		});
-		$('#saveBtn').linkbutton({
-			disabled : false
 		});
 	}
 </script>
@@ -510,21 +460,18 @@
 						onclick="refreshDataGrid('datagridForBatch')">刷新</a> <%
  	if (!"7".equals(batchType)) {
  %> <a href="#" class="easyui-linkbutton" iconCls="icon-add"
-						plain="true" onclick="openAddToolsUIForBatch('')">扫描入库</a>
-						<a href="#" class="easyui-linkbutton"
-						iconCls="icon-remove" plain="true"
-						onclick="delBatchs()">删除</a><a href="#"
-						class="easyui-linkbutton"
-						iconCls="icon-application_go" plain="true"
-						onclick="confirmBatchs()">确认</a> <%
+						plain="true" onclick="openAddToolsUIForBatch('')">扫描入库</a> <a
+						href="#" class="easyui-linkbutton" iconCls="icon-remove"
+						plain="true" onclick="delBatchs()">删除</a><a href="#"
+						class="easyui-linkbutton" iconCls="icon-application_go"
+						plain="true" onclick="confirmBatchs()">确认</a> <%
  	} else {
- %> <a href="#" class="easyui-linkbutton"
-						iconCls="icon-application_go" plain="true"
-						onclick="takeBatchs()">领用</a> <%
+ %> <a href="#" class="easyui-linkbutton" iconCls="icon-application_go"
+						plain="true" onclick="takeBatchs()">领用</a> <%
  	}
  %></td>
-					<td align="right"><input
-						id="keyWordForBatchTextInput" class="easyui-textbox"
+					<td align="right"><input id="keyWordForBatchTextInput"
+						class="easyui-textbox"
 						data-options="prompt:'批次号',validType:'length[0,50]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
@@ -533,44 +480,19 @@
 			</table>
 		</div>
 	</div>
-	<div id="batchDetailUI" class="easyui-panel"
+	<div id="toolTrackUI" class="easyui-panel"
 		data-options="fit:true,border:false">
-		<table id="datagridForBatchDetail" class="easyui-datagrid">
+		<table id="datagridForToolTrack" class="easyui-datagrid">
 		</table>
 
-		<div id="toolbarForBatchDetail">
+		<div id="toolbarForToolTrack">
 			<div>
 				<a href="#" class="easyui-linkbutton" plain="true"
-					iconCls="icon-arrow_left" onclick="toList()">返回</a>
-			</div>
-			<div>
-				<table>
-					<tr>
-						<td>批次号： <input id="batchCodeTextInput"
-							class="easyui-textbox"
-							data-options="prompt:'批次号',validType:'length[0,50]',disabled:true"
-							style="width: 200px"></td>
-						<%
-							if ("1".equals(batchType)
-									|| "2".equals(batchType)) {
-						%>
-						<td>
-							<div style="display: none">
-								<input id="deptIdTextInput" class="easyui-textbox" />
-							</div> 领用部门：<a href="#" id="deptNameBtn"
-							class="easyui-linkbutton" style="width: 200px;"
-							onclick="openChooseDeptUIForBatch()"> 选择领用部门</a>
-						</td>
-						<%
-							}
-						%>
-						<td>备注： <input id="batchRemarkTextInput"
-							class="easyui-textbox"
-							data-options="prompt:'备注',validType:'length[0,50]'"
-							style="width: 200px"></td>
-					</tr>
-				</table>
-
+					iconCls="icon-arrow_left" onclick="toList()">返回</a> <input
+					id="keyWordForToolTrackTextInput" class="easyui-textbox"
+					data-options="prompt:'工器具编号',validType:'length[0,50]'"
+					style="width: 200px"> <a href="#" class="easyui-linkbutton"
+					iconCls="icon-search" onclick="queryToolTrackPagesForSearch()">查询</a>
 			</div>
 		</div>
 	</div>

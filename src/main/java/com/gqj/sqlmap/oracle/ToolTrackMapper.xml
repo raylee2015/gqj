@@ -31,6 +31,10 @@
 			property="baseToolTypeName" />
 		<result column="BASE_TOOL_MODEL" jdbcType="VARCHAR" property="baseToolModel" />
 		<result column="BASE_TOOL_SPEC" jdbcType="VARCHAR" property="baseToolSpec" />
+		<result column="BASE_TOOL_MANUFACTURER_NAME" jdbcType="VARCHAR"
+			property="baseToolManufacturerName" />
+		<result column="TOOL_DEPT_ID" jdbcType="VARCHAR"
+			property="toolDeptId" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		TRACK_ID, TOOL_ID, STORE_ID, POS_ID, BATCH_ID,
@@ -43,8 +47,20 @@
 		POS_NAME, BATCH_CODE, BASE_TOOL_NAME,
 		BASE_TOOL_TYPE_ID,
 		BASE_TOOL_TYPE_NAME, BASE_TOOL_MODEL,
-		BASE_TOOL_SPEC
+		BASE_TOOL_SPEC,BASE_TOOL_MANUFACTURER_NAME,TOOL_DEPT_ID
 	</sql>
+	<select id="selectToolTracksForList" parameterType="com.gqj.entity.ToolTrack"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from GQJ_TOOL_TRACK
+		<where>
+			<if test="toolId != null">
+				and TOOL_ID = #{toolId}
+			</if>
+		</where>
+		order by TRACK_ID DESC
+	</select>
 	<select id="selectToolTracksForPage" parameterType="com.gqj.entity.ToolTrack"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
@@ -54,6 +70,12 @@
 		<where>
 			<if test="toolId != null">
 				and TOOL_ID = #{toolId}
+			</if>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+			<if test="toolCode != null and toolCode != ''">
+				and TOOL_CODE like '%${toolCode}%'
 			</if>
 		</where>
 		order by TRACK_ID
@@ -68,12 +90,25 @@
 			<if test="toolId != null">
 				and TOOL_ID = #{toolId}
 			</if>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+			<if test="toolCode != null and toolCode != ''">
+				and TOOL_CODE like '%${toolCode}%'
+			</if>
 		</where>
 	</select>
-	<delete id="deleteByPrimaryKeys" parameterType="com.gqj.entity.Tool">
+	<delete id="deleteByPrimaryKeys" parameterType="com.gqj.entity.ToolTrack">
 		delete from
 		GQJ_TOOL_TRACK
-		where TOOL_ID in (${toolId})
+		<where>
+			<if test="toolId != null">
+				and TOOL_ID in (${toolId})
+			</if>
+			<if test="trackId != null">
+				and TRACK_ID = #{trackId}
+			</if>
+		</where>
 	</delete>
 	<insert id="insertSelective" parameterType="com.gqj.entity.ToolTrack">
 		insert into GQJ_TOOL_TRACK
@@ -147,6 +182,12 @@
 			<if test="baseToolSpec != null">
 				BASE_TOOL_SPEC,
 			</if>
+			<if test="baseToolManufacturerName != null">
+				BASE_TOOL_MANUFACTURER_NAME,
+			</if>
+			<if test="toolDeptId != null">
+				TOOL_DEPT_ID,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="trackId != null">
@@ -217,6 +258,12 @@
 			</if>
 			<if test="baseToolSpec != null">
 				#{baseToolSpec,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolManufacturerName != null">
+				#{baseToolManufacturerName,jdbcType=VARCHAR},
+			</if>
+			<if test="toolDeptId != null">
+				#{toolDeptId,jdbcType=DECIMAL},
 			</if>
 		</trim>
 	</insert>

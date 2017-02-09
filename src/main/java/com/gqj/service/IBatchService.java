@@ -16,4 +16,9 @@ public interface IBatchService {
 
 	Map<String, Object> selectBatchsForPage(Batch batch);
 
+	Batch selectBatchsForObject(Batch batch);
+
+	Map<String, Object> delToolAndTrack(Tool tool, ToolTrack toolTrack,
+			Batch batch);
+
 }
