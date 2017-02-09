@@ -9,8 +9,8 @@ import com.gqj.entity.ToolTrack;
 public interface IBatchService {
 	Map<String, Object> deleteBatchs(Batch batch);
 
-	Map<String, Object> addNewBatchsAndDetails(Batch batch, Tool tool,
-			ToolTrack toolTrack);
+	Map<String, Object> addNewBatchsAndDetails(Batch batch,
+			Tool tool, ToolTrack toolTrack);
 
 	Map<String, Object> updateBatch(Batch batch);
 
@@ -18,7 +18,9 @@ public interface IBatchService {
 
 	Batch selectBatchsForObject(Batch batch);
 
-	Map<String, Object> delToolAndTrack(Tool tool, ToolTrack toolTrack,
-			Batch batch);
+	Map<String, Object> delToolAndTrack(Tool tool,
+			ToolTrack toolTrack, Batch batch);
+
+	Map<String, Object> confirmBatchs(Batch batch);
 
 }

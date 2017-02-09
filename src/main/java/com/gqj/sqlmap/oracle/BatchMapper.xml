@@ -103,7 +103,14 @@
 	<delete id="deleteByPrimaryKeys" parameterType="com.gqj.entity.Batch">
 		delete from
 		GQJ_BATCH
-		where BATCH_ID in (${ids})
+		<where>
+			<if test="ids != null">
+				and BATCH_ID in (${ids})
+			</if>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+		</where>
 	</delete>
 	<insert id="insertSelective" parameterType="com.gqj.entity.Batch">
 		<selectKey resultType="java.lang.Long" order="BEFORE"

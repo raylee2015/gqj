@@ -90,6 +90,9 @@
 			<if test="toolId != null">
 				AND TOOL_ID=#{toolId}
 			</if>
+			<if test="batchId != null">
+				AND BATCH_ID=#{batchId}
+			</if>
 		</where>
 	</delete>
 	<insert id="insertSelective" parameterType="com.gqj.entity.Tool">
@@ -252,6 +255,13 @@
 				BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL},
 			</if>
 		</set>
-		where TOOL_ID = #{toolId,jdbcType=DECIMAL}
+		<where>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+			<if test="toolId != null">
+				and TOOL_ID = #{toolId}
+			</if>
+		</where>
 	</update>
 </mapper>

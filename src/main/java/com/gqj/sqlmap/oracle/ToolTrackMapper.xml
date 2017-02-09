@@ -108,6 +108,9 @@
 			<if test="trackId != null">
 				and TRACK_ID = #{trackId}
 			</if>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
 		</where>
 	</delete>
 	<insert id="insertSelective" parameterType="com.gqj.entity.ToolTrack">
@@ -267,4 +270,18 @@
 			</if>
 		</trim>
 	</insert>
+	
+	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.ToolTrack">
+		update GQJ_TOOL_TRACK
+		<set>
+			<if test="toolStatus != null">
+				TOOL_STATUS = #{toolStatus,jdbcType=DECIMAL},
+			</if>
+		</set>
+		<where>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+		</where>
+	</update>
 </mapper>
