@@ -33,8 +33,7 @@
 		<result column="BASE_TOOL_SPEC" jdbcType="VARCHAR" property="baseToolSpec" />
 		<result column="BASE_TOOL_MANUFACTURER_NAME" jdbcType="VARCHAR"
 			property="baseToolManufacturerName" />
-		<result column="TOOL_DEPT_ID" jdbcType="VARCHAR"
-			property="toolDeptId" />
+		<result column="TOOL_DEPT_ID" jdbcType="VARCHAR" property="toolDeptId" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		TRACK_ID, TOOL_ID, STORE_ID, POS_ID, BATCH_ID,
@@ -47,7 +46,9 @@
 		POS_NAME, BATCH_CODE, BASE_TOOL_NAME,
 		BASE_TOOL_TYPE_ID,
 		BASE_TOOL_TYPE_NAME, BASE_TOOL_MODEL,
-		BASE_TOOL_SPEC,BASE_TOOL_MANUFACTURER_NAME,TOOL_DEPT_ID
+		BASE_TOOL_SPEC,BASE_TOOL_MANUFACTURER_NAME,TOOL_DEPT_ID,
+		TOOL_MANUFACTURE_DATE,TOOL_PURCHASE_DATE,BATCH_CONFIRM_USER_ID,
+		BATCH_CONFIRM_TIME
 	</sql>
 	<select id="selectToolTracksForList" parameterType="com.gqj.entity.ToolTrack"
 		resultMap="BaseResultMap">
@@ -191,6 +192,18 @@
 			<if test="toolDeptId != null">
 				TOOL_DEPT_ID,
 			</if>
+			<if test="batchConfirmUserId != null">
+				BATCH_CONFIRM_USER_ID,
+			</if>
+			<if test="batchConfirmTime != null">
+				BATCH_CONFIRM_TIME,
+			</if>
+			<if test="toolManufactureDate != null">
+				TOOL_MANUFACTURE_DATE,
+			</if>
+			<if test="toolPurchaseDate != null">
+				TOOL_PURCHASE_DATE,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="trackId != null">
@@ -268,14 +281,32 @@
 			<if test="toolDeptId != null">
 				#{toolDeptId,jdbcType=DECIMAL},
 			</if>
+			<if test="batchConfirmUserId != null">
+				#{batchConfirmUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchConfirmTime != null">
+				#{batchConfirmTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolManufactureDate != null">
+				#{toolManufactureDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolPurchaseDate != null">
+				#{toolPurchaseDate,jdbcType=TIMESTAMP},
+			</if>
 		</trim>
 	</insert>
-	
+
 	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.ToolTrack">
 		update GQJ_TOOL_TRACK
 		<set>
 			<if test="toolStatus != null">
 				TOOL_STATUS = #{toolStatus,jdbcType=DECIMAL},
+			</if>
+			<if test="batchConfirmUserId != null">
+				BATCH_CONFIRM_USER_ID=#{batchConfirmUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchConfirmTime != null">
+				BATCH_CONFIRM_TIME=#{batchConfirmTime,jdbcType=TIMESTAMP},
 			</if>
 		</set>
 		<where>

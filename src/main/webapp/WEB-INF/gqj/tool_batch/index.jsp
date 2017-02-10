@@ -43,10 +43,26 @@
 		} else {
 			panelHeight = 500;
 		}
+		var batchType = getTextBoxValue('batchTypeTextInput');
+		var title = "";
+		if (batchType == 0) {
+			title = "扫描入库";
+		} else if (batchType == 1) {
+			title = "扫描出库";
+		} else if (batchType == 2) {
+			title = "扫描转仓";
+		} else if (batchType == 3) {
+			title = "扫描退仓";
+		} else if (batchType == 4) {
+			title = "扫描报废";
+		} else if (batchType == 5) {
+			title = "扫描借用";
+		} else if (batchType == 6) {
+			title = "扫描归还";
+		}
 		createModalDialog("addToolsUIForBatch", "openAddToolsUI.do?BATCH_ID="
 				+ batchId + "&BATCH_TYPE="
-				+ getTextBoxValue('batchTypeTextInput'), "扫描入库", 700,
-				panelHeight);
+				+ getTextBoxValue('batchTypeTextInput'), "扫描"+title, 700, panelHeight);
 		openUI('addToolsUIForBatch');
 	}
 
@@ -180,6 +196,27 @@
 					$('#datagridForBatch').treegrid('showColumn',
 							'BATCH_TAKE_TIME');
 				}
+
+				var addToolBtnName = "";
+				if (batchType == 0) {
+					addToolBtnName = "扫描入库";
+				} else if (batchType == 1) {
+					addToolBtnName = "扫描出库";
+				} else if (batchType == 2) {
+					addToolBtnName = "扫描转仓";
+				} else if (batchType == 3) {
+					addToolBtnName = "扫描退仓";
+				} else if (batchType == 4) {
+					addToolBtnName = "扫描报废";
+				} else if (batchType == 5) {
+					addToolBtnName = "扫描借用";
+				} else if (batchType == 6) {
+					addToolBtnName = "扫描归还";
+				}
+
+				$('#addToolBtn').linkbutton({
+					text : addToolBtnName
+				});
 			});
 
 	//初始化明细界面
@@ -459,12 +496,13 @@
 						iconCls="icon-reload" plain="true"
 						onclick="refreshDataGrid('datagridForBatch')">刷新</a> <%
  	if (!"7".equals(batchType)) {
- %> <a href="#" class="easyui-linkbutton" iconCls="icon-add"
-						plain="true" onclick="openAddToolsUIForBatch('')">扫描入库</a> <a
-						href="#" class="easyui-linkbutton" iconCls="icon-remove"
-						plain="true" onclick="delBatchs()">删除</a><a href="#"
-						class="easyui-linkbutton" iconCls="icon-application_go"
-						plain="true" onclick="confirmBatchs()">确认</a> <%
+ %> <a id="addToolBtn" href="#" class="easyui-linkbutton"
+						iconCls="icon-add" plain="true"
+						onclick="openAddToolsUIForBatch('')">扫描入库</a> <a href="#"
+						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
+						onclick="delBatchs()">删除</a><a href="#" class="easyui-linkbutton"
+						iconCls="icon-application_go" plain="true"
+						onclick="confirmBatchs()">确认</a> <%
  	} else {
  %> <a href="#" class="easyui-linkbutton" iconCls="icon-application_go"
 						plain="true" onclick="takeBatchs()">领用</a> <%

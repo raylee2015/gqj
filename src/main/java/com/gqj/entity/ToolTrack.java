@@ -10,6 +10,7 @@ public class ToolTrack extends Base {
 	private String baseToolManufacturerName;
 
 	private String baseToolModel;
+
 	private String baseToolName;
 
 	private String baseToolSpec;
@@ -19,6 +20,10 @@ public class ToolTrack extends Base {
 	private String baseToolTypeName;
 
 	private String batchCode;
+
+	private Date batchConfirmTime;
+
+	private Long batchConfirmUserId;
 
 	private Long batchId;
 
@@ -38,7 +43,11 @@ public class ToolTrack extends Base {
 
 	private Long toolId;
 
+	private Date toolManufactureDate;
+
 	private Date toolNextTestDate;
+
+	private Date toolPurchaseDate;
 
 	private Date toolRejectDate;
 
@@ -86,6 +95,14 @@ public class ToolTrack extends Base {
 		return batchCode;
 	}
 
+	public Date getBatchConfirmTime() {
+		return batchConfirmTime;
+	}
+
+	public Long getBatchConfirmUserId() {
+		return batchConfirmUserId;
+	}
+
 	public Long getBatchId() {
 		return batchId;
 	}
@@ -122,8 +139,16 @@ public class ToolTrack extends Base {
 		return toolId;
 	}
 
+	public Date getToolManufactureDate() {
+		return toolManufactureDate;
+	}
+
 	public Date getToolNextTestDate() {
 		return toolNextTestDate;
+	}
+
+	public Date getToolPurchaseDate() {
+		return toolPurchaseDate;
 	}
 
 	public Date getToolRejectDate() {
@@ -191,6 +216,14 @@ public class ToolTrack extends Base {
 		this.batchCode = batchCode == null ? null : batchCode.trim();
 	}
 
+	public void setBatchConfirmTime(Date batchConfirmTime) {
+		this.batchConfirmTime = batchConfirmTime;
+	}
+
+	public void setBatchConfirmUserId(Long batchConfirmUserId) {
+		this.batchConfirmUserId = batchConfirmUserId;
+	}
+
 	public void setBatchId(Long batchId) {
 		this.batchId = batchId;
 	}
@@ -227,8 +260,16 @@ public class ToolTrack extends Base {
 		this.toolId = toolId;
 	}
 
+	public void setToolManufactureDate(Date toolManufactureDate) {
+		this.toolManufactureDate = toolManufactureDate;
+	}
+
 	public void setToolNextTestDate(Date toolNextTestDate) {
 		this.toolNextTestDate = toolNextTestDate;
+	}
+
+	public void setToolPurchaseDate(Date toolPurchaseDate) {
+		this.toolPurchaseDate = toolPurchaseDate;
 	}
 
 	public void setToolRejectDate(Date toolRejectDate) {

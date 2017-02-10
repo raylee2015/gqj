@@ -137,6 +137,52 @@ public class ToolServiceImpl implements IToolService {
 	}
 
 	@Override
+	public Map<String, Object> checkOutTool(Batch batch, Tool tool,
+			ToolTrack toolTrack) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Tool temp = toolMapper.selectToolForObject(tool);
+		int bool = 0;
+		String msg = "";
+		if (temp == null) {
+			map.put("success", false);
+			map.put("msg", "查询出错，没有该工器具");
+		} else {
+			long toolStatus = temp.getToolStatus();
+			if (toolStatus == ToolStatus.REJECT) {
+				msg = "该工器具已经报废";
+				map.put("success", false);
+				map.put("msg", msg);
+			} else if (toolStatus == ToolStatus.CHECK_IN) {
+				temp.setPosId(tool.getPosId());
+				temp.setStoreId(tool.getStoreId());
+				temp.setToolStatus(tool.getToolStatus());
+				temp.setToolBox(tool.getToolBox());
+				temp.setToolRemark(tool.getToolRemark());
+				// 更新tool状态，新增track记录
+				bool = toolMapper.updateByPrimaryKeySelective(temp);
+				toolTrack.setTrackId(-1L);
+				bool = toolTrackMapper.insertSelective(toolTrack);
+				if (bool == 0) {
+					map.put("success", false);
+					map.put("msg", "保存出错，请联系管理员");
+				} else {
+					map.put("success", true);
+					map.put("msg", "保存成功");
+				}
+			} else if (toolStatus == ToolStatus.CHECK_OUT_COMING) {
+				msg = "该工器具已经出库";
+				map.put("success", false);
+				map.put("msg", msg);
+			} else {
+				msg = "该工器具处于非正常状态，请查证";
+				map.put("success", false);
+				map.put("msg", msg);
+			}
+		}
+		return map;
+	}
+
+	@Override
 	public Map<String, Object> selectToolsForPage(Tool tool) {
 		List<Map<String, Object>> tools = toolMapper
 				.selectToolsForPage(tool);

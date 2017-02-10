@@ -74,7 +74,7 @@
 				AND BATCH_CODE = #{batchCode}
 			</if>
 		</where>
-		order by BATCH_ID
+		order by BATCH_ID DESC
 		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
 		) WHERE num<![CDATA[>=]]>
 		(1+(${currPage}-1)*${pageSize})

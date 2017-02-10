@@ -20,4 +20,7 @@ public interface IToolService {
 
 	Map<String, Object> resetTool(Tool tool, ToolTrack toolTrack);
 
+	Map<String, Object> checkOutTool(Batch batch, Tool tool,
+			ToolTrack toolTrack);
+
 }
