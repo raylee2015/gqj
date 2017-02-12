@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java"
+	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 	String batchType = request.getParameter("BATCH_TYPE");
@@ -7,7 +7,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type"
+	content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -27,7 +28,8 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript"
+	src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//关闭选择部门窗口
 	function closeAddToolsUIForBatch() {
@@ -62,7 +64,8 @@
 		}
 		createModalDialog("addToolsUIForBatch", "openAddToolsUI.do?BATCH_ID="
 				+ batchId + "&BATCH_TYPE="
-				+ getTextBoxValue('batchTypeTextInput'), "扫描"+title, 700, panelHeight);
+				+ getTextBoxValue('batchTypeTextInput'), "扫描" + title, 700,
+				panelHeight);
 		openUI('addToolsUIForBatch');
 	}
 
@@ -129,7 +132,9 @@
 	//回调函数，删除或其他操作成功后调用
 	function successFunctionForOptionToolTrack(result) {
 		showMessage(result.msg, result.msg);
-		queryToolTracks(result.batchId);
+		var rowData = getRowDataOfSelfDataGrid('datagridForBatch',
+				rowIndexOfDataGrid);
+		queryToolTracks(rowData.BATCH_ID);
 	}
 
 	//用在点击查询按钮的时候
@@ -139,13 +144,15 @@
 
 	//用在点击查询按钮的时候
 	function queryToolTrackPagesForSearch() {
-		queryToolTracks('');
+		var rowData = getRowDataOfSelfDataGrid('datagridForBatch',
+				rowIndexOfDataGrid);
+		queryToolTracks(rowData.BATCH_ID);
 	}
 
 	//查询
-	function queryBatchs(batchId) {
+	function queryBatchs() {
 		var params = {
-			BATCH_ID : batchId,
+			BATCH_TYPE : getTextBoxValue('batchTypeTextInput'),
 			keyWord : getTextBoxValue('keyWordForBatchTextInput'),
 			page : 1,
 			rows : getPageSizeOfDataGrid('datagridForBatch')
@@ -186,7 +193,6 @@
 				initDataGridForBatch();
 				initDataGridForToolTrackDetail();
 				initToolTrackPanel();
-
 				var batchType = getTextBoxValue('batchTypeTextInput');
 				if (batchType == 1 || batchType == 2 || batchType == 5) {
 					$('#datagridForBatch').treegrid('showColumn',
@@ -324,6 +330,10 @@
 										width : 100,
 										hidden : true
 									} ] ],
+							onBeforeLoad : function(param) {
+								param.keyWord = getTextBoxValue('keyWordForBatchTextInput');
+								param.BATCH_TYPE = getTextBoxValue('batchTypeTextInput');
+							},
 							onLoadSuccess : function(data) {
 								var batchType = getTextBoxValue('batchTypeTextInput');
 								if (batchType != 7) {
@@ -475,6 +485,8 @@
 			total : 0,
 			rows : []
 		});
+		
+		queryBatchs();
 	}
 </script>
 </head>
@@ -498,18 +510,21 @@
  	if (!"7".equals(batchType)) {
  %> <a id="addToolBtn" href="#" class="easyui-linkbutton"
 						iconCls="icon-add" plain="true"
-						onclick="openAddToolsUIForBatch('')">扫描入库</a> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
-						onclick="delBatchs()">删除</a><a href="#" class="easyui-linkbutton"
+						onclick="openAddToolsUIForBatch('')">扫描入库</a> <a
+						href="#" class="easyui-linkbutton"
+						iconCls="icon-remove" plain="true"
+						onclick="delBatchs()">删除</a><a href="#"
+						class="easyui-linkbutton"
 						iconCls="icon-application_go" plain="true"
 						onclick="confirmBatchs()">确认</a> <%
  	} else {
- %> <a href="#" class="easyui-linkbutton" iconCls="icon-application_go"
-						plain="true" onclick="takeBatchs()">领用</a> <%
+ %> <a href="#" class="easyui-linkbutton"
+						iconCls="icon-application_go" plain="true"
+						onclick="takeBatchs()">领用</a> <%
  	}
  %></td>
-					<td align="right"><input id="keyWordForBatchTextInput"
-						class="easyui-textbox"
+					<td align="right"><input
+						id="keyWordForBatchTextInput" class="easyui-textbox"
 						data-options="prompt:'批次号',validType:'length[0,50]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
@@ -527,10 +542,12 @@
 			<div>
 				<a href="#" class="easyui-linkbutton" plain="true"
 					iconCls="icon-arrow_left" onclick="toList()">返回</a> <input
-					id="keyWordForToolTrackTextInput" class="easyui-textbox"
+					id="keyWordForToolTrackTextInput"
+					class="easyui-textbox"
 					data-options="prompt:'工器具编号',validType:'length[0,50]'"
-					style="width: 200px"> <a href="#" class="easyui-linkbutton"
-					iconCls="icon-search" onclick="queryToolTrackPagesForSearch()">查询</a>
+					style="width: 200px"> <a href="#"
+					class="easyui-linkbutton" iconCls="icon-search"
+					onclick="queryToolTrackPagesForSearch()">查询</a>
 			</div>
 		</div>
 	</div>

@@ -48,6 +48,9 @@
 			<if test="batchCode != null">
 				AND BATCH_CODE = #{batchCode}
 			</if>
+			<if test="batchId != null">
+				AND BATCH_ID = #{batchId}
+			</if>
 		</where>
 		order by BATCH_ID
 	</select>

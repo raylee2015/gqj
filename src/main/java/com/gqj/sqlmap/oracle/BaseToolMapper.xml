@@ -15,6 +15,18 @@
 		BASE_TOOL_MODEL, BASE_TOOL_SPEC,
 		BASE_TOOL_REMARK,BASE_TOOL_TYPE_NAME,BASE_TOOL_NAME,BASE_TOOL_MANUFACTURER_NAME
 	</sql>
+	<select id="selectBaseToolForObject" parameterType="com.gqj.entity.BaseTool"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_BASE_TOOL
+		<where>
+			<if test="baseToolId != null">
+				AND BASE_TOOL_ID = #{baseToolId}
+			</if>
+		</where>
+		order by BASE_TOOL_ID DESC
+	</select>
 	<select id="selectBaseToolsForPage" parameterType="com.gqj.entity.BaseTool"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (

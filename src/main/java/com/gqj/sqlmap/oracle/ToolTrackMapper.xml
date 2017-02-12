@@ -59,6 +59,24 @@
 			<if test="toolId != null">
 				and TOOL_ID = #{toolId}
 			</if>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+		</where>
+		order by TRACK_ID DESC
+	</select>
+	<select id="selectToolTracksForObject" parameterType="com.gqj.entity.ToolTrack"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from GQJ_TOOL_TRACK
+		<where>
+			<if test="toolId != null">
+				and TOOL_ID = #{toolId}
+			</if>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
 		</where>
 		order by TRACK_ID DESC
 	</select>

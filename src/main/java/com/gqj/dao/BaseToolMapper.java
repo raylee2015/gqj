@@ -10,6 +10,9 @@ public interface BaseToolMapper {
 	List<Map<String, Object>> selectBaseToolsForPage(
 			BaseTool baseTool);
 
+	Map<String, Object> selectBaseToolForObject(
+			BaseTool baseTool);
+
 	int selectCountOfBaseToolsForPage(BaseTool baseTool);
 
 	int deleteByPrimaryKeys(BaseTool baseTool);

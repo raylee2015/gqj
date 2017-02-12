@@ -12,9 +12,13 @@ public interface ToolMapper {
 
 	Tool selectToolForObject(Tool tool);
 
+	List<Tool> selectToolsForList(Tool tool);
+
 	int selectCountOfToolsForPage(Tool tool);
 
 	int insertSelective(Tool tool);
 
 	int updateByPrimaryKeySelective(Tool tool);
+
+	int updateToolByBatch(Tool tool);
 }

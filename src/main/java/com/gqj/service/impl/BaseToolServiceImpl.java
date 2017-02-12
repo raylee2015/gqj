@@ -92,4 +92,11 @@ public class BaseToolServiceImpl
 		return map;
 	}
 
+	@Override
+	public Map<String, Object> selectBaseToolForObject(
+			BaseTool baseTool) {
+		return baseToolMapper
+				.selectBaseToolForObject(baseTool);
+	}
+
 }

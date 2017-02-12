@@ -38,9 +38,9 @@
 			BASE_TOOL_NAME : getTextBoxValue('baseToolNameTextBox'),
 			TOOL_DEMAND_ID : getTextBoxValue('baseToolDemandIdTextBox'),
 			MAN_ID : getTextBoxValue('manufacturerIdTextBox'),
-			BASE_TOOL_MODEL : getTextBoxValue('bastToolModelTextBox'),
-			BASE_TOOL_SPEC : getTextBoxValue('bastToolSpecTextBox'),
-			BASE_TOOL_REMARK : getTextBoxValue('bastToolRemarkTextBox')
+			BASE_TOOL_MODEL : getTextBoxValue('baseToolModelTextBox'),
+			BASE_TOOL_SPEC : getTextBoxValue('baseToolSpecTextBox'),
+			BASE_TOOL_REMARK : getTextBoxValue('baseToolRemarkTextBox')
 		};
 		save(params, url, successFunctionForSaveBaseTool);
 	}
@@ -72,7 +72,7 @@
 			var rowIndex = getTextBoxValue('rowIndex');
 			var rowData = getRowDataOfParentDataGrid('datagridForBaseTool',
 					rowIndex);
-			$('#bastToolForm').form('load', rowData);
+			$('#baseToolForm').form('load', rowData);
 		} else if (opType == 'add') {
 			url = "addNewBaseTool.do";
 		}
@@ -299,7 +299,7 @@
 		data-options="fit:true,border:false">
 		<div class="easyui-layout" data-options="fit:true">
 			<div data-options="fit:true,border:false,region:'north'">
-				<form id="bastToolForm" method="post"
+				<form id="baseToolForm" method="post"
 					style="width: 100%;">
 					<div style="display: none">
 						<input id="opType" class="easyui-textbox"
@@ -335,21 +335,21 @@
 						</tr>
 						<tr>
 							<td width="22%">工器具型号:</td>
-							<td><input id="bastToolModelTextBox"
+							<td><input id="baseToolModelTextBox"
 								name="BASE_TOOL_MODEL" class="easyui-textbox"
 								data-options="prompt:'工器具型号',required:true,validType:'length[0,20]'"
 								style="width: 100%; height: 32px" /></td>
 						</tr>
 						<tr>
 							<td width="22%">工器具参数:</td>
-							<td><input id="bastToolSpecTextBox"
+							<td><input id="baseToolSpecTextBox"
 								name="BASE_TOOL_SPEC" class="easyui-textbox"
 								data-options="prompt:'工器具参数',required:true,validType:'length[0,20]'"
 								style="width: 100%; height: 32px" /></td>
 						</tr>
 						<tr>
 							<td width="22%">工器具备注:</td>
-							<td><input id="bastToolRemarkTextBox"
+							<td><input id="baseToolRemarkTextBox"
 								name="BASE_TOOL_REMARK" class="easyui-textbox"
 								data-options="prompt:'工器具备注',required:true,validType:'length[0,20]'"
 								style="width: 100%; height: 32px" /></td>

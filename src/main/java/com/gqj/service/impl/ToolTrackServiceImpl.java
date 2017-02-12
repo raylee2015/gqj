@@ -12,15 +12,18 @@ import com.gqj.entity.ToolTrack;
 import com.gqj.service.IToolTrackService;
 
 @Service
-public class ToolTrackServiceImpl implements IToolTrackService {
+public class ToolTrackServiceImpl
+		implements IToolTrackService {
 
 	@Autowired
 	private ToolTrackMapper toolTrackMapper;
 
 	@Override
-	public Map<String, Object> deleteToolTracks(ToolTrack toolTrack) {
+	public Map<String, Object> deleteToolTracks(
+			ToolTrack toolTrack) {
 		Map<String, Object> map = new HashMap<>();
-		int bool = toolTrackMapper.deleteByPrimaryKeys(toolTrack);
+		int bool = toolTrackMapper
+				.deleteByPrimaryKeys(toolTrack);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");
@@ -32,9 +35,11 @@ public class ToolTrackServiceImpl implements IToolTrackService {
 	}
 
 	@Override
-	public Map<String, Object> addNewToolTrack(ToolTrack toolTrack) {
+	public Map<String, Object> addNewToolTrack(
+			ToolTrack toolTrack) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = toolTrackMapper.insertSelective(toolTrack);
+		int bool = toolTrackMapper
+				.insertSelective(toolTrack);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -59,7 +64,8 @@ public class ToolTrackServiceImpl implements IToolTrackService {
 	}
 
 	@Override
-	public Map<String, Object> updateToolTrack(ToolTrack toolTrack) {
+	public Map<String, Object> updateToolTrack(
+			ToolTrack toolTrack) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = toolTrackMapper
 				.updateByPrimaryKeySelective(toolTrack);
@@ -74,9 +80,17 @@ public class ToolTrackServiceImpl implements IToolTrackService {
 	}
 
 	@Override
-	public Map<String, Object> selectToolTracksForObject(
+	public ToolTrack selectToolTracksForObject(
 			ToolTrack toolTrack) {
-		return toolTrackMapper.selectToolTracksForObject(toolTrack);
+		return toolTrackMapper
+				.selectToolTracksForObject(toolTrack);
+	}
+
+	@Override
+	public List<ToolTrack> selectToolTracksForList(
+			ToolTrack toolTrack) {
+		return toolTrackMapper
+				.selectToolTracksForList(toolTrack);
 	}
 
 }

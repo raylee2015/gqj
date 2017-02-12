@@ -18,6 +18,10 @@
 		<result column="TOOL_REMARK" jdbcType="VARCHAR" property="toolRemark" />
 		<result column="TOOL_NEXT_TEST_DATE" jdbcType="TIMESTAMP"
 			property="toolNextTestDate" />
+		<result column="TOOL_MANUFACTURE_DATE" jdbcType="TIMESTAMP"
+			property="toolManufactureDate" />
+		<result column="TOOL_PURCHASE_DATE" jdbcType="TIMESTAMP"
+			property="toolPurchaseDate" />
 		<result column="BASE_TOOL_ID" jdbcType="DECIMAL" property="baseToolId" />
 	</resultMap>
 	<sql id="Base_Column_List">
@@ -29,7 +33,7 @@
 		TOOL_NEXT_TEST_DATE,
 		BASE_TOOL_ID,
 		STORE_NAME,POS_NAME,BASE_TOOL_NAME,BASE_TOOL_TYPE_NAME,
-		BASE_TOOL_MANUFACTURER_NAME
+		BASE_TOOL_MANUFACTURER_NAME,TOOL_MANUFACTURE_DATE,TOOL_PURCHASE_DATE
 	</sql>
 	<select id="selectToolForObject" parameterType="com.gqj.entity.Tool"
 		resultMap="BaseResultMap">
@@ -40,11 +44,29 @@
 		TOOL_TEST_DATE, TOOL_REJECT_DATE,
 		TOOL_TEST_DATE_CIRCLE, TOOL_REMARK,
 		TOOL_NEXT_TEST_DATE,
-		BASE_TOOL_ID
+		BASE_TOOL_ID,TOOL_MANUFACTURE_DATE,TOOL_PURCHASE_DATE
 		from GQJ_TOOL
 		<where>
 			<if test="toolCode != null">
 				AND TOOL_CODE=#{toolCode}
+			</if>
+		</where>
+		order by TOOL_ID
+	</select>
+	<select id="selectToolsForList" parameterType="com.gqj.entity.Tool"
+		resultMap="BaseResultMap">
+		select
+		TOOL_ID, TOOL_CODE, STORE_ID, POS_ID, BATCH_ID, TOOL_BOX,
+		TOOL_STATUS,
+		TOOL_DEPT_ID,
+		TOOL_TEST_DATE, TOOL_REJECT_DATE,
+		TOOL_TEST_DATE_CIRCLE, TOOL_REMARK,
+		TOOL_NEXT_TEST_DATE,
+		BASE_TOOL_ID,TOOL_MANUFACTURE_DATE,TOOL_PURCHASE_DATE
+		from GQJ_TOOL
+		<where>
+			<if test="batchId != null">
+				AND BATCH_ID=#{batchId}
 			</if>
 		</where>
 		order by TOOL_ID
@@ -256,11 +278,67 @@
 			</if>
 		</set>
 		<where>
-			<if test="batchId != null">
-				and BATCH_ID = #{batchId}
-			</if>
 			<if test="toolId != null">
 				and TOOL_ID = #{toolId}
+			</if>
+		</where>
+	</update>
+	<update id="updateToolByBatch" parameterType="com.gqj.entity.Tool">
+		update GQJ_TOOL
+		<set>
+			<if test="toolCode != null">
+				TOOL_CODE = #{toolCode,jdbcType=VARCHAR},
+			</if>
+			<if test="storeId != null">
+				STORE_ID = #{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="posId != null">
+				POS_ID = #{posId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchId != null">
+				BATCH_ID = #{batchId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolBox != null">
+				TOOL_BOX = #{toolBox,jdbcType=VARCHAR},
+			</if>
+			<if test="toolStatus != null">
+				TOOL_STATUS = #{toolStatus,jdbcType=DECIMAL},
+			</if>
+			<if test="toolDeptId != null">
+				TOOL_DEPT_ID = #{toolDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolTestDate != null">
+				TOOL_TEST_DATE = #{toolTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolRejectDate != null">
+				TOOL_REJECT_DATE = #{toolRejectDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolManufactureDate != null">
+				TOOL_MANUFACTURE_DATE =
+				#{toolManufactureDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolPurchaseDate != null">
+				TOOL_PURCHASE_DATE =
+				#{toolPurchaseDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolTestDateCircle != null">
+				TOOL_TEST_DATE_CIRCLE =
+				#{toolTestDateCircle,jdbcType=DECIMAL},
+			</if>
+			<if test="toolRemark != null">
+				TOOL_REMARK = #{toolRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="toolNextTestDate != null">
+				TOOL_NEXT_TEST_DATE =
+				#{toolNextTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="baseToolId != null">
+				BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL},
+			</if>
+		</set>
+		<where>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
 			</if>
 		</where>
 	</update>

@@ -13,7 +13,7 @@ public interface ToolTrackMapper {
 
 	List<ToolTrack> selectToolTracksForList(ToolTrack toolTrack);
 
-	Map<String, Object> selectToolTracksForObject(ToolTrack toolTrack);
+	ToolTrack selectToolTracksForObject(ToolTrack toolTrack);
 
 	int selectCountOfToolTracksForPage(ToolTrack toolTrack);
 

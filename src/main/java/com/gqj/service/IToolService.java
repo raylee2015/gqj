@@ -1,5 +1,6 @@
 package com.gqj.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.gqj.entity.Batch;
@@ -22,5 +23,9 @@ public interface IToolService {
 
 	Map<String, Object> checkOutTool(Batch batch, Tool tool,
 			ToolTrack toolTrack);
+
+	Map<String, Object> updateToolByBatch(Tool tool);
+
+	List<Tool> selectToolsForList(Tool tool);
 
 }

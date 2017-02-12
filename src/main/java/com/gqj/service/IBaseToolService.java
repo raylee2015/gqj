@@ -14,6 +14,9 @@ public interface IBaseToolService {
 
 	Map<String, Object> selectBaseToolsForPage(
 			BaseTool baseTool);
+	
+	Map<String, Object> selectBaseToolForObject(
+			BaseTool baseTool);
 
 	Map<String, Object> selectBaseToolsForPage(
 			HashMap<String, Object> param);
