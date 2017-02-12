@@ -23,4 +23,6 @@ public interface IBatchService {
 
 	Map<String, Object> confirmBatchs(Batch batch);
 
+	Map<String, Object> updateBatchs(Batch batch);
+
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.base.admin.service.IDictionaryService;
 import com.base.util.BaseUtil;
 import com.gqj.dao.ToolMapper;
 import com.gqj.dao.ToolTrackMapper;
@@ -22,64 +23,16 @@ import com.gqj.util.ToolStatus;
 public class ToolServiceImpl implements IToolService {
 
 	@Autowired
+	private IBaseToolService baseToolService;
+
+	@Autowired
+	private IDictionaryService distionaryService;
+
+	@Autowired
 	private ToolMapper toolMapper;
 
 	@Autowired
 	private ToolTrackMapper toolTrackMapper;
-
-	@Autowired
-	private IBaseToolService baseToolService;
-
-	@Override
-	public Map<String, Object> deleteTools(Tool tool) {
-		Map<String, Object> map = new HashMap<>();
-		int bool = toolMapper.deleteByPrimaryKeys(tool);
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
-		return map;
-	}
-
-	@Override
-	public Map<String, Object> resetTool(Tool tool,
-			ToolTrack toolTrack) {
-		int bool = 1;
-		// 查询track的条数
-		List<ToolTrack> toolTracks = toolTrackMapper
-				.selectToolTracksForList(toolTrack);
-		if (toolTracks.size() == 1) {// 1.=1，删掉tool与track
-			bool = toolTrackMapper
-					.deleteByPrimaryKeys(toolTrack);
-			bool = toolMapper.deleteByPrimaryKeys(tool);
-		} else {// 2.>1，删掉track，然后用tooltrack的状态替换当前tool的状态
-			ToolTrack temp = toolTracks.get(1);
-			tool.setPosId(temp.getPosId());
-			tool.setStoreId(temp.getStoreId());
-			tool.setToolDeptId(temp.getToolDeptId());
-			tool.setToolStatus(temp.getToolStatus());
-			tool.setToolBox(temp.getToolBox());
-			tool.setBatchId(temp.getBatchId());
-			bool = toolMapper
-					.updateByPrimaryKeySelective(tool);
-			bool = toolTrackMapper
-					.deleteByPrimaryKeys(toolTrack);
-		}
-
-		Map<String, Object> map = new HashMap<>();
-
-		if (bool == 0) {
-			map.put("success", false);
-			map.put("msg", "删除失败，请联系管理员");
-		} else {
-			map.put("success", true);
-			map.put("msg", "删除成功");
-		}
-		return map;
-	}
 
 	@Override
 	public Map<String, Object> addNewTool(Tool tool) {
@@ -137,7 +90,8 @@ public class ToolServiceImpl implements IToolService {
 					map.put("success", true);
 					map.put("msg", "保存成功");
 				}
-			} else if (toolStatus == ToolStatus.CHECK_IN_COMING) {
+			} else if (toolStatus == ToolStatus.CHECK_IN_COMING
+					|| toolStatus == ToolStatus.CHECK_IN) {
 				msg = "该工器具已经入库";
 				map.put("success", false);
 				map.put("msg", msg);
@@ -148,6 +102,12 @@ public class ToolServiceImpl implements IToolService {
 			}
 		}
 		return map;
+	}
+
+	@Override
+	public Map<String, Object> exchangeTool(Batch batch,
+			Tool toolParam, ToolTrack toolTrack) {
+		return checkOutTool(batch, toolParam, toolTrack);
 	}
 
 	@Override
@@ -242,7 +202,8 @@ public class ToolServiceImpl implements IToolService {
 					map.put("success", true);
 					map.put("msg", "保存成功");
 				}
-			} else if (toolStatus == ToolStatus.CHECK_OUT_COMING) {
+			} else if (toolStatus == ToolStatus.CHECK_OUT_COMING
+					|| toolStatus == ToolStatus.CHECK_OUT) {
 				msg = "该工器具已经出库";
 				map.put("success", false);
 				map.put("msg", msg);
@@ -256,21 +217,86 @@ public class ToolServiceImpl implements IToolService {
 	}
 
 	@Override
-	public Map<String, Object> selectToolsForPage(
-			Tool tool) {
-		List<Map<String, Object>> tools = toolMapper
-				.selectToolsForPage(tool);
-		int count = toolMapper
-				.selectCountOfToolsForPage(tool);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("rows", tools);
-		map.put("total", count);
+	public Map<String, Object> deleteTools(Tool tool) {
+		Map<String, Object> map = new HashMap<>();
+		int bool = toolMapper.deleteByPrimaryKeys(tool);
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "删除失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "删除成功");
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> resetTool(Tool tool,
+			ToolTrack toolTrack) {
+		int bool = 1;
+		// 查询track的条数
+		List<ToolTrack> toolTracks = toolTrackMapper
+				.selectToolTracksForList(toolTrack);
+		if (toolTracks.size() == 1) {// 1.=1，删掉tool与track
+			bool = toolTrackMapper
+					.deleteByPrimaryKeys(toolTrack);
+			bool = toolMapper.deleteByPrimaryKeys(tool);
+		} else {// 2.>1，删掉track，然后用tooltrack的状态替换当前tool的状态
+			ToolTrack temp = toolTracks.get(1);
+			tool.setPosId(temp.getPosId());
+			tool.setStoreId(temp.getStoreId());
+			tool.setToolDeptId(temp.getToolDeptId());
+			tool.setToolStatus(temp.getToolStatus());
+			tool.setToolBox(temp.getToolBox());
+			tool.setBatchId(temp.getBatchId());
+			bool = toolMapper
+					.updateByPrimaryKeySelective(tool);
+			bool = toolTrackMapper
+					.deleteByPrimaryKeys(toolTrack);
+		}
+
+		Map<String, Object> map = new HashMap<>();
+
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "删除失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "删除成功");
+		}
 		return map;
 	}
 
 	@Override
 	public List<Tool> selectToolsForList(Tool tool) {
 		return toolMapper.selectToolsForList(tool);
+	}
+
+	@Override
+	public Map<String, Object> selectToolsForPage(
+			HashMap<String, Object> param) {
+		List<Map<String, Object>> tools = toolMapper
+				.selectToolsForPage(param);
+		for (Map<String, Object> item : tools) {
+			String toolStatus = item.get("TOOL_STATUS")
+					.toString();
+			List<Map<String, Object>> dicList = distionaryService
+					.getDictionaryListByDicCode(
+							"TOOL_STATUS");
+			for (Map<String, Object> dic : dicList) {
+				if (dic.get("ID").equals(toolStatus)) {
+					item.put("TOOL_STATUS_NAME",
+							dic.get("TEXT").toString());
+					break;
+				}
+			}
+		}
+		int count = toolMapper
+				.selectCountOfToolsForPage(param);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("rows", tools);
+		map.put("total", count);
+		return map;
 	}
 
 	@Override

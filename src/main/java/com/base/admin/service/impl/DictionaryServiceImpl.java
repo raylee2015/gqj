@@ -130,4 +130,10 @@ public class DictionaryServiceImpl
 		return result;
 	}
 
+	@Override
+	public List<Map<String, Object>> getDictionaryListByDicCode(
+			String dicCode) {
+		return queryDictionarysForCache().get(dicCode);
+	}
+
 }

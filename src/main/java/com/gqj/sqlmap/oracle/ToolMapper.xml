@@ -33,7 +33,9 @@
 		TOOL_NEXT_TEST_DATE,
 		BASE_TOOL_ID,
 		STORE_NAME,POS_NAME,BASE_TOOL_NAME,BASE_TOOL_TYPE_NAME,
-		BASE_TOOL_MANUFACTURER_NAME,TOOL_MANUFACTURE_DATE,TOOL_PURCHASE_DATE
+		BASE_TOOL_MANUFACTURER_NAME,TOOL_MANUFACTURE_DATE,TOOL_PURCHASE_DATE,
+		BASE_TOOL_TYPE_ID,BASE_TOOL_MANUFACTURER_ID,
+		BASE_TOOL_MODEL,BASE_TOOL_SPEC
 	</sql>
 	<select id="selectToolForObject" parameterType="com.gqj.entity.Tool"
 		resultMap="BaseResultMap">
@@ -71,18 +73,41 @@
 		</where>
 		order by TOOL_ID
 	</select>
-	<select id="selectToolsForPage" parameterType="com.gqj.entity.Tool"
+	<select id="selectToolsForPage" parameterType="java.util.HashMap"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select
 		<include refid="Base_Column_List" />
 		from VIEW_GQJ_TOOL
 		<where>
-			<if test="batchId != null">
-				and BATCH_ID = #{batchId}
-			</if>
 			<if test="keyWord != null">
 				AND TOOL_CODE like '%${keyWord}%'
+			</if>
+			<if test="storeId != null and storeId !=''">
+				and STORE_ID =
+				#{storeId,jdbcType=DECIMAL}
+			</if>
+			<if test="posId != null and posId != ''">
+				and POS_ID =
+				#{posId,jdbcType=DECIMAL}
+			</if>
+			<if test="baseToolTypeId != null and baseToolTypeId!=''">
+				and BASE_TOOL_TYPE_ID =
+				#{baseToolTypeId,jdbcType=DECIMAL}
+			</if>
+			<if test="baseToolModel != null and baseToolModel!=''">
+				AND BASE_TOOL_MODEL like '%${baseToolModel}%'
+			</if>
+			<if test="baseToolSpec != null and baseToolSpec!=''">
+				AND BASE_TOOL_SPEC like '%${baseToolSpec}%'
+			</if>
+			<if test="manufacturerId != null and manufacturerId!=''">
+				and BASE_TOOL_MANUFACTURER_ID =
+				#{manufacturerId,jdbcType=DECIMAL}
+			</if>
+			<if test="toolDeptId != null">
+				and TOOL_DEPT_ID =
+				#{toolDeptId,jdbcType=DECIMAL}
 			</if>
 		</where>
 		order by TOOL_ID
@@ -90,15 +115,38 @@
 		) WHERE num<![CDATA[>=]]>
 		(1+(${currPage}-1)*${pageSize})
 	</select>
-	<select id="selectCountOfToolsForPage" parameterType="com.gqj.entity.Tool"
+	<select id="selectCountOfToolsForPage" parameterType="java.util.HashMap"
 		resultType="java.lang.Integer">
 		select count(t.TOOL_ID) from VIEW_GQJ_TOOL t
 		<where>
-			<if test="batchId != null">
-				and BATCH_ID = #{batchId}
-			</if>
 			<if test="keyWord != null">
 				AND TOOL_CODE like '%${keyWord}%'
+			</if>
+			<if test="storeId != null and storeId !=''">
+				and STORE_ID =
+				#{storeId,jdbcType=DECIMAL}
+			</if>
+			<if test="posId != null and posId != ''">
+				and POS_ID =
+				#{posId,jdbcType=DECIMAL}
+			</if>
+			<if test="baseToolTypeId != null and baseToolTypeId!=''">
+				and BASE_TOOL_TYPE_ID =
+				#{baseToolTypeId,jdbcType=DECIMAL}
+			</if>
+			<if test="baseToolModel != null and baseToolModel!=''">
+				AND BASE_TOOL_MODEL like '%${baseToolModel}%'
+			</if>
+			<if test="baseToolSpec != null and baseToolSpec!=''">
+				AND BASE_TOOL_SPEC like '%${baseToolSpec}%'
+			</if>
+			<if test="manufacturerId != null and manufacturerId!=''">
+				and BASE_TOOL_MANUFACTURER_ID =
+				#{manufacturerId,jdbcType=DECIMAL}
+			</if>
+			<if test="toolDeptId != null">
+				and TOOL_DEPT_ID =
+				#{toolDeptId,jdbcType=DECIMAL}
 			</if>
 		</where>
 	</select>

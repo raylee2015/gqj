@@ -194,13 +194,19 @@
 				initDataGridForToolTrackDetail();
 				initToolTrackPanel();
 				var batchType = getTextBoxValue('batchTypeTextInput');
-				if (batchType == 1 || batchType == 2 || batchType == 5) {
-					$('#datagridForBatch').treegrid('showColumn',
+				if (batchType == 1 || batchType == 2 || batchType == 7) {
+					$('#datagridForBatch').datagrid('showColumn',
 							'BATCH_TAKE_DEPT_NAME');
-					$('#datagridForBatch').treegrid('showColumn',
+					$('#datagridForBatch').datagrid('showColumn',
 							'BATCH_TAKE_USER_NAME');
-					$('#datagridForBatch').treegrid('showColumn',
+					$('#datagridForBatch').datagrid('showColumn',
 							'BATCH_TAKE_TIME');
+					if (batchType == 7) {
+						$('#datagridForBatch').datagrid('hideColumn',
+								'addToolColumn');
+						$('#datagridForToolTrack')
+								.datagrid('hideColumn', 'del');
+					}
 				}
 
 				var addToolBtnName = "";
@@ -485,7 +491,7 @@
 			total : 0,
 			rows : []
 		});
-		
+
 		queryBatchs();
 	}
 </script>

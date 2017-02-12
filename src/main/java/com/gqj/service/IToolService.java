@@ -1,5 +1,6 @@
 package com.gqj.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,12 +15,14 @@ public interface IToolService {
 
 	Map<String, Object> updateTool(Tool tool);
 
-	Map<String, Object> selectToolsForPage(Tool tool);
+	Map<String, Object> selectToolsForPage(
+			HashMap<String, Object> param);
 
-	Map<String, Object> checkInNewTool(Batch batch, Tool tool,
+	Map<String, Object> checkInNewTool(Batch batch,
+			Tool tool, ToolTrack toolTrack);
+
+	Map<String, Object> resetTool(Tool tool,
 			ToolTrack toolTrack);
-
-	Map<String, Object> resetTool(Tool tool, ToolTrack toolTrack);
 
 	Map<String, Object> checkOutTool(Batch batch, Tool tool,
 			ToolTrack toolTrack);
@@ -27,5 +30,8 @@ public interface IToolService {
 	Map<String, Object> updateToolByBatch(Tool tool);
 
 	List<Tool> selectToolsForList(Tool tool);
+
+	Map<String, Object> exchangeTool(Batch batch,
+			Tool toolParam, ToolTrack toolTrack);
 
 }

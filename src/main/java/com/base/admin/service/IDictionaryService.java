@@ -20,4 +20,7 @@ public interface IDictionaryService {
 
 	String getDictionarysByDicCode(String dicCode);
 
+	List<Map<String, Object>> getDictionaryListByDicCode(
+			String dicCode);
+
 }
