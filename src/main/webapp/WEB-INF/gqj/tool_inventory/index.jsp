@@ -228,7 +228,7 @@
 	//初始化列表元素
 	function initDataGridForToolTrack() {
 		$('#datagridForToolTrack').datagrid({
-			idField : 'DETAIL_ID',
+			idField : 'TRACK_ID',
 			rownumbers : true,
 			toolbar : '#toolbarForToolTrack',
 			pageSize : 30,
@@ -238,20 +238,12 @@
 			fit : true,
 			method : 'get',
 			columns : [ [ {
-				field : 'BILL_CODE',
+				field : 'BATCH_CODE',
 				title : '批次',
-				width : 200,
+				width : 150,
 			}, {
-				field : 'STORE_NAME',
+				field : 'BATCH_CONFIRM_TIME',
 				title : '仓库',
-				width : 100,
-			}, {
-				field : 'POS_NAME',
-				title : '仓位',
-				width : 100,
-			}, {
-				field : 'DETAIL_BILL_AMOUNT',
-				title : '数量',
 				width : 100,
 			} ] ],
 			onLoadError : function() {
@@ -269,16 +261,14 @@
 				rowIndex);
 		setTextBoxText('baseToolNameTextInput', rowData.BASE_TOOL_NAME);
 		queryToolTracksForPage(rowData);
-		$('#materialInventoryListUI').panel('collapse');
-		$('#materialBillDetailUI').panel('expand');
+		$('#toolInventoryListUI').panel('collapse');
+		$('#toolTrackUI').panel('expand');
 	}
 
 	//根据模板id查询明细
 	function queryToolTracksForPage(rowData) {
 		var params = {
-			BASE_TOOL_ID : rowData.BASE_TOOL_ID,
-			STORE_ID : rowData.STORE_ID,
-			POS_ID : rowData.POS_ID,
+			TOOL_ID : rowData.TOOL_ID,
 			page : 1,
 			rows : getPageSizeOfDataGrid('datagridForToolTrack')
 		};
@@ -293,8 +283,8 @@
 
 	//列表界面
 	function toList() {
-		$('#materialInventoryListUI').panel('expand');
-		$('#materialBillDetailUI').panel('collapse');
+		$('#toolInventoryListUI').panel('expand');
+		$('#toolTrackUI').panel('collapse');
 		rowIndexOfDataGrid = 0;
 		setTextBoxText('baseToolNameTextInput', '');
 		//清空明细列表
@@ -329,7 +319,7 @@
 		<input id="dateTypeTextInput" class="easyui-textbox"
 			value="<%=request.getParameter("DATE_TYPE")%>" />
 	</div>
-	<div id="materialInventoryListUI" class="easyui-panel"
+	<div id="toolInventoryListUI" class="easyui-panel"
 		data-options="fit:true,border:false">
 		<!-- 列表页面 -->
 		<div class="easyui-layout" data-options="fit:true,border:false">
@@ -396,7 +386,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="materialBillDetailUI" class="easyui-panel"
+	<div id="toolTrackUI" class="easyui-panel"
 		data-options="fit:true,border:false">
 		<table id="datagridForToolTrack" class="easyui-datagrid">
 		</table>

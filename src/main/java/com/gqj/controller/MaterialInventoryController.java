@@ -29,8 +29,7 @@ import com.gqj.service.IToolTypeService;
 
 @Controller
 @RequestMapping("/gqj/material_inventory")
-public class MaterialInventoryController
-		extends BaseController {
+public class MaterialInventoryController extends BaseController {
 	public static final Logger LOGGER = Logger
 			.getLogger(MaterialInventoryController.class);
 
@@ -61,11 +60,10 @@ public class MaterialInventoryController
 	 */
 	@RequestMapping("/queryBaseToolTypeDropList.do")
 	@ResponseBody
-	public void queryBaseToolTypeDropList(
-			HttpServletRequest request,
+	public void queryBaseToolTypeDropList(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter().print(toolTypeService
-				.selectToolTypesForList(new ToolType()));
+		response.getWriter().print(
+				toolTypeService.selectToolTypesForList(new ToolType()));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -80,12 +78,10 @@ public class MaterialInventoryController
 	@RequestMapping("/queryBaseToolManufacturerDropList.do")
 	@ResponseBody
 	public void queryBaseToolManufacturerDropList(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		response.getWriter()
-				.print(manufacturerService
-						.selectManufacturersForList(
-								new Manufacturer()));
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		response.getWriter().print(manufacturerService
+				.selectManufacturersForList(new Manufacturer()));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -96,8 +92,7 @@ public class MaterialInventoryController
 	 * @return
 	 */
 	@RequestMapping(value = "/openChoosePositionUI.do", method = RequestMethod.GET)
-	public ModelAndView openChoosePositionUI(
-			HttpServletRequest request,
+	public ModelAndView openChoosePositionUI(HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView(
 				"/gqj/material_inventory/choosePositionUI");
@@ -109,8 +104,7 @@ public class MaterialInventoryController
 	 * @return
 	 */
 	@RequestMapping(value = "/openChooseStorageUI.do", method = RequestMethod.GET)
-	public ModelAndView openChooseStorageUI(
-			HttpServletRequest request,
+	public ModelAndView openChooseStorageUI(HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView(
 				"/gqj/material_inventory/chooseStorageUI");
@@ -127,8 +121,8 @@ public class MaterialInventoryController
 	@RequestMapping("/queryPositionsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryPositionsPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -138,8 +132,7 @@ public class MaterialInventoryController
 		position.setPageSize(BaseUtil.strToInt(rows));
 		position.setKeyWord(keyWord);
 		position.setStoreId(BaseUtil.strToLong(storeId));
-		return positionService
-				.selectPositionsForPage(position);
+		return positionService.selectPositionsForPage(position);
 	}
 
 	/**
@@ -153,13 +146,12 @@ public class MaterialInventoryController
 	@RequestMapping("/queryMaterialBillDetailsForPage.do")
 	@ResponseBody
 	public Map<String, Object> queryMaterialBillDetailsForPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String posId = request.getParameter("POS_ID");
-		String baseToolId = request
-				.getParameter("BASE_TOOL_ID");
+		String baseToolId = request.getParameter("BASE_TOOL_ID");
 		HashMap<String, Object> param = new HashMap<>();
 		param.put("currPage", page);
 		param.put("pageSize", rows);
@@ -181,20 +173,24 @@ public class MaterialInventoryController
 	@RequestMapping("/queryStoragesPage.do")
 	@ResponseBody
 	public Map<String, Object> queryStoragesPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		long storageDeptId = getSessionUser(request,
-				response).getUserDeptId();
+		long storageDeptId = getSessionUser(request, response)
+				.getUserDeptId();
 		String keyWord = request.getParameter("keyWord");
+		String deptType = request.getParameter("DEPT_TYPE");
 		Storage storage = new Storage();
 		storage.setCurrPage(BaseUtil.strToInt(page));
 		storage.setPageSize(BaseUtil.strToInt(rows));
-		storage.setStoreDeptId(storageDeptId);
+		if ("ALL".equals(deptType)) {
+
+		} else if ("MY".equals(deptType)) {
+			storage.setStoreDeptId(storageDeptId);
+		}
 		storage.setKeyWord(keyWord);
-		return storageService
-				.selectStoragesForPage(storage);
+		return storageService.selectStoragesForPage(storage);
 	}
 
 	/**
@@ -208,8 +204,8 @@ public class MaterialInventoryController
 	@RequestMapping("/queryMaterialInventorysPage.do")
 	@ResponseBody
 	public Map<String, Object> queryMaterialInventorysPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -217,21 +213,22 @@ public class MaterialInventoryController
 		String posId = request.getParameter("POS_ID");
 		String baseToolTypeId = request
 				.getParameter("BASE_TOOL_TYPE_ID");
-		String manufacturerId = request
-				.getParameter("MANUFACTURER_ID");
-		String baseToolModel = request
-				.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request
-				.getParameter("BASE_TOOL_SPEC");
+		String manufacturerId = request.getParameter("MANUFACTURER_ID");
+		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
+		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
+		String deptType = request.getParameter("DEPT_TYPE");
 		HashMap<String, Object> param = new HashMap<>();
 		param.put("currPage", page);
 		param.put("pageSize", rows);
 		param.put("keyWord", keyWord);
 		param.put("storeId", storeId);
 		param.put("posId", posId);
-		param.put("storeDeptId",
-				getSessionUser(request, response)
-						.getUserDeptId());
+		if ("ALL".equals(deptType)) {
+
+		} else if ("MY".equals(deptType)) {
+			param.put("storeDeptId",
+					getSessionUser(request, response).getUserDeptId());
+		}
 		param.put("baseToolTypeId", baseToolTypeId);
 		param.put("manufacturerId", manufacturerId);
 		param.put("baseToolModel", baseToolModel);
@@ -247,8 +244,7 @@ public class MaterialInventoryController
 	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
-		return new ModelAndView(
-				"/gqj/material_inventory/index");
+		return new ModelAndView("/gqj/material_inventory/index");
 	}
 
 }

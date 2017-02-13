@@ -21,11 +21,13 @@ import com.base.util.DateUtil;
 import com.gqj.entity.Manufacturer;
 import com.gqj.entity.Position;
 import com.gqj.entity.Storage;
+import com.gqj.entity.ToolTrack;
 import com.gqj.entity.ToolType;
 import com.gqj.service.IManufacturerService;
 import com.gqj.service.IPositionService;
 import com.gqj.service.IStorageService;
 import com.gqj.service.IToolService;
+import com.gqj.service.IToolTrackService;
 import com.gqj.service.IToolTypeService;
 import com.gqj.util.ToolStatus;
 
@@ -37,6 +39,9 @@ public class ToolInventoryController extends BaseController {
 
 	@Autowired
 	private IPositionService positionService;
+	
+	@Autowired
+	private IToolTrackService toolTrackService;
 
 	@Autowired
 	private IStorageService storageService;
@@ -133,6 +138,31 @@ public class ToolInventoryController extends BaseController {
 		position.setKeyWord(keyWord);
 		position.setStoreId(BaseUtil.strToLong(storeId));
 		return positionService.selectPositionsForPage(position);
+	}
+	
+	/**
+	 * 分页查询工器具批次列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryToolTracksForPage.do")
+	@ResponseBody
+	public Map<String, Object> queryToolTracksForPage(
+			HttpServletRequest request, HttpServletResponse response)
+					throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String keyWord = request.getParameter("keyWord");
+		String toolId = request.getParameter("TOOL_ID");
+		ToolTrack toolTrack = new ToolTrack();
+		toolTrack.setCurrPage(BaseUtil.strToInt(page));
+		toolTrack.setPageSize(BaseUtil.strToInt(rows));
+		toolTrack.setKeyWord(keyWord);
+		toolTrack.setToolId(BaseUtil.strToLong(toolId));
+		return toolTrackService.selectToolTracksForPage(toolTrack);
 	}
 
 	/**

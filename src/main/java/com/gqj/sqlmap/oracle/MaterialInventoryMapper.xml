@@ -13,7 +13,7 @@
 		BASE_TOOL_ID,BASE_TOOL_NAME,BASE_TOOL_MODEL,BASE_TOOL_SPEC,
 		POS_ID,POS_NAME,STORE_DEPT_ID,
 		MAN_ID,BASE_TOOL_MANUFACTURER_NAME,
-		BASE_TOOL_TYPE_ID,BASE_TOOL_TYPE_NAME
+		BASE_TOOL_TYPE_ID,BASE_TOOL_TYPE_NAME,DEPT_NAME
 	</sql>
 	<select id="selectMaterialInventorysForList" parameterType="com.gqj.entity.MaterialInventory"
 		resultType="java.util.HashMap">

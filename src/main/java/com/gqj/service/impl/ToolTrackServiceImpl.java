@@ -7,23 +7,21 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.base.util.DateUtil;
 import com.gqj.dao.ToolTrackMapper;
 import com.gqj.entity.ToolTrack;
 import com.gqj.service.IToolTrackService;
 
 @Service
-public class ToolTrackServiceImpl
-		implements IToolTrackService {
+public class ToolTrackServiceImpl implements IToolTrackService {
 
 	@Autowired
 	private ToolTrackMapper toolTrackMapper;
 
 	@Override
-	public Map<String, Object> deleteToolTracks(
-			ToolTrack toolTrack) {
+	public Map<String, Object> deleteToolTracks(ToolTrack toolTrack) {
 		Map<String, Object> map = new HashMap<>();
-		int bool = toolTrackMapper
-				.deleteByPrimaryKeys(toolTrack);
+		int bool = toolTrackMapper.deleteByPrimaryKeys(toolTrack);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");
@@ -35,11 +33,9 @@ public class ToolTrackServiceImpl
 	}
 
 	@Override
-	public Map<String, Object> addNewToolTrack(
-			ToolTrack toolTrack) {
+	public Map<String, Object> addNewToolTrack(ToolTrack toolTrack) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = toolTrackMapper
-				.insertSelective(toolTrack);
+		int bool = toolTrackMapper.insertSelective(toolTrack);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -55,6 +51,12 @@ public class ToolTrackServiceImpl
 			ToolTrack toolTrack) {
 		List<Map<String, Object>> toolTracks = toolTrackMapper
 				.selectToolTracksForPage(toolTrack);
+		for (Map<String, Object> item : toolTracks) {
+			if (item.get("BATCH_CONFIRM_TIME") != null) {
+				item.put("BATCH_CONFIRM_TIME", DateUtil.getDate(
+						item.get("BATCH_CONFIRM_TIME").toString()));
+			}
+		}
 		int count = toolTrackMapper
 				.selectCountOfToolTracksForPage(toolTrack);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -64,8 +66,7 @@ public class ToolTrackServiceImpl
 	}
 
 	@Override
-	public Map<String, Object> updateToolTrack(
-			ToolTrack toolTrack) {
+	public Map<String, Object> updateToolTrack(ToolTrack toolTrack) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = toolTrackMapper
 				.updateByPrimaryKeySelective(toolTrack);
@@ -80,17 +81,14 @@ public class ToolTrackServiceImpl
 	}
 
 	@Override
-	public ToolTrack selectToolTracksForObject(
-			ToolTrack toolTrack) {
-		return toolTrackMapper
-				.selectToolTracksForObject(toolTrack);
+	public ToolTrack selectToolTracksForObject(ToolTrack toolTrack) {
+		return toolTrackMapper.selectToolTracksForObject(toolTrack);
 	}
 
 	@Override
 	public List<ToolTrack> selectToolTracksForList(
 			ToolTrack toolTrack) {
-		return toolTrackMapper
-				.selectToolTracksForList(toolTrack);
+		return toolTrackMapper.selectToolTracksForList(toolTrack);
 	}
 
 }
