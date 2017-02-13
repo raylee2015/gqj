@@ -31,7 +31,7 @@ public class DemandPlanServiceImpl
 	@Override
 	public Map<String, Object> deleteDemandPlansAndDetails(
 			DemandPlan demandPlan) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = demandPlanDetailService
 				.deleteByDemandPlan(demandPlan);
 		bool = demandPlanMapper

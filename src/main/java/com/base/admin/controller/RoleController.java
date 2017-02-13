@@ -74,7 +74,7 @@ public class RoleController {
 	public Map<String, Object> delRoles(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String roleIds = request.getParameter("ROLE_IDS");
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		Role role = new Role();
 		role.setIds(roleIds);
 		int bool = roleService.deleteByPrimaryKeys(role);

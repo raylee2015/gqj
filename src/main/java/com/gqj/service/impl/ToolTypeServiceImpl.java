@@ -23,7 +23,7 @@ public class ToolTypeServiceImpl
 	@Override
 	public Map<String, Object> deleteToolTypes(
 			ToolType toolType) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = toolTypeMapper
 				.deleteByPrimaryKeys(toolType);
 		if (bool == 0) {

@@ -19,7 +19,7 @@ public class ParamServiceImpl implements IParamService {
 
 	@Override
 	public Map<String, Object> deleteParams(Param param) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = paramMapper.deleteByPrimaryKeys(param);
 		if (bool == 0) {
 			map.put("success", false);
@@ -33,7 +33,7 @@ public class ParamServiceImpl implements IParamService {
 
 	@Override
 	public Map<String, Object> addNewParam(Param param) {
-		Map<String, Object> result = new HashMap<>();
+		Map<String, Object> result = new HashMap<String, Object>();
 		if (paramMapper.queryParamsForList(param).size() > 0) {
 			result.put("success", false);
 			result.put("msg", "系统已经存在同样的参数键与参数值");

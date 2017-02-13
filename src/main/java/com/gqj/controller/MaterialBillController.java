@@ -330,7 +330,7 @@ public class MaterialBillController extends BaseController {
 				.getParameter("BASE_TOOL_MODEL");
 		String baseToolSpec = request
 				.getParameter("BASE_TOOL_SPEC");
-		HashMap<String, Object> param = new HashMap<>();
+		HashMap<String, Object> param = new HashMap<String, Object>();
 		param.put("keyWord", keyWord);
 		param.put("currPage", page);
 		param.put("pageSize", rows);
@@ -490,7 +490,7 @@ public class MaterialBillController extends BaseController {
 				.getParameter("BASE_TOOL_MODEL");
 		String baseToolSpec = request
 				.getParameter("BASE_TOOL_SPEC");
-		HashMap<String, Object> param = new HashMap<>();
+		HashMap<String, Object> param = new HashMap<String, Object>();
 		param.put("keyWord", keyWord);
 		param.put("currPage", page);
 		param.put("pageSize", rows);
@@ -518,7 +518,7 @@ public class MaterialBillController extends BaseController {
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String billType = request.getParameter("BILL_TYPE");
-		HashMap<String, Object> param = new HashMap<>();
+		HashMap<String, Object> param = new HashMap<String, Object>();
 		String rule1 = "";
 		if ("0".equals(billType)) {
 			rule1 = "入库-";

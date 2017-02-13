@@ -34,7 +34,7 @@ public class BatchServiceImpl implements IBatchService {
 
 	@Override
 	public Map<String, Object> deleteBatchs(Batch batch) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		String batchIds = batch.getIds();
 		String[] batchId_arr = batchIds.split(",");
 		int bool = 1;
@@ -72,7 +72,7 @@ public class BatchServiceImpl implements IBatchService {
 
 	@Override
 	public Map<String, Object> confirmBatchs(Batch batch) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		String batchIds = batch.getIds();
 		String[] batchId_arr = batchIds.split(",");
 		int bool = 1;
@@ -176,7 +176,8 @@ public class BatchServiceImpl implements IBatchService {
 			resultMap = toolService.checkInTool(batch, tool, toolTrack);
 		}
 		if (resultMap != null) {
-			success = (boolean) resultMap.get("success");
+			success = Boolean
+					.parseBoolean(resultMap.get("success").toString());
 			msg = resultMap.get("msg").toString();
 		}
 		Map<String, Object> map = new HashMap<String, Object>();

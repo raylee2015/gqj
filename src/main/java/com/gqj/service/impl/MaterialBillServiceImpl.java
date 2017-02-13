@@ -31,7 +31,7 @@ public class MaterialBillServiceImpl
 	@Override
 	public Map<String, Object> deleteMaterialBillsAndDetails(
 			MaterialBill materialBill) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = materialBillDetailService
 				.deleteByMaterialBill(materialBill);
 		bool = materialBillMapper

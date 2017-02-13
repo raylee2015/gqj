@@ -22,7 +22,7 @@ public class DeptServiceImpl implements IDeptService {
 
 	@Override
 	public Map<String, Object> deleteDepts(Dept dept) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = deptMapper.deleteByPrimaryKeys(dept);
 		bool = deptMapper.updataInnerData();
 		if (bool == 0) {

@@ -21,7 +21,7 @@ public class PositionServiceImpl
 	@Override
 	public Map<String, Object> deletePositions(
 			Position position) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = positionMapper
 				.deleteByPrimaryKeys(position);
 		if (bool == 0) {

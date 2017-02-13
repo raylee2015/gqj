@@ -23,7 +23,7 @@ public class ManufacturerServiceImpl
 	@Override
 	public Map<String, Object> deleteManufacturers(
 			Manufacturer manufacturer) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = manufacturerMapper
 				.deleteByPrimaryKeys(manufacturer);
 		if (bool == 0) {

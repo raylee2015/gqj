@@ -248,7 +248,7 @@ public class RoleUserController {
 			@RequestParam(value = "USER_IDS") String userIds,
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		// int bool = userService.deleteByPrimaryKeys(userIds.split(","));
 		// if (bool == 0) {
 		// map.put("success", false);

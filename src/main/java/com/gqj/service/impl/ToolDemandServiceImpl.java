@@ -21,7 +21,7 @@ public class ToolDemandServiceImpl
 	@Override
 	public Map<String, Object> deleteToolDemands(
 			ToolDemand toolDemand) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = toolDemandMapper
 				.deleteByPrimaryKeys(toolDemand);
 		if (bool == 0) {

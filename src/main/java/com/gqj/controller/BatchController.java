@@ -374,7 +374,7 @@ public class BatchController extends BaseController {
 		String manufacturerId = request.getParameter("MANUFACTURER_ID");
 		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
 		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
-		HashMap<String, Object> param = new HashMap<>();
+		HashMap<String, Object> param = new HashMap<String, Object>();
 		param.put("keyWord", keyWord);
 		param.put("currPage", page);
 		param.put("pageSize", rows);
@@ -496,7 +496,7 @@ public class BatchController extends BaseController {
 	public String queryNewBatchCode(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String batchType = request.getParameter("BATCH_TYPE");
-		HashMap<String, Object> param = new HashMap<>();
+		HashMap<String, Object> param = new HashMap<String, Object>();
 		String rule1 = "";
 		if ("0".equals(batchType)) {
 			rule1 = "入库-";

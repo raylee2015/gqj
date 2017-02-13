@@ -32,7 +32,7 @@ public class JacksonDemo {
 		sample2.setUserName("lyc");
 		sample2.setUserCode("1231");
 
-		List<Sample> Samples = new ArrayList<>();
+		List<Sample> Samples = new ArrayList<Sample>();
 		Samples.add(sample1);
 		Samples.add(sample2);
 

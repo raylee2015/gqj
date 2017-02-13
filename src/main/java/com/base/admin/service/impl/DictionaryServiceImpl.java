@@ -15,8 +15,7 @@ import com.base.admin.service.IDictionaryService;
 import net.sf.json.JSONArray;
 
 @Service
-public class DictionaryServiceImpl
-		implements IDictionaryService {
+public class DictionaryServiceImpl implements IDictionaryService {
 
 	@Autowired
 	private DictionaryMapper dictionaryMapper;
@@ -24,9 +23,8 @@ public class DictionaryServiceImpl
 	@Override
 	public Map<String, Object> deleteDictionaries(
 			Dictionary dictionary) {
-		Map<String, Object> map = new HashMap<>();
-		int bool = dictionaryMapper
-				.deleteByPrimaryKeys(dictionary);
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = dictionaryMapper.deleteByPrimaryKeys(dictionary);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");
@@ -38,11 +36,9 @@ public class DictionaryServiceImpl
 	}
 
 	@Override
-	public Map<String, Object> addNewDictionary(
-			Dictionary dictionary) {
-		Map<String, Object> result = new HashMap<>();
-		if (queryDictionarysForList(dictionary)
-				.size() > 0) {
+	public Map<String, Object> addNewDictionary(Dictionary dictionary) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		if (queryDictionarysForList(dictionary).size() > 0) {
 			result.put("success", false);
 			result.put("msg", "系统已经存在同样的字典代码与字典值");
 		} else {
@@ -63,8 +59,7 @@ public class DictionaryServiceImpl
 	@Override
 	public List<Dictionary> queryDictionarysForList(
 			Dictionary dictionary) {
-		return dictionaryMapper
-				.queryDictionarysForList(dictionary);
+		return dictionaryMapper.queryDictionarysForList(dictionary);
 	}
 
 	@Override
@@ -81,8 +76,7 @@ public class DictionaryServiceImpl
 	}
 
 	@Override
-	public Map<String, Object> updateDictionary(
-			Dictionary dictionary) {
+	public Map<String, Object> updateDictionary(Dictionary dictionary) {
 		int bool = dictionaryMapper
 				.updateByPrimaryKeySelective(dictionary);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -100,18 +94,17 @@ public class DictionaryServiceImpl
 	public Map<String, List<Map<String, Object>>> queryDictionarysForCache() {
 		List<Map<String, Object>> dicList = dictionaryMapper
 				.queryDictionarysForCache();
-		Map<String, List<Map<String, Object>>> result = new HashMap<>();
+		Map<String, List<Map<String, Object>>> result = new HashMap<String, List<Map<String, Object>>>();
 		for (int i = 0; i < dicList.size(); i++) {
 			Map<String, Object> item = dicList.get(i);
-			String dicCode = item.get("DIC_CODE")
-					.toString();
+			String dicCode = item.get("DIC_CODE").toString();
 			if (result.containsKey(dicCode)) {
 				List<Map<String, Object>> listOfResult = result
 						.get(dicCode);
 				listOfResult.add(item);
 				result.put(dicCode, listOfResult);
 			} else {
-				List<Map<String, Object>> newList = new ArrayList<>();
+				List<Map<String, Object>> newList = new ArrayList<Map<String, Object>>();
 				newList.add(item);
 				result.put(dicCode, newList);
 			}

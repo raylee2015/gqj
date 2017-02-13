@@ -217,7 +217,7 @@ public class ToolInventoryController extends BaseController {
 		String manufacturerId = request.getParameter("MANUFACTURER_ID");
 		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
 		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
-		HashMap<String, Object> param = new HashMap<>();
+		HashMap<String, Object> param = new HashMap<String, Object>();
 		param.put("storeId", storeId);
 		param.put("posId", posId);
 		param.put("keyWord", keyWord);

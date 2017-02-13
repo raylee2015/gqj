@@ -260,7 +260,7 @@ public class ToolServiceImpl implements IToolService {
 
 	@Override
 	public Map<String, Object> deleteTools(Tool tool) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = toolMapper.deleteByPrimaryKeys(tool);
 		if (bool == 0) {
 			map.put("success", false);
@@ -294,7 +294,7 @@ public class ToolServiceImpl implements IToolService {
 			bool = toolTrackMapper.deleteByPrimaryKeys(toolTrack);
 		}
 
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 
 		if (bool == 0) {
 			map.put("success", false);

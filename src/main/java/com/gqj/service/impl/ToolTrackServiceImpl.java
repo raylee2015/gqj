@@ -20,7 +20,7 @@ public class ToolTrackServiceImpl implements IToolTrackService {
 
 	@Override
 	public Map<String, Object> deleteToolTracks(ToolTrack toolTrack) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = toolTrackMapper.deleteByPrimaryKeys(toolTrack);
 		if (bool == 0) {
 			map.put("success", false);

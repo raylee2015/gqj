@@ -20,7 +20,7 @@ public class StorageServiceImpl implements IStorageService {
 	@Override
 	public Map<String, Object> deleteStorages(
 			Storage storage) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = storageMapper
 				.deleteByPrimaryKeys(storage);
 		if (bool == 0) {

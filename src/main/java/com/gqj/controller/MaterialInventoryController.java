@@ -152,7 +152,7 @@ public class MaterialInventoryController extends BaseController {
 		String rows = request.getParameter("rows");
 		String posId = request.getParameter("POS_ID");
 		String baseToolId = request.getParameter("BASE_TOOL_ID");
-		HashMap<String, Object> param = new HashMap<>();
+		HashMap<String, Object> param = new HashMap<String, Object>();
 		param.put("currPage", page);
 		param.put("pageSize", rows);
 		param.put("baseToolId", baseToolId);
@@ -217,7 +217,7 @@ public class MaterialInventoryController extends BaseController {
 		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
 		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
 		String deptType = request.getParameter("DEPT_TYPE");
-		HashMap<String, Object> param = new HashMap<>();
+		HashMap<String, Object> param = new HashMap<String, Object>();
 		param.put("currPage", page);
 		param.put("pageSize", rows);
 		param.put("keyWord", keyWord);

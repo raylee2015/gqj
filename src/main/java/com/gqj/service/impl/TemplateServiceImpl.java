@@ -25,7 +25,7 @@ public class TemplateServiceImpl
 	@Override
 	public Map<String, Object> deleteTemplatesAndDetails(
 			Template template) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = templateDetailService
 				.deleteByTemplate(template);
 		bool = templateMapper.deleteByPrimaryKeys(template);

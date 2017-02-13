@@ -20,7 +20,7 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public Map<String, Object> deleteByPrimaryKeys(
 			String[] userIds) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = userMapper.deleteByPrimaryKeys(userIds);
 		if (bool == 0) {
 			map.put("success", false);

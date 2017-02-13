@@ -19,7 +19,7 @@ public class BaseToolServiceImpl implements IBaseToolService {
 
 	@Override
 	public Map<String, Object> deleteBaseTools(BaseTool baseTool) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = baseToolMapper.deleteByPrimaryKeys(baseTool);
 		if (bool == 0) {
 			map.put("success", false);
