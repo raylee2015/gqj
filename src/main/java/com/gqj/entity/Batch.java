@@ -16,6 +16,7 @@ public class Batch extends Base {
 	private Long batchDeptId;
 
 	private Long batchCreateUserId;
+	private Long batchReturnUserId;
 
 	private Date batchCreateTime;
 
@@ -31,6 +32,14 @@ public class Batch extends Base {
 
 	private String batchRemark;
 
+	public Long getBatchReturnUserId() {
+		return batchReturnUserId;
+	}
+
+	public void setBatchReturnUserId(Long batchReturnUserId) {
+		this.batchReturnUserId = batchReturnUserId;
+	}
+
 	public Long getBatchId() {
 		return batchId;
 	}
@@ -44,8 +53,7 @@ public class Batch extends Base {
 	}
 
 	public void setBatchCode(String batchCode) {
-		this.batchCode = batchCode == null ? null
-				: batchCode.trim();
+		this.batchCode = batchCode == null ? null : batchCode.trim();
 	}
 
 	public Long getBatchType() {
@@ -76,8 +84,7 @@ public class Batch extends Base {
 		return batchCreateUserId;
 	}
 
-	public void setBatchCreateUserId(
-			Long batchCreateUserId) {
+	public void setBatchCreateUserId(Long batchCreateUserId) {
 		this.batchCreateUserId = batchCreateUserId;
 	}
 
@@ -93,8 +100,7 @@ public class Batch extends Base {
 		return batchConfirmUserId;
 	}
 
-	public void setBatchConfirmUserId(
-			Long batchConfirmUserId) {
+	public void setBatchConfirmUserId(Long batchConfirmUserId) {
 		this.batchConfirmUserId = batchConfirmUserId;
 	}
 

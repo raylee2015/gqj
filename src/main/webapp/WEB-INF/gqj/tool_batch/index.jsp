@@ -228,6 +228,11 @@
 					}
 				}
 
+				if (batchType == 6) {
+					$('#datagridForBatch').datagrid('showColumn',
+							'BATCH_RETURN_USER_NAME');
+				}
+
 				var addToolBtnName = "";
 				if (batchType == 0) {
 					addToolBtnName = "扫描入库";
@@ -352,6 +357,11 @@
 									}, {
 										field : 'BATCH_TAKE_TIME',
 										title : '领用时间',
+										width : 100,
+										hidden : true
+									}, {
+										field : 'BATCH_RETURN_USER_NAME',
+										title : '归还人',
 										width : 100,
 										hidden : true
 									} ] ],

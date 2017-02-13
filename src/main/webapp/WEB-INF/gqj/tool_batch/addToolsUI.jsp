@@ -36,6 +36,10 @@
 	$(document).ready(
 			function() {
 				closeCache();
+				initDataGridForUser();
+				registerKeyPressForTextInput('keyWordForUserTextInput',
+						queryUserPagesForSearch);
+
 				initDataGridForStorage();
 				registerKeyPressForTextInput('keyWordForStorageTextInput',
 						queryStoragePagesForSearch);
@@ -121,6 +125,26 @@
 		dataGridLoadData('datagridForStorage', result);
 	}
 
+	//用在点击查询按钮的时候
+	function queryUserPagesForSearch() {
+		queryUsers();
+	}
+
+	//查询
+	function queryUsers() {
+		var params = {
+			keyWord : getTextBoxValue('keyWordForUserTextInput'),
+			page : 1,
+			rows : getPageSizeOfDataGrid('datagridForUser')
+		};
+		query(params, 'queryUsersPage.do', successFunctionForQueryUsers);
+	}
+
+	//回调函数，查询成功后调用
+	function successFunctionForQueryUsers(result) {
+		dataGridLoadData('datagridForUser', result);
+	}
+
 	//初始化列表元素
 	function initDataGridForStorage() {
 		$('#datagridForStorage').datagrid({
@@ -144,6 +168,40 @@
 			} ] ],
 			onBeforeLoad : function(param) {
 				param.keyWord = getTextBoxValue('keyWordForStorageTextInput');
+			},
+			onLoadError : function() {
+				errorFunctionForQuery();
+			}
+		});
+	}
+
+	//初始化列表元素
+	function initDataGridForUser() {
+		$('#datagridForUser').datagrid({
+			url : 'queryUsersPage.do',
+			idField : 'USER_ID',
+			rownumbers : true,
+			toolbar : '#toolbarForUser',
+			pagination : true,
+			pageSize : 30,
+			pageNumber : 1,
+			checkOnSelect : false,
+			fit : true,
+			method : 'get',
+			columns : [ [ {
+				field : 'ck',
+				checkbox : true
+			}, {
+				field : 'USER_NAME',
+				title : '人员名称',
+				width : 150
+			}, {
+				field : 'DEPT_NAME',
+				title : '所属部门',
+				width : 150
+			} ] ],
+			onBeforeLoad : function(param) {
+				param.keyWord = getTextBoxValue('keyWordForUserTextInput');
 			},
 			onLoadError : function() {
 				errorFunctionForQuery();
@@ -341,6 +399,7 @@
 		$('#choosePositionPanel').panel('collapse');
 		$('#chooseStoragePanel').panel('collapse');
 		$('#chooseDeptPanel').panel('collapse');
+		$('#chooseUserPanel').panel('collapse');
 	}
 
 	//打开选择工器具类型版面
@@ -365,6 +424,10 @@
 		$('#choosePositionPanel').panel('expand');
 		$('#chooseStoragePanel').panel('collapse');
 		$('#chooseDeptPanel').panel('collapse');
+		var batchType = getTextBoxValue('batchTypeTextInput');
+		if (batchType == 6) {
+			$('#chooseUserPanel').panel('collapse');
+		}
 	}
 
 	//打开选择仓库版面
@@ -374,6 +437,20 @@
 		$('#choosePositionPanel').panel('collapse');
 		$('#chooseStoragePanel').panel('expand');
 		$('#chooseDeptPanel').panel('collapse');
+		var batchType = getTextBoxValue('batchTypeTextInput');
+		if (batchType == 6) {
+			$('#chooseUserPanel').panel('collapse');
+		}
+	}
+
+	//打开选择仓库版面
+	function openChooseUserPanel() {
+		$('#formPanel').panel('collapse');
+		$('#chooseBaseToolPanel').panel('collapse');
+		$('#choosePositionPanel').panel('collapse');
+		$('#chooseStoragePanel').panel('collapse');
+		$('#chooseDeptPanel').panel('collapse');
+		$('#chooseUserPanel').panel('expand');
 	}
 
 	//打开选择领用部门版面
@@ -437,6 +514,10 @@
 			storageName = getTextBoxValue('storageNameTextInput');
 			positionName = getTextBoxValue('positionNameTextInput');
 		}
+		var batchReturnUserId = '';
+		if (batchType == 6) {
+			batchReturnUserId = getTextBoxValue('userIdTextInput');
+		}
 		var batchTakeDeptId = '';
 		if (batchType == 1 || batchType == 2) {
 			batchTakeDeptId = getTextBoxValue('deptIdTextInput');
@@ -447,6 +528,7 @@
 			BATCH_TYPE : batchType,
 			STORE_ID : storeId,
 			POS_ID : positionId,
+			BATCH_RETURN_USER_ID : batchReturnUserId,
 			STORE_NAME : storageName,
 			POS_NAME : positionName,
 			BASE_TOOL_ID : baseToolId,
@@ -577,6 +659,23 @@
 		});
 		openFormPanel();
 	}
+
+	function chooseUser() {
+		var selectedItems = $('#datagridForUser').datagrid('getSelections');
+		if (selectedItems.length == 0) {
+			alert("请选择人员");
+			return;
+		} else if (selectedItems.length > 1) {
+			alert("只能选择一个人员");
+			return;
+		}
+		setTextBoxText('userIdTextInput', selectedItems[0].USER_ID);
+		setTextBoxValue('userIdTextInput', selectedItems[0].USER_ID);
+		$('#userNameBtn').linkbutton({
+			text : selectedItems[0].USER_NAME,
+		});
+		openFormPanel();
+	}
 </script>
 </head>
 <body>
@@ -597,7 +696,8 @@
 				id="baseToolModelTextInput" class="easyui-textbox" /><input
 				id="baseToolSpecTextInput" class="easyui-textbox" /><input
 				id="deptIdTextInput" class="easyui-textbox" /> <input
-				id="baseToolManNameTextInput" class="easyui-textbox" />
+				id="baseToolManNameTextInput" class="easyui-textbox" /> <input
+				id="userIdTextInput" class="easyui-textbox" />
 		</div>
 		<table style="width: 100%">
 			<tr>
@@ -639,7 +739,16 @@
 					data-options="required:true,prompt:'选择领用部门'"
 					onclick="openChooseDeptPanel()" style="width: 100%; height: 32px">选择领用部门</a></td>
 			</tr>
-
+			<%
+				}
+				if ("6".equals(batchType)) {
+			%>
+			<tr>
+				<td width="18%">选择归还人:</td>
+				<td><a href="#" id="userNameBtn" class="easyui-linkbutton"
+					data-options="required:true,prompt:'选择归还人'"
+					onclick="openChooseUserPanel()" style="width: 100%; height: 32px">选择归还人</a></td>
+			</tr>
 			<%
 				}
 				if ("0".equals(batchType)) {
@@ -799,6 +908,26 @@
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
 						onclick="queryStoragePagesForSearch()">查询</a>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div id="chooseUserPanel" class="easyui-panel" data-options="fit:true">
+		<table id="datagridForUser" class="easyui-datagrid">
+		</table>
+		<div id="toolbarForUser">
+			<table style="width: 100%">
+				<tr>
+					<td><a class="easyui-linkbutton" iconCls="icon-ok"
+						href="javascript:void(0)" onclick="chooseUser()">选择</a> <a
+						class="easyui-linkbutton" iconCls="icon-cancel"
+						href="javascript:void(0)" onclick="openFormPanel()">返回</a></td>
+					<td align="right"><input id="keyWordForUserTextInput"
+						class="easyui-textbox"
+						data-options="prompt:'人员名称',validType:'length[0,25]'"
+						style="width: 200px"> <a href="#"
+						class="easyui-linkbutton" iconCls="icon-search"
+						onclick="queryUserPagesForSearch()">查询</a>
 				</tr>
 			</table>
 		</div>

@@ -30,7 +30,9 @@
 		BATCH_CONFIRM_USER_ID, BATCH_CONFIRM_TIME, BATCH_TAKE_DEPT_ID,
 		BATCH_TAKE_USER_ID, BATCH_TAKE_TIME, BATCH_REMARK,
 		BATCH_DEPT_NAME,BATCH_CREATE_USER_NAME,
-		BATCH_CONFIRM_USER_NAME,BATCH_TAKE_USER_NAME,BATCH_TAKE_DEPT_NAME
+		BATCH_CONFIRM_USER_NAME,BATCH_TAKE_USER_NAME,BATCH_TAKE_DEPT_NAME,
+		BATCH_RETURN_USER_ID,BATCH_RETURN_USER_NAME
+
 	</sql>
 	<select id="selectBatchsForObject" parameterType="com.gqj.entity.Batch"
 		resultMap="BaseResultMap">
@@ -161,6 +163,9 @@
 			<if test="batchRemark != null">
 				BATCH_REMARK,
 			</if>
+			<if test="batchReturnUserId != null">
+				BATCH_RETURN_USER_ID,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="batchId != null">
@@ -202,6 +207,9 @@
 			<if test="batchRemark != null">
 				#{batchRemark,jdbcType=VARCHAR},
 			</if>
+			<if test="batchReturnUserId != null">
+				#{batchReturnUserId,jdbcType=DECIMAL},
+			</if>
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.Batch">
@@ -240,6 +248,10 @@
 			</if>
 			<if test="batchTakeUserId != null">
 				BATCH_TAKE_USER_ID = #{batchTakeUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchReturnUserId != null">
+				BATCH_RETURN_USER_ID =
+				#{batchReturnUserId,jdbcType=DECIMAL},
 			</if>
 			<if test="batchTakeTime != null">
 				BATCH_TAKE_TIME = #{batchTakeTime,jdbcType=TIMESTAMP},

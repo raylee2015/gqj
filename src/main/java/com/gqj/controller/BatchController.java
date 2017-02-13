@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.base.admin.entity.Dept;
+import com.base.admin.entity.User;
 import com.base.admin.service.IDeptService;
+import com.base.admin.service.IUserService;
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
 import com.base.util.DateStyle;
@@ -86,6 +88,8 @@ public class BatchController extends BaseController {
 		String batchCode = request.getParameter("BATCH_CODE");
 		String batchType = request.getParameter("BATCH_TYPE");
 		String storeId = request.getParameter("STORE_ID");
+		String batchReturnUserId = request
+				.getParameter("BATCH_RETURN_USER_ID");
 		String posId = request.getParameter("POS_ID");
 		String storeName = request.getParameter("STORE_NAME");
 		String posName = request.getParameter("POS_NAME");
@@ -123,6 +127,8 @@ public class BatchController extends BaseController {
 		batch.setBatchCreateTime(new Date());
 		batch.setBatchTakeDeptId(BaseUtil.strToLong(batchTakeDeptId));
 		batch.setBatchRemark(batchRemark);
+		batch.setBatchReturnUserId(
+				BaseUtil.strToLong(batchReturnUserId));
 		Tool tool = new Tool();
 		tool.setToolCode(toolCode);
 		if (storeId != null && storeId != "") {
@@ -565,6 +571,32 @@ public class BatchController extends BaseController {
 		storage.setStoreDeptId(storageDeptId);
 		storage.setKeyWord(keyWord);
 		return storageService.selectStoragesForPage(storage);
+	}
+
+	@Autowired
+	private IUserService userService;
+
+	/**
+	 * 分页查询用户列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryUsersPage.do")
+	@ResponseBody
+	public Map<String, Object> queryUsersPage(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String keyWord = request.getParameter("keyWord");
+		User user = new User();
+		user.setCurrPage(BaseUtil.strToInt(page));
+		user.setPageSize(BaseUtil.strToInt(rows));
+		user.setKeyWord(keyWord);
+		return userService.queryUsersForPage(user);
 	}
 
 	/**
