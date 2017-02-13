@@ -150,7 +150,7 @@ public class BatchController extends BaseController {
 			int month = (int) (Double.parseDouble(toolTestDateCircle)
 					* 12);
 			tool.setToolNextTestDate(DateUtil.addMonth(DateUtil
-					.StringToDate(toolRejectDate, DateStyle.YYYY_MM_DD),
+					.StringToDate(toolTestDate, DateStyle.YYYY_MM_DD),
 					month));
 		}
 		if (toolManufactureDate != null && toolManufactureDate != "") {
@@ -197,9 +197,12 @@ public class BatchController extends BaseController {
 					Double.parseDouble(toolTestDateCircle));
 			int month = (int) (Double.parseDouble(toolTestDateCircle)
 					* 12);
-			toolTrack.setToolNextTestDate(DateUtil.addMonth(DateUtil
-					.StringToDate(toolRejectDate, DateStyle.YYYY_MM_DD),
-					month));
+			toolTrack
+					.setToolNextTestDate(
+							DateUtil.addMonth(
+									DateUtil.StringToDate(toolTestDate,
+											DateStyle.YYYY_MM_DD),
+									month));
 		}
 		if (baseToolId != null && baseToolId != "") {
 			toolTrack.setBaseToolName(baseToolName);

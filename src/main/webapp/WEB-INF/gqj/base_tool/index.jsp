@@ -44,7 +44,7 @@
 	// 编辑窗口变小
 	function makeEditUISmaller() {
 		$('#editUIForBaseTool').panel('resize', {
-			height : 300
+			height : 330
 		});
 		$('#editUIForBaseTool').window('center');
 	}
@@ -52,7 +52,7 @@
 	//打开编辑窗口
 	function openAddUIForBaseTool() {
 		createModalDialog("editUIForBaseTool", "openEditUI.do?opType=add",
-				"添加工器具基础", 500, 300);
+				"添加工器具基础", 500, 330);
 		openEditUI('editUIForBaseTool');
 	}
 
@@ -61,7 +61,7 @@
 		var rowData = getRowDataOfSelfDataGrid('datagridForBaseTool', rowIndex);
 		var url = "openEditUI.do?opType=edit&rowIndex=" + rowIndex;
 		createModalDialog("editUIForBaseTool", url, ("修改工器具\""
-				+ rowData.BASE_TOOL_NAME + "\"的基础信息"), 500, 280);
+				+ rowData.BASE_TOOL_NAME + "\"的基础信息"), 500, 330);
 		openEditUI('editUIForBaseTool');
 	}
 
@@ -170,6 +170,10 @@
 										field : 'BASE_TOOL_REMARK',
 										title : '备注',
 										width : 150,
+									} , {
+										field : 'BASE_TOOL_EARTH_WIRE_NAME',
+										title : '是否地线',
+										width : 100,
 									} ] ],
 							onBeforeLoad : function(param) {
 								param.keyWord = getTextBoxValue('keyWordForBaseToolTextInput');

@@ -8,7 +8,7 @@ import com.base.admin.entity.Param;
 public interface ParamMapper {
 	List<Map<String, Object>> queryParamsForPage(Param param);
 
-	List<Map<String, Object>> queryParamsForList(Param param);
+	List<Param> queryParamsForList(Param param);
 
 	int queryCountOfParamsForPage(Param param);
 

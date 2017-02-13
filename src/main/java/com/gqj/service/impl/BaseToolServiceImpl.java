@@ -12,18 +12,15 @@ import com.gqj.entity.BaseTool;
 import com.gqj.service.IBaseToolService;
 
 @Service
-public class BaseToolServiceImpl
-		implements IBaseToolService {
+public class BaseToolServiceImpl implements IBaseToolService {
 
 	@Autowired
 	private BaseToolMapper baseToolMapper;
 
 	@Override
-	public Map<String, Object> deleteBaseTools(
-			BaseTool baseTool) {
+	public Map<String, Object> deleteBaseTools(BaseTool baseTool) {
 		Map<String, Object> map = new HashMap<>();
-		int bool = baseToolMapper
-				.deleteByPrimaryKeys(baseTool);
+		int bool = baseToolMapper.deleteByPrimaryKeys(baseTool);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");
@@ -35,8 +32,7 @@ public class BaseToolServiceImpl
 	}
 
 	@Override
-	public Map<String, Object> addNewBaseTool(
-			BaseTool baseTool) {
+	public Map<String, Object> addNewBaseTool(BaseTool baseTool) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = baseToolMapper.insertSelective(baseTool);
 		if (bool == 0) {
@@ -54,6 +50,11 @@ public class BaseToolServiceImpl
 			BaseTool baseTool) {
 		List<Map<String, Object>> baseTools = baseToolMapper
 				.selectBaseToolsForPage(baseTool);
+		for (Map<String, Object> item : baseTools) {
+			if ("1".equals(item.get("BASE_TOOL_EARTH_WIRE"))) {
+				item.put("BASE_TOOL_EARTH_WIRE_NAME", "是");
+			}
+		}
 		int count = baseToolMapper
 				.selectCountOfBaseToolsForPage(baseTool);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -68,8 +69,7 @@ public class BaseToolServiceImpl
 		List<Map<String, Object>> baseTools = baseToolMapper
 				.selectBaseToolsForPageWithMap(param);
 		int count = baseToolMapper
-				.selectCountOfBaseToolsForPageWithMap(
-						param);
+				.selectCountOfBaseToolsForPageWithMap(param);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", baseTools);
 		map.put("total", count);
@@ -77,11 +77,9 @@ public class BaseToolServiceImpl
 	}
 
 	@Override
-	public Map<String, Object> updateBaseTool(
-			BaseTool baseTool) {
+	public Map<String, Object> updateBaseTool(BaseTool baseTool) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = baseToolMapper
-				.updateByPrimaryKeySelective(baseTool);
+		int bool = baseToolMapper.updateByPrimaryKeySelective(baseTool);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -95,8 +93,7 @@ public class BaseToolServiceImpl
 	@Override
 	public Map<String, Object> selectBaseToolForObject(
 			BaseTool baseTool) {
-		return baseToolMapper
-				.selectBaseToolForObject(baseTool);
+		return baseToolMapper.selectBaseToolForObject(baseTool);
 	}
 
 }

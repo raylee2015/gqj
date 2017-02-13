@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.base.admin.service.IDictionaryService;
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
 import com.gqj.entity.BaseTool;
@@ -53,28 +54,27 @@ public class BaseToolController extends BaseController {
 	@RequestMapping("/addNewBaseTool.do")
 	@ResponseBody
 	public Map<String, Object> addNewBaseTool(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String baseToolDemandId = request
 				.getParameter("TOOL_DEMAND_ID");
 		String baseManId = request.getParameter("MAN_ID");
-		String baseToolModel = request
-				.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request
-				.getParameter("BASE_TOOL_SPEC");
+		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
+		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
 		String baseToolRemark = request
 				.getParameter("BASE_TOOL_REMARK");
-		String baseToolName = request
-				.getParameter("BASE_TOOL_NAME");
+		String baseToolName = request.getParameter("BASE_TOOL_NAME");
+		String baseToolEarthWire = request
+				.getParameter("BASE_TOOL_EARTH_WIRE");
 		BaseTool baseTool = new BaseTool();
 		baseTool.setBaseToolId(-1l);
 		baseTool.setBaseToolModel(baseToolModel);
 		baseTool.setBaseToolRemark(baseToolRemark);
 		baseTool.setBaseToolSpec(baseToolSpec);
 		baseTool.setManId(BaseUtil.strToLong(baseManId));
-		baseTool.setToolDemandId(
-				BaseUtil.strToLong(baseToolDemandId));
+		baseTool.setToolDemandId(BaseUtil.strToLong(baseToolDemandId));
 		baseTool.setBaseToolName(baseToolName);
+		baseTool.setBaseToolEarthWire(baseToolEarthWire);
 		return baseToolService.addNewBaseTool(baseTool);
 	}
 
@@ -88,11 +88,9 @@ public class BaseToolController extends BaseController {
 	 */
 	@RequestMapping("/delBaseTools.do")
 	@ResponseBody
-	public Map<String, Object> delBaseTools(
-			HttpServletRequest request,
+	public Map<String, Object> delBaseTools(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String baseToolIds = request
-				.getParameter("BASE_TOOL_IDS");
+		String baseToolIds = request.getParameter("BASE_TOOL_IDS");
 		BaseTool baseTool = new BaseTool();
 		baseTool.setIds(baseToolIds);
 		return baseToolService.deleteBaseTools(baseTool);
@@ -104,8 +102,7 @@ public class BaseToolController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(
-			HttpServletRequest request,
+	public ModelAndView openEditUI(HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView("/gqj/base_tool/editUI");
 	}
@@ -121,8 +118,8 @@ public class BaseToolController extends BaseController {
 	@RequestMapping("/queryBaseToolsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryBaseToolsPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -130,8 +127,7 @@ public class BaseToolController extends BaseController {
 		baseTool.setCurrPage(Integer.parseInt(page));
 		baseTool.setPageSize(Integer.parseInt(rows));
 		baseTool.setKeyWord(keyWord);
-		return baseToolService
-				.selectBaseToolsForPage(baseTool);
+		return baseToolService.selectBaseToolsForPage(baseTool);
 	}
 
 	/**
@@ -145,8 +141,8 @@ public class BaseToolController extends BaseController {
 	@RequestMapping("/queryManufacturersPage.do")
 	@ResponseBody
 	public Map<String, Object> queryManufacturersPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -169,21 +165,18 @@ public class BaseToolController extends BaseController {
 	@RequestMapping("/queryToolDemandsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryToolDemandsPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
-		String toolTypeId = request
-				.getParameter("TOOL_TYPE_ID");
+		String toolTypeId = request.getParameter("TOOL_TYPE_ID");
 		ToolDemand toolDemand = new ToolDemand();
-		toolDemand
-				.setTypeId(BaseUtil.strToLong(toolTypeId));
+		toolDemand.setTypeId(BaseUtil.strToLong(toolTypeId));
 		toolDemand.setCurrPage(Integer.parseInt(page));
 		toolDemand.setPageSize(Integer.parseInt(rows));
 		toolDemand.setKeyWord(keyWord);
-		return toolDemandService
-				.selectToolDemandsForPage(toolDemand);
+		return toolDemandService.selectToolDemandsForPage(toolDemand);
 	}
 
 	/**
@@ -195,11 +188,10 @@ public class BaseToolController extends BaseController {
 	 */
 	@RequestMapping("/queryToolDemandTypeDropList.do")
 	@ResponseBody
-	public void queryToolDemandTypeDropList(
-			HttpServletRequest request,
+	public void queryToolDemandTypeDropList(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter().print(toolTypeService
-				.selectToolTypesForList(new ToolType()));
+		response.getWriter().print(
+				toolTypeService.selectToolTypesForList(new ToolType()));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -225,32 +217,49 @@ public class BaseToolController extends BaseController {
 	@RequestMapping("/updateBaseTool.do")
 	@ResponseBody
 	public Map<String, Object> updateBaseTool(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String baseToolId = request
-				.getParameter("BASE_TOOL_ID");
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String baseToolId = request.getParameter("BASE_TOOL_ID");
 		String baseToolDemandId = request
 				.getParameter("TOOL_DEMAND_ID");
 		String baseManId = request.getParameter("MAN_ID");
-		String baseToolModel = request
-				.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request
-				.getParameter("BASE_TOOL_SPEC");
+		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
+		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
 		String baseToolRemark = request
 				.getParameter("BASE_TOOL_REMARK");
-		String baseToolName = request
-				.getParameter("BASE_TOOL_NAME");
+		String baseToolName = request.getParameter("BASE_TOOL_NAME");
+		String baseToolEarthWire = request
+				.getParameter("BASE_TOOL_EARTH_WIRE");
 		BaseTool baseTool = new BaseTool();
-		baseTool.setBaseToolId(
-				BaseUtil.strToLong(baseToolId));
+		baseTool.setBaseToolId(BaseUtil.strToLong(baseToolId));
 		baseTool.setBaseToolModel(baseToolModel);
 		baseTool.setBaseToolRemark(baseToolRemark);
 		baseTool.setBaseToolSpec(baseToolSpec);
 		baseTool.setManId(BaseUtil.strToLong(baseManId));
-		baseTool.setToolDemandId(
-				BaseUtil.strToLong(baseToolDemandId));
+		baseTool.setToolDemandId(BaseUtil.strToLong(baseToolDemandId));
 		baseTool.setBaseToolName(baseToolName);
+		baseTool.setBaseToolEarthWire(baseToolEarthWire);
 		return baseToolService.updateBaseTool(baseTool);
+	}
+
+	@Autowired
+	private IDictionaryService dictionaryService;
+
+	/**
+	 * 查询下拉列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryEarthWireFlagDropList.do")
+	@ResponseBody
+	public void queryEarthWireFlagDropList(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter().print(
+				dictionaryService.getDictionarysByDicCode("YESORNO"));
+		response.getWriter().flush();
+		response.getWriter().close();
 	}
 
 }

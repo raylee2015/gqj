@@ -12,7 +12,7 @@
 		PARAM_ID, PARAM_KEY, PARAM_VALUE, PARAM_REMARK, MENU_ID
 	</sql>
 	<select id="queryParamsForList" parameterType="com.base.admin.entity.Param"
-		resultType="java.util.HashMap">
+		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from BASE_PARAM

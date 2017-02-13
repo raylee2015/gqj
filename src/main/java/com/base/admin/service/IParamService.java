@@ -11,6 +11,8 @@ public interface IParamService {
 
 	Map<String, Object> updateParam(Param param);
 
-	Map<String, Object>  queryParamsForPage(Param param);
+	Map<String, Object> queryParamsForPage(Param param);
+
+	String queryParamsForMap(String paramKey);
 
 }

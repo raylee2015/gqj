@@ -13,7 +13,8 @@
 	<sql id="Base_Column_List">
 		BASE_TOOL_ID, BASE_TOOL_TYPE_ID, TOOL_DEMAND_ID, MAN_ID,
 		BASE_TOOL_MODEL, BASE_TOOL_SPEC,
-		BASE_TOOL_REMARK,BASE_TOOL_TYPE_NAME,BASE_TOOL_NAME,BASE_TOOL_MANUFACTURER_NAME
+		BASE_TOOL_REMARK,BASE_TOOL_TYPE_NAME,BASE_TOOL_NAME,
+		BASE_TOOL_MANUFACTURER_NAME,BASE_TOOL_EARTH_WIRE
 	</sql>
 	<select id="selectBaseToolForObject" parameterType="com.gqj.entity.BaseTool"
 		resultType="java.util.HashMap">
@@ -74,6 +75,9 @@
 			<if test="manufacturerId != null and manufacturerId != ''">
 				AND MAN_ID = #{manufacturerId}
 			</if>
+			<if test="baseToolEarthWire != null and baseToolEarthWire != ''">
+				AND BASE_TOOL_EARTH_WIRE = #{baseToolEarthWire}
+			</if>
 		</where>
 		order by BASE_TOOL_ID DESC
 		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
@@ -98,6 +102,9 @@
 			</if>
 			<if test="manufacturerId != null and manufacturerId != ''">
 				AND MAN_ID = #{manufacturerId}
+			</if>
+			<if test="baseToolEarthWire != null and baseToolEarthWire != ''">
+				AND BASE_TOOL_EARTH_WIRE = #{baseToolEarthWire}
 			</if>
 		</where>
 	</select>
@@ -130,6 +137,9 @@
 			<if test="baseToolName != null">
 				BASE_TOOL_NAME,
 			</if>
+			<if test="baseToolEarthWire != null">
+				BASE_TOOL_EARTH_WIRE,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="baseToolId != null">
@@ -153,6 +163,9 @@
 			<if test="baseToolName != null">
 				#{baseToolName,jdbcType=VARCHAR},
 			</if>
+			<if test="baseToolEarthWire != null">
+				#{baseToolEarthWire,jdbcType=VARCHAR},
+			</if>
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.BaseTool">
@@ -175,6 +188,9 @@
 			</if>
 			<if test="baseToolName != null">
 				BASE_TOOL_NAME = #{baseToolName,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolEarthWire != null">
+				BASE_TOOL_EARTH_WIRE = #{baseToolEarthWire,jdbcType=VARCHAR},
 			</if>
 		</set>
 		where BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL}

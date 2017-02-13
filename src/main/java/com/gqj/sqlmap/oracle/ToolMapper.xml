@@ -109,6 +109,18 @@
 				and TOOL_DEPT_ID =
 				#{toolDeptId,jdbcType=DECIMAL}
 			</if>
+			<if test="toolStatus != null">
+				and TOOL_STATUS =
+				#{toolStatus,jdbcType=DECIMAL}
+			</if>
+			<if test="overTestDays != null">
+				and to_date(#{overTestDays},'yyyy-mm-dd') >
+				TOOL_NEXT_TEST_DATE
+			</if>
+			<if test="overRejectDays != null">
+				and to_date(#{overRejectDays},'yyyy-mm-dd') >
+				TOOL_REJECT_DATE
+			</if>
 		</where>
 		order by TOOL_ID
 		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
@@ -147,6 +159,18 @@
 			<if test="toolDeptId != null">
 				and TOOL_DEPT_ID =
 				#{toolDeptId,jdbcType=DECIMAL}
+			</if>
+			<if test="toolStatus != null">
+				and TOOL_STATUS =
+				#{toolStatus,jdbcType=DECIMAL}
+			</if>
+			<if test="overTestDays != null">
+				and to_date(#{overTestDays},'yyyy-mm-dd') >
+				TOOL_NEXT_TEST_DATE
+			</if>
+			<if test="overRejectDays != null">
+				and to_date(#{overRejectDays},'yyyy-mm-dd') >
+				TOOL_REJECT_DATE
 			</if>
 		</where>
 	</select>

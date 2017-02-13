@@ -17,6 +17,16 @@ public class BaseTool extends Base {
 
 	private String baseToolName;
 
+	private String baseToolEarthWire;
+
+	public String getBaseToolEarthWire() {
+		return baseToolEarthWire;
+	}
+
+	public void setBaseToolEarthWire(String baseToolEarthWire) {
+		this.baseToolEarthWire = baseToolEarthWire;
+	}
+
 	public String getBaseToolName() {
 		return baseToolName;
 	}

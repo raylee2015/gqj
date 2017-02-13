@@ -18,8 +18,7 @@ public class ParamServiceImpl implements IParamService {
 	private ParamMapper paramMapper;
 
 	@Override
-	public Map<String, Object> deleteParams(
-			Param param) {
+	public Map<String, Object> deleteParams(Param param) {
 		Map<String, Object> map = new HashMap<>();
 		int bool = paramMapper.deleteByPrimaryKeys(param);
 		if (bool == 0) {
@@ -33,16 +32,13 @@ public class ParamServiceImpl implements IParamService {
 	}
 
 	@Override
-	public Map<String, Object> addNewParam(
-			Param param) {
+	public Map<String, Object> addNewParam(Param param) {
 		Map<String, Object> result = new HashMap<>();
-		if (paramMapper.queryParamsForList(param)
-				.size() > 0) {
+		if (paramMapper.queryParamsForList(param).size() > 0) {
 			result.put("success", false);
 			result.put("msg", "系统已经存在同样的参数键与参数值");
 		} else {
-			int resultOfInsert = paramMapper
-					.insertSelective(param);
+			int resultOfInsert = paramMapper.insertSelective(param);
 			if (resultOfInsert == 0) {
 				result.put("success", false);
 				result.put("msg", "保存失败，请联系系统管理员");
@@ -56,12 +52,10 @@ public class ParamServiceImpl implements IParamService {
 	}
 
 	@Override
-	public Map<String, Object> queryParamsForPage(
-			Param param) {
+	public Map<String, Object> queryParamsForPage(Param param) {
 		List<Map<String, Object>> params = paramMapper
 				.queryParamsForPage(param);
-		int count = paramMapper
-				.queryCountOfParamsForPage(param);
+		int count = paramMapper.queryCountOfParamsForPage(param);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", params);
 		map.put("total", count);
@@ -69,11 +63,23 @@ public class ParamServiceImpl implements IParamService {
 	}
 
 	@Override
-	public Map<String, Object> updateParam(
-			Param param) {
+	public String queryParamsForMap(String paramKey) {
+		List<Param> params = paramMapper.queryParamsForList(null);
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = paramMapper
-				.updateByPrimaryKeySelective(param);
+		for (Param item : params) {
+			map.put(item.getParamKey(), item.getParamValue());
+		}
+		if (map.containsKey(paramKey)) {
+			return map.get(paramKey).toString();
+		} else {
+			return "";
+		}
+	}
+
+	@Override
+	public Map<String, Object> updateParam(Param param) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = paramMapper.updateByPrimaryKeySelective(param);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");

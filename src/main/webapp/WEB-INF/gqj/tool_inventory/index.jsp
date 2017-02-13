@@ -1,13 +1,12 @@
-<%@ page language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type"
-	content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -27,8 +26,7 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript"
-	src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//关闭选择仓库窗口
 	function closeChooseStorageUIForToolBatch() {
@@ -107,7 +105,8 @@
 		$('#datagridForToolInventory')
 				.datagrid(
 						{
-							url : 'queryToolInventorysPage.do',
+							url : 'queryToolInventorysPage.do?DATE_TYPE='
+									+ getTextBoxValue('dateTypeTextInput'),
 							idField : 'TOOL_ID',
 							rownumbers : true,
 							toolbar : '#toolbarForToolInventory',
@@ -130,42 +129,86 @@
 													+ '\')" href="javascript:void(0)">查看批次明细</a>';
 											return btn;
 										}
-									}, {
+									},
+									{
 										field : 'TOOL_CODE',
 										title : '工器具编号',
 										width : 100,
-									}, {
+									},
+									{
 										field : 'BASE_TOOL_TYPE_NAME',
 										title : '工器具类型',
 										width : 100,
-									}, {
+									},
+									{
 										field : 'BASE_TOOL_NAME',
 										title : '工器具名称',
 										width : 200,
-									}, {
+									},
+									{
 										field : 'BASE_TOOL_MODEL',
 										title : '型号',
 										width : 100,
-									}, {
+									},
+									{
 										field : 'BASE_TOOL_SPEC',
 										title : '规格',
 										width : 100,
-									}, {
+									},
+									{
 										field : 'BASE_TOOL_MANUFACTURER_NAME',
 										title : '厂家',
 										width : 150,
-									}, {
+									},
+									{
 										field : 'STORE_NAME',
 										title : '仓库',
 										width : 100,
-									}, {
+									},
+									{
 										field : 'POS_NAME',
 										title : '仓位',
 										width : 150,
-									}, {
+									},
+									{
 										field : 'TOOL_STATUS_NAME',
 										title : '状态',
 										width : 60,
+									},
+									{
+										field : 'TOOL_NEXT_TEST_DATE',
+										title : '下次试验日期',
+										width : 100,
+										formatter : function(fieldValue,
+												rowData, rowIndex) {
+											var btn = rowData.TOOL_NEXT_TEST_DATE;
+											if (rowData.NEED_TEST == 1) {
+												btn = '<font color="#0000ff"> '
+														+ rowData.TOOL_NEXT_TEST_DATE
+														+ '</font>';
+											}
+											if (rowData.NEED_TEST == 2) {
+												btn = '<font color="#ff0000"> '
+														+ rowData.TOOL_NEXT_TEST_DATE
+														+ '</font>';
+											}
+											return btn;
+										}
+									},
+									{
+										field : 'TOOL_REJECT_DATE',
+										title : '报废日期',
+										width : 100,
+										formatter : function(fieldValue,
+												rowData, rowIndex) {
+											var btn = rowData.TOOL_REJECT_DATE;
+											if (rowData.NEED_REJECT == 1) {
+												btn = '<font color="#ff0000"> '
+														+ rowData.TOOL_REJECT_DATE
+														+ '</font>';
+											}
+											return btn;
+										}
 									} ] ],
 							onBeforeLoad : function(param) {
 								param.POS_ID = getTextBoxValue('posIdTextInput');
@@ -282,25 +325,25 @@
 </script>
 </head>
 <body>
+	<div style="display: none">
+		<input id="dateTypeTextInput" class="easyui-textbox"
+			value="<%=request.getParameter("DATE_TYPE")%>" />
+	</div>
 	<div id="materialInventoryListUI" class="easyui-panel"
 		data-options="fit:true,border:false">
 		<!-- 列表页面 -->
-		<div class="easyui-layout"
-			data-options="fit:true,border:false">
+		<div class="easyui-layout" data-options="fit:true,border:false">
 			<div data-options="fit:true,border:false,region:'center'">
-				<table id="datagridForToolInventory"
-					class="easyui-datagrid">
+				<table id="datagridForToolInventory" class="easyui-datagrid">
 				</table>
 				<div id="toolbarForToolInventory">
 					<table style="width: 100%">
 						<tr>
 							<td><a href="#" class="easyui-linkbutton"
-								iconCls="icon-reload" plain="true"
-								onclick="refresh()">刷新</a></td>
+								iconCls="icon-reload" plain="true" onclick="refresh()">刷新</a></td>
 							<td></td>
 							<td align="right"><input
-								id="keyWordForToolInventoryTextInput"
-								class="easyui-textbox"
+								id="keyWordForToolInventoryTextInput" class="easyui-textbox"
 								data-options="prompt:'工器具',validType:'length[0,50]'"
 								style="width: 200px"> <a href="#"
 								class="easyui-linkbutton" iconCls="icon-search"
@@ -309,20 +352,17 @@
 						<tr>
 							<td align="left">
 								<div style="display: none">
-									<input id="storageIdTextInput"
-										class="easyui-textbox" />
-								</div> 仓库：<a href="#" id="storageNameBtn"
-								class="easyui-linkbutton" style="width: 200px;"
-								onclick="openChooseStorageUIForToolBatch()">
-									选择仓库</a>
+									<input id="storageIdTextInput" class="easyui-textbox" />
+								</div> 仓库：<a href="#" id="storageNameBtn" class="easyui-linkbutton"
+								style="width: 200px;"
+								onclick="openChooseStorageUIForToolBatch()"> 选择仓库</a>
 							</td>
 							<td>
 								<div style="display: none">
 									<input id="posIdTextInput" class="easyui-textbox" />
-								</div> 仓位：<a href="#" id="posNameBtn"
-								class="easyui-linkbutton" style="width: 200px;"
-								onclick="openChoosePositionUIForToolBatch()">
-									选择仓位</a>
+								</div> 仓位：<a href="#" id="posNameBtn" class="easyui-linkbutton"
+								style="width: 200px;"
+								onclick="openChoosePositionUIForToolBatch()"> 选择仓位</a>
 							</td>
 							<td>类型: <input id="baseToolTypeComboBox"
 								data-options="valueField : 'ID',textField : 'TEXT',require : true,
@@ -363,10 +403,9 @@
 		<div id="toolbarForToolTrack">
 			<div>
 				<a href="#" class="easyui-linkbutton" plain="true"
-					iconCls="icon-arrow_left" onclick="toList()">返回</a>
-				工器具名称：<input id="baseToolNameTextInput"
-					class="easyui-textbox" data-options="disabled:true"
-					style="width: 200px">
+					iconCls="icon-arrow_left" onclick="toList()">返回</a> 工器具名称：<input
+					id="baseToolNameTextInput" class="easyui-textbox"
+					data-options="disabled:true" style="width: 200px">
 			</div>
 		</div>
 	</div>

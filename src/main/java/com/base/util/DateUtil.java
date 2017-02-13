@@ -800,4 +800,5 @@ public class DateUtil {
 		return getDateFormat(DateStyle.YYYY_MM_DD.getValue())
 				.format(new Date());
 	}
+
 }
