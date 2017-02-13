@@ -131,6 +131,10 @@
 											return btn;
 										}
 									}, {
+										field : 'TOOL_CODE',
+										title : '工器具编号',
+										width : 100,
+									}, {
 										field : 'BASE_TOOL_TYPE_NAME',
 										title : '工器具类型',
 										width : 100,

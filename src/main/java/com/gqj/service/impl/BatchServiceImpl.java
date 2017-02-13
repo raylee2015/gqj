@@ -42,29 +42,23 @@ public class BatchServiceImpl implements IBatchService {
 			Tool tool = new Tool();
 			tool.setBatchId(BaseUtil.strToLong(batchId));
 			// 查询tool
-			List<Tool> tools = toolService
-					.selectToolsForList(tool);
+			List<Tool> tools = toolService.selectToolsForList(tool);
 			for (Tool item : tools) {
 				// 根据tool和相应的track来reset
 				tool = item;
 				ToolTrack toolTrack = new ToolTrack();
-				toolTrack.setBatchId(
-						BaseUtil.strToLong(batchId));
+				toolTrack.setBatchId(BaseUtil.strToLong(batchId));
 				toolTrack.setToolId(item.getToolId());
 				// 根据toolID找出trackId
-				toolTrack
-						.setTrackId(toolTrackService
-								.selectToolTracksForObject(
-										toolTrack)
-								.getTrackId());
+				toolTrack.setTrackId(toolTrackService
+						.selectToolTracksForObject(toolTrack)
+						.getTrackId());
 				toolTrack.setBatchId(null);
 				toolService.resetTool(tool, toolTrack);
 			}
 			Batch paramBatch = new Batch();
-			paramBatch.setBatchId(
-					BaseUtil.strToLong(batchId));
-			bool = batchMapper
-					.deleteByPrimaryKeys(paramBatch);
+			paramBatch.setBatchId(BaseUtil.strToLong(batchId));
+			bool = batchMapper.deleteByPrimaryKeys(paramBatch);
 		}
 		if (bool == 0) {
 			map.put("success", false);
@@ -84,34 +78,21 @@ public class BatchServiceImpl implements IBatchService {
 		int bool = 1;
 		for (String batchId : batchId_arr) {
 			ToolTrack toolTrack = new ToolTrack();
-			toolTrack.setBatchId(
-					BaseUtil.strToLong(batchId));
-			if (batch
-					.getBatchType() == BatchType.CHECK_IN) {
-				toolTrack
-						.setToolStatus(ToolStatus.CHECK_IN);
-			} else if (batch
-					.getBatchType() == BatchType.CHECK_OUT) {
-				toolTrack.setToolStatus(
-						ToolStatus.CHECK_OUT);
-			} else if (batch
-					.getBatchType() == BatchType.EXCHANGE) {
-				toolTrack.setToolStatus(
-						ToolStatus.CHECK_OUT);
-			} else if (batch
-					.getBatchType() == BatchType.BACK) {
-				toolTrack
-						.setToolStatus(ToolStatus.CHECK_IN);
-			} else if (batch
-					.getBatchType() == BatchType.REJECT) {
+			toolTrack.setBatchId(BaseUtil.strToLong(batchId));
+			if (batch.getBatchType() == BatchType.CHECK_IN) {
+				toolTrack.setToolStatus(ToolStatus.CHECK_IN);
+			} else if (batch.getBatchType() == BatchType.CHECK_OUT) {
+				toolTrack.setToolStatus(ToolStatus.CHECK_OUT);
+			} else if (batch.getBatchType() == BatchType.EXCHANGE) {
+				toolTrack.setToolStatus(ToolStatus.CHECK_OUT);
+			} else if (batch.getBatchType() == BatchType.BACK) {
+				toolTrack.setToolStatus(ToolStatus.CHECK_IN);
+			} else if (batch.getBatchType() == BatchType.REJECT) {
 				toolTrack.setToolStatus(ToolStatus.REJECT);
-			} else if (batch
-					.getBatchType() == BatchType.BORROW) {
+			} else if (batch.getBatchType() == BatchType.BORROW) {
 				toolTrack.setToolStatus(ToolStatus.BORROW);
-			} else if (batch
-					.getBatchType() == BatchType.REJECT) {
-				toolTrack
-						.setToolStatus(ToolStatus.CHECK_IN);
+			} else if (batch.getBatchType() == BatchType.RETURN) {
+				toolTrack.setToolStatus(ToolStatus.CHECK_IN);
 			}
 			toolTrack.setBatchConfirmTime(new Date());
 			toolTrack.setBatchConfirmUserId(
@@ -119,37 +100,28 @@ public class BatchServiceImpl implements IBatchService {
 			toolTrackService.updateToolTrack(toolTrack);
 			Tool tool = new Tool();
 			tool.setBatchId(BaseUtil.strToLong(batchId));
-			if (batch
-					.getBatchType() == BatchType.CHECK_IN) {
+			if (batch.getBatchType() == BatchType.CHECK_IN) {
 				tool.setToolStatus(ToolStatus.CHECK_IN);
-			} else if (batch
-					.getBatchType() == BatchType.CHECK_OUT) {
+			} else if (batch.getBatchType() == BatchType.CHECK_OUT) {
 				tool.setToolStatus(ToolStatus.CHECK_OUT);
-			} else if (batch
-					.getBatchType() == BatchType.EXCHANGE) {
+			} else if (batch.getBatchType() == BatchType.EXCHANGE) {
 				tool.setToolStatus(ToolStatus.CHECK_OUT);
-			} else if (batch
-					.getBatchType() == BatchType.BACK) {
+			} else if (batch.getBatchType() == BatchType.BACK) {
 				tool.setToolStatus(ToolStatus.CHECK_IN);
-			} else if (batch
-					.getBatchType() == BatchType.REJECT) {
+			} else if (batch.getBatchType() == BatchType.REJECT) {
 				tool.setToolStatus(ToolStatus.REJECT);
-			} else if (batch
-					.getBatchType() == BatchType.BORROW) {
+			} else if (batch.getBatchType() == BatchType.BORROW) {
 				tool.setToolStatus(ToolStatus.BORROW);
-			} else if (batch
-					.getBatchType() == BatchType.REJECT) {
+			} else if (batch.getBatchType() == BatchType.RETURN) {
 				tool.setToolStatus(ToolStatus.CHECK_IN);
 			}
 			toolService.updateToolByBatch(tool);
 			Batch paramBatch = new Batch();
-			paramBatch.setBatchId(
-					BaseUtil.strToLong(batchId));
+			paramBatch.setBatchId(BaseUtil.strToLong(batchId));
 			paramBatch.setBatchConfirmTime(new Date());
 			paramBatch.setBatchConfirmUserId(
 					batch.getBatchConfirmUserId());
-			bool = batchMapper.updateByPrimaryKeySelective(
-					paramBatch);
+			bool = batchMapper.updateByPrimaryKeySelective(paramBatch);
 		}
 		if (bool == 0) {
 			map.put("success", false);
@@ -165,8 +137,7 @@ public class BatchServiceImpl implements IBatchService {
 	public synchronized Map<String, Object> addNewBatchsAndDetails(
 			Batch batch, Tool tool, ToolTrack toolTrack) {
 		int bool = 0;
-		Batch temp = batchMapper
-				.selectBatchsForObject(batch);
+		Batch temp = batchMapper.selectBatchsForObject(batch);
 		if (temp == null) {
 			batch.setBatchCount(0L);
 			bool = batchMapper.insertSelective(batch);
@@ -181,17 +152,28 @@ public class BatchServiceImpl implements IBatchService {
 		if (batchType == BatchType.CHECK_IN) {
 			tool.setToolId(-1L);
 			tool.setToolStatus(ToolStatus.CHECK_IN_COMING);
-			resultMap = toolService.checkInNewTool(batch,
-					tool, toolTrack);
+			resultMap = toolService.checkInTool(batch, tool, toolTrack);
 
 		} else if (batchType == BatchType.CHECK_OUT) {
 			tool.setToolStatus(ToolStatus.CHECK_OUT_COMING);
-			resultMap = toolService.checkOutTool(batch,
-					tool, toolTrack);
+			resultMap = toolService.checkOutTool(batch, tool,
+					toolTrack);
 		} else if (batchType == BatchType.EXCHANGE) {
 			tool.setToolStatus(ToolStatus.CHECK_OUT_COMING);
-			resultMap = toolService.exchangeTool(batch,
-					tool, toolTrack);
+			resultMap = toolService.exchangeTool(batch, tool,
+					toolTrack);
+		} else if (batchType == BatchType.BACK) {
+			tool.setToolStatus(ToolStatus.CHECK_IN_COMING);
+			resultMap = toolService.backTool(batch, tool, toolTrack);
+		} else if (batchType == BatchType.REJECT) {
+			tool.setToolStatus(ToolStatus.REJECT);
+			resultMap = toolService.rejectTool(batch, tool, toolTrack);
+		} else if (batchType == BatchType.BORROW) {
+			tool.setToolStatus(ToolStatus.BORROW_COMING);
+			resultMap = toolService.borrowTool(batch, tool, toolTrack);
+		} else if (batchType == BatchType.RETURN) {
+			tool.setToolStatus(ToolStatus.CHECK_IN_COMING);
+			resultMap = toolService.checkInTool(batch, tool, toolTrack);
 		}
 		if (resultMap != null) {
 			success = (boolean) resultMap.get("success");
@@ -201,8 +183,7 @@ public class BatchServiceImpl implements IBatchService {
 		if (success) {
 			// 批次更新数量
 			batch.setBatchCount(batch.getBatchCount() + 1);
-			bool = batchMapper
-					.updateByPrimaryKeySelective(batch);
+			bool = batchMapper.updateByPrimaryKeySelective(batch);
 
 			if (bool == 0) {
 				map.put("success", false);
@@ -221,32 +202,24 @@ public class BatchServiceImpl implements IBatchService {
 	}
 
 	@Override
-	public Map<String, Object> selectBatchsForPage(
-			Batch batch) {
+	public Map<String, Object> selectBatchsForPage(Batch batch) {
 		List<Map<String, Object>> batchs = batchMapper
 				.selectBatchsForPage(batch);
 		for (Map<String, Object> item : batchs) {
 			if (item.get("BATCH_CREATE_TIME") != null) {
-				item.put("BATCH_CREATE_TIME",
-						DateUtil.getDate(item
-								.get("BATCH_CREATE_TIME")
-								.toString()));
+				item.put("BATCH_CREATE_TIME", DateUtil.getDate(
+						item.get("BATCH_CREATE_TIME").toString()));
 			}
 			if (item.get("BATCH_CONFIRM_TIME") != null) {
-				item.put("BATCH_CONFIRM_TIME",
-						DateUtil.getDate(item
-								.get("BATCH_CONFIRM_TIME")
-								.toString()));
+				item.put("BATCH_CONFIRM_TIME", DateUtil.getDate(
+						item.get("BATCH_CONFIRM_TIME").toString()));
 			}
 			if (item.get("BATCH_TAKE_TIME") != null) {
-				item.put("BATCH_TAKE_TIME",
-						DateUtil.getDate(
-								item.get("BATCH_TAKE_TIME")
-										.toString()));
+				item.put("BATCH_TAKE_TIME", DateUtil.getDate(
+						item.get("BATCH_TAKE_TIME").toString()));
 			}
 		}
-		int count = batchMapper
-				.selectCountOfBatchsForPage(batch);
+		int count = batchMapper.selectCountOfBatchsForPage(batch);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", batchs);
 		map.put("total", count);
@@ -261,8 +234,7 @@ public class BatchServiceImpl implements IBatchService {
 	@Override
 	public Map<String, Object> updateBatch(Batch batch) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = batchMapper
-				.updateByPrimaryKeySelective(batch);
+		int bool = batchMapper.updateByPrimaryKeySelective(batch);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -282,10 +254,8 @@ public class BatchServiceImpl implements IBatchService {
 			Batch param = new Batch();
 			param.setBatchId(BaseUtil.strToLong(batchId));
 			param.setBatchTakeTime(new Date());
-			param.setBatchTakeUserId(
-					batch.getBatchTakeUserId());
-			bool = batchMapper
-					.updateByPrimaryKeySelective(param);
+			param.setBatchTakeUserId(batch.getBatchTakeUserId());
+			bool = batchMapper.updateByPrimaryKeySelective(param);
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -302,12 +272,11 @@ public class BatchServiceImpl implements IBatchService {
 	@Override
 	public Map<String, Object> delToolAndTrack(Tool tool,
 			ToolTrack toolTrack, Batch batch) {
-		Map<String, Object> map = toolService
-				.resetTool(tool, toolTrack);
+		Map<String, Object> map = toolService.resetTool(tool,
+				toolTrack);
 		batch = batchMapper.selectBatchsForObject(batch);
 		batch.setBatchCount(batch.getBatchCount() - 1);
-		int bool = batchMapper
-				.updateByPrimaryKeySelective(batch);
+		int bool = batchMapper.updateByPrimaryKeySelective(batch);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");

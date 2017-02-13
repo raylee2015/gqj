@@ -18,7 +18,7 @@ public interface IToolService {
 	Map<String, Object> selectToolsForPage(
 			HashMap<String, Object> param);
 
-	Map<String, Object> checkInNewTool(Batch batch,
+	Map<String, Object> checkInTool(Batch batch,
 			Tool tool, ToolTrack toolTrack);
 
 	Map<String, Object> resetTool(Tool tool,
@@ -33,5 +33,14 @@ public interface IToolService {
 
 	Map<String, Object> exchangeTool(Batch batch,
 			Tool toolParam, ToolTrack toolTrack);
+
+	Map<String, Object> backTool(Batch batch, Tool toolParam,
+			ToolTrack toolTrack);
+
+	Map<String, Object> rejectTool(Batch batch, Tool toolParam,
+			ToolTrack toolTrack);
+
+	Map<String, Object> borrowTool(Batch batch, Tool toolParam,
+			ToolTrack toolTrack);
 
 }

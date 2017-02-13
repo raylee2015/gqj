@@ -1,5 +1,5 @@
-<%@ page language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 	String batchType = request.getParameter("BATCH_TYPE");
@@ -7,8 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type"
-	content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -28,8 +27,7 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript"
-	src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//关闭选择部门窗口
 	function closeAddToolsUIForBatch() {
@@ -41,8 +39,10 @@
 		var panelHeight = 0;
 		var batchType = getTextBoxValue('batchTypeTextInput');
 		if (batchType == 0) {
+			panelWidth = 700;
 			panelHeight = 600;
 		} else {
+			panelWidth = 500;
 			panelHeight = 500;
 		}
 		var batchType = getTextBoxValue('batchTypeTextInput');
@@ -62,10 +62,29 @@
 		} else if (batchType == 6) {
 			title = "扫描归还";
 		}
-		createModalDialog("addToolsUIForBatch", "openAddToolsUI.do?BATCH_ID="
-				+ batchId + "&BATCH_TYPE="
-				+ getTextBoxValue('batchTypeTextInput'), "扫描" + title, 700,
-				panelHeight);
+		createModalDialog("addToolsUIForBatch",
+				"openAddToolsUI.do?OP_TYPE=ADD&BATCH_ID=" + batchId
+						+ "&BATCH_TYPE="
+						+ getTextBoxValue('batchTypeTextInput'), title,
+				panelWidth, panelHeight);
+		openUI('addToolsUIForBatch');
+	}
+
+	//打开选择部门窗口
+	function openAddToolsUIForExchangeBatch() {
+		createModalDialog("addToolsUIForBatch",
+				"openAddToolsUI.do?OP_TYPE=EXCHANGE&BATCH_TYPE="
+						+ getTextBoxValue('batchTypeTextInput'), "转仓入库", 500,
+				400);
+		openUI('addToolsUIForBatch');
+	}
+
+	//打开选择部门窗口
+	function openAddToolsUIForQuickBatch() {
+		createModalDialog("addToolsUIForBatch",
+				"openAddToolsUI.do?OP_TYPE=QUICK&BATCH_TYPE="
+						+ getTextBoxValue('batchTypeTextInput'), "转仓入库", 500,
+				300);
 		openUI('addToolsUIForBatch');
 	}
 
@@ -513,24 +532,27 @@
 					<td><a href="#" class="easyui-linkbutton"
 						iconCls="icon-reload" plain="true"
 						onclick="refreshDataGrid('datagridForBatch')">刷新</a> <%
+ 	if ("0".equals(batchType)) {
+ %> <!--  <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" -->
+						<!-- 						onclick="openAddToolsUIForQuickBatch()">快速入库</a> --> <a
+						href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true"
+						onclick="openAddToolsUIForExchangeBatch()">转仓入库</a> <%
+ 	}
  	if (!"7".equals(batchType)) {
  %> <a id="addToolBtn" href="#" class="easyui-linkbutton"
 						iconCls="icon-add" plain="true"
-						onclick="openAddToolsUIForBatch('')">扫描入库</a> <a
-						href="#" class="easyui-linkbutton"
-						iconCls="icon-remove" plain="true"
-						onclick="delBatchs()">删除</a><a href="#"
-						class="easyui-linkbutton"
+						onclick="openAddToolsUIForBatch('')">扫描入库</a> <a href="#"
+						class="easyui-linkbutton" iconCls="icon-remove" plain="true"
+						onclick="delBatchs()">删除</a><a href="#" class="easyui-linkbutton"
 						iconCls="icon-application_go" plain="true"
 						onclick="confirmBatchs()">确认</a> <%
  	} else {
- %> <a href="#" class="easyui-linkbutton"
-						iconCls="icon-application_go" plain="true"
-						onclick="takeBatchs()">领用</a> <%
+ %> <a href="#" class="easyui-linkbutton" iconCls="icon-application_go"
+						plain="true" onclick="takeBatchs()">领用</a> <%
  	}
  %></td>
-					<td align="right"><input
-						id="keyWordForBatchTextInput" class="easyui-textbox"
+					<td align="right"><input id="keyWordForBatchTextInput"
+						class="easyui-textbox"
 						data-options="prompt:'批次号',validType:'length[0,50]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
@@ -548,12 +570,10 @@
 			<div>
 				<a href="#" class="easyui-linkbutton" plain="true"
 					iconCls="icon-arrow_left" onclick="toList()">返回</a> <input
-					id="keyWordForToolTrackTextInput"
-					class="easyui-textbox"
+					id="keyWordForToolTrackTextInput" class="easyui-textbox"
 					data-options="prompt:'工器具编号',validType:'length[0,50]'"
-					style="width: 200px"> <a href="#"
-					class="easyui-linkbutton" iconCls="icon-search"
-					onclick="queryToolTrackPagesForSearch()">查询</a>
+					style="width: 200px"> <a href="#" class="easyui-linkbutton"
+					iconCls="icon-search" onclick="queryToolTrackPagesForSearch()">查询</a>
 			</div>
 		</div>
 	</div>
