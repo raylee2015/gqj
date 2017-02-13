@@ -206,6 +206,23 @@
 														+ planStatus
 														+ '\''
 														+ ')" href="javascript:void(0)">编辑</a>';
+											} else if (opType == 'AUDIT_BY_DEPT'
+													&& planStatus == 7) {
+												btn = '<a class="easyui-linkbutton" '
+														+ ' onclick="toDetail('
+														+ '\''
+														+ planId
+														+ '\','
+														+ '\''
+														+ planCode
+														+ '\','
+														+ '\''
+														+ planRemark
+														+ '\','
+														+ '\''
+														+ planStatus
+														+ '\''
+														+ ')" href="javascript:void(0)">编辑</a>';
 											} else {
 												btn = '<a class="easyui-linkbutton" '
 														+ ' onclick="toDetail('
@@ -464,7 +481,11 @@
 		queryDemandPlanDetailsForList(planId);
 		setTextBoxValue('demandPlanCodeTextInput', planCode);
 		setTextBoxValue('demandPlanRemarkTextInput', planRemark);
-		if (planStatus != 0) {
+		if (planStatus == 7) {
+			$('#addToolBtn').linkbutton('enable');
+			$('#saveBtn').linkbutton('enable');
+			$('#submitBtn').linkbutton('enable');
+		} else if (planStatus != 0) {
 			$('#addToolBtn').linkbutton('disable');
 			$('#saveBtn').linkbutton('disable');
 			$('#submitBtn').linkbutton('disable');
@@ -914,7 +935,14 @@
 					plain="true" onclick="unPassDemandPlanByWorkGroup()">不通过</a>
 				<%
 					} else if ("AUDIT_BY_DEPT".equals(opType)) {
-				%><a href="#" class="easyui-linkbutton"
+				%>
+				<a href="#" id="saveBtn" class="easyui-linkbutton"
+					iconCls="icon-ok" plain="true"
+					onclick="saveDemandPlan()">保存</a><a href="#"
+					id="addToolBtn" class="easyui-linkbutton"
+					iconCls="icon-add" plain="true"
+					onclick="openChooseToolDemandUIForDemandPlan()">添加工器具</a>
+				<a href="#" class="easyui-linkbutton"
 					iconCls="icon-application_go" plain="true"
 					onclick="passDemandPlanByDept()">通过</a> <a href="#"
 					class="easyui-linkbutton" iconCls="icon-cross"

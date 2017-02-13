@@ -32,7 +32,6 @@
 <script type="text/javascript"
 	src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
-
 	//关闭选择部门窗口
 	function closeChooseMaterialInventoryUIForMaterialBill() {
 		closeUI('chooseMaterialInventoryUIForMaterialBill')
@@ -589,7 +588,8 @@
 				baseToolAmountIds.length - 1);
 		//因为在入库的时候才有关联计划，因此需要特别处理
 		var planId = "";
-		if (getTextBoxValue('billTypeTextInput') == 0) {
+		if (getTextBoxValue('billTypeTextInput') == 0
+				&& getTextBoxValue('deptTypeTextInput') == 'DEPT') {
 			planId = getTextBoxValue('planIdTextInput');
 		}
 		//因为在入库的时候没有领用部门，因此需要特别处理
@@ -650,7 +650,9 @@
 		<div id="toolbarForMaterialBill">
 			<div style="display: none">
 				<input id="billTypeTextInput" class="easyui-textbox"
-					value="<%=request.getParameter("BILL_TYPE")%>" />
+					value="<%=request.getParameter("BILL_TYPE")%>" /> <input
+					id="deptTypeTextInput" class="easyui-textbox"
+					value="<%=request.getParameter("DEPT_TYPE")%>" />
 			</div>
 			<table style="width: 100%">
 				<tr>

@@ -315,22 +315,10 @@ public class DemandPlanController extends BaseController {
 					getSessionUser(request, response)
 							.getUserId());
 		} else if ("AUDIT_BY_WORK_GROUP".equals(opType)) {
-			if ("0".equals(planType)) {
-
-			} else {
-				// 显示自己部门提交的计划
-				demandPlan.setPlanStatus(PlanStatus.SUBMIT);
-			}
 			demandPlan.setPlanDeptId(
 					getSessionUser(request, response)
 							.getUserDeptId());
 		} else if ("AUDIT_BY_DEPT".equals(opType)) {
-			if ("0".equals(planType)) {
-
-			} else {
-				demandPlan.setPlanStatus(
-						PlanStatus.PASS_BY_WORK_GROUP);
-			}
 		}
 		return demandPlanService
 				.selectDemandPlansForPage(demandPlan);
