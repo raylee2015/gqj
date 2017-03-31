@@ -707,7 +707,7 @@
 					style="width: 100%; height: 32px" /></td>
 			</tr>
 			<%
-				if (!"QUICK".equals(opType)) {
+				if (!"QUICK_FOR_EXCHANGE_TO_CHECKIN".equals(opType)) {
 			%>
 			<tr>
 				<td width="18%">选择仓库:</td>
@@ -774,7 +774,7 @@
 			<tr>
 				<td width="18%">初试日期:</td>
 				<td><input id="toolTestDateBox" class="easyui-datebox"
-					data-options="required:true" style="width: 100%; height: 32px" /></td>
+					data-options="required:true" style="width: 96%; height: 32px" />月</td>
 			</tr>
 			<tr>
 				<td width="18%">报废日期:</td>

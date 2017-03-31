@@ -48,19 +48,23 @@
 		var batchType = getTextBoxValue('batchTypeTextInput');
 		var title = "";
 		if (batchType == 0) {
-			title = "扫描入库";
+			title = "扫描入库工器具";
 		} else if (batchType == 1) {
-			title = "扫描出库";
+			title = "扫描出库工器具";
 		} else if (batchType == 2) {
-			title = "扫描转仓";
+			title = "扫描转仓工器具";
 		} else if (batchType == 3) {
-			title = "扫描退仓";
+			title = "扫描退仓工器具";
 		} else if (batchType == 4) {
-			title = "扫描报废";
+			title = "扫描报废工器具";
 		} else if (batchType == 5) {
-			title = "扫描借用";
+			title = "扫描外站借用工器具";
 		} else if (batchType == 6) {
-			title = "扫描归还";
+			title = "扫描外站归还工器具";
+		} else if (batchType == 7) {
+			title = "扫描使用本站工器具";
+		} else if (batchType == 8) {
+			title = "扫描归还本站工器具";
 		}
 		createModalDialog("addToolsUIForBatch",
 				"openAddToolsUI.do?OP_TYPE=ADD&BATCH_ID=" + batchId
@@ -82,7 +86,7 @@
 	//打开选择部门窗口
 	function openAddToolsUIForQuickBatch() {
 		createModalDialog("addToolsUIForBatch",
-				"openAddToolsUI.do?OP_TYPE=QUICK&BATCH_TYPE="
+				"openAddToolsUI.do?OP_TYPE=QUICK_FOR_EXCHANGE_TO_CHECKIN&BATCH_TYPE="
 						+ getTextBoxValue('batchTypeTextInput'), "转仓入库", 500,
 				300);
 		openUI('addToolsUIForBatch');
@@ -235,19 +239,23 @@
 
 				var addToolBtnName = "";
 				if (batchType == 0) {
-					addToolBtnName = "扫描入库";
+					addToolBtnName = "扫描入库工器具";
 				} else if (batchType == 1) {
-					addToolBtnName = "扫描出库";
+					addToolBtnName = "扫描出库工器具";
 				} else if (batchType == 2) {
-					addToolBtnName = "扫描转仓";
+					addToolBtnName = "扫描转仓工器具";
 				} else if (batchType == 3) {
-					addToolBtnName = "扫描退仓";
+					addToolBtnName = "扫描退仓工器具";
 				} else if (batchType == 4) {
-					addToolBtnName = "扫描报废";
+					addToolBtnName = "扫描报废工器具";
 				} else if (batchType == 5) {
-					addToolBtnName = "扫描借用";
+					addToolBtnName = "扫描外站借用工器具";
 				} else if (batchType == 6) {
-					addToolBtnName = "扫描归还";
+					addToolBtnName = "扫描外站归还工器具";
+				} else if (batchType == 7) {
+					addToolBtnName = "扫描使用本站工器具";
+				} else if (batchType == 8) {
+					addToolBtnName = "扫描归还本站工器具";
 				}
 
 				$('#addToolBtn').linkbutton({
