@@ -166,7 +166,7 @@ public class BatchServiceImpl implements IBatchService {
 			tool.setToolStatus(ToolStatus.CHECK_IN_COMING);
 			resultMap = toolService.backTool(batch, tool, toolTrack);
 		} else if (batchType == BatchType.REJECT) {
-			tool.setToolStatus(ToolStatus.REJECT);
+			tool.setToolStatus(ToolStatus.REJECT_COMING);
 			resultMap = toolService.rejectTool(batch, tool, toolTrack);
 		} else if (batchType == BatchType.BORROW) {
 			tool.setToolStatus(ToolStatus.BORROW_COMING);

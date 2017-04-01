@@ -37,5 +37,13 @@ public class BatchType {
 	 * 归还
 	 */
 	public static Long RETURN = 6L;
+	/**
+	 * 本站使用
+	 */
+	public static Long USE = 8L;
+	/**
+	 * 本站归还
+	 */
+	public static Long SELF_RETURN = 9L;
 
 }

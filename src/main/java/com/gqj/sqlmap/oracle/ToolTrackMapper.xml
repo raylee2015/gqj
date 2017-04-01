@@ -62,6 +62,15 @@
 			<if test="batchId != null">
 				and BATCH_ID = #{batchId}
 			</if>
+			<if test="toolCode != null">
+				and TOOL_CODE = #{toolCode}
+			</if>
+			<if test="toolDeptId != null">
+				and TOOL_DEPT_ID = #{toolDeptId}
+			</if>
+			<if test="toolStatus != null">
+				and TOOL_STATUS = #{toolStatus}
+			</if>
 		</where>
 		order by TRACK_ID DESC
 	</select>

@@ -41,9 +41,15 @@
 		if (batchType == 0) {
 			panelWidth = 700;
 			panelHeight = 600;
+		} else if (batchType == 8 || batchType == 9) {
+			panelWidth = 500;
+			panelHeight = 200;
+		} else if (batchType == 1 || batchType == 5 || batchType == 6) {
+			panelWidth = 500;
+			panelHeight = 280;
 		} else {
 			panelWidth = 500;
-			panelHeight = 500;
+			panelHeight = 250;
 		}
 		var batchType = getTextBoxValue('batchTypeTextInput');
 		var title = "";
@@ -61,9 +67,9 @@
 			title = "扫描外站借用工器具";
 		} else if (batchType == 6) {
 			title = "扫描外站归还工器具";
-		} else if (batchType == 7) {
-			title = "扫描使用本站工器具";
 		} else if (batchType == 8) {
+			title = "扫描使用本站工器具";
+		} else if (batchType == 9) {
 			title = "扫描归还本站工器具";
 		}
 		createModalDialog("addToolsUIForBatch",
@@ -77,18 +83,9 @@
 	//打开选择部门窗口
 	function openAddToolsUIForExchangeBatch() {
 		createModalDialog("addToolsUIForBatch",
-				"openAddToolsUI.do?OP_TYPE=EXCHANGE&BATCH_TYPE="
+				"openAddToolsUI.do?OP_TYPE=EXCHANGE_TO_CHECKIN&BATCH_TYPE="
 						+ getTextBoxValue('batchTypeTextInput'), "转仓入库", 500,
 				400);
-		openUI('addToolsUIForBatch');
-	}
-
-	//打开选择部门窗口
-	function openAddToolsUIForQuickBatch() {
-		createModalDialog("addToolsUIForBatch",
-				"openAddToolsUI.do?OP_TYPE=QUICK_FOR_EXCHANGE_TO_CHECKIN&BATCH_TYPE="
-						+ getTextBoxValue('batchTypeTextInput'), "转仓入库", 500,
-				300);
 		openUI('addToolsUIForBatch');
 	}
 
@@ -217,7 +214,8 @@
 				initDataGridForToolTrackDetail();
 				initToolTrackPanel();
 				var batchType = getTextBoxValue('batchTypeTextInput');
-				if (batchType == 1 || batchType == 2 || batchType == 7) {
+				if (batchType == 1 || batchType == 2 || batchType == 7
+						|| batchType == 5) {
 					$('#datagridForBatch').datagrid('showColumn',
 							'BATCH_TAKE_DEPT_NAME');
 					$('#datagridForBatch').datagrid('showColumn',
@@ -252,9 +250,9 @@
 					addToolBtnName = "扫描外站借用工器具";
 				} else if (batchType == 6) {
 					addToolBtnName = "扫描外站归还工器具";
-				} else if (batchType == 7) {
-					addToolBtnName = "扫描使用本站工器具";
 				} else if (batchType == 8) {
+					addToolBtnName = "扫描使用本站工器具";
+				} else if (batchType == 9) {
 					addToolBtnName = "扫描归还本站工器具";
 				}
 

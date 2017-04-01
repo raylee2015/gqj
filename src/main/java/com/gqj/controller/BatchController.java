@@ -2,6 +2,7 @@ package com.gqj.controller;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,8 @@ import com.gqj.service.ISequenceService;
 import com.gqj.service.IStorageService;
 import com.gqj.service.IToolTrackService;
 import com.gqj.service.IToolTypeService;
+import com.gqj.util.BatchType;
+import com.gqj.util.ToolStatus;
 
 @Controller
 @RequestMapping("/gqj/tool_batch")
@@ -230,6 +233,25 @@ public class BatchController extends BaseController {
 		}
 		toolTrack.setToolDeptId(
 				getSessionUser(request, response).getUserDeptId());
+
+		if (BaseUtil.strToLong(batchType) == BatchType.RETURN) {
+			// 查询工器具的本部门最早入库的位置
+			ToolTrack temp = new ToolTrack();
+			temp.setToolCode(toolCode);
+			temp.setToolDeptId(
+					getSessionUser(request, response).getUserDeptId());
+			temp.setToolStatus(ToolStatus.CHECK_IN);
+			List<ToolTrack> track = toolTrackService
+					.selectToolTracksForList(temp);
+			tool.setStoreId(track.get(0).getStoreId());
+			toolTrack.setStoreId(track.get(0).getStoreId());
+			tool.setPosId(track.get(0).getPosId());
+			toolTrack.setPosId(track.get(0).getPosId());
+			toolTrack.setStoreName(track.get(0).getStoreName());
+			toolTrack.setPosName(track.get(0).getPosName());
+			tool.setToolBox(track.get(0).getToolBox());
+			toolTrack.setToolBox(track.get(0).getToolBox());
+		}
 		return batchService.addNewBatchsAndDetails(batch, tool,
 				toolTrack);
 	}
@@ -316,7 +338,14 @@ public class BatchController extends BaseController {
 			Batch batch = batchService.selectBatchsForObject(param);
 			request.setAttribute("BATCH_CODE", batch.getBatchCode());
 		}
-		return new ModelAndView("/gqj/tool_batch/addToolsUI");
+		String batchType = request.getParameter("BATCH_TYPE");
+		ModelAndView mv = new ModelAndView();
+		if ("0".equals(batchType)) {
+			mv.setViewName("/gqj/tool_batch/addToolsUIForCheckIn");
+		} else {
+			mv.setViewName("/gqj/tool_batch/addToolsUI");
+		}
+		return mv;
 	}
 
 	/**
