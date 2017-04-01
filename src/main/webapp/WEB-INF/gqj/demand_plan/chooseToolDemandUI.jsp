@@ -117,7 +117,7 @@
 
 	function choose() {
 		var selectedItems = $('#datagridForToolDemand').datagrid(
-				'getSelections');
+				'getChecked');
 		var data = parent.$('#datagridForDemandPlanDetail').datagrid('getData');
 		if (data.rows.length == 0) {
 			data = selectedItems;

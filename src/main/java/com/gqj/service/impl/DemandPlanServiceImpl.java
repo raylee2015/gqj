@@ -1,10 +1,13 @@
 package com.gqj.service.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +21,10 @@ import com.gqj.service.IDemandPlanDetailService;
 import com.gqj.service.IDemandPlanService;
 import com.gqj.util.PlanStatus;
 
+import net.sf.jxls.exception.ParsePropertyException;
+
 @Service
-public class DemandPlanServiceImpl
-		implements IDemandPlanService {
+public class DemandPlanServiceImpl implements IDemandPlanService {
 
 	@Autowired
 	private DemandPlanMapper demandPlanMapper;
@@ -34,8 +38,7 @@ public class DemandPlanServiceImpl
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = demandPlanDetailService
 				.deleteByDemandPlan(demandPlan);
-		bool = demandPlanMapper
-				.deleteByPrimaryKeys(demandPlan);
+		bool = demandPlanMapper.deleteByPrimaryKeys(demandPlan);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");
@@ -47,15 +50,55 @@ public class DemandPlanServiceImpl
 	}
 
 	@Override
-	public Map<String, Object> addDemandPlansAndDetails(
-			DemandPlan demandPlan, String toolIds,
-			String toolAmounts) {
+	public Map<String, Object> exportDemandPlans(DemandPlan demandPlan)
+			throws ParsePropertyException, InvalidFormatException,
+			IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = demandPlanMapper
-				.insertSelective(demandPlan);
+		// String batchIds = batch.getIds();
+		// String[] batchId_arr = batchIds.split(",");
+		int bool = 1;
+		// for (String batchId : batchId_arr) {
+		// ToolTrack param = new ToolTrack();
+		// param.setBatchId(BaseUtil.strToLong(batchId));
+		// List<ToolTrack> list = toolTrackService
+		// .selectToolTracksForList(param);
+		// Map<String, Object> data = new HashMap<String, Object>();
+		// data.put("list", list);
+		//
+		//
+		String filePath = this.getClass().getClassLoader()
+				.getResource(
+						"/com/gqj/resources/template/demandPlan.xls")
+				.getPath();
+		File file = new File(filePath);
+		System.out.println(file.getAbsolutePath());
+		// 生成文件
+		// XLSTransformer transformer = new XLSTransformer();
+		// String templatePath = "\\template\\plan.xls";
+		// String expExcelPath = "additional\\attachment_temp\\"
+		// + System.currentTimeMillis() + ".xls";
+		// transformer.transformXLS(templatePath, data, expExcelPath);
+		//
+		// data.put("downloadUrl", expExcelPath);
+		// data.put("physPath", expExcelPath);// 物理路径
+		// }
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "导出失败，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "导出成功");
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> addDemandPlansAndDetails(
+			DemandPlan demandPlan, String toolIds, String toolAmounts) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int bool = demandPlanMapper.insertSelective(demandPlan);
 		bool = demandPlanDetailService.addDemandPlanDetails(
-				demandPlan.getPlanId(), toolIds,
-				toolAmounts);
+				demandPlan.getPlanId(), toolIds, toolAmounts);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -68,43 +111,34 @@ public class DemandPlanServiceImpl
 
 	@Override
 	public Map<String, Object> addAnnualDemandPlan(
-			DemandPlan demandPlan, String deptIds,
-			String deptNames, User createUser) {
+			DemandPlan demandPlan, String deptIds, String deptNames,
+			User createUser) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String[] deptId_arr = deptIds.split(",");
 		int bool = 0;
 		DemandPlan demandPlanParent = new DemandPlan();
-		demandPlanParent
-				.setPlanCode(demandPlan.getPlanCode());
+		demandPlanParent.setPlanCode(demandPlan.getPlanCode());
 		// 生成父计划
 		demandPlanParent.setPlanAssignedDeptId(deptIds);
 		demandPlanParent.setPlanAssignedDeptName(deptNames);
 		demandPlanParent.setPlanCreateDate(new Date());
-		demandPlanParent.setPlanCreateUserId(
-				createUser.getUserId());
-		demandPlanParent
-				.setPlanDeptId(createUser.getUserDeptId());
+		demandPlanParent.setPlanCreateUserId(createUser.getUserId());
+		demandPlanParent.setPlanDeptId(createUser.getUserDeptId());
 		demandPlanParent.setPlanType(0L);
-		bool = demandPlanMapper
-				.insertSelective(demandPlanParent);
+		bool = demandPlanMapper.insertSelective(demandPlanParent);
 		// 生成子计划
 		for (int i = 0; i < deptId_arr.length; i++) {
 			DemandPlan demandPlanSub = new DemandPlan();
-			demandPlanSub.setUpPlanId(
-					demandPlanParent.getPlanId());
-			demandPlanSub
-					.setPlanCode(demandPlan.getPlanCode());
+			demandPlanSub.setUpPlanId(demandPlanParent.getPlanId());
+			demandPlanSub.setPlanCode(demandPlan.getPlanCode());
 			demandPlanSub.setPlanAssignedDeptId(deptIds);
+			demandPlanSub.setPlanAssignedDeptName(deptNames);
 			demandPlanSub
-					.setPlanAssignedDeptName(deptNames);
-			demandPlanSub.setPlanDeptId(
-					BaseUtil.strToLong(deptId_arr[i]));
+					.setPlanDeptId(BaseUtil.strToLong(deptId_arr[i]));
 			demandPlanSub.setPlanType(0L);
-			demandPlanSub
-					.setPlanStatus(PlanStatus.UNSUBMIT);
+			demandPlanSub.setPlanStatus(PlanStatus.UNSUBMIT);
 			demandPlanSub.setPlanCreateDate(new Date());
-			bool = demandPlanMapper
-					.insertSelective(demandPlanSub);
+			bool = demandPlanMapper.insertSelective(demandPlanSub);
 		}
 		if (bool == 0) {
 			map.put("success", false);
@@ -123,25 +157,20 @@ public class DemandPlanServiceImpl
 				.selectDemandPlansForPage(demandPlan);
 		// 转化日期
 		for (Map<String, Object> item : demandPlans) {
-			item.put("PLAN_CREATE_DATE",
-					DateUtil.getDate(
-							item.get("PLAN_CREATE_DATE")
-									.toString()));
+			item.put("PLAN_CREATE_DATE", DateUtil
+					.getDate(item.get("PLAN_CREATE_DATE").toString()));
 			if (item.get("UP_PLAN_ID") != null) {
 				if (demandPlan.getPlanDeptId() != null) {
 					// 不增加_parentId才能显示
-				} else if (demandPlan
-						.getPlanCreateUserId() != null) {
+				} else if (demandPlan.getPlanCreateUserId() != null) {
 					// 不增加_parentId才能显示
 				} else {
-					item.put("_parentId",
-							item.get("UP_PLAN_ID"));
+					item.put("_parentId", item.get("UP_PLAN_ID"));
 				}
 			}
 		}
 		int count = demandPlanMapper
-				.selectCountOfDemandPlansForPage(
-						demandPlan);
+				.selectCountOfDemandPlansForPage(demandPlan);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", demandPlans);
 		map.put("total", count);
@@ -150,15 +179,12 @@ public class DemandPlanServiceImpl
 
 	@Override
 	public Map<String, Object> updateDemandPlansAndDetails(
-			DemandPlan demandPlan, String toolIds,
-			String toolAmounts) {
+			DemandPlan demandPlan, String toolIds, String toolAmounts) {
 		int bool = demandPlanDetailService
 				.deleteByDemandPlan(demandPlan);
-		bool = demandPlanMapper
-				.updateByPrimaryKeySelective(demandPlan);
+		bool = demandPlanMapper.updateByPrimaryKeySelective(demandPlan);
 		bool = demandPlanDetailService.addDemandPlanDetails(
-				demandPlan.getPlanId(), toolIds,
-				toolAmounts);
+				demandPlan.getPlanId(), toolIds, toolAmounts);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (bool == 0) {
 			map.put("success", false);
@@ -171,8 +197,28 @@ public class DemandPlanServiceImpl
 	}
 
 	@Override
-	public Map<String, Object> updateDemandPlan(
-			DemandPlan demandPlan) {
+	public Map<String, Object> updateDemandPlansAndDetails(
+			DemandPlan demandPlan, String toolIds, String toolAmounts,
+			String toolSumAmounts) {
+		int bool = demandPlanDetailService
+				.deleteByDemandPlan(demandPlan);
+		bool = demandPlanMapper.updateByPrimaryKeySelective(demandPlan);
+		bool = demandPlanDetailService.addDemandPlanDetails(
+				demandPlan.getPlanId(), toolIds, toolAmounts,
+				toolSumAmounts);
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "更新出错，请联系管理员");
+		} else {
+			map.put("success", true);
+			map.put("msg", "更新成功");
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> updateDemandPlan(DemandPlan demandPlan) {
 		int bool = demandPlanMapper
 				.updateByPrimaryKeySelective(demandPlan);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -203,14 +249,12 @@ public class DemandPlanServiceImpl
 			// 查询子需求计划的id串
 			String parentPlanId = planId_arr[i];
 			temp = new DemandPlan();
-			temp.setUpPlanId(
-					BaseUtil.strToLong(parentPlanId));
+			temp.setUpPlanId(BaseUtil.strToLong(parentPlanId));
 			List<DemandPlan> subDemandPlanList = demandPlanMapper
 					.selectDemandPlansForList(temp);
 			String subDemandPlanIds = "";
 			for (DemandPlan demandPlanItem : subDemandPlanList) {
-				subDemandPlanIds += demandPlanItem
-						.getPlanId() + ",";
+				subDemandPlanIds += demandPlanItem.getPlanId() + ",";
 			}
 			subDemandPlanIds = subDemandPlanIds.substring(0,
 					subDemandPlanIds.length() - 1);
@@ -218,27 +262,24 @@ public class DemandPlanServiceImpl
 			// 1.查询工器具id以及数量
 			String toolIds = "";
 			String toolAmounts = "";
+			String toolSumAmounts = "";
 			temp = new DemandPlan();
 			temp.setIds(subDemandPlanIds);
 			List<Map<String, Object>> subDemandPlanDetailList = demandPlanDetailService
-					.selectSumDemandPlanDetailsForList(
-							temp);
+					.selectSumDemandPlanDetailsForList(temp);
 			for (Map<String, Object> demandPlanDetail : subDemandPlanDetailList) {
-				toolIds += demandPlanDetail.get("TOOL_ID")
-						.toString() + ",";
-				toolAmounts += demandPlanDetail
-						.get("TOOL_AMOUNT").toString()
+				toolIds += demandPlanDetail.get("TOOL_ID").toString()
 						+ ",";
+				toolSumAmounts += demandPlanDetail.get("TOOL_AMOUNT")
+						.toString() + ",";
 			}
 			// 2.插入汇总数据
 			temp = new DemandPlan();
 			temp.setIds(parentPlanId);
-			int bool = demandPlanDetailService
-					.deleteByDemandPlan(temp);
-			bool = demandPlanDetailService
-					.addDemandPlanDetails(
-							BaseUtil.strToInt(planIds),
-							toolIds, toolAmounts);
+			int bool = demandPlanDetailService.deleteByDemandPlan(temp);
+			bool = demandPlanDetailService.addDemandPlanDetails(
+					BaseUtil.strToInt(planIds), toolIds, toolAmounts,
+					toolSumAmounts);
 			if (bool == 0) {
 				map.put("success", false);
 				map.put("msg", "更新出错，请联系管理员");

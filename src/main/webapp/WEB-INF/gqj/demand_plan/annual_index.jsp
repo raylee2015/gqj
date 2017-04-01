@@ -1,7 +1,7 @@
 <%@page import="com.base.admin.entity.User"%>
 <%@page import="com.base.util.DateUtil"%>
-<%@ page language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 	String opType = request.getParameter("OP_TYPE");
@@ -10,8 +10,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type"
-	content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -31,8 +30,7 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript"
-	src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//关闭选择人员窗口
 	function closeChooseUserForAnnualPlanUI() {
@@ -101,6 +99,20 @@
 		}
 	}
 
+	//导出
+	function exportDemandPlans() {
+		if (checkSelectedItems('datagridForDemandPlan', '请选择需求计划')) {
+			var ids = getIdsOfSelectedItems('datagridForDemandPlan', 'PLAN_ID');
+			if (ids != null && ids != '') {
+				var params = {
+					PLAN_IDS : ids
+				};
+				showMessageBox(params, 'exportDemandPlans.do', '是否导出所选需求计划?',
+						successFunctionForOption);
+			}
+		}
+	}
+
 	//回调函数，删除或其他操作成功后调用
 	function successFunctionForOption(result) {
 		showMessage(result.msg, result.msg);
@@ -148,6 +160,10 @@
 				if (opType == 'EDIT' || opType == 'AUDIT_BY_DEPT') {
 					$('#datagridForDemandPlanDetail').treegrid('showColumn',
 							'op');
+				}
+				if (opType == 'AUDIT_BY_DEPT') {
+					$('#datagridForDemandPlanDetail').treegrid('showColumn',
+							'TOOL_SUM_AMOUNT');
 				}
 			});
 
@@ -421,6 +437,12 @@
 										width : 80,
 									},
 									{
+										field : 'TOOL_SUM_AMOUNT',
+										title : '班组汇总数量',
+										hidden : true,
+										width : 100,
+									},
+									{
 										field : 'TOOL_AMOUNT',
 										formatter : function(fieldValue,
 												rowData, rowIndex) {
@@ -437,7 +459,7 @@
 													+ ',this.value)" />';
 											return textInput;
 										},
-										title : '数量',
+										title : '备品数量',
 										width : 80,
 									} ] ],
 							onLoadError : function() {
@@ -479,6 +501,8 @@
 	function toDetail(planId, planCode, planRemark, planStatus) {
 		opType = 'edit';
 		queryDemandPlanDetailsForList(planId);
+		setTextBoxValue('demandPlanIdTextInput', planId);
+		setTextBoxValue('demandPlanStatusTextInput', planStatus);
 		setTextBoxValue('demandPlanCodeTextInput', planCode);
 		setTextBoxValue('demandPlanRemarkTextInput', planRemark);
 		if (planStatus == 7) {
@@ -571,6 +595,7 @@
 			}
 		}
 		for (var j = 0; j < selectedItems.length; j++) {
+			selectedItems[j].TOOL_SUM_AMOUNT = 0;
 			data.rows.push(selectedItems[j]);
 		}
 		$('#datagridForDemandPlanDetail').datagrid('loadData', data);
@@ -607,21 +632,29 @@
 		}
 		var toolIds = '';
 		var toolAmounts = '';
+		var toolSumAmounts = '';
 		for (var i = 0; i < demandPlanDetails.length; i++) {
 			if (demandPlanDetails[i].TOOL_AMOUNT != null) {
 				toolIds += demandPlanDetails[i].TOOL_ID + ',';
 				toolAmounts += demandPlanDetails[i].TOOL_AMOUNT + ',';
+				if (typeof (demandPlanDetails[i].TOOL_SUM_AMOUNT) != 'undefined') {
+					toolSumAmounts += demandPlanDetails[i].TOOL_SUM_AMOUNT
+							+ ',';
+				}
 			}
 		}
 		toolIds = toolIds.substring(0, toolIds.length - 1);
 		toolAmounts = toolAmounts.substring(0, toolAmounts.length - 1);
-		rowData = getRowDataOfSelfTreeGrid('datagridForDemandPlan',
-				rowIndexOfDataGrid);
+		toolSumAmounts = toolSumAmounts.substring(0, toolSumAmounts.length - 1);
+		var planId = getTextBoxValue('demandPlanIdTextInput');
+		var planStatus = getTextBoxValue('demandPlanStatusTextInput');
 		params = {
-			PLAN_ID : rowData.PLAN_ID,
+			PLAN_ID : planId,
+			PLAN_STATUS : planStatus,
 			PLAN_TYPE : 0,//年度计划
 			PLAN_CODE : demandPlanCode,
 			TOOL_IDS : toolIds,
+			TOOL_SUM_AMOUNTS : toolSumAmounts,
 			TOOL_AMOUNTS : toolAmounts,
 			PLAN_REMARK : demandPlanRemark
 		};
@@ -830,68 +863,56 @@
 </head>
 <body>
 	<div style="display: none">
-		<input id="opType" class="easyui-textbox"
-			value="<%=opType%>" /><input id="planType"
-			class="easyui-textbox" value="<%=planType%>" /> <input
+		<input id="opType" class="easyui-textbox" value="<%=opType%>" /><input
+			id="planType" class="easyui-textbox" value="<%=planType%>" /> <input
 			id="planCode" class="easyui-textbox"
 			value="<%=(DateUtil.getNow() + " "
-					+ ((User) request.getSession()
-							.getAttribute("user"))
-									.getUserDeptName()
-					+ "临时需求计划")%>" />
+							+ ((User) request.getSession()
+									.getAttribute("user"))
+											.getUserDeptName()
+							+ "临时需求计划")%>" />
 	</div>
 	<div id="demandPlanListUI" class="easyui-panel"
 		data-options="fit:true,border:false">
 		<!-- 列表页面 -->
-		<div class="easyui-layout"
-			data-options="fit:true,border:false">
+		<div class="easyui-layout" data-options="fit:true,border:false">
 			<div data-options="fit:true,border:false,region:'center'">
-				<table id="datagridForDemandPlan"
-					class="easyui-treegrid">
+				<table id="datagridForDemandPlan" class="easyui-treegrid">
 				</table>
 				<div id="toolbarForDemandPlan">
 					<table style="width: 100%">
 						<tr>
 							<td><a href="#" class="easyui-linkbutton"
 								iconCls="icon-reload" plain="true"
-								onclick="reloadTreeGrid('datagridForDemandPlan')">刷新</a>
-								<%
-									if ("EDIT".equals(opType)) {
-								%> <a href="#" class="easyui-linkbutton"
-								iconCls="icon-edit" plain="true"
-								onclick="submitDemandPlans()">提交</a> <%
- 	} else if ("AUDIT_BY_WORK_GROUP"
- 			.equals(opType)) {
- %> <a href="#" class="easyui-linkbutton"
-								iconCls="icon-application_go" plain="true"
-								onclick="passDemandPlansByWorkGroup()">通过</a> <a
-								href="#" class="easyui-linkbutton"
-								iconCls="icon-cross" plain="true"
-								onclick="unPassDemandPlansByWorkGroup()">不通过</a> <%
+								onclick="reloadTreeGrid('datagridForDemandPlan')">刷新</a> <a
+								href="#" class="easyui-linkbutton" iconCls="icon-download"
+								plain="true" onclick="exportDemandPlans()">导出</a> <%
+ 	if ("EDIT".equals(opType)) {
+ %> <a href="#" class="easyui-linkbutton" iconCls="icon-edit"
+								plain="true" onclick="submitDemandPlans()">提交</a> <%
+ 	} else if ("AUDIT_BY_WORK_GROUP".equals(opType)) {
+ %> <a href="#" class="easyui-linkbutton" iconCls="icon-application_go"
+								plain="true" onclick="passDemandPlansByWorkGroup()">通过</a> <a
+								href="#" class="easyui-linkbutton" iconCls="icon-cross"
+								plain="true" onclick="unPassDemandPlansByWorkGroup()">不通过</a> <%
  	} else if ("AUDIT_BY_DEPT".equals(opType)) {
  %> <a href="#" class="easyui-linkbutton" iconCls="icon-add"
-								plain="true"
-								onclick="openChooseDeptForAnnualPlanUI()">发起年度计划</a><a
-								href="#" class="easyui-linkbutton"
-								iconCls="icon-add" plain="true"
-								onclick="totalToolForParentDemandPlan()">汇总年度计划</a><a
-								href="#" class="easyui-linkbutton"
-								iconCls="icon-application_go" plain="true"
-								onclick="passDemandPlansByDept()">通过</a> <a href="#"
-								class="easyui-linkbutton" iconCls="icon-cross"
-								plain="true" onclick="unPassDemandPlansByDept()">不通过</a>
-								<a href="#" class="easyui-linkbutton"
-								iconCls="icon-application_go" plain="true"
-								onclick="finishDemandPlansByDept()">完成</a> <%
+								plain="true" onclick="openChooseDeptForAnnualPlanUI()">发起年度计划</a><a
+								href="#" class="easyui-linkbutton" iconCls="icon-add"
+								plain="true" onclick="totalToolForParentDemandPlan()">汇总年度计划</a><a
+								href="#" class="easyui-linkbutton" iconCls="icon-application_go"
+								plain="true" onclick="passDemandPlansByDept()">通过</a> <a
+								href="#" class="easyui-linkbutton" iconCls="icon-cross"
+								plain="true" onclick="unPassDemandPlansByDept()">不通过</a> <a
+								href="#" class="easyui-linkbutton" iconCls="icon-application_go"
+								plain="true" onclick="finishDemandPlansByDept()">完成</a> <%
  	if ("ANNUAL".equals(planType)) {
- %> <a href="#" class="easyui-linkbutton"
-								iconCls="icon-remove" plain="true"
-								onclick="delDemandPlans()">删除</a> <%
+ %> <a href="#" class="easyui-linkbutton" iconCls="icon-remove"
+								plain="true" onclick="delDemandPlans()">删除</a> <%
  	}
  	}
  %></td>
-							<td align="right"><input
-								id="keyWordForDemandPlanTextInput"
+							<td align="right"><input id="keyWordForDemandPlanTextInput"
 								class="easyui-textbox"
 								data-options="prompt:'需求计划名称',validType:'length[0,50]'"
 								style="width: 200px"> <a href="#"
@@ -905,8 +926,11 @@
 	</div>
 	<div id="demandPlanDetailUI" class="easyui-panel"
 		data-options="fit:true,border:false">
-		<table id="datagridForDemandPlanDetail"
-			class="easyui-datagrid">
+		<div style="display: none">
+			<input id="demandPlanIdTextInput" class="easyui-textbox" /> <input
+				id="demandPlanStatusTextInput" class="easyui-textbox" />
+		</div>
+		<table id="datagridForDemandPlanDetail" class="easyui-datagrid">
 		</table>
 		<div id="toolbarForDemandPlanDetail">
 			<div>
@@ -915,41 +939,33 @@
 				<%
 					if ("EDIT".equals(opType)) {
 				%>
-				<a href="#" id="saveBtn" class="easyui-linkbutton"
-					iconCls="icon-ok" plain="true"
-					onclick="saveDemandPlan()">保存</a><a href="#"
-					id="addToolBtn" class="easyui-linkbutton"
-					iconCls="icon-add" plain="true"
-					onclick="openChooseToolDemandUIForDemandPlan()">添加工器具</a>
+				<a href="#" id="saveBtn" class="easyui-linkbutton" iconCls="icon-ok"
+					plain="true" onclick="saveDemandPlan()">保存</a><a href="#"
+					id="addToolBtn" class="easyui-linkbutton" iconCls="icon-add"
+					plain="true" onclick="openChooseToolDemandUIForDemandPlan()">添加工器具</a>
 				<a href="#" id="submitBtn" class="easyui-linkbutton"
-					iconCls="icon-add" plain="true"
-					onclick="submitDemandPlan()">提交</a> <span
-					id="addTemplateBtnGroup"></span>
+					iconCls="icon-add" plain="true" onclick="submitDemandPlan()">提交</a>
+				<span id="addTemplateBtnGroup"></span>
 				<%
-					} else if ("AUDIT_BY_WORK_GROUP"
-							.equals(opType)) {
+					} else if ("AUDIT_BY_WORK_GROUP".equals(opType)) {
 				%><a href="#" class="easyui-linkbutton"
 					iconCls="icon-application_go" plain="true"
-					onclick="passDemandPlanByWorkGroup()">通过</a> <a
-					href="#" class="easyui-linkbutton" iconCls="icon-cross"
-					plain="true" onclick="unPassDemandPlanByWorkGroup()">不通过</a>
+					onclick="passDemandPlanByWorkGroup()">通过</a> <a href="#"
+					class="easyui-linkbutton" iconCls="icon-cross" plain="true"
+					onclick="unPassDemandPlanByWorkGroup()">不通过</a>
 				<%
 					} else if ("AUDIT_BY_DEPT".equals(opType)) {
 				%>
-				<a href="#" id="saveBtn" class="easyui-linkbutton"
-					iconCls="icon-ok" plain="true"
-					onclick="saveDemandPlan()">保存</a><a href="#"
-					id="addToolBtn" class="easyui-linkbutton"
-					iconCls="icon-add" plain="true"
-					onclick="openChooseToolDemandUIForDemandPlan()">添加工器具</a>
-				<a href="#" class="easyui-linkbutton"
-					iconCls="icon-application_go" plain="true"
-					onclick="passDemandPlanByDept()">通过</a> <a href="#"
-					class="easyui-linkbutton" iconCls="icon-cross"
-					plain="true" onclick="unPassDemandPlanByDept()">不通过</a>
-				<a href="#" class="easyui-linkbutton"
-					iconCls="icon-application_go" plain="true"
-					onclick="finishDemandPlanByDept()">完成</a> <span
+				<a href="#" id="saveBtn" class="easyui-linkbutton" iconCls="icon-ok"
+					plain="true" onclick="saveDemandPlan()">保存</a><a href="#"
+					id="addToolBtn" class="easyui-linkbutton" iconCls="icon-add"
+					plain="true" onclick="openChooseToolDemandUIForDemandPlan()">添加工器具</a>
+				<a href="#" class="easyui-linkbutton" iconCls="icon-application_go"
+					plain="true" onclick="passDemandPlanByDept()">通过</a> <a href="#"
+					class="easyui-linkbutton" iconCls="icon-cross" plain="true"
+					onclick="unPassDemandPlanByDept()">不通过</a> <a href="#"
+					class="easyui-linkbutton" iconCls="icon-application_go"
+					plain="true" onclick="finishDemandPlanByDept()">完成</a> <span
 					id="addTemplateBtnGroup"></span>
 				<%
 					}

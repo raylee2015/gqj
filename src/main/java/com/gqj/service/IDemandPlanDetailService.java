@@ -21,4 +21,7 @@ public interface IDemandPlanDetailService {
 	List<Map<String, Object>> selectSumDemandPlanDetailsForList(
 			DemandPlan demandPlan);
 
+	int addDemandPlanDetails(long demandPlanId, String toolIds,
+			String toolAmounts, String toolSumAmounts);
+
 }

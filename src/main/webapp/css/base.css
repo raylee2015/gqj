@@ -41,3 +41,11 @@
 	background: url('../img/IconsExtension/application_add.png') no-repeat
 		center center;
 }
+.icon-disk_download {
+	background: url('../img/IconsExtension/disk_download.png') no-repeat
+		center center;
+}
+.icon-download {
+	background: url('../img/IconsExtension/download.png') no-repeat center
+		center;
+}
