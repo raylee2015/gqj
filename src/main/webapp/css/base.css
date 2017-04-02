@@ -7,12 +7,12 @@
 }
 
 .icon-person {
-	background: url('../img/../img/IconsExtension/03.png') no-repeat center
+	background: url('../img/IconsExtension/03.png') no-repeat center
 		center;
 }
 
 .icon-medal-gold {
-	background: url('../img/../img/IconsExtension/medal_gold_3.png')
+	background: url('../img/IconsExtension/medal_gold_3.png')
 		no-repeat center center;
 }
 
@@ -47,5 +47,13 @@
 }
 .icon-download {
 	background: url('../img/IconsExtension/download.png') no-repeat center
+		center;
+}
+.icon-disk_upload {
+	background: url('../img/IconsExtension/disk_upload.png') no-repeat
+		center center;
+}
+.icon-bug_fix {
+	background: url('../img/IconsExtension/bug_fix.png') no-repeat center
 		center;
 }
