@@ -45,6 +45,26 @@
 		ORDER BY M.MENU_LEVEL,M.MENU_SORT,M.MENU_ID
 
 	</select>
+	<select id="queryMenusForObject" parameterType="com.base.admin.entity.Menu"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_BASE_MENU
+		where menu_id!=0
+		<if test="upMenuId != null">
+			and UP_MENU_ID = #{upMenuId}
+		</if>
+		<if test="menuId != null">
+			and MENU_ID = #{menuId}
+		</if>
+		<if test="keyWord != null">
+			AND MENU_NAME like '%${keyWord}%'
+		</if>
+		<if test="menuInnerCode != null and menuInnerCode!=''">
+			AND MENU_ID IN (${menuInnerCode})
+		</if>
+		order by MENU_SORT,MENU_ID
+	</select>
 	<select id="queryMenusForPage" parameterType="com.base.admin.entity.Menu"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (

@@ -52,10 +52,12 @@ public class MenuServiceImpl implements IMenuService {
 	}
 
 	@Override
-	public Map<String, Object> queryMenusForPage(Menu menu) {
+	public Map<String, Object> queryMenusForPage(
+			Menu menu) {
 		List<Map<String, Object>> menus = menuMapper
 				.queryMenusForPage(menu);
-		int count = menuMapper.queryCountOfMenusForPage(menu);
+		int count = menuMapper
+				.queryCountOfMenusForPage(menu);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", menus);
 		map.put("total", count);
@@ -63,7 +65,14 @@ public class MenuServiceImpl implements IMenuService {
 	}
 
 	@Override
-	public List<Map<String, Object>> queryMenusForList(User user) {
+	public Map<String, Object> queryMenusForObject(
+			Menu menu) {
+		return menuMapper.queryMenusForObject(menu);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryMenusForList(
+			User user) {
 		return menuMapper.queryMenusForList(user);
 	}
 
@@ -73,7 +82,8 @@ public class MenuServiceImpl implements IMenuService {
 				.queryMenusForTree(menu);
 		JSONArray menuArr = JSONArray.fromObject(menus);
 		String tree = BaseUtil
-				.list2Tree(menuArr, -1, "id", "up_menu_id", "children")
+				.list2Tree(menuArr, -1, "id", "up_menu_id",
+						"children")
 				.toString().toLowerCase();
 		return tree;
 	}
@@ -81,7 +91,8 @@ public class MenuServiceImpl implements IMenuService {
 	@Override
 	public Map<String, Object> updateMenu(Menu menu) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = menuMapper.updateByPrimaryKeySelective(menu);
+		int bool = menuMapper
+				.updateByPrimaryKeySelective(menu);
 		bool = menuMapper.updataInnerData();
 		if (bool == 0) {
 			map.put("success", false);

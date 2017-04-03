@@ -5,6 +5,7 @@
 	String contextPath = request.getContextPath();
 	User user = (User) request.getSession().getAttribute("user");
 	String userName = user.getUserName();
+	String url = request.getAttribute("url").toString();
 %>
 <!DOCTYPE html>
 <html>
@@ -132,7 +133,10 @@
 		<div id="tab"
 			data-options="tools:'#tab-tools',toolPosition:'left'"
 			class="easyui-tabs" style="width: 100%; height: 100%;">
-			<div title="首页" style="width: 100%; height: 100%;">欢迎使用综合管理平台</div>
+			<div title="首页" style="width: 100%; height: 100%;">
+				<iframe scrolling="auto" frameborder="0" src="<%=url%>"
+					style="width: 100%; height: 99.5%;"></iframe>
+			</div>
 		</div>
 		<div id="tab-tools">
 			<a href="#" class="easyui-menubutton"

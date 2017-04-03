@@ -17,6 +17,8 @@ public interface MenuMapper {
 
 	List<Map<String, Object>> queryMenusForPage(Menu menu);
 
+	Map<String, Object> queryMenusForObject(Menu menu);
+
 	List<Map<String, Object>> queryMenusForList(User user);
 
 	int queryCountOfMenusForPage(Menu menu);

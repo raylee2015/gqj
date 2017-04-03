@@ -19,4 +19,6 @@ public interface IMenuService {
 	Map<String, Object> queryMenusForPage(Menu menu);
 
 	List<Map<String, Object>> queryMenusForList(User user);
+
+	Map<String, Object> queryMenusForObject(Menu menu);
 }
