@@ -24,6 +24,24 @@
 		</where>
 		group by t.tool_id
 	</select>
+	<select id="selectArriveToolListForDemandPlanDetails"
+		parameterType="com.gqj.entity.DemandPlan" resultType="java.util.HashMap">
+		select b.TOOL_DEMAND_ID as TOOL_ID,d.DETAIL_BILL_AMOUNT AS
+		TOOL_ARRIVE_AMOUNT from
+		GQJ_MATERIAL_BILL_DETAIL d
+		left join
+		gqj_base_tool b on b.base_tool_id
+		= d.base_tool_id
+		where d.bill_id in (
+		select t.bill_id from
+		GQJ_MATERIAL_BILL t
+		<where>
+			<if test="planId != null and planId!=''">
+				AND t.PLAN_ID = #{planId}
+			</if>
+		</where>
+		)
+	</select>
 	<select id="selectDemandPlanDetailsForList" parameterType="com.gqj.entity.DemandPlan"
 		resultType="java.util.HashMap">
 		select * from VIEW_GQJ_DEMAND_PLAN_DETAIL

@@ -13,6 +13,9 @@ public interface DemandPlanDetailMapper {
 	List<Map<String, Object>> selectSumDemandPlanDetailsForList(
 			DemandPlan demandPlan);
 
+	List<Map<String, Object>> selectArriveToolListForDemandPlanDetails(
+			DemandPlan demandPlan);
+
 	List<Map<String, Object>> selectDemandPlanDetailsForPage(
 			DemandPlanDetail demandPlanDetail);
 

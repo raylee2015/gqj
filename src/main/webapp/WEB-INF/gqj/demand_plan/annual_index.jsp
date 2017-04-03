@@ -460,7 +460,7 @@
 												rowData, rowIndex) {
 											var toolAmount = "";
 											if (typeof (rowData.TOOL_AMOUNT) == 'undefined') {
-												rowData.TOOL_AMOUNT=0;
+												rowData.TOOL_AMOUNT = 0;
 												toolAmount = "0";
 											} else {
 												toolAmount = rowData.TOOL_AMOUNT;
@@ -538,8 +538,10 @@
 
 	//根据需求计划id查询明细
 	function queryDemandPlanDetailsForList(planId) {
+		var opType = getTextBoxValue('opType');
 		var params = {
 			PLAN_ID : planId,
+			OP_TYPE : opType
 		};
 		query(params, 'queryDemandPlanDetailsForList.do',
 				successFunctionForQueryDemandPlanDetails);
@@ -905,7 +907,6 @@
 	function successFunctionForTotal(result) {
 		alert("汇总成功");
 	}
-
 </script>
 </head>
 <body>

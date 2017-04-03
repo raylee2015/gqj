@@ -280,11 +280,12 @@ public class DemandPlanController extends BaseController {
 			HttpServletResponse response) throws Exception {
 		String demandPlanId = request
 				.getParameter("PLAN_ID");
+		String opType = request.getParameter("OP_TYPE");
 		DemandPlan demandPlan = new DemandPlan();
 		demandPlan.setPlanId(
 				BaseUtil.strToLong(demandPlanId));
 		return demandPlanDetailService
-				.selectDemandPlanDetailsForList(demandPlan);
+				.selectDemandPlanDetailsForList(demandPlan,opType);
 	}
 
 	@Autowired

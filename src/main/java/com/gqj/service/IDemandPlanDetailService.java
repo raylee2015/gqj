@@ -16,7 +16,7 @@ public interface IDemandPlanDetailService {
 			DemandPlanDetail demandPlanDetail);
 
 	Map<String, Object> selectDemandPlanDetailsForList(
-			DemandPlan demandPlan);
+			DemandPlan demandPlan,String opType);
 
 	List<Map<String, Object>> selectSumDemandPlanDetailsForList(
 			DemandPlan demandPlan);
