@@ -7,17 +7,17 @@
 }
 
 .icon-person {
-	background: url('../img/IconsExtension/03.png') no-repeat center
+	background: url('../img/03.png') no-repeat center
 		center;
 }
 
 .icon-medal-gold {
-	background: url('../img/IconsExtension/medal_gold_3.png')
+	background: url('../img/medal_gold_3.png')
 		no-repeat center center;
 }
 
 .icon-control_power {
-	background: url('../img/IconsExtension/control_power.png') no-repeat
+	background: url('../img/control_power.png') no-repeat
 		center center;
 }
 
@@ -27,33 +27,33 @@
 }
 
 .icon-application_go {
-	background: url('../img/IconsExtension/application_go.png') no-repeat
+	background: url('../img/application_go.png') no-repeat
 		center center;
 }
 
 .icon-cross {
-	background: url('../img/IconsExtension/cross.png') no-repeat center
+	background: url('../img/cross.png') no-repeat center
 		center;
 }
 
 
 .icon-application_add {
-	background: url('../img/IconsExtension/application_add.png') no-repeat
+	background: url('../img/application_add.png') no-repeat
 		center center;
 }
 .icon-disk_download {
-	background: url('../img/IconsExtension/disk_download.png') no-repeat
+	background: url('../img/disk_download.png') no-repeat
 		center center;
 }
 .icon-download {
-	background: url('../img/IconsExtension/download.png') no-repeat center
+	background: url('../img/download.png') no-repeat center
 		center;
 }
 .icon-disk_upload {
-	background: url('../img/IconsExtension/disk_upload.png') no-repeat
+	background: url('../img/disk_upload.png') no-repeat
 		center center;
 }
 .icon-bug_fix {
-	background: url('../img/IconsExtension/bug_fix.png') no-repeat center
+	background: url('../img/bug_fix.png') no-repeat center
 		center;
 }
