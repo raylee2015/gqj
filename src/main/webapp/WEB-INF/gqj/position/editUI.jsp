@@ -135,7 +135,7 @@
 
 	//选择仓库
 	function chooseStorage() {
-		var selectedItems = $('#datagridForStorage').datagrid('getSelections');
+		var selectedItems = $('#datagridForStorage').datagrid('getChecked');
 		if (selectedItems.length == 0) {
 			alert("请选择仓库");
 			return;

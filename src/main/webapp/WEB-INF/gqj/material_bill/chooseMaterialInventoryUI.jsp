@@ -136,7 +136,7 @@
 
 	function choose() {
 		var selectedItems = $('#datagridForMaterialInventory').datagrid(
-				'getSelections');
+				'getChecked');
 		var data = parent.$('#datagridForMaterialBillDetail').datagrid(
 				'getData');
 		if (data.rows.length == 0) {

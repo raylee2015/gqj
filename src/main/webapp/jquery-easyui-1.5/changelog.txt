@@ -190,7 +190,7 @@ Version 1.3.5
  * pagination: The 'layout' property can be used to customize the pagination layout.
  * accordion: Add 'unselect' method that will trigger 'onUnselect' event.
  * accordion: Add 'selected' and 'multiple' properties.
- * accordion: Add 'getSelections' method.
+ * accordion: Add 'getChecked' method.
  * datebox: Add 'sharedCalendar' property that allows multiple datebox components share one calendar component.
 
 Version 1.3.4

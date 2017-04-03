@@ -81,7 +81,7 @@
 	}
 
 	function choose() {
-		var selectedItems = $('#datagridForUser').datagrid('getSelections');
+		var selectedItems = $('#datagridForUser').datagrid('getChecked');
 		if (selectedItems.length == 0) {
 			alert('请选择人员');
 			return;

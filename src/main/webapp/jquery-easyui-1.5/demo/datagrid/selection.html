@@ -14,7 +14,7 @@
 	<p>Choose a selection mode and select one or more rows.</p>
 	<div style="margin:20px 0;">
 		<a href="#" class="easyui-linkbutton" onclick="getSelected()">GetSelected</a>
-		<a href="#" class="easyui-linkbutton" onclick="getSelections()">GetSelections</a>
+		<a href="#" class="easyui-linkbutton" onclick="getChecked()">getChecked</a>
 	</div>
 	<table id="dg" class="easyui-datagrid" title="DataGrid Selection" style="width:700px;height:250px"
 			data-options="singleSelect:true,url:'datagrid_data1.json',method:'get'">
@@ -43,9 +43,9 @@
 				$.messager.alert('Info', row.itemid+":"+row.productid+":"+row.attr1);
 			}
 		}
-		function getSelections(){
+		function getChecked(){
 			var ss = [];
-			var rows = $('#dg').datagrid('getSelections');
+			var rows = $('#dg').datagrid('getChecked');
 			for(var i=0; i<rows.length; i++){
 				var row = rows[i];
 				ss.push('<span>'+row.itemid+":"+row.productid+":"+row.attr1+'</span>');

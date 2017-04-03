@@ -84,12 +84,12 @@
 		}
 	}
 	
-	function getSelections(container){
+	function getChecked(container){
 		return findBy(container, 'collapsed', false, true);
 	}
 	
 	function getSelected(container){
-		var pp = getSelections(container);
+		var pp = getChecked(container);
 		return pp.length ? pp[0] : null;
 	}
 	
@@ -166,7 +166,7 @@
 				}
 				if (!opts.multiple){
 					// get all selected panel
-					var all = $.grep(getSelections(container), function(p){
+					var all = $.grep(getChecked(container), function(p){
 						return p.panel('options').collapsible;
 					});
 					for(var i=0; i<all.length; i++){
@@ -353,8 +353,8 @@
 				setSize(this, param);
 			});
 		},
-		getSelections: function(jq){
-			return getSelections(jq[0]);
+		getChecked: function(jq){
+			return getChecked(jq[0]);
 		},
 		getSelected: function(jq){
 			return getSelected(jq[0]);

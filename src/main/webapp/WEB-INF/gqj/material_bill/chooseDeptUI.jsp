@@ -92,7 +92,7 @@
 	}
 
 	function choose() {
-		var selectedItems = $('#datagridForDept').datagrid('getSelections');
+		var selectedItems = $('#datagridForDept').datagrid('getChecked');
 		if (selectedItems.length == 0) {
 			alert("请选择部门");
 			return;

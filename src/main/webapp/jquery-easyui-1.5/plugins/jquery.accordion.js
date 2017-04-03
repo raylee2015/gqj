@@ -281,7 +281,7 @@ return $.data(jq[0],"accordion").panels;
 return jq.each(function(){
 _1(this,_55);
 });
-},getSelections:function(jq){
+},getChecked:function(jq){
 return _14(jq[0]);
 },getSelected:function(jq){
 return _16(jq[0]);

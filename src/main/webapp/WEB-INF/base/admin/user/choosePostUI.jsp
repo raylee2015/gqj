@@ -127,7 +127,7 @@
 	//为职位配置岗位
 	function addPostsToUser() {
 		var rowDatas = $('#datagridOfUnSelectedPosts')
-				.datagrid('getSelections');
+				.datagrid('getChecked');
 		if (rowDatas.length == 0) {
 			alert('请选择待选岗位');
 		} else {
@@ -155,7 +155,7 @@
 
 	//删除
 	function delPostsToUser() {
-		var rowDatas = $('#datagridOfSelectedPosts').datagrid('getSelections');
+		var rowDatas = $('#datagridOfSelectedPosts').datagrid('getChecked');
 		if (rowDatas.length == 0) {
 			alert('请选择已选岗位');
 		} else {

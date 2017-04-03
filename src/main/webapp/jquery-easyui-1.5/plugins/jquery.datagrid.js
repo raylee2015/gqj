@@ -2005,7 +2005,7 @@ return _122(jq[0]);
 },getSelected:function(jq){
 var rows=_11f(jq[0]);
 return rows.length>0?rows[0]:null;
-},getSelections:function(jq){
+},getChecked:function(jq){
 return _11f(jq[0]);
 },clearSelections:function(jq){
 return jq.each(function(){

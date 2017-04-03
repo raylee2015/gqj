@@ -469,7 +469,7 @@ return (_5a.iconAlign=="left"?-_5c:0)+(_5a.buttonAlign=="left"?-_5d:0)-1;
 return _5c/2*(_5a.iconAlign=="right"?1:-1)+_5d/2*(_5a.buttonAlign=="right"?1:-1);
 }
 }
-},getSelectionStart:function(jq){
+},getCheckedtart:function(jq){
 return jq.textbox("getSelectionRange").start;
 },getSelectionRange:function(jq){
 var _5e=jq.textbox("textbox")[0];

@@ -39,7 +39,7 @@ vv.splice(i,0,c);
 }
 }
 }
-var _d=t.passwordbox("getSelectionStart");
+var _d=t.passwordbox("getCheckedtart");
 if(cc.length<vv.length){
 vv.splice(_d,vv.length-cc.length,"");
 }

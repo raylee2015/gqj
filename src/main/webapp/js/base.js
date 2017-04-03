@@ -140,7 +140,7 @@ function getIdsOfSelectedItems(dataGridId, columnNameForSelect) {
 // 检查是否选中了记录
 function checkSelectedItems(dataGridId, tipsForUnSelected) {
 	var dataGrid = eval('$(\'#' + dataGridId + '\')');
-	var rowDatas = dataGrid.datagrid('getSelections');
+	var rowDatas = dataGrid.datagrid('getChecked');
 	if (rowDatas.length == 0) {
 		alert(tipsForUnSelected);
 		return false;

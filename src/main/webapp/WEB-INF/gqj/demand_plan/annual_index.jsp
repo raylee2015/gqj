@@ -18,11 +18,11 @@
 <meta http-equiv="Cache-control" content="no-cache">
 <meta http-equiv="Cache" content="no-cache">
 <link rel="stylesheet" type="text/css"
+	href="<%=contextPath%>/css/base.css">
+<link rel="stylesheet" type="text/css"
 	href="<%=contextPath%>/jquery-easyui-1.5/themes/default/easyui.css">
 <link rel="stylesheet" type="text/css"
 	href="<%=contextPath%>/jquery-easyui-1.5/themes/icon.css">
-<link rel="stylesheet" type="text/css"
-	href="<%=contextPath%>/css/base.css">
 <link rel="stylesheet" type="text/css"
 	href="<%=contextPath%>/jquery-easyui-1.5/demo/demo.css">
 <script type="text/javascript"
@@ -166,6 +166,8 @@
 				if (opType == 'AUDIT_BY_DEPT') {
 					$('#datagridForDemandPlanDetail').treegrid('showColumn',
 							'TOOL_SUM_AMOUNT');
+					$('#datagridForDemandPlanDetail').treegrid('showColumn',
+							'TOOL_ARRIVE_AMOUNT');
 				}
 			});
 
@@ -443,6 +445,12 @@
 									{
 										field : 'TOOL_SUM_AMOUNT',
 										title : '班组汇总数量',
+										hidden : true,
+										width : 100,
+									},
+									{
+										field : 'TOOL_ARRIVE_AMOUNT',
+										title : '已到货数量',
 										hidden : true,
 										width : 100,
 									},
@@ -872,7 +880,7 @@
 	function totalToolForParentDemandPlan() {
 		//检查是否只是选择父需求计划
 		var dataGrid = eval('$(\'#datagridForDemandPlan\')');
-		var rowDatas = dataGrid.datagrid('getSelections');
+		var rowDatas = dataGrid.datagrid('getChecked');
 		if (rowDatas.length > 0) {
 			for (var i = 0; i < rowDatas.length; i++) {
 				if (rowDatas[i].UP_PLAN_ID != null) {

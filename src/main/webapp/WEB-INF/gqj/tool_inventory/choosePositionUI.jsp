@@ -95,7 +95,7 @@
 	}
 
 	function choose() {
-		var selectedItems = $('#datagridForPosition').datagrid('getSelections');
+		var selectedItems = $('#datagridForPosition').datagrid('getChecked');
 		if (selectedItems.length == 0) {
 			alert("请选择仓位");
 			return;

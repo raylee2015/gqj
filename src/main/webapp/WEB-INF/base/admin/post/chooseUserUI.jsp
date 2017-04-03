@@ -147,7 +147,7 @@
 	//为职位配置人员
 	function addUsersToPost() {
 		var rowDatas = $('#datagridOfUnSelectedUsers')
-				.datagrid('getSelections');
+				.datagrid('getChecked');
 		if (rowDatas.length == 0) {
 			alert('请选择待选人员');
 		} else {
@@ -175,7 +175,7 @@
 
 	//删除
 	function delUsersToPost() {
-		var rowDatas = $('#datagridOfSelectedUsers').datagrid('getSelections');
+		var rowDatas = $('#datagridOfSelectedUsers').datagrid('getChecked');
 		if (rowDatas.length == 0) {
 			alert('请选择已选人员');
 		} else {

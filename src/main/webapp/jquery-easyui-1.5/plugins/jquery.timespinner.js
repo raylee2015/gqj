@@ -17,7 +17,7 @@ $(_2).timespinner("initValue",_4);
 function _5(e){
 var _6=e.data.target;
 var _7=$.data(_6,"timespinner").options;
-var _8=$(_6).timespinner("getSelectionStart");
+var _8=$(_6).timespinner("getCheckedtart");
 for(var i=0;i<_7.selections.length;i++){
 var _9=_7.selections[i];
 if(_8>=_9[0]&&_8<=_9[1]){

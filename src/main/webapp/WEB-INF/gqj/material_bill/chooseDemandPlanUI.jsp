@@ -107,7 +107,7 @@
 
 	function choose() {
 		var selectedItems = $('#datagridForDemandPlan').datagrid(
-				'getSelections');
+				'getChecked');
 		if (selectedItems.length == 0) {
 			alert("请选择需求计划");
 			return;

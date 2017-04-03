@@ -95,7 +95,7 @@
 	}
 
 	function choose() {
-		var selectedItems = $('#datagridForPosition').datagrid('getSelections');
+		var selectedItems = $('#datagridForPosition').datagrid('getChecked');
 		var data = parent.$('#datagridForMaterialBillDetail').datagrid(
 				'getData');
 		if (selectedItems.length == 0) {

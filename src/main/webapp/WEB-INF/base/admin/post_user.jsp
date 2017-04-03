@@ -37,7 +37,7 @@
 			alert("请选择岗位");
 		} else {
 			var rowDatas = $('#datagridOfUnSelectedUsers').datagrid(
-					'getSelections');
+					'getChecked');
 			if (rowDatas.length == 0) {
 				alert('请选择待选人员');
 			} else {
@@ -73,7 +73,7 @@
 			alert("请选择岗位");
 		} else {
 			var rowDatas = $('#datagridOfSelectedUsers').datagrid(
-					'getSelections');
+					'getChecked');
 			if (rowDatas.length == 0) {
 				alert('请选择已选人员');
 			} else {

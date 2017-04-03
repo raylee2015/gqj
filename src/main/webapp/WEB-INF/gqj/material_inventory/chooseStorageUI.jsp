@@ -92,7 +92,7 @@
 	}
 
 	function choose() {
-		var selectedItems = $('#datagridForStorage').datagrid('getSelections');
+		var selectedItems = $('#datagridForStorage').datagrid('getChecked');
 		if (selectedItems.length == 0) {
 			alert("请选择仓库");
 			return;
@@ -126,7 +126,7 @@
 							onclick="choose()">选择</a> <a
 							class="easyui-linkbutton" iconCls="icon-cancel"
 							href="javascript:void(0)"
-							onclick="closeChooseStorageUIForTemplate()">关闭</a></td>
+							onclick="closeChooseStorageUIForMaterialBill()">关闭</a></td>
 						<td align="right"><input
 							id="keyWordForStorageTextInput"
 							class="easyui-textbox"

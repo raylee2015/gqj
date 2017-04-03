@@ -285,7 +285,7 @@
 	}
 
 	function chooseDept() {
-		var selectedItems = $('#datagridForDept').datagrid('getSelections');
+		var selectedItems = $('#datagridForDept').datagrid('getChecked');
 		if (selectedItems.length == 0) {
 			alert("请选择部门");
 			return;
@@ -302,7 +302,7 @@
 	}
 
 	function chooseUser() {
-		var selectedItems = $('#datagridForUser').datagrid('getSelections');
+		var selectedItems = $('#datagridForUser').datagrid('getChecked');
 		if (selectedItems.length == 0) {
 			alert("请选择人员");
 			return;

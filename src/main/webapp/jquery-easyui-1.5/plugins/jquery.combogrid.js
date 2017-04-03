@@ -73,7 +73,7 @@ var dg=$(this);
 var _1d=_e(dg);
 var _1e=$(_1d).data("combogrid");
 var _1f=_1e.options;
-var vv=$.map(dg.datagrid("getSelections"),function(row){
+var vv=$.map(dg.datagrid("getChecked"),function(row){
 return row[_1f.idField];
 });
 vv=vv.concat(_1f.unselectedValues);
@@ -137,7 +137,7 @@ return String(_33);
 vv=$.grep(vv,function(v,_34){
 return _34===$.inArray(v,vv);
 });
-var _35=$.grep(_2c.datagrid("getSelections"),function(row,_36){
+var _35=$.grep(_2c.datagrid("getChecked"),function(row,_36){
 return $.inArray(String(row[_2b.idField]),vv)>=0;
 });
 _2c.datagrid("clearSelections");
@@ -224,7 +224,7 @@ _45.datagrid("selectRow",_46);
 }
 }
 var vv=[];
-$.map(_45.datagrid("getSelections"),function(row){
+$.map(_45.datagrid("getChecked"),function(row){
 vv.push(row[_44.idField]);
 });
 $(_42).combogrid("setValues",vv);

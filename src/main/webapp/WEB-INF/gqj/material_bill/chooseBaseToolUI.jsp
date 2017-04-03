@@ -122,7 +122,7 @@
 	}
 
 	function choose() {
-		var selectedItems = $('#datagridForBaseTool').datagrid('getSelections');
+		var selectedItems = $('#datagridForBaseTool').datagrid('getChecked');
 		var data = parent.$('#datagridForMaterialBillDetail').datagrid(
 				'getData');
 		if (data.rows.length == 0) {

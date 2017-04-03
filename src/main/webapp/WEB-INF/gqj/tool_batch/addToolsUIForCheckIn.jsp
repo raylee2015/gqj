@@ -190,7 +190,7 @@
 	}
 
 	function chooseStorage() {
-		var selectedItems = $('#datagridForStorage').datagrid('getSelections');
+		var selectedItems = $('#datagridForStorage').datagrid('getChecked');
 		if (selectedItems.length == 0) {
 			alert("请选择仓库");
 			return;
@@ -258,7 +258,7 @@
 	}
 
 	function choosePosition() {
-		var selectedItems = $('#datagridForPosition').datagrid('getSelections');
+		var selectedItems = $('#datagridForPosition').datagrid('getChecked');
 		if (selectedItems.length == 0) {
 			alert("请选择仓位");
 			return;
@@ -352,7 +352,7 @@
 	}
 
 	function chooseBaseTool() {
-		var selectedItems = $('#datagridForBaseTool').datagrid('getSelections');
+		var selectedItems = $('#datagridForBaseTool').datagrid('getChecked');
 		setTextBoxValue('baseToolIdTextInput', selectedItems[0].BASE_TOOL_ID);
 		setTextBoxValue('baseToolNameTextInput',
 				selectedItems[0].BASE_TOOL_NAME);
@@ -589,7 +589,7 @@
 	}
 
 	function chooseDept() {
-		var selectedItems = $('#datagridForDept').datagrid('getSelections');
+		var selectedItems = $('#datagridForDept').datagrid('getChecked');
 		if (selectedItems.length == 0) {
 			alert("请选择部门");
 			return;
@@ -606,7 +606,7 @@
 	}
 
 	function chooseUser() {
-		var selectedItems = $('#datagridForUser').datagrid('getSelections');
+		var selectedItems = $('#datagridForUser').datagrid('getChecked');
 		if (selectedItems.length == 0) {
 			alert("请选择人员");
 			return;
