@@ -937,7 +937,7 @@
 								iconCls="icon-reload" plain="true"
 								onclick="reloadTreeGrid('datagridForDemandPlan')">刷新</a>
 								<a href="#" class="easyui-linkbutton"
-								iconCls="icon-download" plain="true"
+								iconCls="icon-base-download" plain="true"
 								onclick="exportDemandPlans()">导出</a> <%
  	if ("EDIT".equals(opType)) {
  %> <a href="#" class="easyui-linkbutton"
