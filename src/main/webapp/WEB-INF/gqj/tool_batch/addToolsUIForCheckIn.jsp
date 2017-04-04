@@ -527,6 +527,8 @@
 			var tip2 = "<font >已经" + opText + count + "个工器具</font>";
 			$("#tip1").delay(200).html(tip1);
 			$("#tip2").delay(200).html(tip2);
+			setTextBoxText("toolCodeTextInput", "");
+			setTextBoxValue("toolCodeTextInput", "");
 		} else {
 			alert(result.msg);
 		}

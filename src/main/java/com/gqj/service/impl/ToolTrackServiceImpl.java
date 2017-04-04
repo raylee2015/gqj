@@ -52,9 +52,9 @@ public class ToolTrackServiceImpl implements IToolTrackService {
 		List<Map<String, Object>> toolTracks = toolTrackMapper
 				.selectToolTracksForPage(toolTrack);
 		for (Map<String, Object> item : toolTracks) {
-			if (item.get("BATCH_CONFIRM_TIME") != null) {
-				item.put("BATCH_CONFIRM_TIME", DateUtil.getDate(
-						item.get("BATCH_CONFIRM_TIME").toString()));
+			if (item.get("TRACK_CREATE_TIME") != null) {
+				item.put("TRACK_CREATE_TIME", DateUtil.getDate(
+						item.get("TRACK_CREATE_TIME").toString()));
 			}
 		}
 		int count = toolTrackMapper

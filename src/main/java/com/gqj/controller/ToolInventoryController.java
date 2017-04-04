@@ -33,13 +33,14 @@ import com.gqj.util.ToolStatus;
 
 @Controller
 @RequestMapping("/gqj/tool_inventory")
-public class ToolInventoryController extends BaseController {
+public class ToolInventoryController
+		extends BaseController {
 	public static final Logger LOGGER = Logger
 			.getLogger(ToolInventoryController.class);
 
 	@Autowired
 	private IPositionService positionService;
-	
+
 	@Autowired
 	private IToolTrackService toolTrackService;
 
@@ -67,10 +68,11 @@ public class ToolInventoryController extends BaseController {
 	 */
 	@RequestMapping("/queryBaseToolTypeDropList.do")
 	@ResponseBody
-	public void queryBaseToolTypeDropList(HttpServletRequest request,
+	public void queryBaseToolTypeDropList(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter().print(
-				toolTypeService.selectToolTypesForList(new ToolType()));
+		response.getWriter().print(toolTypeService
+				.selectToolTypesForList(new ToolType()));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -85,10 +87,12 @@ public class ToolInventoryController extends BaseController {
 	@RequestMapping("/queryBaseToolManufacturerDropList.do")
 	@ResponseBody
 	public void queryBaseToolManufacturerDropList(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		response.getWriter().print(manufacturerService
-				.selectManufacturersForList(new Manufacturer()));
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter()
+				.print(manufacturerService
+						.selectManufacturersForList(
+								new Manufacturer()));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -99,9 +103,11 @@ public class ToolInventoryController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openChoosePositionUI.do", method = RequestMethod.GET)
-	public ModelAndView openChoosePositionUI(HttpServletRequest request,
+	public ModelAndView openChoosePositionUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
-		return new ModelAndView("/gqj/tool_inventory/choosePositionUI");
+		return new ModelAndView(
+				"/gqj/tool_inventory/choosePositionUI");
 	}
 
 	/**
@@ -110,9 +116,11 @@ public class ToolInventoryController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openChooseStorageUI.do", method = RequestMethod.GET)
-	public ModelAndView openChooseStorageUI(HttpServletRequest request,
+	public ModelAndView openChooseStorageUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
-		return new ModelAndView("/gqj/tool_inventory/chooseStorageUI");
+		return new ModelAndView(
+				"/gqj/tool_inventory/chooseStorageUI");
 	}
 
 	/**
@@ -126,8 +134,8 @@ public class ToolInventoryController extends BaseController {
 	@RequestMapping("/queryPositionsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryPositionsPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -137,9 +145,10 @@ public class ToolInventoryController extends BaseController {
 		position.setPageSize(BaseUtil.strToInt(rows));
 		position.setKeyWord(keyWord);
 		position.setStoreId(BaseUtil.strToLong(storeId));
-		return positionService.selectPositionsForPage(position);
+		return positionService
+				.selectPositionsForPage(position);
 	}
-	
+
 	/**
 	 * 分页查询工器具批次列表
 	 * 
@@ -151,8 +160,8 @@ public class ToolInventoryController extends BaseController {
 	@RequestMapping("/queryToolTracksForPage.do")
 	@ResponseBody
 	public Map<String, Object> queryToolTracksForPage(
-			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -162,7 +171,8 @@ public class ToolInventoryController extends BaseController {
 		toolTrack.setPageSize(BaseUtil.strToInt(rows));
 		toolTrack.setKeyWord(keyWord);
 		toolTrack.setToolId(BaseUtil.strToLong(toolId));
-		return toolTrackService.selectToolTracksForPage(toolTrack);
+		return toolTrackService
+				.selectToolTracksForPage(toolTrack);
 	}
 
 	/**
@@ -176,19 +186,24 @@ public class ToolInventoryController extends BaseController {
 	@RequestMapping("/queryStoragesPage.do")
 	@ResponseBody
 	public Map<String, Object> queryStoragesPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		long storageDeptId = getSessionUser(request, response)
-				.getUserDeptId();
+		String dateType = request.getParameter("DATE_TYPE");
 		String keyWord = request.getParameter("keyWord");
 		Storage storage = new Storage();
 		storage.setCurrPage(BaseUtil.strToInt(page));
 		storage.setPageSize(BaseUtil.strToInt(rows));
-		storage.setStoreDeptId(storageDeptId);
+		if (!"ALL".equals(dateType)) {
+			long storageDeptId = getSessionUser(request,
+					response).getUserDeptId();
+			storage.setStoreDeptId(storageDeptId);
+		}
+
 		storage.setKeyWord(keyWord);
-		return storageService.selectStoragesForPage(storage);
+		return storageService
+				.selectStoragesForPage(storage);
 	}
 
 	/**
@@ -202,8 +217,8 @@ public class ToolInventoryController extends BaseController {
 	@RequestMapping("/queryToolInventorysPage.do")
 	@ResponseBody
 	public Map<String, Object> queryToolInventorysPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		long toolDeptId = getSessionUser(request, response)
@@ -214,30 +229,38 @@ public class ToolInventoryController extends BaseController {
 		String posId = request.getParameter("POS_ID");
 		String baseToolTypeId = request
 				.getParameter("BASE_TOOL_TYPE_ID");
-		String manufacturerId = request.getParameter("MANUFACTURER_ID");
-		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
+		String manufacturerId = request
+				.getParameter("MANUFACTURER_ID");
+		String baseToolModel = request
+				.getParameter("BASE_TOOL_MODEL");
+		String baseToolSpec = request
+				.getParameter("BASE_TOOL_SPEC");
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		param.put("storeId", storeId);
 		param.put("posId", posId);
 		param.put("keyWord", keyWord);
 		param.put("currPage", page);
 		param.put("pageSize", rows);
-		param.put("toolDeptId", toolDeptId);
+
 		param.put("baseToolTypeId", baseToolTypeId);
 		param.put("manufacturerId", manufacturerId);
 		param.put("baseToolModel", baseToolModel);
 		param.put("baseToolSpec", baseToolSpec);
 		if ("ALL".equals(dateType)) {
 			// 不设置参数
+		} else if ("MY_DEPT".equals(dateType)) {
+			param.put("toolDeptId", toolDeptId);
 		} else if ("OVER_TEST".equals(dateType)) {
+			param.put("toolDeptId", toolDeptId);
 			param.put("toolStatus", ToolStatus.CHECK_IN);
 			// 计算超期的日期
-			int days = BaseUtil.strToInt(
-					paramService.queryParamsForMap("BEFORE_TEST_DAYS"));
-			String date = DateUtil.addDay(DateUtil.getNow(), days);
+			int days = BaseUtil.strToInt(paramService
+					.queryParamsForMap("BEFORE_TEST_DAYS"));
+			String date = DateUtil.addDay(DateUtil.getNow(),
+					days);
 			param.put("overTestDays", date);
 		} else if ("OVER_REJECT".equals(dateType)) {
+			param.put("toolDeptId", toolDeptId);
 			param.put("toolStatus", ToolStatus.CHECK_IN);
 			// 当天日期
 			param.put("overRejectDays", DateUtil.getNow());
@@ -252,7 +275,8 @@ public class ToolInventoryController extends BaseController {
 	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
-		return new ModelAndView("/gqj/tool_inventory/index");
+		return new ModelAndView(
+				"/gqj/tool_inventory/index");
 	}
 
 }

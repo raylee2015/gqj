@@ -47,7 +47,8 @@
 		var params = {
 			keyWord : getTextBoxValue('keyWordForStorageTextInput'),
 			page : 1,
-			rows : getPageSizeOfDataGrid('datagridForStorage')
+			rows : getPageSizeOfDataGrid('datagridForStorage'),
+			DATE_TYPE : getTextBoxValue("dateTypeTextInput")
 		};
 		query(params, 'queryStoragesPage.do', successFunctionForQuery);
 	}
@@ -80,6 +81,7 @@
 			} ] ],
 			onBeforeLoad : function(param) {
 				param.keyWord = getTextBoxValue('keyWordForStorageTextInput');
+				param.DATE_TYPE = getTextBoxValue("dateTypeTextInput");
 			},
 			onLoadError : function() {
 				errorFunctionForQuery();
@@ -114,6 +116,10 @@
 </script>
 </head>
 <body>
+	<div style="display: none">
+		<input id="dateTypeTextInput" class="easyui-textbox"
+			value="<%=request.getParameter("DATE_TYPE")%>" />
+	</div>
 	<div class="easyui-layout" data-options="fit:true">
 		<div region="north" fit="true" border="false">
 			<table id="datagridForStorage" class="easyui-datagrid">
