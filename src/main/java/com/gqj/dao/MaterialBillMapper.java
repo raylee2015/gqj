@@ -13,6 +13,9 @@ public interface MaterialBillMapper {
 	List<Map<String, Object>> selectMaterialBillsForPage(
 			MaterialBill materialBill);
 
+	Map<String, Object> selectMaterialBillForObject(
+			MaterialBill materialBill);
+
 	int selectCountOfMaterialBillsForPage(
 			MaterialBill materialBill);
 

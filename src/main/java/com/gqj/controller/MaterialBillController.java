@@ -1,5 +1,6 @@
 package com.gqj.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,6 +77,30 @@ public class MaterialBillController extends BaseController {
 
 	@Autowired
 	private IToolTypeService toolTypeService;
+
+	/**
+	 * 导出需求计划
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/exportTools.do")
+	public Map<String, Object> exportTools(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String billIds = request.getParameter("BILL_IDS");
+		MaterialBill materialBill = new MaterialBill();
+		materialBill.setIds(billIds);
+		Map<String, Object> result = materialBillService
+				.exportTools(materialBill);
+		ArrayList<String> exportFileList = (ArrayList<String>) result
+				.get("exportFileList");
+		downLoadFile(request, response, exportFileList);
+		return null;
+	}
 
 	/**
 	 * 添加出入库单据信息

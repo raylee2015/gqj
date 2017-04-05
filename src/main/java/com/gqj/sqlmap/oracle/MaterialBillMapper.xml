@@ -30,6 +30,18 @@
 		BILL_REMARK,BILL_CREATE_USER_NAME,BILL_CONFIRM_USER_NAME,BILL_TAKE_USER_NAME,
 		BILL_DEPT_NAME,BILL_TAKE_DEPT_NAME,STORE_NAME,PLAN_ID,PLAN_CODE
 	</sql>
+	<select id="selectMaterialBillForObject" parameterType="com.gqj.entity.MaterialBill"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_MATERIAL_BILL
+		<where>
+			<if test="billId != null">
+				AND BILL_ID = #{billId}
+			</if>
+		</where>
+		order by BILL_ID DESC
+	</select>
 	<select id="selectMaterialBillsForPage" parameterType="com.gqj.entity.MaterialBill"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (

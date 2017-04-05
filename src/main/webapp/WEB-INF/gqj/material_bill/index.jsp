@@ -637,6 +637,33 @@
 		reloadDataGrid('datagridForMaterialBill');
 		toList();
 	}
+
+	//导出编号表格
+	function exportTools() {
+		var dataGrid = $('#datagridForMaterialBill');
+		var rowDatas = dataGrid.datagrid('getChecked');
+		for (var i = 0; i < rowDatas.length; i++) {
+			var item = rowDatas[i];
+			if (typeof (item.BILL_TAKE_USER_ID) == 'undefined') {
+				alert('所选批次位领用，请确认');
+				return;
+			}
+		}
+		if (checkSelectedItems('datagridForMaterialBill', '请选择批次')) {
+			var ids = getIdsOfSelectedItems('datagridForMaterialBill',
+					'BILL_ID');
+			if (ids != null && ids != '') {
+				$.messager.confirm('确认', "是否导出所选批次？", function(confirmOrNot) {
+					if (confirmOrNot) {
+						window.location.href = getTextBoxValue("contextPath")
+								+ "/gqj/material_bill/exportTools.do?BILL_IDS="
+								+ ids;
+						reloadDataGrid('datagridForMaterialBill');
+					}
+				});
+			}
+		}
+	}
 </script>
 </head>
 <body>
@@ -651,6 +678,8 @@
 			<div style="display: none">
 				<input id="billTypeTextInput" class="easyui-textbox"
 					value="<%=request.getParameter("BILL_TYPE")%>" /> <input
+					id="contextPath" class="easyui-textbox"
+					value="<%=contextPath%>" /> <input
 					id="deptTypeTextInput" class="easyui-textbox"
 					value="<%=request.getParameter("DEPT_TYPE")%>" />
 			</div>
@@ -672,7 +701,9 @@
  	} else {
  %> <a href="#" class="easyui-linkbutton"
 						iconCls="icon-application_go" plain="true"
-						onclick="takeMaterialBills()">领用</a> <%
+						onclick="takeMaterialBills()">领用</a> <a href="#"
+						class="easyui-linkbutton" iconCls="icon-base-download"
+						plain="true" onclick="exportTools()">导出工器具列表</a> <%
  	}
  %></td>
 					<td align="right"><input
