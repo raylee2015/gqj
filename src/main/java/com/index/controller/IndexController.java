@@ -20,6 +20,7 @@ import com.base.admin.entity.User;
 import com.base.admin.service.IMenuService;
 import com.base.admin.service.IUserService;
 import com.base.util.BaseUtil;
+import com.index.util.BaseSysParam;
 
 @Controller
 @RequestMapping("/")
@@ -70,6 +71,9 @@ public class IndexController {
 	@RequestMapping("/login.do")
 	public String login(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		String sysRootPath = request.getSession().getServletContext()
+				.getRealPath("");
+		BaseSysParam.setSysRootPath(sysRootPath);
 		// 查询用户
 		String userCode = request.getParameter("userCode");
 		String userPassWord = request.getParameter("userPassWord");

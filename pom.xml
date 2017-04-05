@@ -199,6 +199,20 @@
 			<version>1.0.6</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.apache.ant/ant -->
+		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant</artifactId>
+			<version>1.10.1</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
+			<version>1.5</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<finalName>gqj</finalName>

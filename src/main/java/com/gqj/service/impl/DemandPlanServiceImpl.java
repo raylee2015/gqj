@@ -1,7 +1,7 @@
 package com.gqj.service.impl;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,21 +13,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.base.admin.entity.User;
+import com.base.admin.service.IDeptService;
 import com.base.util.BaseUtil;
 import com.base.util.DateUtil;
+import com.gqj.dao.DemandPlanDetailMapper;
 import com.gqj.dao.DemandPlanMapper;
 import com.gqj.entity.DemandPlan;
 import com.gqj.service.IDemandPlanDetailService;
 import com.gqj.service.IDemandPlanService;
 import com.gqj.util.PlanStatus;
+import com.index.util.BaseSysParam;
 
 import net.sf.jxls.exception.ParsePropertyException;
+import net.sf.jxls.transformer.XLSTransformer;
 
 @Service
 public class DemandPlanServiceImpl implements IDemandPlanService {
 
 	@Autowired
 	private DemandPlanMapper demandPlanMapper;
+
+	@Autowired
+	private DemandPlanDetailMapper demandPlanDetailMapper;
 
 	@Autowired
 	private IDemandPlanDetailService demandPlanDetailService;
@@ -54,38 +61,138 @@ public class DemandPlanServiceImpl implements IDemandPlanService {
 			throws ParsePropertyException, InvalidFormatException,
 			IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
-		// String batchIds = batch.getIds();
-		// String[] batchId_arr = batchIds.split(",");
+		String demandPlanIds = demandPlan.getIds();
+		String[] demandPlanId_arr = demandPlanIds.split(",");
 		int bool = 1;
-		// for (String batchId : batchId_arr) {
-		// ToolTrack param = new ToolTrack();
-		// param.setBatchId(BaseUtil.strToLong(batchId));
-		// List<ToolTrack> list = toolTrackService
-		// .selectToolTracksForList(param);
-		// Map<String, Object> data = new HashMap<String, Object>();
-		// data.put("list", list);
-		//
-		//
-		String filePath = this.getClass().getClassLoader()
-				.getResource(
-						"/com/gqj/resources/template/demandPlan.xls")
-				.getPath();
-		File file = new File(filePath);
-		System.out.println(file.getAbsolutePath());
-		// 生成文件
-		// XLSTransformer transformer = new XLSTransformer();
-		// String templatePath = "\\template\\plan.xls";
-		// String expExcelPath = "additional\\attachment_temp\\"
-		// + System.currentTimeMillis() + ".xls";
-		// transformer.transformXLS(templatePath, data, expExcelPath);
-		//
-		// data.put("downloadUrl", expExcelPath);
-		// data.put("physPath", expExcelPath);// 物理路径
-		// }
+		ArrayList<String> exportFileList = new ArrayList<String>();
+		for (String demandPlanId : demandPlanId_arr) {
+			DemandPlan param = new DemandPlan();
+			param.setPlanId(BaseUtil.strToLong(demandPlanId));
+			Map<String, Object> resultDemandPlan = demandPlanMapper
+					.selectDemandPlanForObject(param);
+			List<Map<String, Object>> resultDemandPlanDetailList = demandPlanDetailMapper
+					.selectDemandPlanDetailsForList(param);
+			int sequence = 1;
+			for (Map<String, Object> item : resultDemandPlanDetailList) {
+				item.put("sequence", sequence++);
+			}
+			Map<String, Object> data = new HashMap<String, Object>();
+			data.put("plan", resultDemandPlan);
+			data.put("list", resultDemandPlanDetailList);
+			// 生成文件
+			XLSTransformer transformer = new XLSTransformer();
+			String templatePath = this.getClass().getClassLoader()
+					.getResource(
+							"/com/gqj/resources/template/demandPlan.xls")
+					.getPath();
+			String targetPath = BaseSysParam.getSysRootPath()
+					+ "/tempFile/"
+					+ resultDemandPlan.get("PLAN_CODE").toString() + "-"
+					+ resultDemandPlan.get("PLAN_DEPT_NAME").toString()
+					+ ".xls";
+			transformer.transformXLS(templatePath, data, targetPath);
+			exportFileList.add(targetPath);
+		}
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "导出失败，请联系管理员");
 		} else {
+			map.put("exportFileList", exportFileList);
+			map.put("success", true);
+			map.put("msg", "导出成功");
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> exportParentDemandPlans(
+			DemandPlan demandPlan) throws ParsePropertyException,
+			InvalidFormatException, IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String demandPlanIds = demandPlan.getIds();
+		String[] demandPlanId_arr = demandPlanIds.split(",");
+		int bool = 1;
+		ArrayList<String> exportFileList = new ArrayList<String>();
+		for (String demandPlanId : demandPlanId_arr) {
+			DemandPlan paramForParentPlan = new DemandPlan();
+			paramForParentPlan
+					.setPlanId(BaseUtil.strToLong(demandPlanId));
+			Map<String, Object> resultDemandPlanForParentPlan = demandPlanMapper
+					.selectDemandPlanForObject(paramForParentPlan);
+			List<Map<String, Object>> resultDemandPlanDetailForParentPlanList = demandPlanDetailMapper
+					.selectDemandPlanDetailsForList(paramForParentPlan);
+			int sequence = 1;
+			for (Map<String, Object> item : resultDemandPlanDetailForParentPlanList) {
+				item.put("sequence", sequence++);
+			}
+			Map<String, Object> data = new HashMap<String, Object>();
+			data.put("PLAN_CODE", resultDemandPlanForParentPlan
+					.get("PLAN_CODE").toString());
+			data.put("PLAN_DEPT_NAME", resultDemandPlanForParentPlan
+					.get("PLAN_DEPT_NAME").toString());
+
+			paramForParentPlan.setPlanId(null);
+			paramForParentPlan
+					.setUpPlanId(BaseUtil.strToLong(demandPlanId));
+			List<DemandPlan> subDemandPlanList = demandPlanMapper
+					.selectDemandPlansForList(paramForParentPlan);
+
+			String planAssignedDeptIds = resultDemandPlanForParentPlan
+					.get("PLAN_ASSIGNED_DEPT_ID").toString();
+			String planAssignedDeptNames = resultDemandPlanForParentPlan
+					.get("PLAN_ASSIGNED_DEPT_NAME").toString();
+			String[] planAssignedDeptId_arr = planAssignedDeptIds
+					.split(",");
+			String[] planAssignedDeptName_arr = planAssignedDeptNames
+					.split(",");
+			for (int i = 0; i < subDemandPlanList.size(); i++) {
+				DemandPlan paramForSubPlan = subDemandPlanList.get(i);
+				List<Map<String, Object>> resultDemandPlanDetailListForSubPlan = demandPlanDetailMapper
+						.selectDemandPlanDetailsForList(
+								paramForSubPlan);
+				long planDeptId = paramForSubPlan.getPlanDeptId();
+				String planDeptName = "";
+				for (int j = 0; j < planAssignedDeptId_arr.length; j++) {
+					if (planAssignedDeptId_arr[j]
+							.equals(planDeptId + "")) {
+						planDeptName = planAssignedDeptName_arr[j];
+						break;
+					}
+				}
+				data.put("PLAN_DEPT_NAME_" + i, planDeptName);
+				for (Map<String, Object> itemOfParentPlan : resultDemandPlanDetailForParentPlanList) {
+					for (Map<String, Object> itemOfSubPlan : resultDemandPlanDetailListForSubPlan) {
+						if (itemOfParentPlan.get("TOOL_ID").toString()
+								.equals(itemOfSubPlan.get("TOOL_ID")
+										.toString())) {
+							itemOfParentPlan.put("TOOL_AMOUNT_" + i,
+									itemOfSubPlan.get("TOOL_AMOUNT")
+											.toString());
+							break;
+						}
+					}
+				}
+			}
+			data.put("list", resultDemandPlanDetailForParentPlanList);
+
+			// 生成文件
+			XLSTransformer transformer = new XLSTransformer();
+			String templatePath = this.getClass().getClassLoader()
+					.getResource(
+							"/com/gqj/resources/template/parentDemandPlan.xls")
+					.getPath();
+			String targetPath = BaseSysParam.getSysRootPath()
+					+ "/tempFile/" + resultDemandPlanForParentPlan
+							.get("PLAN_CODE").toString()
+					+ ".xls";
+			transformer.transformXLS(templatePath, data, targetPath);
+			exportFileList.add(targetPath);
+		}
+		if (bool == 0) {
+			map.put("success", false);
+			map.put("msg", "导出失败，请联系管理员");
+		} else {
+			map.put("exportFileList", exportFileList);
 			map.put("success", true);
 			map.put("msg", "导出成功");
 		}

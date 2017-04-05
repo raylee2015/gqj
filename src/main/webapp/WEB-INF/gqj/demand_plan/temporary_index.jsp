@@ -1,7 +1,7 @@
 <%@page import="com.base.admin.entity.User"%>
 <%@page import="com.base.util.DateUtil"%>
-<%@ page language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 	String opType = request.getParameter("OP_TYPE");
@@ -10,8 +10,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type"
-	content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -31,8 +30,7 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript"
-	src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//关闭编辑窗口
 	function closeChooseToolDemandUIForDemandPlan() {
@@ -532,63 +530,75 @@
 		successFunctionForOption(result);
 		toList();
 	}
+
+	//导出计划
+	function exportDemandPlans() {
+		if (checkSelectedItems('datagridForDemandPlan', '请选择需求计划')) {
+			var ids = getIdsOfSelectedItems('datagridForDemandPlan', 'PLAN_ID');
+			if (ids != null && ids != '') {
+				$.messager
+						.confirm(
+								'确认',
+								"是否导出相关计划？",
+								function(confirmOrNot) {
+									if (confirmOrNot) {
+										window.location.href = getTextBoxValue("contextPath")
+												+ "/gqj/demand_plan/exportDemandPlans.do?PLAN_IDS="
+												+ ids;
+										reloadDataGrid('datagridForDemandPlan');
+									}
+								});
+			}
+		}
+	}
 </script>
 </head>
 <body>
 	<div style="display: none">
-		<input id="opType" class="easyui-textbox"
-			value="<%=opType%>" /><input id="planType"
-			class="easyui-textbox" value="<%=planType%>" /> <input
+		<input id="opType" class="easyui-textbox" value="<%=opType%>" /><input
+			id="planType" class="easyui-textbox" value="<%=planType%>" /> <input
 			id="planCode" class="easyui-textbox"
 			value="<%=(DateUtil.getNow() + " "
-					+ ((User) request.getSession()
-							.getAttribute("user"))
-									.getUserDeptName()
-					+ "临时需求计划")%>" />
+							+ ((User) request.getSession()
+									.getAttribute("user"))
+											.getUserDeptName()
+							+ "临时需求计划")%>" />
 	</div>
 	<div id="demandPlanListUI" class="easyui-panel"
 		data-options="fit:true,border:false">
 		<!-- 列表页面 -->
-		<div class="easyui-layout"
-			data-options="fit:true,border:false">
+		<div class="easyui-layout" data-options="fit:true,border:false">
 			<div data-options="fit:true,border:false,region:'center'">
-				<table id="datagridForDemandPlan"
-					class="easyui-datagrid">
+				<table id="datagridForDemandPlan" class="easyui-datagrid">
 				</table>
 				<div id="toolbarForDemandPlan">
 					<table style="width: 100%">
 						<tr>
 							<td><a href="#" class="easyui-linkbutton"
 								iconCls="icon-reload" plain="true"
-								onclick="refreshDataGrid('datagridForDemandPlan')">刷新</a>
-								<%
-									if ("EDIT".equals(opType)) {
-								%> <a href="#" class="easyui-linkbutton" iconCls="icon-add"
+								onclick="refreshDataGrid('datagridForDemandPlan')">刷新</a><a
+								href="#" class="easyui-linkbutton" iconCls="icon-base-download"
+								plain="true" onclick="exportDemandPlans()">导出计划</a> <%
+ 	if ("EDIT".equals(opType)) {
+ %> <a href="#" class="easyui-linkbutton" iconCls="icon-add"
 								plain="true" onclick="toDetail()">添加</a> <a href="#"
-								class="easyui-linkbutton" iconCls="icon-remove"
-								plain="true" onclick="delDemandPlans()">删除</a> <a
-								href="#" class="easyui-linkbutton"
-								iconCls="icon-edit" plain="true"
+								class="easyui-linkbutton" iconCls="icon-remove" plain="true"
+								onclick="delDemandPlans()">删除</a> <a href="#"
+								class="easyui-linkbutton" iconCls="icon-edit" plain="true"
 								onclick="submitDemandPlans()">提交</a> <%
- 	} else if ("AUDIT_BY_WORK_GROUP"
- 			.equals(opType)) {
- %> <a href="#" class="easyui-linkbutton"
-								iconCls="icon-application_go" plain="true"
-								onclick="passDemandPlansByWorkGroup()">通过</a> <a
-								href="#" class="easyui-linkbutton"
-								iconCls="icon-cross" plain="true"
-								onclick="unPassDemandPlansByWorkGroup()">不通过</a> <%
+ 	} else if ("AUDIT_BY_WORK_GROUP".equals(opType)) {
+ %> <a href="#" class="easyui-linkbutton" iconCls="icon-application_go"
+								plain="true" onclick="passDemandPlansByWorkGroup()">通过</a> <a
+								href="#" class="easyui-linkbutton" iconCls="icon-cross"
+								plain="true" onclick="unPassDemandPlansByWorkGroup()">不通过</a> <%
  	} else if ("AUDIT_BY_DEPT".equals(opType)) {
- %> <a href="#" class="easyui-linkbutton"
-								iconCls="icon-application_go" plain="true"
-								onclick="passDemandPlansByDept()">通过</a> <a href="#"
-								class="easyui-linkbutton" iconCls="icon-cross"
-								plain="true" onclick="unPassDemandPlansByDept()">不通过</a>
-								<%
-									}
-								%></td>
-							<td align="right"><input
-								id="keyWordForDemandPlanTextInput"
+ %> <a href="#" class="easyui-linkbutton" iconCls="icon-application_go"
+								plain="true" onclick="passDemandPlansByDept()">通过</a> <a
+								href="#" class="easyui-linkbutton" iconCls="icon-cross"
+								plain="true" onclick="unPassDemandPlansByDept()">不通过</a> <%
+ 	}
+ %></td>
+							<td align="right"><input id="keyWordForDemandPlanTextInput"
 								class="easyui-textbox"
 								data-options="prompt:'需求计划名称',validType:'length[0,50]'"
 								style="width: 200px"> <a href="#"
@@ -602,8 +612,7 @@
 	</div>
 	<div id="demandPlanDetailUI" class="easyui-panel"
 		data-options="fit:true,border:false">
-		<table id="datagridForDemandPlanDetail"
-			class="easyui-datagrid">
+		<table id="datagridForDemandPlanDetail" class="easyui-datagrid">
 		</table>
 		<div id="toolbarForDemandPlanDetail">
 			<div>
@@ -612,30 +621,26 @@
 				<%
 					if ("EDIT".equals(opType)) {
 				%>
-				<a href="#" id="saveBtn" class="easyui-linkbutton"
-					iconCls="icon-ok" plain="true"
-					onclick="saveDemandPlan()">保存</a><a href="#"
-					id="addToolBtn" class="easyui-linkbutton"
-					iconCls="icon-add" plain="true"
-					onclick="openChooseToolDemandUIForDemandPlan()">添加工器具</a>
+				<a href="#" id="saveBtn" class="easyui-linkbutton" iconCls="icon-ok"
+					plain="true" onclick="saveDemandPlan()">保存</a><a href="#"
+					id="addToolBtn" class="easyui-linkbutton" iconCls="icon-add"
+					plain="true" onclick="openChooseToolDemandUIForDemandPlan()">添加工器具</a>
 				<a href="#" id="submitBtn" class="easyui-linkbutton"
-					iconCls="icon-add" plain="true"
-					onclick="submitDemandPlan()">提交</a>
+					iconCls="icon-add" plain="true" onclick="submitDemandPlan()">提交</a>
 				<%
-					} else if ("AUDIT_BY_WORK_GROUP"
-							.equals(opType)) {
+					} else if ("AUDIT_BY_WORK_GROUP".equals(opType)) {
 				%><a href="#" class="easyui-linkbutton"
 					iconCls="icon-application_go" plain="true"
-					onclick="passDemandPlanByWorkGroup()">通过</a> <a
-					href="#" class="easyui-linkbutton" iconCls="icon-cross"
-					plain="true" onclick="unPassDemandPlanByWorkGroup()">不通过</a>
+					onclick="passDemandPlanByWorkGroup()">通过</a> <a href="#"
+					class="easyui-linkbutton" iconCls="icon-cross" plain="true"
+					onclick="unPassDemandPlanByWorkGroup()">不通过</a>
 				<%
 					} else if ("AUDIT_BY_DEPT".equals(opType)) {
 				%><a href="#" class="easyui-linkbutton"
 					iconCls="icon-application_go" plain="true"
 					onclick="passDemandPlanByDept()">通过</a> <a href="#"
-					class="easyui-linkbutton" iconCls="icon-cross"
-					plain="true" onclick="unPassDemandPlanByDept()">不通过</a>
+					class="easyui-linkbutton" iconCls="icon-cross" plain="true"
+					onclick="unPassDemandPlanByDept()">不通过</a>
 				<%
 					}
 				%>

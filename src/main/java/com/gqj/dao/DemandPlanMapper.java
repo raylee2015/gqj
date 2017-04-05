@@ -15,9 +15,10 @@ public interface DemandPlanMapper {
 	List<Map<String, Object>> selectDemandPlansForPage(
 			DemandPlan demandPlan);
 
-	List<DemandPlan> selectDemandPlansForList(
-			DemandPlan demandPlan);
+	List<DemandPlan> selectDemandPlansForList(DemandPlan demandPlan);
 
-	int selectCountOfDemandPlansForPage(
+	int selectCountOfDemandPlansForPage(DemandPlan demandPlan);
+
+	Map<String, Object> selectDemandPlanForObject(
 			DemandPlan demandPlan);
 }

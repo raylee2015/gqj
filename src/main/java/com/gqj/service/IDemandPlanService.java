@@ -38,4 +38,8 @@ public interface IDemandPlanService {
 			DemandPlan demandPlan, String toolIds, String toolAmounts,
 			String toolSumAmounts);
 
+	Map<String, Object> exportParentDemandPlans(DemandPlan demandPlan)
+			throws ParsePropertyException, InvalidFormatException,
+			IOException;
+
 }
