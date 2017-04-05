@@ -23,6 +23,9 @@
 			and t2.tool_dept_id = #{tool_dept_id}
 		</if>
 		)
+		<if test="keyWord != null">
+			and v.tool_code like '%${keyWord}%'
+		</if>
 		order by v.TOOL_ID
 		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
 		) WHERE num<![CDATA[>=]]>
