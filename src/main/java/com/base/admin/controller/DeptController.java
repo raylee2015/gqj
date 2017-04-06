@@ -37,18 +37,18 @@ public class DeptController {
 	 */
 	@RequestMapping("/addNewDept.do")
 	@ResponseBody
-	public Map<String, Object> addNewDept(
-			HttpServletRequest request,
+	public Map<String, Object> addNewDept(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String deptName = request.getParameter("DEPT_NAME");
 		String deptSort = request.getParameter("DEPT_SORT");
-		String upDeptId = request
-				.getParameter("UP_DEPT_ID");
+		String deptCode = request.getParameter("DEPT_CODE");
+		String upDeptId = request.getParameter("UP_DEPT_ID");
 		Dept dept = new Dept();
 		dept.setDeptId(-1l);
 		dept.setDeptName(deptName);
 		dept.setDeptSort(BaseUtil.strToLong(deptSort));
 		dept.setUpDeptId(BaseUtil.strToLong(upDeptId));
+		dept.setDeptCode(deptCode);
 		return deptService.addNewDept(dept);
 	}
 
@@ -64,8 +64,7 @@ public class DeptController {
 	 */
 	@RequestMapping("/delDepts.do")
 	@ResponseBody
-	public Map<String, Object> delDepts(
-			HttpServletRequest request,
+	public Map<String, Object> delDepts(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String deptIds = request.getParameter("DEPT_IDS");
 		Dept dept = new Dept();
@@ -79,8 +78,7 @@ public class DeptController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(
-			HttpServletRequest request,
+	public ModelAndView openEditUI(HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView("/base/admin/dept/editUI");
 	}
@@ -102,12 +100,11 @@ public class DeptController {
 	@RequestMapping("/queryDeptsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryDeptsPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		String deptInnerCode = request
-				.getParameter("deptInnerCode");
+		String deptInnerCode = request.getParameter("deptInnerCode");
 		String keyWord = request.getParameter("keyWord");
 		Dept dept = new Dept();
 		dept.setCurrPage(Integer.parseInt(page));
@@ -128,8 +125,8 @@ public class DeptController {
 	@ResponseBody
 	public void queryDeptTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		response.getWriter().print(deptService
-				.selectDeptsForTree().toLowerCase());
+		response.getWriter()
+				.print(deptService.selectDeptsForTree().toLowerCase());
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -162,19 +159,19 @@ public class DeptController {
 	 */
 	@RequestMapping("/updateDept.do")
 	@ResponseBody
-	public Map<String, Object> updateDept(
-			HttpServletRequest request,
+	public Map<String, Object> updateDept(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String deptId = request.getParameter("DEPT_ID");
 		String deptName = request.getParameter("DEPT_NAME");
 		String deptSort = request.getParameter("DEPT_SORT");
-		String upDeptId = request
-				.getParameter("UP_DEPT_ID");
+		String deptCode = request.getParameter("DEPT_CODE");
+		String upDeptId = request.getParameter("UP_DEPT_ID");
 		Dept dept = new Dept();
 		dept.setDeptId(BaseUtil.strToLong(deptId));
 		dept.setDeptName(deptName);
 		dept.setDeptSort(BaseUtil.strToLong(deptSort));
 		dept.setUpDeptId(BaseUtil.strToLong(upDeptId));
+		dept.setDeptCode(deptCode);
 		return deptService.updateDept(dept);
 	}
 }

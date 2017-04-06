@@ -1,7 +1,9 @@
+<%@page import="com.base.admin.entity.User"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
+	String userDeptCode = ((User) request.getSession().getAttribute("user")).getUserDeptCode();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -68,6 +70,16 @@
 				registerKeyPressForTextInput('keyWordForToolTrackTextInput',
 						queryToolTrackPagesForSearch);
 				initDataGridForToolTrackDetail();
+
+				var userDeptCode = getTextBoxValue("userDeptCode");
+				if (userDeptCode == 'GLRY') {
+					$('#toolTrackUI').panel({
+						closed : true
+					});
+					$('#welcomeUI').panel({
+						closed : false
+					});
+				}
 			});
 
 	//初始化列表元素
@@ -137,6 +149,12 @@
 </script>
 </head>
 <body>
+	<div style="display: none">
+		<input id="userDeptCode" class="easyui-textbox"
+			value="<%=userDeptCode%>" />
+	</div>
+	<div id="welcomeUI" class="easyui-panel"
+		data-options="fit:true,closed:true">欢迎使用工器具管理系统</div>
 	<div id="toolTrackUI" class="easyui-panel" title="外借工器具列表"
 		data-options="width:680,height:400">
 		<table id="datagridForToolTrack" class="easyui-datagrid">

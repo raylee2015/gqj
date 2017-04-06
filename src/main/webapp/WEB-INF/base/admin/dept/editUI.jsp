@@ -33,6 +33,7 @@
 	function saveDept() {
 		var params = {
 			DEPT_ID : getTextBoxValue('deptIdTextBox'),
+			DEPT_CODE : getTextBoxValue('deptCodeTextBox'),
 			DEPT_NAME : getTextBoxValue('deptNameTextBox'),
 			DEPT_SORT : getTextBoxValue('deptSortTextBox'),
 			UP_DEPT_ID : getComboTreeValue('deptTree')
@@ -102,6 +103,13 @@
 						<td><input id="deptNameTextBox" name="DEPT_NAME"
 							class="easyui-textbox"
 							data-options="prompt:'部门名称',required:true,validType:'length[0,25]'"
+							style="width: 100%; height: 32px" /></td>
+					</tr>
+					<tr>
+						<td width="22%">部门编号:</td>
+						<td><input id="deptCodeTextBox" name="DEPT_CODE"
+							class="easyui-textbox"
+							data-options="prompt:'部门编号',required:true,validType:'length[0,25]'"
 							style="width: 100%; height: 32px" /></td>
 					</tr>
 					<tr>

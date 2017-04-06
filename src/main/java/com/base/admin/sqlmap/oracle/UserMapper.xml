@@ -7,6 +7,7 @@
 		<result column="USER_CODE" jdbcType="VARCHAR" property="userCode" />
 		<result column="USER_DEPT_ID" jdbcType="DECIMAL" property="userDeptId" />
 		<result column="USER_DEPT_NAME" jdbcType="VARCHAR" property="userDeptName" />
+		<result column="USER_DEPT_CODE" jdbcType="VARCHAR" property="userDeptCode" />
 		<result column="USER_PHONE" jdbcType="VARCHAR" property="userPhone" />
 		<result column="USER_SORT" jdbcType="VARCHAR" property="userSort" />
 		<result column="USER_LOCK_FLAG" jdbcType="VARCHAR" property="userLockFlag" />

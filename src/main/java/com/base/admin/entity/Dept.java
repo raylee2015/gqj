@@ -16,6 +16,16 @@ public class Dept extends Base {
 
 	private Long upDeptId;
 
+	private String deptCode;
+
+	public String getDeptCode() {
+		return deptCode;
+	}
+
+	public void setDeptCode(String deptCode) {
+		this.deptCode = deptCode;
+	}
+
 	public Long getDeptId() {
 		return deptId;
 	}

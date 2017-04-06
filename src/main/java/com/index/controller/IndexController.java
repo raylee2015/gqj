@@ -58,10 +58,10 @@ public class IndexController {
 	public Map<String, Object> queryMenuList(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		User user = (User) request.getSession().getAttribute("user");
-		List<Map<String, Object>> depts = menuService
+		List<Map<String, Object>> menus = menuService
 				.queryMenusForList(user);
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("rows", depts);
+		map.put("rows", menus);
 		return map;
 	}
 

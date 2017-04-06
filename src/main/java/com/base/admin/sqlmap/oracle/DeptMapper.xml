@@ -9,11 +9,12 @@
 		<result column="DEPT_SORT" jdbcType="DECIMAL" property="deptSort" />
 		<result column="DEPT_INNER_CODE" jdbcType="VARCHAR" property="deptInnerCode" />
 		<result column="DEPT_INNER_NAME" jdbcType="VARCHAR" property="deptInnerName" />
+		<result column="DEPT_CODE" jdbcType="VARCHAR" property="deptCode" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		DEPT_ID, UP_DEPT_ID, DEPT_NAME, DEPT_SORT,
 		DEPT_INNER_CODE,
-		DEPT_INNER_NAME
+		DEPT_INNER_NAME,DEPT_CODE
 	</sql>
 	<select id="selectDeptsForTree" resultType="java.util.HashMap">
 		select dept_id as id
@@ -43,7 +44,8 @@
 		select DEPT_ID,
 		UP_DEPT_ID, DEPT_NAME, DEPT_SORT,
 		DEPT_INNER_CODE,
-		DEPT_INNER_NAME,UP_DEPT_NAME,VIEW_DEPT_INNER_NAME,VIEW_DEPT_INNER_CODE
+		DEPT_INNER_NAME,UP_DEPT_NAME,VIEW_DEPT_INNER_NAME,VIEW_DEPT_INNER_CODE,
+		DEPT_CODE
 		from VIEW_BASE_DEPT
 		where dept_id!=0
 		<if test="upDeptId != null">
@@ -101,6 +103,9 @@
 			<if test="deptInnerName != null">
 				DEPT_INNER_NAME,
 			</if>
+			<if test="deptCode != null">
+				DEPT_CODE,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="deptId != null">
@@ -121,6 +126,9 @@
 			<if test="deptInnerName != null">
 				#{deptInnerName,jdbcType=VARCHAR},
 			</if>
+			<if test="deptCode != null">
+				#{deptCode,jdbcType=VARCHAR},
+			</if>
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.base.admin.entity.Dept">
@@ -140,6 +148,9 @@
 			</if>
 			<if test="deptInnerName != null">
 				DEPT_INNER_NAME = #{deptInnerName,jdbcType=VARCHAR},
+			</if>
+			<if test="deptCode != null">
+				DEPT_CODE = #{deptCode,jdbcType=VARCHAR},
 			</if>
 		</set>
 		where DEPT_ID = #{deptId,jdbcType=DECIMAL}
