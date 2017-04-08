@@ -1,0 +1,6 @@
+{"total":28,"rows":[
+	{"ZONE_ID":"1","STATION_NAME":"开平站","ZONE_TYPE_NAME":"主变区域","ZONE_NAME":"#1主变间隔"},
+	{"ZONE_ID":"2","STATION_NAME":"鳌峰站","ZONE_TYPE_NAME":"110kV电压等级区域","ZONE_NAME":"#1主变变高1101"},
+	{"ZONE_ID":"3","STATION_NAME":"百合站","ZONE_TYPE_NAME":"10kV电压等级区域","ZONE_NAME":"#1主变变低501"},
+	{"ZONE_ID":"4","STATION_NAME":"水口站","ZONE_TYPE_NAME":"公共设施区域","ZONE_NAME":"站用直流电源系统"}
+]}
