@@ -1,6 +1,6 @@
 {"total":28,"rows":[
-	{"STATION_NAME":"开平站"},
-	{"STATION_NAME":"鳌峰站"},
-	{"STATION_NAME":"百合站"},
-	{"STATION_NAME":"水口站"}
+	{"STATION_NAME":"开平站","STATION_ID":"1"},
+	{"STATION_NAME":"鳌峰站","STATION_ID":"2"},
+	{"STATION_NAME":"百合站","STATION_ID":"3"},
+	{"STATION_NAME":"水口站","STATION_ID":"4"}
 ]}

@@ -2,7 +2,7 @@
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
-	String billType = request.getParameter("BILL_TYPE");
+	String billType = request.getParameter("bill_type");
 	String deptType = request.getParameter("DEPT_TYPE");
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -32,6 +32,19 @@
 <script type="text/javascript"
 	src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
+	// 关闭编辑窗口
+	function closeScanUIForAccessory() {
+		closeEditUI('scanUIForAccessory')
+	}
+
+	//打开编辑窗口
+	function openScanUIForAccessory() {
+		//createModalDialog("editUIForManufacturer", "openEditUI.do?opType=add",
+		//		"添加变电站", 400, 120);
+		createModalDialog("scanUIForAccessory", "scanUI.jsp", "添加配件", 400, 120);
+		openEditUI('scanUIForAccessory');
+	}
+
 	//关闭选择部门窗口
 	function closeChooseMaterialInventoryUIForMaterialBill() {
 		closeUI('chooseMaterialInventoryUIForMaterialBill')
@@ -201,7 +214,7 @@
 						{
 							//url : 'queryMaterialBillsPage.do?BILL_TYPE='
 							//		+ getTextBoxValue('billTypeTextInput'),
-							url:'bill_data.json',
+							url : 'bill_data.json',
 							idField : 'BILL_ID',
 							rownumbers : true,
 							toolbar : '#toolbarForMaterialBill',
@@ -292,7 +305,7 @@
 				.datagrid(
 						{
 							idField : 'DETAIL_ID',
-							url:'bill_detail_data.json',
+							url : 'bill_detail_data.json',
 							rownumbers : true,
 							toolbar : '#toolbarForMaterialBillDetail',
 							pagination : false,
@@ -313,29 +326,39 @@
 										}
 									},
 									{
-										field : 'BASE_TOOL_TYPE_NAME',
-										title : '工器具类型',
-										width : 100
+										field : 'ACCESSORY_NAME',
+										title : '名称',
+										width : 150,
 									},
 									{
-										field : 'BASE_TOOL_NAME',
-										title : '工器具名称',
-										width : 150
+										field : 'MAN_NAME',
+										title : '厂家',
+										width : 150,
 									},
 									{
-										field : 'BASE_TOOL_MANUFACTURER_NAME',
-										title : '厂家名称',
-										width : 150
+										field : 'ACCESSORY_MODEL',
+										title : '装置型号',
+										width : 150,
 									},
 									{
-										field : 'BASE_TOOL_MODEL',
-										title : '型号',
-										width : 100
+										field : 'ACCESSORY_SPEC',
+										title : '具体参数',
+										width : 150,
 									},
 									{
-										field : 'BASE_TOOL_SPEC',
-										title : '规格',
-										width : 100
+										field : 'ACCESSORY_UNIT',
+										title : '单位',
+										width : 100,
+									},
+									{
+										field : 'ACCESSORY_STATION',
+										title : '适用站',
+										width : 150,
+									},
+									{
+										field : 'BASE_TOOL_REMARK',
+										title : '备注',
+										width : 150,
 									},
 									{
 										field : 'choosePosition',
@@ -447,7 +470,7 @@
 					rowIndex);
 			var billConfirmUserId = rowData.BILL_CONFIRM_USER_ID;
 			opType = 'edit';
-			queryMaterialBillDetailsForList(rowData);
+			//queryMaterialBillDetailsForList(rowData);
 			setTextBoxValue('materialBillCodeTextInput', rowData.BILL_CODE);
 			setTextBoxValue('materialBillRemarkTextInput', rowData.BILL_REMARK);
 			setTextBoxValue('storageIdTextInput', rowData.STORE_ID);
@@ -471,7 +494,7 @@
 			}
 		} else {
 			opType = 'add';
-			queryNewMaterialBillCode();
+			//queryNewMaterialBillCode();
 		}
 		$('#materialBillListUI').panel('collapse');
 		$('#materialBillDetailUI').panel('expand');
@@ -707,13 +730,16 @@
 					iconCls="icon-arrow_left" onclick="toList()">返回</a> <a
 					id="saveBtn" href="#" class="easyui-linkbutton"
 					iconCls="icon-ok" plain="true"
-					onclick="saveMaterialBill()">保存</a>
+					onclick="saveMaterialBill()">保存</a> <a href="#"
+					class="easyui-linkbutton" iconCls="icon-add"
+					plain="true" onclick="openScanUIForAccessory()">扫描工器具</a>
 				<%
 					if ("0".equals(billType)) {
 				%>
 				<a id="addToolsBtn" href="#" class="easyui-linkbutton"
 					iconCls="icon-add" plain="true"
 					onclick="openChooseBaseToolUIForMaterialBill()">添加工器具</a>
+
 				<%
 					} else {
 				%>
@@ -740,30 +766,27 @@
 							onclick="openChooseStorageUIForMaterialBill()">
 								选择仓库</a>
 						</td>
+
 						<%
-							if ("0".equals(billType)
-									&& "DEPT".equals(deptType)) {
+							if ("1".equals(billType)) {
 						%>
 						<td>
 							<div style="display: none">
-								<input id="planIdTextInput" class="easyui-textbox" />
-							</div> 关联需求计划：<a href="#" id="planNameBtn"
+								<input id="storageIdTextInput"
+									class="easyui-textbox" />
+							</div> 变电站：<a href="#" id="storageNameBtn"
 							class="easyui-linkbutton" style="width: 200px;"
-							onclick="openChooseDemandPlanUIForMaterialBill()">
-								选择需求计划</a>
+							onclick="openChooseStorageUIForMaterialBill()">
+								选择变电站</a>
 						</td>
-						<%
-							}
-							if ("1".equals(billType)
-									|| "2".equals(billType)) {
-						%>
 						<td>
 							<div style="display: none">
-								<input id="deptIdTextInput" class="easyui-textbox" />
-							</div> 领用部门：<a href="#" id="deptNameBtn"
+								<input id="storageIdTextInput"
+									class="easyui-textbox" />
+							</div> 变电站区域间隔：<a href="#" id="storageNameBtn"
 							class="easyui-linkbutton" style="width: 200px;"
-							onclick="openChooseDeptUIForMaterialBill()">
-								选择领用部门</a>
+							onclick="openChooseStorageUIForMaterialBill()">
+								选择变电站区域间隔</a>
 						</td>
 						<%
 							}
