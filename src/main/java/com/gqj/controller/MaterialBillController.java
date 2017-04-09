@@ -95,7 +95,8 @@ public class MaterialBillController extends BaseController {
 		MaterialBill materialBill = new MaterialBill();
 		materialBill.setIds(billIds);
 		Map<String, Object> result = materialBillService
-				.exportTools(materialBill);
+				.exportTools(materialBill,
+						getSessionUser(request, response));
 		ArrayList<String> exportFileList = (ArrayList<String>) result
 				.get("exportFileList");
 		downLoadFile(request, response, exportFileList);

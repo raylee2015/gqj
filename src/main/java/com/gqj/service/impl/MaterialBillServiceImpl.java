@@ -10,6 +10,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.base.admin.entity.User;
 import com.base.util.BaseUtil;
 import com.base.util.DateUtil;
 import com.gqj.dao.MaterialBillDetailMapper;
@@ -68,10 +69,10 @@ public class MaterialBillServiceImpl
 	 * @param response
 	 * @throws Exception
 	 */
-	private String queryNewToolCode() {
+	private String queryNewToolCode(User user) {
 		HashMap<String, Object> param = new HashMap<String, Object>();
-		param.put("rule1", DateUtil.getNow() + "-");
-		param.put("rule2", "@");
+		param.put("rule1", user.getUserDeptCode() + "-");
+		param.put("rule2", DateUtil.getNow() + "-");
 		param.put("rule3", "@");
 		param.put("rule4", "@");
 		param.put("rule5", "@");
@@ -81,7 +82,7 @@ public class MaterialBillServiceImpl
 
 	@Override
 	public Map<String, Object> exportTools(
-			MaterialBill materialBill)
+			MaterialBill materialBill, User user)
 			throws ParsePropertyException,
 			InvalidFormatException, IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -107,7 +108,8 @@ public class MaterialBillServiceImpl
 								.toString());
 				for (int i = 0; i < toolAmount; i++) {
 					Map<String, Object> temp = new HashMap<String, Object>();
-					String newToolCode = queryNewToolCode();
+					String newToolCode = queryNewToolCode(
+							user);
 					temp.put("sequence", sequence++);
 					temp.put("TOOL_CODE", newToolCode);
 					temp.put("BASE_TOOL_NAME",

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+import com.base.admin.entity.User;
 import com.gqj.entity.MaterialBill;
 
 import net.sf.jxls.exception.ParsePropertyException;
@@ -32,7 +33,7 @@ public interface IMaterialBillService {
 			MaterialBill materialBill);
 
 	Map<String, Object> exportTools(
-			MaterialBill materialBill)
+			MaterialBill materialBill,User user)
 			throws ParsePropertyException,
 			InvalidFormatException, IOException;
 
