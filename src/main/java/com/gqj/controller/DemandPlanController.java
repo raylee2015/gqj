@@ -342,9 +342,9 @@ public class DemandPlanController extends BaseController {
 		demandPlan.setKeyWord(keyWord);
 		demandPlan.setPlanType(BaseUtil.strToLong(planType));
 		if ("EDIT".equals(opType)) {
-			// 显示自己的所有计划
-			demandPlan.setPlanCreateUserId(
-					getSessionUser(request, response).getUserId());
+			// 显示自己部门的所有计划
+			demandPlan.setPlanDeptId(
+					getSessionUser(request, response).getUserDeptId());
 		} else if ("AUDIT_BY_WORK_GROUP".equals(opType)) {
 			demandPlan.setPlanDeptId(
 					getSessionUser(request, response).getUserDeptId());

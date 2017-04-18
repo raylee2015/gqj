@@ -612,6 +612,11 @@
 	</div>
 	<div id="demandPlanDetailUI" class="easyui-panel"
 		data-options="fit:true,border:false">
+		<div style="display: none">
+			<input id="demandPlanIdTextInput" class="easyui-textbox" />
+			<input id="demandPlanStatusTextInput"
+				class="easyui-textbox" />
+		</div>
 		<table id="datagridForDemandPlanDetail" class="easyui-datagrid">
 		</table>
 		<div id="toolbarForDemandPlanDetail">

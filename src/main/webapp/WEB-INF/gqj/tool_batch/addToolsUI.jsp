@@ -170,7 +170,7 @@
 	function saveBatch() {
 		var params = null;
 		var batchCode = getTextBoxValue('batchCodeTextInput');
-		var batchRemark = getTextBoxValue('batchRemarkTextInput');
+		var batchRemark = "";
 		var batchType = getTextBoxValue('batchTypeTextInput');
 		var opType = getTextBoxValue('opTypeTextInput');
 		var toolCode = getTextBoxValue('toolCodeTextInput');
@@ -178,10 +178,12 @@
 		var batchReturnUserId = '';
 		if (batchType == 6) {
 			batchReturnUserId = getTextBoxValue('userIdTextInput');
+			batchRemark=getTextBoxValue('batchRemarkTextInput');
 		}
 		var batchTakeDeptId = '';
 		if (batchType == 1 || batchType == 2|| batchType == 5) {
 			batchTakeDeptId = getTextBoxValue('deptIdTextInput');
+			batchRemark=getTextBoxValue('batchRemarkTextInput');
 		}
 		params = {
 			BATCH_CODE : batchCode,
