@@ -483,7 +483,7 @@
 		}
 		storeId = getTextBoxValue('storageIdTextInput');
 		positionId = getTextBoxValue('positionIdTextInput');
-		toolBox = getTextBoxValue('toolBoxTextInput');
+		//toolBox = getTextBoxValue('toolBoxTextInput');
 		storageName = getTextBoxValue('storageNameTextInput');
 		positionName = getTextBoxValue('positionNameTextInput');
 		params = {
@@ -502,7 +502,7 @@
 			BASE_TOOL_SPEC : baseToolSpec,
 			BATCH_REMARK : batchRemark,
 			TOOL_CODE : toolCode,
-			TOOL_BOX : toolBox,
+			//TOOL_BOX : toolBox,
 			TOOL_TEST_DATE : toolTestDate,
 			TOOL_REJECT_DATE : toolRejectDate,
 			TOOL_MANUFACTURE_DATE : toolManufactureDate,
@@ -666,12 +666,12 @@
 					onclick="openChoosePositionPanel()"
 					style="width: 100%; height: 32px">选择仓位</a></td>
 			</tr>
-			<tr>
-				<td width="18%">箱号:</td>
-				<td><input id="toolBoxTextInput" class="easyui-textbox"
-					data-options="required:true,validType:'length[0,200]'"
-					style="width: 100%; height: 32px" /></td>
-			</tr>
+<!-- 			<tr> -->
+<!-- 				<td width="18%">箱号:</td> -->
+<!-- 				<td><input id="toolBoxTextInput" class="easyui-textbox" -->
+<!-- 					data-options="required:true,validType:'length[0,200]'" -->
+<!-- 					style="width: 100%; height: 32px" /></td> -->
+<!-- 			</tr> -->
 			<%
 				if (!"EXCHANGE_TO_CHECKIN".equals(opType)) {
 			%>

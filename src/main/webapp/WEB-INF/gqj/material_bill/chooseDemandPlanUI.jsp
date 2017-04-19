@@ -140,7 +140,7 @@
 							onclick="choose()">选择</a> <a
 							class="easyui-linkbutton" iconCls="icon-cancel"
 							href="javascript:void(0)"
-							onclick="closeChooseDemandPlanUIForTemplate()">关闭</a></td>
+							onclick="closeChooseDemandPlanUIForMaterialBill()">关闭</a></td>
 						<td align="right"><input
 							id="keyWordForDemandPlanTextInput"
 							class="easyui-textbox"

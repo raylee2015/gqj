@@ -70,7 +70,7 @@
 							pagination : true,
 							pageSize : 30,
 							pageNumber : 1,
-							checkOnSelect : false,
+							checkOnSelect : true,
 							fit : true,
 							method : 'get',
 							columns : [ [ {

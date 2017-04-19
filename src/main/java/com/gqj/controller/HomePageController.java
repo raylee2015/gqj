@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.base.admin.entity.User;
+import com.base.admin.service.IParamService;
 import com.base.admin.service.IUserService;
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
@@ -27,6 +28,7 @@ import com.gqj.entity.ToolTrack;
 import com.gqj.service.IBatchService;
 import com.gqj.service.IHomePageService;
 import com.gqj.service.ISequenceService;
+import com.gqj.service.IToolService;
 import com.gqj.service.IToolTrackService;
 import com.gqj.util.BatchType;
 import com.gqj.util.ToolStatus;
@@ -56,6 +58,58 @@ public class HomePageController extends BaseController {
 		param.put("rule5", "@");
 		param.put("seq", "4");
 		return sequenceService.selectSequence(param);
+	}
+	
+	@Autowired
+	private IToolService toolService;
+	
+	@Autowired
+	private IParamService paramService;
+	
+	/**
+	 * 分页查询仓库列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryToolInventorysPage.do")
+	@ResponseBody
+	public Map<String, Object> queryToolInventorysPage(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		long toolDeptId = getSessionUser(request, response)
+				.getUserDeptId();
+		String keyWord = request.getParameter("keyWord");
+		String dateType = request.getParameter("DATE_TYPE");
+		HashMap<String, Object> param = new HashMap<String, Object>();
+		param.put("keyWord", keyWord);
+		param.put("currPage", page);
+		param.put("pageSize", rows);
+
+		if ("ALL".equals(dateType)) {
+			// 不设置参数
+		} else if ("MY_DEPT".equals(dateType)) {
+			param.put("toolDeptId", toolDeptId);
+		} else if ("OVER_TEST".equals(dateType)) {
+			param.put("toolDeptId", toolDeptId);
+			param.put("toolStatus", ToolStatus.CHECK_IN);
+			// 计算超期的日期
+			int days = BaseUtil.strToInt(paramService
+					.queryParamsForMap("BEFORE_TEST_DAYS"));
+			String date = DateUtil.addDay(DateUtil.getNow(),
+					days);
+			param.put("overTestDays", date);
+		} else if ("OVER_REJECT".equals(dateType)) {
+			param.put("toolDeptId", toolDeptId);
+			param.put("toolStatus", ToolStatus.CHECK_IN);
+			// 当天日期
+			param.put("overRejectDays", DateUtil.getNow());
+		}
+		return toolService.selectToolsForPage(param);
 	}
 
 	/**

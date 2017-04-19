@@ -63,17 +63,74 @@
 		dataGridLoadData('datagridForToolTrack', result);
 	}
 
+	//用在点击查询按钮的时候
+	function queryTestToolPagesForSearch() {
+		queryTestTools();
+	}
+
+	//查询
+	function queryTestTools() {
+		var params = {
+			DATE_TYPE : 'OVER_TEST',
+			keyWord : getTextBoxValue('keyWordForTestToolTextInput'),
+			page : 1,
+			rows : getPageSizeOfDataGrid('datagridForTestTool')
+		};
+		query(params, 'queryNeedReturnTools.do',
+				successFunctionForQueryTestTools);
+	}
+
+	//回调函数，查询成功后调用
+	function successFunctionForQueryTestTools(result) {
+		dataGridLoadData('datagridForTestTool', result);
+	}
+	
+	//用在点击查询按钮的时候
+	function queryRejectToolPagesForSearch() {
+		queryRejectTools();
+	}
+
+	//查询
+	function queryRejectTools() {
+		var params = {
+			DATE_TYPE : 'OVER_REJECT',
+			keyWord : getTextBoxValue('keyWordForRejectToolTextInput'),
+			page : 1,
+			rows : getPageSizeOfDataGrid('datagridForRejectTool')
+		};
+		query(params, 'queryNeedReturnTools.do',
+				successFunctionForQueryRejectTools);
+	}
+
+	//回调函数，查询成功后调用
+	function successFunctionForQueryRejectTools(result) {
+		dataGridLoadData('datagridForRejectTool', result);
+	}
+
 	//页面加载完
 	$(document).ready(
 			function() {
 				closeCache();
 				registerKeyPressForTextInput('keyWordForToolTrackTextInput',
 						queryToolTrackPagesForSearch);
+				registerKeyPressForTextInput('keyWordForTestToolTextInput',
+						queryTestToolPagesForSearch);
+				registerKeyPressForTextInput('keyWordForRejectToolTextInput',
+						queryRejectToolPagesForSearch);
+
 				initDataGridForToolTrackDetail();
+				initDataGridForTestTool();
+				initDataGridForRejectTool()
 
 				var userDeptCode = getTextBoxValue("userDeptCode");
 				if (userDeptCode == 'GLRY') {
 					$('#toolTrackUI').panel({
+						closed : true
+					});
+					$('#tejectToolUI').panel({
+						closed : true
+					});
+					$('#testToolUI').panel({
 						closed : true
 					});
 					$('#welcomeUI').panel({
@@ -81,6 +138,111 @@
 					});
 				}
 			});
+
+	//初始化列表元素
+	function initDataGridForTestTool() {
+		$('#datagridForTestTool')
+				.datagrid(
+						{
+							url : 'queryToolInventorysPage.do?DATE_TYPE=OVER_TEST',
+							idField : 'TOOL_ID',
+							rownumbers : true,
+							toolbar : '#toolbarForTestTool',
+							pagination : true,
+							pageSize : 30,
+							pageNumber : 1,
+							checkOnSelect : false,
+							fit : true,
+							method : 'get',
+							columns : [ [
+									{
+										field : 'BASE_TOOL_NAME',
+										title : '工器具名称',
+										width : 150,
+									},
+									{
+										field : 'BASE_TOOL_MANUFACTURER_NAME',
+										title : '厂家',
+										width : 150,
+									},
+									{
+										field : 'TOOL_NEXT_TEST_DATE',
+										title : '下次试验日期',
+										width : 100,
+										formatter : function(fieldValue,
+												rowData, rowIndex) {
+											var btn = rowData.TOOL_NEXT_TEST_DATE;
+											if (rowData.NEED_TEST == 1) {
+												btn = '<font color="#0000ff"> '
+														+ rowData.TOOL_NEXT_TEST_DATE
+														+ '</font>';
+											}
+											if (rowData.NEED_TEST == 2) {
+												btn = '<font color="#ff0000"> '
+														+ rowData.TOOL_NEXT_TEST_DATE
+														+ '</font>';
+											}
+											return btn;
+										}
+									} ] ],
+							onBeforeLoad : function(param) {
+								param.keyWord = getTextBoxValue('keyWordForTestToolTextInput');
+							},
+							onLoadError : function() {
+								errorFunctionForQuery();
+							}
+						});
+	}
+
+	//初始化列表元素
+	function initDataGridForRejectTool() {
+		$('#datagridForRejectTool')
+				.datagrid(
+						{
+							url : 'queryToolInventorysPage.do?DATE_TYPE=OVER_REJECT',
+							idField : 'TOOL_ID',
+							rownumbers : true,
+							toolbar : '#toolbarForRejectTool',
+							pagination : true,
+							pageSize : 30,
+							pageNumber : 1,
+							checkOnSelect : false,
+							fit : true,
+							method : 'get',
+							columns : [ [
+									{
+										field : 'BASE_TOOL_NAME',
+										title : '工器具名称',
+										width : 150,
+									},
+									{
+										field : 'BASE_TOOL_MANUFACTURER_NAME',
+										title : '厂家',
+										width : 150,
+									},
+									{
+										field : 'TOOL_REJECT_DATE',
+										title : '报废日期',
+										width : 100,
+										formatter : function(fieldValue,
+												rowData, rowIndex) {
+											var btn = rowData.TOOL_REJECT_DATE;
+											if (rowData.NEED_REJECT == 1) {
+												btn = '<font color="#ff0000"> '
+														+ rowData.TOOL_REJECT_DATE
+														+ '</font>';
+											}
+											return btn;
+										}
+									} ] ],
+							onBeforeLoad : function(param) {
+								param.keyWord = getTextBoxValue('keyWordForRejectToolTextInput');
+							},
+							onLoadError : function() {
+								errorFunctionForQuery();
+							}
+						});
+	}
 
 	//初始化列表元素
 	function initDataGridForToolTrackDetail() {
@@ -99,14 +261,9 @@
 							method : 'get',
 							columns : [ [
 									{
-										field : 'TOOL_CODE',
-										title : '工器具编号',
-										width : 100
-									},
-									{
 										field : 'BASE_TOOL_TYPE_NAME',
 										title : '工器具类型',
-										width : 100
+										width : 80
 									},
 									{
 										field : 'BASE_TOOL_NAME',
@@ -121,7 +278,7 @@
 									{
 										field : 'TOOL_NEXT_TEST_DATE',
 										title : '下次试验时间',
-										width : 100,
+										width : 80,
 										formatter : function(fieldValue,
 												rowData, rowIndex) {
 											var btn = rowData.TOOL_NEXT_TEST_DATE;
@@ -155,23 +312,62 @@
 	</div>
 	<div id="welcomeUI" class="easyui-panel"
 		data-options="fit:true,closed:true">欢迎使用工器具管理系统</div>
-	<div id="toolTrackUI" class="easyui-panel" title="外借工器具列表"
-		data-options="width:680,height:400">
-		<table id="datagridForToolTrack" class="easyui-datagrid">
-		</table>
+	<table width="100%">
+		<tr>
+			<td width="33%"><div id="toolTrackUI" class="easyui-panel"
+					title="外借工器具列表" data-options="height:400">
+					<table id="datagridForToolTrack" class="easyui-datagrid">
+					</table>
 
-		<div id="toolbarForToolTrack">
-			<div>
-				<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
-					plain="true" onclick="refreshDataGrid('datagridForToolTrack')">刷新</a>
-				<a href="#" class="easyui-linkbutton" plain="true"
-					iconCls="icon-add" onclick="openAddToolsUIForBatch()">归还</a> <input
-					id="keyWordForToolTrackTextInput" class="easyui-textbox"
-					data-options="prompt:'工器具编号',validType:'length[0,50]'"
-					style="width: 200px"> <a href="#" class="easyui-linkbutton"
-					iconCls="icon-search" onclick="queryToolTrackPagesForSearch()">查询</a>
-			</div>
-		</div>
-	</div>
+					<div id="toolbarForToolTrack">
+						<div>
+							<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
+								plain="true" onclick="refreshDataGrid('datagridForToolTrack')">刷新</a>
+							<a href="#" class="easyui-linkbutton" plain="true"
+								iconCls="icon-add" onclick="openAddToolsUIForBatch()">归还</a> <input
+								id="keyWordForToolTrackTextInput" class="easyui-textbox"
+								data-options="prompt:'工器具编号',validType:'length[0,50]'"
+								style="width: 200px"> <a href="#"
+								class="easyui-linkbutton" iconCls="icon-search"
+								onclick="queryToolTrackPagesForSearch()">查询</a>
+						</div>
+					</div>
+				</div></td>
+			<td width="33%"><div id="testToolUI" class="easyui-panel"
+					title="到期试验工器具列表" data-options="height:400">
+					<table id="datagridForTestTool" class="easyui-datagrid">
+					</table>
+
+					<div id="toolbarForTestTool">
+						<div>
+							<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
+								plain="true" onclick="refreshDataGrid('datagridForTestTool')">刷新</a>
+							<input id="keyWordForTestToolTextInput" class="easyui-textbox"
+								data-options="prompt:'工器具编号',validType:'length[0,50]'"
+								style="width: 200px"> <a href="#"
+								class="easyui-linkbutton" iconCls="icon-search"
+								onclick="queryToolTrackPagesForSearch()">查询</a>
+						</div>
+					</div>
+				</div></td>
+			<td width="33%"><div id="rejectToolUI" class="easyui-panel"
+					title="到期报废工器具列表" data-options="height:400">
+					<table id="datagridForRejectTool" class="easyui-datagrid">
+					</table>
+
+					<div id="toolbarForRejectTool">
+						<div>
+							<a href="#" class="easyui-linkbutton" iconCls="icon-reload"
+								plain="true" onclick="refreshDataGrid('datagridForRejectTool')">刷新</a>
+							<input id="keyWordForRejectToolTextInput" class="easyui-textbox"
+								data-options="prompt:'工器具编号',validType:'length[0,50]'"
+								style="width: 200px"> <a href="#"
+								class="easyui-linkbutton" iconCls="icon-search"
+								onclick="queryToolTrackPagesForSearch()">查询</a>
+						</div>
+					</div>
+				</div></td>
+		</tr>
+	</table>
 </body>
 </html>

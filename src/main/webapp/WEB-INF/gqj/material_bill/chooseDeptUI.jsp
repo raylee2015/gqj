@@ -125,7 +125,7 @@
 							onclick="choose()">选择</a> <a
 							class="easyui-linkbutton" iconCls="icon-cancel"
 							href="javascript:void(0)"
-							onclick="closeChooseDeptUIForTemplate()">关闭</a></td>
+							onclick="closeChooseDeptUIForMaterialBill()">关闭</a></td>
 						<td align="right"><input
 							id="keyWordForDeptTextInput" class="easyui-textbox"
 							data-options="prompt:'部门名称',validType:'length[0,25]'"

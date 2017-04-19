@@ -476,11 +476,6 @@
 										title : '仓位',
 										align : 'center',
 										width : 150
-									}, {
-										field : 'TOOL_BOX',
-										title : '箱号',
-										align : 'center',
-										width : 150
 									} ] ],
 							onBeforeLoad : function(param) {
 								param.keyWord = getTextBoxValue('keyWordForToolTrackTextInput');

@@ -115,6 +115,7 @@ public class DemandPlanController extends BaseController {
 		String toolIds = request.getParameter("TOOL_IDS");
 		String toolAmounts = request.getParameter("TOOL_AMOUNTS");
 		String planRemark = request.getParameter("PLAN_REMARK");
+		String planStatus = request.getParameter("PLAN_STATUS");
 		DemandPlan demandPlan = new DemandPlan();
 		demandPlan.setPlanId(-1l);
 		demandPlan.setPlanType(BaseUtil.strToLong(planType));
@@ -124,7 +125,11 @@ public class DemandPlanController extends BaseController {
 				getSessionUser(request, response).getUserId());
 		demandPlan.setPlanDeptId(
 				getSessionUser(request, response).getUserDeptId());
-		demandPlan.setPlanStatus(PlanStatus.UNSUBMIT);
+		if (planStatus == null) {
+			demandPlan.setPlanStatus(PlanStatus.UNSUBMIT);
+		} else {
+			demandPlan.setPlanStatus(BaseUtil.strToLong(planStatus));
+		}
 		demandPlan.setPlanRemark(planRemark);
 		return demandPlanService.addDemandPlansAndDetails(demandPlan,
 				toolIds, toolAmounts);
@@ -218,7 +223,7 @@ public class DemandPlanController extends BaseController {
 		downLoadFile(request, response, exportFileList);
 		return null;
 	}
-	
+
 	/**
 	 * 导出需求计划
 	 * 
@@ -231,7 +236,7 @@ public class DemandPlanController extends BaseController {
 	@RequestMapping("/exportParentDemandPlans.do")
 	public Map<String, Object> exportParentDemandPlans(
 			HttpServletRequest request, HttpServletResponse response)
-					throws Exception {
+			throws Exception {
 		String demandPlanIds = request.getParameter("PLAN_IDS");
 		DemandPlan demandPlan = new DemandPlan();
 		demandPlan.setIds(demandPlanIds);

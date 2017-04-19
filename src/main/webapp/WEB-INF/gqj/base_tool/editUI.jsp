@@ -343,8 +343,11 @@
 						</tr>
 						<tr>
 							<td width="22%">是否地线:</td>
-							<td><input id="earthWireFlagComboBox" name="BASE_TOOL_EARTH_WIRE"
-								data-options="valueField : 'ID',textField : 'TEXT',	require : true,	panelHeight : 'auto',prompt : '是否在用',url : 'queryEarthWireFlagDropList.do'"
+							<td><input id="earthWireFlagComboBox"
+								name="BASE_TOOL_EARTH_WIRE"
+								data-options="valueField : 'ID',textField : 'TEXT',	
+								require : true,	panelHeight : 'auto',prompt : '是否地线',
+								url : 'queryEarthWireFlagDropList.do'"
 								class="easyui-combobox" style="width: 100%; height: 32px;"></td>
 						</tr>
 						<tr>

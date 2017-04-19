@@ -174,7 +174,7 @@
 							onclick="choose()">选择</a> <a
 							class="easyui-linkbutton" iconCls="icon-cancel"
 							href="javascript:void(0)"
-							onclick="closeChooseMaterialInventoryUIForTemplate()">关闭</a></td>
+							onclick="closeChooseMaterialInventoryUIForMaterialBill()">关闭</a></td>
 						<td align="right"><input
 							id="keyWordForMaterialInventoryTextInput"
 							class="easyui-textbox"

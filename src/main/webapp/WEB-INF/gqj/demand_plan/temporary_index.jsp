@@ -72,6 +72,7 @@
 	//查询
 	function queryDemandPlans() {
 		var params = {
+			OP_TYPE : getTextBoxValue('opType'),
 			PLAN_TYPE : 1,
 			keyWord : getTextBoxValue('keyWordForDemandPlanTextInput'),
 			page : 1,
@@ -392,14 +393,56 @@
 
 	// 提交计划
 	function submitDemandPlan() {
-		var ids = getRowDataOfSelfDataGrid('datagridForDemandPlan',
-				rowIndexOfDataGrid).PLAN_ID;
-		var params = {
-			PLAN_IDS : ids,
-			PLAN_STATUS : 1
-		};
-		showMessageBox(params, 'updateDemandPlanStatus.do', '是否提交所选需求计划?',
-				successFunctionForSave);
+		var rowData = null;
+		var params = null;
+		var demandPlanCode = getTextBoxValue('demandPlanCodeTextInput');
+		var demandPlanRemark = getTextBoxValue('demandPlanRemarkTextInput');
+		if (demandPlanCode == null || demandPlanCode == '') {
+			alert('请填写需求计划名称');
+			return;
+		}
+		var demandPlanDetails = $('#datagridForDemandPlanDetail').datagrid(
+				'getData').rows;
+		if (demandPlanDetails.length == 0) {
+			alert('请选择工器具');
+			return;
+		}
+		var toolIds = '';
+		var toolAmounts = '';
+		for (var i = 0; i < demandPlanDetails.length; i++) {
+			if (demandPlanDetails[i].TOOL_AMOUNT != null) {
+				toolIds += demandPlanDetails[i].TOOL_ID + ',';
+				toolAmounts += demandPlanDetails[i].TOOL_AMOUNT + ',';
+			}
+		}
+		toolIds = toolIds.substring(0, toolIds.length - 1);
+		toolAmounts = toolAmounts.substring(0, toolAmounts.length - 1);
+		if (opType == 'add') {
+			params = {
+				PLAN_STATUS : 1,
+				PLAN_ID : '',
+				PLAN_TYPE : 1,//临时计划
+				PLAN_CODE : demandPlanCode,
+				TOOL_IDS : toolIds,
+				TOOL_AMOUNTS : toolAmounts,
+				PLAN_REMARK : demandPlanRemark,
+			};
+			url = "addNewDemandPlansAndDetails.do";
+		} else if (opType == 'edit') {
+			rowData = getRowDataOfSelfDataGrid('datagridForDemandPlan',
+					rowIndexOfDataGrid);
+			params = {
+				PLAN_STATUS : 1,
+				PLAN_ID : rowData.PLAN_ID,
+				PLAN_TYPE : 1,//临时计划
+				PLAN_CODE : demandPlanCode,
+				TOOL_IDS : toolIds,
+				TOOL_AMOUNTS : toolAmounts,
+				PLAN_REMARK : demandPlanRemark,
+			};
+			url = "updateDemandPlansAndDetails.do";
+		}
+		showMessageBox(params, url, '是否提交所选需求计划?', successFunctionForSave);
 	}
 
 	// 通过计划
@@ -613,9 +656,8 @@
 	<div id="demandPlanDetailUI" class="easyui-panel"
 		data-options="fit:true,border:false">
 		<div style="display: none">
-			<input id="demandPlanIdTextInput" class="easyui-textbox" />
-			<input id="demandPlanStatusTextInput"
-				class="easyui-textbox" />
+			<input id="demandPlanIdTextInput" class="easyui-textbox" /> <input
+				id="demandPlanStatusTextInput" class="easyui-textbox" />
 		</div>
 		<table id="datagridForDemandPlanDetail" class="easyui-datagrid">
 		</table>

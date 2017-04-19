@@ -139,7 +139,7 @@
 							onclick="choose()">选择</a> <a
 							class="easyui-linkbutton" iconCls="icon-cancel"
 							href="javascript:void(0)"
-							onclick="closeChoosePositionUIForTemplate()">关闭</a></td>
+							onclick="closeChoosePositionUIForMaterialBill()">关闭</a></td>
 						<td align="right"><input
 							id="keyWordForPositionTextInput"
 							class="easyui-textbox"
