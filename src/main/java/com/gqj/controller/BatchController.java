@@ -234,7 +234,9 @@ public class BatchController extends BaseController {
 		toolTrack.setToolDeptId(
 				getSessionUser(request, response).getUserDeptId());
 
-		if (BaseUtil.strToLong(batchType) == BatchType.RETURN) {
+		if (BaseUtil.strToLong(batchType) == BatchType.RETURN
+				|| BaseUtil.strToLong(batchType) == BatchType.USE
+				|| BaseUtil.strToLong(batchType) == BatchType.SELF_RETURN) {
 			// 查询工器具的本部门最早入库的位置
 			ToolTrack temp = new ToolTrack();
 			temp.setToolCode(toolCode);
@@ -533,9 +535,13 @@ public class BatchController extends BaseController {
 		} else if ("4".equals(batchType)) {
 			rule1 = "报废-";
 		} else if ("5".equals(batchType)) {
-			rule1 = "借用-";
+			rule1 = "外站借用-";
 		} else if ("6".equals(batchType)) {
-			rule1 = "归还-";
+			rule1 = "外站归还-";
+		} else if ("8".equals(batchType)) {
+			rule1 = "本站使用-";
+		} else if ("9".equals(batchType)) {
+			rule1 = "本站归还-";
 		}
 		param.put("rule1", rule1);
 		param.put("rule2", DateUtil.getNow() + "-");

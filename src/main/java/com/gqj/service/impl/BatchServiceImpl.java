@@ -174,6 +174,12 @@ public class BatchServiceImpl implements IBatchService {
 		} else if (batchType == BatchType.RETURN) {
 			tool.setToolStatus(ToolStatus.CHECK_IN_COMING);
 			resultMap = toolService.checkInTool(batch, tool, toolTrack);
+		} else if (batchType == BatchType.USE) {
+			tool.setToolStatus(ToolStatus.CHECK_OUT);
+			resultMap = toolService.checkInTool(batch, tool, toolTrack);
+		} else if (batchType == BatchType.SELF_RETURN) {
+			tool.setToolStatus(ToolStatus.CHECK_IN_COMING);
+			resultMap = toolService.checkInTool(batch, tool, toolTrack);
 		}
 		if (resultMap != null) {
 			success = Boolean
