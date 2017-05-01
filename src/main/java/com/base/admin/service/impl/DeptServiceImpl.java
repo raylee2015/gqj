@@ -1,5 +1,7 @@
 package com.base.admin.service.impl;
 
+import java.sql.Clob;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,10 +58,36 @@ public class DeptServiceImpl implements IDeptService {
 	}
 
 	@Override
-	public Map<String, Object> selectDeptsForPage(
-			Dept dept) {
+	public Map<String, Object> selectDeptsForPage(Dept dept)
+			throws SQLException {
 		List<Map<String, Object>> depts = deptMapper
 				.selectDeptsForPage(dept);
+		for (Map<String, Object> item : depts) {
+			if (item.get(
+					"VIEW_DEPT_INNER_NAME") instanceof Clob) {
+				Clob clob = (Clob) item
+						.get("VIEW_DEPT_INNER_NAME");
+				String viewDeptInnerName = "";
+				if (clob != null) {
+					viewDeptInnerName = clob.getSubString(
+							(long) 1, (int) clob.length());
+					item.put("VIEW_DEPT_INNER_NAME",
+							viewDeptInnerName);
+				}
+			}
+			if (item.get(
+					"VIEW_DEPT_INNER_CODE") instanceof Clob) {
+				Clob clob = (Clob) item
+						.get("VIEW_DEPT_INNER_CODE");
+				String viewDeptInnerCode = "";
+				if (clob != null) {
+					viewDeptInnerCode = clob.getSubString(
+							(long) 1, (int) clob.length());
+					item.put("VIEW_DEPT_INNER_CODE",
+							viewDeptInnerCode);
+				}
+			}
+		}
 		int count = deptMapper
 				.selectCountOfDeptsForPage(dept);
 		Map<String, Object> map = new HashMap<String, Object>();

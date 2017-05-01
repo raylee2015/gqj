@@ -88,12 +88,11 @@
 	function querySelectedMenusForList() {
 		var params = {};
 		ajaxFunction(params, 'queryMenuList.do',
-				successFunctionForQuerySelectedMenus, errorFunctionForQuery,
-				false);
+				successFunctionForQuerySelectedMenus, errorFunctionForQuery);
 	}
 
 	//成功查询已选菜单权限
-	function successFunctionForQuerySelectedMenus(result, haveTree) {
+	function successFunctionForQuerySelectedMenus(result) {
 		var rows = result.rows;
 		for (var i = 0; i < rows.length; i++) {
 			var upMenuName = rows[i].UP_MENU_NAME;

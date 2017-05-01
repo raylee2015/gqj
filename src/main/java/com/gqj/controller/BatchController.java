@@ -235,7 +235,6 @@ public class BatchController extends BaseController {
 				getSessionUser(request, response).getUserDeptId());
 
 		if (BaseUtil.strToLong(batchType) == BatchType.RETURN
-				|| BaseUtil.strToLong(batchType) == BatchType.USE
 				|| BaseUtil.strToLong(batchType) == BatchType.SELF_RETURN) {
 			// 查询工器具的本部门最早入库的位置
 			ToolTrack temp = new ToolTrack();

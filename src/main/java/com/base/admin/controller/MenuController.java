@@ -163,6 +163,13 @@ public class MenuController {
 	@ResponseBody
 	public void queryMenuTree(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		System.out.println(
+				"---------------------------------");
+		System.out.println(
+				menuService.queryMenusForTree(new Menu())
+						.toLowerCase());
+		System.out.println(
+				"---------------------------------");
 		response.getWriter()
 				.print(menuService
 						.queryMenusForTree(new Menu())

@@ -43,7 +43,7 @@
 			panelHeight = 600;
 		} else if (batchType == 8 || batchType == 9) {
 			panelWidth = 500;
-			panelHeight = 200;
+			panelHeight = 250;
 		} else if (batchType == 1 || batchType == 5 || batchType == 6) {
 			panelWidth = 500;
 			panelHeight = 280;

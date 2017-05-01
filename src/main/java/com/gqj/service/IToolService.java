@@ -43,4 +43,10 @@ public interface IToolService {
 	Map<String, Object> borrowTool(Batch batch, Tool toolParam,
 			ToolTrack toolTrack);
 
+	Map<String, Object> useTool(Batch batch, Tool toolParam,
+			ToolTrack toolTrack);
+
+	Map<String, Object> selfRetrunTool(Batch batch,
+			Tool toolParam, ToolTrack toolTrack);
+
 }

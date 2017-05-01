@@ -177,9 +177,21 @@ public class ToolServiceImpl implements IToolService {
 			Tool toolParam, ToolTrack toolTrack) {
 		return checkOutTool(batch, toolParam, toolTrack);
 	}
+	
+	@Override
+	public Map<String, Object> useTool(Batch batch,
+			Tool toolParam, ToolTrack toolTrack) {
+		return checkOutTool(batch, toolParam, toolTrack);
+	}
 
 	@Override
 	public Map<String, Object> backTool(Batch batch,
+			Tool toolParam, ToolTrack toolTrack) {
+		return checkInTool(batch, toolParam, toolTrack);
+	}
+	
+	@Override
+	public Map<String, Object> selfRetrunTool(Batch batch,
 			Tool toolParam, ToolTrack toolTrack) {
 		return checkInTool(batch, toolParam, toolTrack);
 	}

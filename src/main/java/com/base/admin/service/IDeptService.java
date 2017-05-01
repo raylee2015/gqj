@@ -1,5 +1,6 @@
 package com.base.admin.service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -16,5 +17,5 @@ public interface IDeptService {
 
 	String selectDeptsForTree();
 
-	Map<String, Object> selectDeptsForPage(Dept dept);
+	Map<String, Object> selectDeptsForPage(Dept dept) throws SQLException;
 }
