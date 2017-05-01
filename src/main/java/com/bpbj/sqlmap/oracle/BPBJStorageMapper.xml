@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bpbj.dao.BPBJStorageMapper">
+	<resultMap id="BaseResultMap" type="com.bpbj.entity.Storage">
+		<id column="STORE_ID" jdbcType="DECIMAL" property="storeId" />
+		<result column="STORE_NAME" jdbcType="VARCHAR" property="storeName" />
+		<result column="STORE_DEPT_ID" jdbcType="DECIMAL" property="storeDeptId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		STORE_ID, STORE_NAME, STORE_DEPT_ID
+	</sql>
+	<select id="selectStoragesForPage" parameterType="com.bpbj.entity.Storage"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from BPBJ_STORAGE
+		<where>
+			<if test="storeDeptId != null">
+				and STORE_DEPT_ID = #{storeDeptId}
+			</if>
+			<if test="keyWord != null">
+				AND STORE_NAME like '%${keyWord}%'
+			</if>
+		</where>
+		order by STORE_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfStoragesForPage" parameterType="com.bpbj.entity.Storage"
+		resultType="java.lang.Integer">
+		select count(t.STORE_ID) from BPBJ_STORAGE t
+		<where>
+			<if test="storeDeptId != null">
+				and STORE_DEPT_ID = #{storeDeptId}
+			</if>
+			<if test="keyWord != null">
+				AND STORE_NAME like '%${keyWord}%'
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="java.lang.Long">
+		delete from
+		BPBJ_STORAGE
+		where STORE_ID IN (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.bpbj.entity.Storage">
+		insert into BPBJ_STORAGE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="storeId != null">
+				STORE_ID,
+			</if>
+			<if test="storeName != null">
+				STORE_NAME,
+			</if>
+			<if test="storeDeptId != null">
+				STORE_DEPT_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="storeId != null">
+				BPBJ_STORAGE_SEQ.nextval,
+			</if>
+			<if test="storeName != null">
+				#{storeName,jdbcType=VARCHAR},
+			</if>
+			<if test="storeDeptId != null">
+				#{storeDeptId,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.Storage">
+		update BPBJ_STORAGE
+		<set>
+			<if test="storeName != null">
+				STORE_NAME = #{storeName,jdbcType=VARCHAR},
+			</if>
+			<if test="storeDeptId != null">
+				STORE_DEPT_ID = #{storeDeptId,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where STORE_ID = #{storeId,jdbcType=DECIMAL}
+	</update>
+</mapper>

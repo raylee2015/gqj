@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bpbj.dao.BPBJDemandPlanDetailMapper">
+	<resultMap id="BaseResultMap" type="com.bpbj.entity.DemandPlanDetail">
+		<id column="DETAIL_ID" jdbcType="DECIMAL" property="detailId" />
+		<result column="PLAN_ID" jdbcType="DECIMAL" property="planId" />
+		<result column="TOOL_ID" jdbcType="DECIMAL" property="toolId" />
+		<result column="TOOL_SUM_AMOUNT" jdbcType="DECIMAL" property="toolSumAmount" />
+		<result column="TOOL_AMOUNT" jdbcType="DECIMAL" property="toolAmount" />
+		<result column="DETAIL_REMARK" jdbcType="VARCHAR" property="detailRemark" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		DETAIL_ID, PLAN_ID, TOOL_ID, TOOL_SUM_AMOUNT, TOOL_AMOUNT,
+		DETAIL_REMARK
+	</sql>
+	<select id="selectSumDemandPlanDetailsForList" parameterType="com.bpbj.entity.DemandPlan"
+		resultType="java.util.HashMap">
+		select t.TOOL_ID,sum(t.TOOL_AMOUNT) AS TOOL_AMOUNT from
+		GQJ_DEMAND_PLAN_DETAIL t
+		<where>
+			<if test="ids != null">
+				AND PLAN_ID in (${ids})
+			</if>
+		</where>
+		group by t.tool_id
+	</select>
+	<select id="selectArriveToolListForDemandPlanDetails"
+		parameterType="com.bpbj.entity.DemandPlan" resultType="java.util.HashMap">
+		select b.TOOL_DEMAND_ID as TOOL_ID,d.DETAIL_BILL_AMOUNT AS
+		TOOL_ARRIVE_AMOUNT from
+		GQJ_MATERIAL_BILL_DETAIL d
+		left join
+		bpbj_base_tool b on b.base_tool_id
+		= d.base_tool_id
+		where d.bill_id in (
+		select t.bill_id from
+		GQJ_MATERIAL_BILL t
+		<where>
+			<if test="planId != null and planId!=''">
+				AND t.PLAN_ID = #{planId}
+			</if>
+		</where>
+		)
+	</select>
+	<select id="selectDemandPlanDetailsForList" parameterType="com.bpbj.entity.DemandPlan"
+		resultType="java.util.HashMap">
+		select * from VIEW_GQJ_DEMAND_PLAN_DETAIL
+		<where>
+			<if test="planId != null and planId!=''">
+				AND PLAN_ID = #{planId}
+			</if>
+		</where>
+		order by DETAIL_ID
+	</select>
+	<select id="selectDemandPlanDetailsForPage" parameterType="com.bpbj.entity.DemandPlanDetail"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from GQJ_DEMAND_PLAN_DETAIL
+		<where>
+			<if test="planId != null and planId!=''">
+				AND PLAN_ID = #{planId}
+			</if>
+		</where>
+		order by PLAN_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfDemandPlanDetailsForPage"
+		parameterType="com.bpbj.entity.DemandPlanDetail" resultType="java.lang.Integer">
+		select count(t.PLAN_ID) from GQJ_DEMAND_PLAN_DETAIL t
+		<where>
+			<if test="planId != null and planId!=''">
+				AND PLAN_ID = #{planId}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByDemandPlan" parameterType="com.bpbj.entity.DemandPlan">
+		delete from
+		GQJ_DEMAND_PLAN_DETAIL
+		where PLAN_ID in (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.bpbj.entity.DemandPlanDetail">
+		insert into GQJ_DEMAND_PLAN_DETAIL
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="detailId != null">
+				DETAIL_ID,
+			</if>
+			<if test="planId != null">
+				PLAN_ID,
+			</if>
+			<if test="toolId != null">
+				TOOL_ID,
+			</if>
+			<if test="toolSumAmount != null">
+				TOOL_SUM_AMOUNT,
+			</if>
+			<if test="toolAmount != null">
+				TOOL_AMOUNT,
+			</if>
+			<if test="detailRemark != null">
+				DETAIL_REMARK,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="detailId != null">
+				GQJ_DEMAND_PLAN_DETAIL_SEQ.nextval,
+			</if>
+			<if test="planId != null">
+				#{planId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolId != null">
+				#{toolId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolSumAmount != null">
+				#{toolSumAmount,jdbcType=DECIMAL},
+			</if>
+			<if test="toolAmount != null">
+				#{toolAmount,jdbcType=DECIMAL},
+			</if>
+			<if test="detailRemark != null">
+				#{detailRemark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.DemandPlanDetail">
+		update GQJ_DEMAND_PLAN_DETAIL
+		<set>
+			<if test="planId != null">
+				PLAN_ID = #{planId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolId != null">
+				TOOL_ID = #{toolId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolSumAmount != null">
+				TOOL_SUM_AMOUNT = #{toolSumAmount,jdbcType=DECIMAL},
+			</if>
+			<if test="toolAmount != null">
+				TOOL_AMOUNT = #{toolAmount,jdbcType=DECIMAL},
+			</if>
+			<if test="detailRemark != null">
+				DETAIL_REMARK = #{detailRemark,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where DETAIL_ID = #{detailId,jdbcType=DECIMAL}
+	</update>
+</mapper>

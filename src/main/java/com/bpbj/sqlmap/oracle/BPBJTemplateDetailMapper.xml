@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bpbj.dao.BPBJTemplateDetailMapper">
+	<resultMap id="BaseResultMap" type="com.bpbj.entity.TemplateDetail">
+		<id column="DETAIL_ID" jdbcType="DECIMAL" property="detailId" />
+		<result column="TEMPLATE_ID" jdbcType="DECIMAL" property="templateId" />
+		<result column="TOOL_ID" jdbcType="DECIMAL" property="toolId" />
+		<result column="DETAIL_REMARK" jdbcType="VARCHAR" property="detailRemark" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		DETAIL_ID, TEMPLATE_ID, TOOL_ID,
+		TOOL_NAME,TOOL_STANDARD_CONFIG_DEMAND,TOOL_MODEL_DEMAND,
+		TOOL_UNIT,TOOL_REMARK,TOOL_TYPE_NAME,TOOL_UNIT_NAME
+	</sql>
+	<select id="selectTemplateDetailsForList" parameterType="com.bpbj.entity.Template"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_TEMPLATE_DETAIL
+		<where>
+			<if test="templateId != null">
+				and TEMPLATE_ID = #{templateId}
+			</if>
+		</where>
+		order by DETAIL_ID
+	</select>
+	<select id="selectTemplateDetailsForPage" parameterType="com.bpbj.entity.TemplateDetail"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_TEMPLATE_DETAIL
+		<where>
+			<if test="templateId != null">
+				and TEMPLATE_ID = #{templateId}
+			</if>
+		</where>
+		order by DETAIL_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfTemplateDetailsForPage" parameterType="com.bpbj.entity.TemplateDetail"
+		resultType="java.lang.Integer">
+		select count(t.DETAIL_ID) from VIEW_GQJ_TEMPLATE_DETAIL t
+		<where>
+			<if test="templateId != null">
+				and TEMPLATE_ID = #{templateId}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByTemplate" parameterType="com.bpbj.entity.Template">
+		delete from
+		GQJ_TEMPLATE_DETAIL
+		where TEMPLATE_ID in (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.bpbj.entity.TemplateDetail">
+		insert into GQJ_TEMPLATE_DETAIL
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="detailId != null">
+				DETAIL_ID,
+			</if>
+			<if test="templateId != null">
+				TEMPLATE_ID,
+			</if>
+			<if test="toolId != null">
+				TOOL_ID,
+			</if>
+			<if test="detailRemark != null">
+				DETAIL_REMARK,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="detailId != null">
+				GQJ_TEMPLATE_DETAIL_SEQ.nextval,
+			</if>
+			<if test="templateId != null">
+				#{templateId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolId != null">
+				#{toolId,jdbcType=DECIMAL},
+			</if>
+			<if test="detailRemark != null">
+				#{detailRemark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.TemplateDetail">
+		update GQJ_TEMPLATE_DETAIL
+		<set>
+			<if test="templateId != null">
+				TEMPLATE_ID = #{templateId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolId != null">
+				TOOL_ID = #{toolId,jdbcType=DECIMAL},
+			</if>
+			<if test="detailRemark != null">
+				DETAIL_REMARK = #{detailRemark,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where DETAIL_ID = #{detailId,jdbcType=DECIMAL}
+	</update>
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bpbj.dao.BPBJToolTypeMapper">
+	<resultMap id="BaseResultMap" type="com.bpbj.entity.ToolType">
+		<id column="TYPE_ID" jdbcType="DECIMAL" property="typeId" />
+		<result column="TYPE_NAME" jdbcType="VARCHAR" property="typeName" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		TYPE_ID, TYPE_NAME
+	</sql>
+	<select id="selectToolTypesForList" parameterType="com.bpbj.entity.ToolType"
+		resultType="java.util.HashMap">
+		SELECT
+		TYPE_ID AS ID,TYPE_NAME AS TEXT,TYPE_ID,TYPE_NAME
+		from
+		GQJ_TOOL_TYPE
+		<where>
+			<if test="keyWord != null">
+				AND TYPE_NAME like '%${keyWord}%'
+			</if>
+		</where>
+		order by TYPE_ID
+	</select>
+	<select id="selectToolTypesForPage" parameterType="com.bpbj.entity.ToolType"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		SELECT
+		<include refid="Base_Column_List" />
+		from GQJ_TOOL_TYPE
+		<where>
+			<if test="keyWord != null">
+				AND TYPE_NAME like '%${keyWord}%'
+			</if>
+		</where>
+		order by TYPE_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfToolTypesForPage" parameterType="com.bpbj.entity.ToolType"
+		resultType="java.lang.Integer">
+		SELECT COUNT(T.TYPE_ID) from GQJ_TOOL_TYPE t
+		<where>
+			<if test="keyWord != null">
+				AND TYPE_NAME like '%${keyWord}%'
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="java.lang.String">
+		delete from
+		GQJ_TOOL_TYPE
+		where TYPE_ID IN (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.bpbj.entity.ToolType">
+		insert into GQJ_TOOL_TYPE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="typeId != null">
+				TYPE_ID,
+			</if>
+			<if test="typeName != null">
+				TYPE_NAME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="typeId != null">
+				GQJ_TOOL_TYPE_SEQ.nextval,
+			</if>
+			<if test="typeName != null">
+				#{typeName,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.ToolType">
+		update GQJ_TOOL_TYPE
+		<set>
+			<if test="typeName != null">
+				TYPE_NAME = #{typeName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where TYPE_ID = #{typeId,jdbcType=DECIMAL}
+	</update>
+</mapper>

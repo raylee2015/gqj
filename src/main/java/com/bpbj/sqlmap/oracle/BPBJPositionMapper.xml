@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bpbj.dao.BPBJPositionMapper">
+	<resultMap id="BaseResultMap" type="com.bpbj.entity.Position">
+		<id column="POS_ID" jdbcType="DECIMAL" property="posId" />
+		<result column="POS_ID" jdbcType="DECIMAL" property="storeId" />
+		<result column="POS_NAME" jdbcType="VARCHAR" property="posName" />
+		<result column="POS_DEPT_ID" jdbcType="DECIMAL" property="posDeptId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		POS_ID, STORE_ID, POS_NAME, POS_DEPT_ID,STORE_NAME
+	</sql>
+	<select id="selectPositionsForPage" parameterType="com.bpbj.entity.Position"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_BPBJ_POSITION
+		<where>
+			<if test="posDeptId != null">
+				and POS_DEPT_ID = #{posDeptId}
+			</if>
+			<if test="storeId != null">
+				and STORE_ID = #{storeId}
+			</if>
+			<if test="keyWord != null">
+				AND POS_NAME like '%${keyWord}%'
+			</if>
+		</where>
+		order by POS_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfPositionsForPage" parameterType="com.bpbj.entity.Position"
+		resultType="java.lang.Integer">
+		select count(t.POS_ID) from VIEW_BPBJ_POSITION t
+		<where>
+			<if test="posDeptId != null">
+				and POS_DEPT_ID = #{posDeptId}
+			</if>
+			<if test="storeId != null">
+				and STORE_ID = #{storeId}
+			</if>
+			<if test="keyWord != null">
+				AND POS_NAME like '%${keyWord}%'
+			</if>
+		</where>
+	</select>
+	<select id="selectPositionsForObject" parameterType="com.bpbj.entity.Position"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_BPBJ_POSITION
+		<where>
+			<if test="posId != null">
+				and POS_ID = #{posId}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="java.lang.Long">
+		delete from
+		BPBJ_POSITION
+		where POS_ID in (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.bpbj.entity.Position">
+		insert into BPBJ_POSITION
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="posId != null">
+				POS_ID,
+			</if>
+			<if test="storeId != null">
+				STORE_ID,
+			</if>
+			<if test="posName != null">
+				POS_NAME,
+			</if>
+			<if test="posDeptId != null">
+				POS_DEPT_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="posId != null">
+				BPBJ_POSITION_SEQ.nextval,
+			</if>
+			<if test="storeId != null">
+				#{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="posName != null">
+				#{posName,jdbcType=VARCHAR},
+			</if>
+			<if test="posDeptId != null">
+				#{posDeptId,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.Position">
+		update BPBJ_POSITION
+		<set>
+			<if test="storeId != null">
+				STORE_ID = #{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="posName != null">
+				POS_NAME = #{posName,jdbcType=VARCHAR},
+			</if>
+			<if test="posDeptId != null">
+				POS_DEPT_ID = #{posDeptId,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where POS_ID = #{posId,jdbcType=DECIMAL}
+	</update>
+</mapper>

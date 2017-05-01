@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bpbj.dao.BPBJDemandPlanMapper">
+	<resultMap id="BaseResultMap" type="com.bpbj.entity.DemandPlan">
+		<id column="PLAN_ID" jdbcType="DECIMAL" property="planId" />
+		<result column="UP_PLAN_ID" jdbcType="DECIMAL" property="upPlanId" />
+		<result column="PLAN_DEPT_ID" jdbcType="DECIMAL" property="planDeptId" />
+		<result column="PLAN_TYPE" jdbcType="DECIMAL" property="planType" />
+		<result column="PLAN_CODE" jdbcType="VARCHAR" property="planCode" />
+		<result column="PLAN_STATUS" jdbcType="DECIMAL" property="planStatus" />
+		<result column="PLAN_CREATE_USER_ID" jdbcType="DECIMAL"
+			property="planCreateUserId" />
+		<result column="PLAN_CREATE_DATE" jdbcType="TIMESTAMP"
+			property="planCreateDate" />
+		<result column="PLAN_ASSIGNED_DEPT_ID" jdbcType="VARCHAR"
+			property="planAssignedDeptId" />
+		<result column="PLAN_ASSIGNED_DEPT_NAME" jdbcType="VARCHAR"
+			property="planAssignedDeptName" />
+		<result column="PLAN_REMARK" jdbcType="VARCHAR" property="planRemark" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		PLAN_ID, UP_PLAN_ID, PLAN_DEPT_ID, PLAN_TYPE, PLAN_CODE,
+		PLAN_STATUS,
+		PLAN_CREATE_USER_ID,
+		PLAN_CREATE_DATE,
+		PLAN_ASSIGNED_DEPT_ID, PLAN_ASSIGNED_DEPT_NAME, PLAN_REMARK,
+		PLAN_DEPT_NAME,PLAN_TYPE_NAME,PLAN_STATUS_NAME,PLAN_CREATE_USER_NAME
+	</sql>
+	<select id="selectDemandPlansForPage" parameterType="com.bpbj.entity.DemandPlan"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_DEMAND_PLAN
+		<where>
+			<if test="keyWord != null">
+				AND PLAN_CODE like '%${keyWord}%'
+			</if>
+			<if test="planType != null">
+				AND PLAN_TYPE = #{planType}
+			</if>
+			<if test="planStatus != null and planStatus != ''">
+				AND PLAN_STATUS=#{planStatus}
+			</if>
+			<if test="planDeptId != null and planDeptId != ''">
+				AND PLAN_DEPT_ID=#{planDeptId}
+			</if>
+			<if test="planCreateUserId != null and planCreateUserId != ''">
+				AND PLAN_CREATE_USER_ID = #{planCreateUserId}
+			</if>
+		</where>
+		order by PLAN_ID DESC
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectDemandPlanForObject" parameterType="com.bpbj.entity.DemandPlan"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_DEMAND_PLAN
+		<where>
+			<if test="planId != null">
+				AND PLAN_ID = #{planId}
+			</if>
+		</where>
+	</select>
+	<select id="selectDemandPlansForList" parameterType="com.bpbj.entity.DemandPlan"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_DEMAND_PLAN
+		<where>
+			<if test="upPlanId != null">
+				AND UP_PLAN_ID = #{upPlanId}
+			</if>
+		</where>
+		order by PLAN_ID DESC
+	</select>
+	<select id="selectCountOfDemandPlansForPage" parameterType="com.bpbj.entity.DemandPlan"
+		resultType="java.lang.Integer">
+		select count(t.PLAN_ID) from GQJ_DEMAND_PLAN t
+		<where>
+			<if test="keyWord != null">
+				AND PLAN_CODE like '%${keyWord}%'
+			</if>
+			<if test="planType != null">
+				AND PLAN_TYPE = #{planType}
+			</if>
+			<if test="planStatus != null and planStatus != ''">
+				AND PLAN_STATUS=#{planStatus}
+			</if>
+			<if test="planDeptId != null and planDeptId != ''">
+				AND PLAN_DEPT_ID=#{planDeptId}
+			</if>
+			<if test="planCreateUserId != null and planCreateUserId != ''">
+				AND PLAN_CREATE_USER_ID = #{planCreateUserId}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="com.bpbj.entity.DemandPlan">
+		delete from
+		GQJ_DEMAND_PLAN
+		where PLAN_ID in (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.bpbj.entity.DemandPlan">
+		<selectKey resultType="java.lang.Long" order="BEFORE"
+			keyProperty="planId">
+			select GQJ_DEMAND_PLAN_SEQ.nextval from dual
+		</selectKey>
+		insert into GQJ_DEMAND_PLAN
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="planId != null">
+				PLAN_ID,
+			</if>
+			<if test="upPlanId != null">
+				UP_PLAN_ID,
+			</if>
+			<if test="planDeptId != null">
+				PLAN_DEPT_ID,
+			</if>
+			<if test="planType != null">
+				PLAN_TYPE,
+			</if>
+			<if test="planCode != null">
+				PLAN_CODE,
+			</if>
+			<if test="planStatus != null">
+				PLAN_STATUS,
+			</if>
+			<if test="planCreateUserId != null">
+				PLAN_CREATE_USER_ID,
+			</if>
+			<if test="planCreateDate != null">
+				PLAN_CREATE_DATE,
+			</if>
+			<if test="planAssignedDeptId != null">
+				PLAN_ASSIGNED_DEPT_ID,
+			</if>
+			<if test="planAssignedDeptName != null">
+				PLAN_ASSIGNED_DEPT_NAME,
+			</if>
+			<if test="planRemark != null">
+				PLAN_REMARK,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="planId != null">
+				#{planId},
+			</if>
+			<if test="upPlanId != null">
+				#{upPlanId,jdbcType=DECIMAL},
+			</if>
+			<if test="planDeptId != null">
+				#{planDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="planType != null">
+				#{planType,jdbcType=DECIMAL},
+			</if>
+			<if test="planCode != null">
+				#{planCode,jdbcType=VARCHAR},
+			</if>
+			<if test="planStatus != null">
+				#{planStatus,jdbcType=DECIMAL},
+			</if>
+			<if test="planCreateUserId != null">
+				#{planCreateUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="planCreateDate != null">
+				#{planCreateDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="planAssignedDeptId != null">
+				#{planAssignedDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="planAssignedDeptName != null">
+				#{planAssignedDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="planRemark != null">
+				#{planRemark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.DemandPlan">
+		update GQJ_DEMAND_PLAN
+		<set>
+			<if test="upPlanId != null">
+				UP_PLAN_ID = #{upPlanId,jdbcType=DECIMAL},
+			</if>
+			<if test="planDeptId != null">
+				PLAN_DEPT_ID = #{planDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="planType != null">
+				PLAN_TYPE = #{planType,jdbcType=DECIMAL},
+			</if>
+			<if test="planCode != null">
+				PLAN_CODE = #{planCode,jdbcType=VARCHAR},
+			</if>
+			<if test="planStatus != null">
+				PLAN_STATUS = #{planStatus,jdbcType=DECIMAL},
+			</if>
+			<if test="planCreateUserId != null">
+				PLAN_CREATE_USER_ID =
+				#{planCreateUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="planCreateDate != null">
+				PLAN_CREATE_DATE = #{planCreateDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="planAssignedDeptId != null">
+				PLAN_ASSIGNED_DEPT_ID =
+				#{planAssignedDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="planAssignedDeptName != null">
+				PLAN_ASSIGNED_DEPT_NAME =
+				#{planAssignedDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="planRemark != null">
+				PLAN_REMARK = #{planRemark,jdbcType=VARCHAR},
+			</if>
+		</set>
+		<where>
+			<!-- 这里需要注意，由于更新的计划的时候和选人的时候都需要用到planId，因此这里同意使用ids -->
+			<if test="ids != null">
+				PLAN_ID in (${ids})
+			</if>
+		</where>
+	</update>
+</mapper>

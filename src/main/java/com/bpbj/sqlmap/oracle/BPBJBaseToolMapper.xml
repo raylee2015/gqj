@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bpbj.dao.BPBJBaseToolMapper">
+	<resultMap id="BaseResultMap" type="com.bpbj.entity.BaseTool">
+		<id column="BASE_TOOL_ID" jdbcType="DECIMAL" property="baseToolId" />
+		<result column="TYPE_ID" jdbcType="DECIMAL" property="typeId" />
+		<result column="TOOL_DEMAN_ID" jdbcType="DECIMAL" property="toolDemandId" />
+		<result column="MAN_ID" jdbcType="DECIMAL" property="manId" />
+		<result column="BASE_TOOL_MODEL" jdbcType="VARCHAR" property="baseToolModel" />
+		<result column="BASE_TOOL_SPEC" jdbcType="DECIMAL" property="baseToolSpec" />
+		<result column="BASE_TOOL_REMARK" jdbcType="VARCHAR" property="baseToolRemark" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		BASE_TOOL_ID, BASE_TOOL_TYPE_ID, TOOL_DEMAND_ID, MAN_ID,
+		BASE_TOOL_MODEL, BASE_TOOL_SPEC,
+		BASE_TOOL_REMARK,BASE_TOOL_TYPE_NAME,BASE_TOOL_NAME,
+		BASE_TOOL_MANUFACTURER_NAME,BASE_TOOL_EARTH_WIRE
+	</sql>
+	<select id="selectBaseToolForObject" parameterType="com.bpbj.entity.BaseTool"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_BASE_TOOL
+		<where>
+			<if test="baseToolId != null">
+				AND BASE_TOOL_ID = #{baseToolId}
+			</if>
+		</where>
+		order by BASE_TOOL_ID DESC
+	</select>
+	<select id="selectBaseToolsForPage" parameterType="com.bpbj.entity.BaseTool"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_BASE_TOOL
+		<where>
+			<if test="keyWord != null">
+				AND BASE_TOOL_NAME like '%${keyWord}%'
+			</if>
+		</where>
+		order by BASE_TOOL_ID DESC
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfBaseToolsForPage" parameterType="com.bpbj.entity.BaseTool"
+		resultType="java.lang.Integer">
+		select count(t.BASE_TOOL_ID) from VIEW_GQJ_BASE_TOOL t
+		<where>
+			<if test="keyWord != null">
+				AND BASE_TOOL_NAME like '%${keyWord}%'
+			</if>
+		</where>
+	</select>
+	<select id="selectBaseToolsForPageWithMap" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_BASE_TOOL
+		<where>
+			<if test="keyWord != null">
+				AND BASE_TOOL_NAME like '%${keyWord}%'
+			</if>
+			<if test="baseToolModel != null">
+				AND BASE_TOOL_MODEL like '%${baseToolModel}%'
+			</if>
+			<if test="baseToolSpec != null">
+				AND BASE_TOOL_SPEC like '%${baseToolSpec}%'
+			</if>
+			<if test="baseToolTypeId != null and baseToolTypeId != ''">
+				AND BASE_TOOL_TYPE_ID = #{baseToolTypeId}
+			</if>
+			<if test="manufacturerId != null and manufacturerId != ''">
+				AND MAN_ID = #{manufacturerId}
+			</if>
+			<if test="baseToolEarthWire != null and baseToolEarthWire != ''">
+				AND BASE_TOOL_EARTH_WIRE = #{baseToolEarthWire}
+			</if>
+		</where>
+		order by BASE_TOOL_ID DESC
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfBaseToolsForPageWithMap" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+		select count(t.BASE_TOOL_ID) from VIEW_GQJ_BASE_TOOL t
+		<where>
+			<if test="keyWord != null">
+				AND BASE_TOOL_NAME like '%${keyWord}%'
+			</if>
+			<if test="baseToolModel != null">
+				AND BASE_TOOL_MODEL like '%${baseToolModel}%'
+			</if>
+			<if test="baseToolSpec != null">
+				AND BASE_TOOL_SPEC like '%${baseToolSpec}%'
+			</if>
+			<if test="baseToolTypeId != null and baseToolTypeId != ''">
+				AND BASE_TOOL_TYPE_ID = #{baseToolTypeId}
+			</if>
+			<if test="manufacturerId != null and manufacturerId != ''">
+				AND MAN_ID = #{manufacturerId}
+			</if>
+			<if test="baseToolEarthWire != null and baseToolEarthWire != ''">
+				AND BASE_TOOL_EARTH_WIRE = #{baseToolEarthWire}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="com.bpbj.entity.BaseTool">
+		delete from
+		GQJ_BASE_TOOL
+		where BASE_TOOL_ID in (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.bpbj.entity.BaseTool">
+		insert into GQJ_BASE_TOOL
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="baseToolId != null">
+				BASE_TOOL_ID,
+			</if>
+			<if test="toolDemandId != null">
+				TOOL_DEMAND_ID,
+			</if>
+			<if test="manId != null">
+				MAN_ID,
+			</if>
+			<if test="baseToolModel != null">
+				BASE_TOOL_MODEL,
+			</if>
+			<if test="baseToolSpec != null">
+				BASE_TOOL_SPEC,
+			</if>
+			<if test="baseToolRemark != null">
+				BASE_TOOL_REMARK,
+			</if>
+			<if test="baseToolName != null">
+				BASE_TOOL_NAME,
+			</if>
+			<if test="baseToolEarthWire != null">
+				BASE_TOOL_EARTH_WIRE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="baseToolId != null">
+				GQJ_BASE_TOOL_SEQ.nextval,
+			</if>
+			<if test="toolDemandId != null">
+				#{toolDemandId,jdbcType=DECIMAL},
+			</if>
+			<if test="manId != null">
+				#{manId,jdbcType=DECIMAL},
+			</if>
+			<if test="baseToolModel != null">
+				#{baseToolModel,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolSpec != null">
+				#{baseToolSpec,jdbcType=DECIMAL},
+			</if>
+			<if test="baseToolRemark != null">
+				#{baseToolRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolName != null">
+				#{baseToolName,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolEarthWire != null">
+				#{baseToolEarthWire,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.BaseTool">
+		update GQJ_BASE_TOOL
+		<set>
+			<if test="toolDemandId != null">
+				TOOL_DEMAND_ID = #{toolDemandId,jdbcType=DECIMAL},
+			</if>
+			<if test="manId != null">
+				MAN_ID = #{manId,jdbcType=DECIMAL},
+			</if>
+			<if test="baseToolModel != null">
+				BASE_TOOL_MODEL = #{baseToolModel,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolSpec != null">
+				BASE_TOOL_SPEC = #{baseToolSpec,jdbcType=DECIMAL},
+			</if>
+			<if test="baseToolRemark != null">
+				BASE_TOOL_REMARK = #{baseToolRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolName != null">
+				BASE_TOOL_NAME = #{baseToolName,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolEarthWire != null">
+				BASE_TOOL_EARTH_WIRE = #{baseToolEarthWire,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL}
+	</update>
+</mapper>

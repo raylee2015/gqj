@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bpbj.dao.BPBJMaterialBillMapper">
+	<resultMap id="BaseResultMap" type="com.bpbj.entity.MaterialBill">
+		<id column="BILL_ID" jdbcType="DECIMAL" property="billId" />
+		<result column="STORE_ID" jdbcType="DECIMAL" property="storeId" />
+		<result column="BILL_CODE" jdbcType="VARCHAR" property="billCode" />
+		<result column="BILL_TYPE" jdbcType="DECIMAL" property="billType" />
+		<result column="BILL_CREATE_USER_ID" jdbcType="DECIMAL"
+			property="billCreateUserId" />
+		<result column="BILL_DEPT_ID" jdbcType="DECIMAL" property="billDeptId" />
+		<result column="BILL_CREATE_TIME" jdbcType="TIMESTAMP"
+			property="billCreateTime" />
+		<result column="BILL_CONFIRM_USER_ID" jdbcType="DECIMAL"
+			property="billConfirmUserId" />
+		<result column="BILL_CONFIRM_TIME" jdbcType="TIMESTAMP"
+			property="billConfirmTime" />
+		<result column="BILL_TAKE_USER_ID" jdbcType="DECIMAL" property="billTakeUserId" />
+		<result column="BILL_TAKE_DEPT_ID" jdbcType="DECIMAL" property="billTakeDeptId" />
+		<result column="BILL_TAKE_TIME" jdbcType="TIMESTAMP" property="billTakeTime" />
+		<result column="BILL_REMARK" jdbcType="VARCHAR" property="billRemark" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		BILL_ID, STORE_ID, BILL_CODE, BILL_TYPE,
+		BILL_CREATE_USER_ID, BILL_DEPT_ID,
+		BILL_CREATE_TIME,
+		BILL_CONFIRM_USER_ID, BILL_CONFIRM_TIME, BILL_TAKE_USER_ID,
+		BILL_TAKE_DEPT_ID,
+		BILL_TAKE_TIME,
+		BILL_REMARK,BILL_CREATE_USER_NAME,BILL_CONFIRM_USER_NAME,BILL_TAKE_USER_NAME,
+		BILL_DEPT_NAME,BILL_TAKE_DEPT_NAME,STORE_NAME,PLAN_ID,PLAN_CODE
+	</sql>
+	<select id="selectMaterialBillForObject" parameterType="com.bpbj.entity.MaterialBill"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_MATERIAL_BILL
+		<where>
+			<if test="billId != null">
+				AND BILL_ID = #{billId}
+			</if>
+		</where>
+		order by BILL_ID DESC
+	</select>
+	<select id="selectMaterialBillsForPage" parameterType="com.bpbj.entity.MaterialBill"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_MATERIAL_BILL
+		<where>
+			<if test="keyWord != null">
+				AND BILL_CODE like '%${keyWord}%'
+			</if>
+			<if test="billType != null">
+				AND BILL_TYPE = #{billType}
+			</if>
+			<if test="billDeptId != null">
+				AND BILL_DEPT_ID =#{billDeptId}
+			</if>
+			<if test="billTakeDeptId != null">
+				AND BILL_TAKE_DEPT_ID =#{billTakeDeptId}
+			</if>
+		</where>
+		order by BILL_ID DESC
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfMaterialBillsForPage" parameterType="com.bpbj.entity.MaterialBill"
+		resultType="java.lang.Integer">
+		select count(t.BILL_ID) from VIEW_GQJ_MATERIAL_BILL t
+		<where>
+			<if test="keyWord != null">
+				AND BILL_CODE like '%${keyWord}%'
+			</if>
+			<if test="billType != null">
+				AND BILL_TYPE =#{billType}
+			</if>
+			<if test="billDeptId != null">
+				AND BILL_DEPT_ID =#{billDeptId}
+			</if>
+			<if test="billTakeDeptId != null">
+				AND BILL_TAKE_DEPT_ID =#{billTakeDeptId}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="com.bpbj.entity.MaterialBill">
+		delete from
+		GQJ_MATERIAL_BILL
+		where BILL_ID in (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.bpbj.entity.MaterialBill">
+		<selectKey resultType="java.lang.Long" order="BEFORE"
+			keyProperty="billId">
+			select GQJ_MATERIAL_BILL_SEQ.nextval from dual
+		</selectKey>
+		insert into GQJ_MATERIAL_BILL
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="billId != null">
+				BILL_ID,
+			</if>
+			<if test="storeId != null">
+				STORE_ID,
+			</if>
+			<if test="billCode != null">
+				BILL_CODE,
+			</if>
+			<if test="billType != null">
+				BILL_TYPE,
+			</if>
+			<if test="billCreateUserId != null">
+				BILL_CREATE_USER_ID,
+			</if>
+			<if test="billDeptId != null">
+				BILL_DEPT_ID,
+			</if>
+			<if test="billCreateTime != null">
+				BILL_CREATE_TIME,
+			</if>
+			<if test="billConfirmUserId != null">
+				BILL_CONFIRM_USER_ID,
+			</if>
+			<if test="billConfirmTime != null">
+				BILL_CONFIRM_TIME,
+			</if>
+			<if test="billTakeUserId != null">
+				BILL_TAKE_USER_ID,
+			</if>
+			<if test="billTakeDeptId != null">
+				BILL_TAKE_DEPT_ID,
+			</if>
+			<if test="billTakeTime != null">
+				BILL_TAKE_TIME,
+			</if>
+			<if test="billRemark != null">
+				BILL_REMARK,
+			</if>
+			<if test="planId != null">
+				PLAN_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="billId != null">
+				#{billId},
+			</if>
+			<if test="storeId != null">
+				#{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="billCode != null">
+				#{billCode,jdbcType=VARCHAR},
+			</if>
+			<if test="billType != null">
+				#{billType,jdbcType=DECIMAL},
+			</if>
+			<if test="billCreateUserId != null">
+				#{billCreateUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="billDeptId != null">
+				#{billDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="billCreateTime != null">
+				#{billCreateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="billConfirmUserId != null">
+				#{billConfirmUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="billConfirmTime != null">
+				#{billConfirmTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="billTakeUserId != null">
+				#{billTakeUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="billTakeDeptId != null">
+				#{billTakeDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="billTakeTime != null">
+				#{billTakeTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="billRemark != null">
+				#{billRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="planId != null">
+				#{planId,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.MaterialBill">
+		update GQJ_MATERIAL_BILL
+		<set>
+			<if test="storeId != null">
+				STORE_ID = #{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="billCode != null">
+				BILL_CODE = #{billCode,jdbcType=VARCHAR},
+			</if>
+			<if test="billType != null">
+				BILL_TYPE = #{billType,jdbcType=DECIMAL},
+			</if>
+			<if test="billCreateUserId != null">
+				BILL_CREATE_USER_ID =
+				#{billCreateUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="billDeptId != null">
+				BILL_DEPT_ID = #{billDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="billCreateTime != null">
+				BILL_CREATE_TIME = #{billCreateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="billConfirmUserId != null">
+				BILL_CONFIRM_USER_ID =
+				#{billConfirmUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="billConfirmTime != null">
+				BILL_CONFIRM_TIME =
+				#{billConfirmTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="billTakeUserId != null">
+				BILL_TAKE_USER_ID = #{billTakeUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="billTakeDeptId != null">
+				BILL_TAKE_DEPT_ID = #{billTakeDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="billTakeTime != null">
+				BILL_TAKE_TIME = #{billTakeTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="billRemark != null">
+				BILL_REMARK = #{billRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="planId != null">
+				PLAN_ID = #{planId,jdbcType=VARCHAR},
+			</if>
+		</set>
+		<where>
+			<if test="billId != null">
+				AND BILL_ID =#{billId}
+			</if>
+			<if test="ids != null">
+				AND BILL_ID in (${ids})
+			</if>
+		</where>
+	</update>
+</mapper>

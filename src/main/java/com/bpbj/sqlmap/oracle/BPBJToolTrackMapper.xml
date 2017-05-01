@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bpbj.dao.BPBJToolTrackMapper">
+	<resultMap id="BaseResultMap" type="com.bpbj.entity.ToolTrack">
+		<id column="TRACK_ID" jdbcType="DECIMAL" property="trackId" />
+		<result column="TOOL_ID" jdbcType="DECIMAL" property="toolId" />
+		<result column="STORE_ID" jdbcType="DECIMAL" property="storeId" />
+		<result column="POS_ID" jdbcType="DECIMAL" property="posId" />
+		<result column="BATCH_ID" jdbcType="DECIMAL" property="batchId" />
+		<result column="BASE_TOOL_ID" jdbcType="DECIMAL" property="baseToolId" />
+		<result column="TOOL_BOX" jdbcType="VARCHAR" property="toolBox" />
+		<result column="TOOL_STATUS" jdbcType="DECIMAL" property="toolStatus" />
+		<result column="TRACK_CREATE_USER_ID" jdbcType="DECIMAL"
+			property="trackCreateUserId" />
+		<result column="TRACK_CREATE_TIME" jdbcType="TIMESTAMP"
+			property="trackCreateTime" />
+		<result column="TOOL_TEST_DATE" jdbcType="TIMESTAMP" property="toolTestDate" />
+		<result column="TOOL_REJECT_DATE" jdbcType="TIMESTAMP"
+			property="toolRejectDate" />
+		<result column="TOOL_TEST_DATE_CIRCLE" jdbcType="DECIMAL"
+			property="toolTestDateCircle" />
+		<result column="TOOL_NEXT_TEST_DATE" jdbcType="TIMESTAMP"
+			property="toolNextTestDate" />
+		<result column="TOOL_CODE" jdbcType="VARCHAR" property="toolCode" />
+		<result column="STORE_NAME" jdbcType="VARCHAR" property="storeName" />
+		<result column="POS_NAME" jdbcType="VARCHAR" property="posName" />
+		<result column="BATCH_CODE" jdbcType="VARCHAR" property="batchCode" />
+		<result column="BASE_TOOL_NAME" jdbcType="VARCHAR" property="baseToolName" />
+		<result column="BASE_TOOL_TYPE_ID" jdbcType="DECIMAL" property="baseToolTypeId" />
+		<result column="BASE_TOOL_TYPE_NAME" jdbcType="VARCHAR"
+			property="baseToolTypeName" />
+		<result column="BASE_TOOL_MODEL" jdbcType="VARCHAR" property="baseToolModel" />
+		<result column="BASE_TOOL_SPEC" jdbcType="VARCHAR" property="baseToolSpec" />
+		<result column="BASE_TOOL_MANUFACTURER_NAME" jdbcType="VARCHAR"
+			property="baseToolManufacturerName" />
+		<result column="TOOL_DEPT_ID" jdbcType="VARCHAR" property="toolDeptId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		TRACK_ID, TOOL_ID, STORE_ID, POS_ID, BATCH_ID,
+		BASE_TOOL_ID, TOOL_BOX,
+		TOOL_STATUS,
+		TRACK_CREATE_USER_ID,
+		TRACK_CREATE_TIME, TOOL_TEST_DATE, TOOL_REJECT_DATE,
+		TOOL_TEST_DATE_CIRCLE,
+		TOOL_NEXT_TEST_DATE, TOOL_CODE, STORE_NAME,
+		POS_NAME, BATCH_CODE, BASE_TOOL_NAME,
+		BASE_TOOL_TYPE_ID,
+		BASE_TOOL_TYPE_NAME, BASE_TOOL_MODEL,
+		BASE_TOOL_SPEC,BASE_TOOL_MANUFACTURER_NAME,TOOL_DEPT_ID,
+		TOOL_MANUFACTURE_DATE,TOOL_PURCHASE_DATE,BATCH_CONFIRM_USER_ID,
+		BATCH_CONFIRM_TIME
+	</sql>
+	<select id="selectToolTracksForList" parameterType="com.bpbj.entity.ToolTrack"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from GQJ_TOOL_TRACK
+		<where>
+			<if test="toolId != null">
+				and TOOL_ID = #{toolId}
+			</if>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+			<if test="toolCode != null">
+				and TOOL_CODE = #{toolCode}
+			</if>
+			<if test="toolDeptId != null">
+				and TOOL_DEPT_ID = #{toolDeptId}
+			</if>
+			<if test="toolStatus != null">
+				and TOOL_STATUS = #{toolStatus}
+			</if>
+		</where>
+		order by TRACK_ID DESC
+	</select>
+	<select id="selectToolTracksForObject" parameterType="com.bpbj.entity.ToolTrack"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from GQJ_TOOL_TRACK
+		<where>
+			<if test="toolId != null">
+				and TOOL_ID = #{toolId}
+			</if>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+		</where>
+		order by TRACK_ID DESC
+	</select>
+	<select id="selectToolTracksForPage" parameterType="com.bpbj.entity.ToolTrack"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from GQJ_TOOL_TRACK
+		<where>
+			<if test="toolId != null">
+				and TOOL_ID = #{toolId}
+			</if>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+			<if test="toolCode != null and toolCode != ''">
+				and TOOL_CODE like '%${toolCode}%'
+			</if>
+		</where>
+		order by TRACK_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfToolTracksForPage" parameterType="com.bpbj.entity.ToolTrack"
+		resultType="java.lang.Integer">
+		select count(t.TRACK_ID) from GQJ_TOOL_TRACK t
+		<where>
+			<if test="toolId != null">
+				and TOOL_ID = #{toolId}
+			</if>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+			<if test="toolCode != null and toolCode != ''">
+				and TOOL_CODE like '%${toolCode}%'
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="com.bpbj.entity.ToolTrack">
+		delete from
+		GQJ_TOOL_TRACK
+		<where>
+			<if test="toolId != null">
+				and TOOL_ID in (${toolId})
+			</if>
+			<if test="trackId != null">
+				and TRACK_ID = #{trackId}
+			</if>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+		</where>
+	</delete>
+	<insert id="insertSelective" parameterType="com.bpbj.entity.ToolTrack">
+		insert into GQJ_TOOL_TRACK
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="trackId != null">
+				TRACK_ID,
+			</if>
+			<if test="toolId != null">
+				TOOL_ID,
+			</if>
+			<if test="storeId != null">
+				STORE_ID,
+			</if>
+			<if test="posId != null">
+				POS_ID,
+			</if>
+			<if test="batchId != null">
+				BATCH_ID,
+			</if>
+			<if test="baseToolId != null">
+				BASE_TOOL_ID,
+			</if>
+			<if test="toolBox != null">
+				TOOL_BOX,
+			</if>
+			<if test="toolStatus != null">
+				TOOL_STATUS,
+			</if>
+			<if test="trackCreateUserId != null">
+				TRACK_CREATE_USER_ID,
+			</if>
+			<if test="trackCreateTime != null">
+				TRACK_CREATE_TIME,
+			</if>
+			<if test="toolTestDate != null">
+				TOOL_TEST_DATE,
+			</if>
+			<if test="toolRejectDate != null">
+				TOOL_REJECT_DATE,
+			</if>
+			<if test="toolTestDateCircle != null">
+				TOOL_TEST_DATE_CIRCLE,
+			</if>
+			<if test="toolNextTestDate != null">
+				TOOL_NEXT_TEST_DATE,
+			</if>
+			<if test="toolCode != null">
+				TOOL_CODE,
+			</if>
+			<if test="storeName != null">
+				STORE_NAME,
+			</if>
+			<if test="posName != null">
+				POS_NAME,
+			</if>
+			<if test="batchCode != null">
+				BATCH_CODE,
+			</if>
+			<if test="baseToolName != null">
+				BASE_TOOL_NAME,
+			</if>
+			<if test="baseToolTypeId != null">
+				BASE_TOOL_TYPE_ID,
+			</if>
+			<if test="baseToolTypeName != null">
+				BASE_TOOL_TYPE_NAME,
+			</if>
+			<if test="baseToolModel != null">
+				BASE_TOOL_MODEL,
+			</if>
+			<if test="baseToolSpec != null">
+				BASE_TOOL_SPEC,
+			</if>
+			<if test="baseToolManufacturerName != null">
+				BASE_TOOL_MANUFACTURER_NAME,
+			</if>
+			<if test="toolDeptId != null">
+				TOOL_DEPT_ID,
+			</if>
+			<if test="batchConfirmUserId != null">
+				BATCH_CONFIRM_USER_ID,
+			</if>
+			<if test="batchConfirmTime != null">
+				BATCH_CONFIRM_TIME,
+			</if>
+			<if test="toolManufactureDate != null">
+				TOOL_MANUFACTURE_DATE,
+			</if>
+			<if test="toolPurchaseDate != null">
+				TOOL_PURCHASE_DATE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="trackId != null">
+				GQJ_TOOL_TRACK_SEQ.nextval,
+			</if>
+			<if test="toolId != null">
+				#{toolId,jdbcType=DECIMAL},
+			</if>
+			<if test="storeId != null">
+				#{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="posId != null">
+				#{posId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchId != null">
+				#{batchId,jdbcType=DECIMAL},
+			</if>
+			<if test="baseToolId != null">
+				#{baseToolId,jdbcType=DECIMAL},
+			</if>
+			<if test="toolBox != null">
+				#{toolBox,jdbcType=VARCHAR},
+			</if>
+			<if test="toolStatus != null">
+				#{toolStatus,jdbcType=DECIMAL},
+			</if>
+			<if test="trackCreateUserId != null">
+				#{trackCreateUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="trackCreateTime != null">
+				#{trackCreateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolTestDate != null">
+				#{toolTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolRejectDate != null">
+				#{toolRejectDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolTestDateCircle != null">
+				#{toolTestDateCircle,jdbcType=DECIMAL},
+			</if>
+			<if test="toolNextTestDate != null">
+				#{toolNextTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolCode != null">
+				#{toolCode,jdbcType=VARCHAR},
+			</if>
+			<if test="storeName != null">
+				#{storeName,jdbcType=VARCHAR},
+			</if>
+			<if test="posName != null">
+				#{posName,jdbcType=VARCHAR},
+			</if>
+			<if test="batchCode != null">
+				#{batchCode,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolName != null">
+				#{baseToolName,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolTypeId != null">
+				#{baseToolTypeId,jdbcType=DECIMAL},
+			</if>
+			<if test="baseToolTypeName != null">
+				#{baseToolTypeName,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolModel != null">
+				#{baseToolModel,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolSpec != null">
+				#{baseToolSpec,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolManufacturerName != null">
+				#{baseToolManufacturerName,jdbcType=VARCHAR},
+			</if>
+			<if test="toolDeptId != null">
+				#{toolDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchConfirmUserId != null">
+				#{batchConfirmUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchConfirmTime != null">
+				#{batchConfirmTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolManufactureDate != null">
+				#{toolManufactureDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="toolPurchaseDate != null">
+				#{toolPurchaseDate,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.ToolTrack">
+		update GQJ_TOOL_TRACK
+		<set>
+			<if test="toolStatus != null">
+				TOOL_STATUS = #{toolStatus,jdbcType=DECIMAL},
+			</if>
+			<if test="batchConfirmUserId != null">
+				BATCH_CONFIRM_USER_ID=#{batchConfirmUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchConfirmTime != null">
+				BATCH_CONFIRM_TIME=#{batchConfirmTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		<where>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+		</where>
+	</update>
+</mapper>

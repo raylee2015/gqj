@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bpbj.dao.BPBJStationMapper">
+	<resultMap id="BaseResultMap" type="com.bpbj.entity.Station">
+		<id column="STATION_ID" jdbcType="DECIMAL" property="stationId" />
+		<result column="STATION_NAME" jdbcType="VARCHAR" property="stationName" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		STATION_ID, STATION_NAME
+	</sql>
+	<select id="selectStationsForPage" parameterType="com.bpbj.entity.Station"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from BPBJ_STATION
+		<where>
+			<if test="keyWord != null">
+				AND STATION_NAME like '%${keyWord}%'
+			</if>
+		</where>
+		order by STATION_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfStationsForPage" parameterType="com.bpbj.entity.Station"
+		resultType="java.lang.Integer">
+		select count(t.STATION_ID) from BPBJ_STATION t
+		<where>
+			<if test="keyWord != null">
+				AND STATION_NAME like '%${keyWord}%'
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="java.lang.Long">
+		delete from
+		BPBJ_STATION
+		where STATION_ID IN (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.bpbj.entity.Station">
+		insert into BPBJ_STATION
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="stationId != null">
+				STATION_ID,
+			</if>
+			<if test="stationName != null">
+				STATION_NAME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="stationId != null">
+				BPBJ_STATION_SEQ.nextval,
+			</if>
+			<if test="stationName != null">
+				#{stationName,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.Station">
+		update BPBJ_STATION
+		<set>
+			<if test="stationName != null">
+				STATION_NAME = #{stationName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where STATION_ID = #{stationId,jdbcType=DECIMAL}
+	</update>
+</mapper>

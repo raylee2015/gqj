@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bpbj.dao.BPBJManufacturerMapper">
+	<resultMap id="BaseResultMap" type="com.bpbj.entity.Manufacturer">
+		<id column="MAN_ID" jdbcType="DECIMAL" property="manId" />
+		<result column="MAN_NAME" jdbcType="VARCHAR" property="manName" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		MAN_ID, MAN_NAME
+	</sql>
+	<select id="selectManufacturersForList" parameterType="com.bpbj.entity.Manufacturer"
+		resultType="java.util.HashMap">
+		SELECT
+		MAN_ID AS ID,MAN_NAME AS TEXT,MAN_ID, MAN_NAME
+		from
+		BPBJ_MANUFACTURER
+		<where>
+			<if test="keyWord != null">
+				AND MAN_NAME like '%${keyWord}%'
+			</if>
+		</where>
+		order by MAN_ID
+	</select>
+	<select id="selectManufacturersForPage" parameterType="com.bpbj.entity.Manufacturer"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from BPBJ_MANUFACTURER
+		<where>
+			<if test="keyWord != null">
+				AND MAN_NAME like '%${keyWord}%'
+			</if>
+		</where>
+		order by MAN_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfManufacturersForPage" parameterType="com.bpbj.entity.Manufacturer"
+		resultType="java.lang.Integer">
+		select count(t.MAN_ID) from BPBJ_MANUFACTURER t
+		<where>
+			<if test="keyWord != null">
+				AND MAN_NAME like '%${keyWord}%'
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="com.bpbj.entity.Manufacturer">
+		delete from
+		BPBJ_MANUFACTURER
+		where MAN_ID in (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.bpbj.entity.Manufacturer">
+		insert into BPBJ_MANUFACTURER
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="manId != null">
+				MAN_ID,
+			</if>
+			<if test="manName != null">
+				MAN_NAME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="manId != null">
+				BPBJ_MANUFACTURER_SEQ.nextval,
+			</if>
+			<if test="manName != null">
+				#{manName,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.Manufacturer">
+		update BPBJ_MANUFACTURER
+		<set>
+			<if test="manName != null">
+				MAN_NAME = #{manName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where MAN_ID = #{manId,jdbcType=DECIMAL}
+	</update>
+</mapper>
