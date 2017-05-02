@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bpbj.dao.BPBJZoneMapper">
+	<resultMap id="BaseResultMap" type="com.bpbj.entity.Zone">
+		<id column="ZONE_ID" jdbcType="DECIMAL" property="zoneId" />
+		<result column="ZONE_NAME" jdbcType="VARCHAR" property="zoneName" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ZONE_ID, ZONE_NAME,STATION_ID,STATION_NAME
+	</sql>
+	<select id="selectZonesForPage" parameterType="com.bpbj.entity.Zone"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_BPBJ_ZONE
+		<where>
+			<if test="keyWord != null">
+				AND ZONE_NAME like '%${keyWord}%'
+			</if>
+			<if test="STATION_ID != null">
+				AND STATION_ID =#{STATION_ID}
+			</if>
+		</where>
+		order by ZONE_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfZonesForPage" parameterType="com.bpbj.entity.Zone"
+		resultType="java.lang.Integer">
+		select count(t.ZONE_ID) from VIEW_BPBJ_ZONE t
+		<where>
+			<if test="keyWord != null">
+				AND ZONE_NAME like '%${keyWord}%'
+			</if>
+			<if test="STATION_ID != null">
+				AND STATION_ID =#{STATION_ID}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="java.lang.Long">
+		delete from
+		BPBJ_ZONE
+		where ZONE_ID IN (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.bpbj.entity.Zone">
+		insert into BPBJ_ZONE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="zoneId != null">
+				ZONE_ID,
+			</if>
+			<if test="zoneName != null">
+				ZONE_NAME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="zoneId != null">
+				BPBJ_ZONE_SEQ.nextval,
+			</if>
+			<if test="zoneName != null">
+				#{zoneName,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.Zone">
+		update BPBJ_ZONE
+		<set>
+			<if test="zoneName != null">
+				ZONE_NAME = #{zoneName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ZONE_ID = #{zoneId,jdbcType=DECIMAL}
+	</update>
+</mapper>
