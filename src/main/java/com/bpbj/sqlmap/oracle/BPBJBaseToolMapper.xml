@@ -3,27 +3,31 @@
 <mapper namespace="com.bpbj.dao.BPBJBaseToolMapper">
 	<resultMap id="BaseResultMap" type="com.bpbj.entity.BaseTool">
 		<id column="BASE_TOOL_ID" jdbcType="DECIMAL" property="baseToolId" />
-		<result column="TYPE_ID" jdbcType="DECIMAL" property="typeId" />
-		<result column="TOOL_DEMAN_ID" jdbcType="DECIMAL" property="toolDemandId" />
 		<result column="MAN_ID" jdbcType="DECIMAL" property="manId" />
+		<result column="BASE_TOOL_TYPE" jdbcType="DECIMAL" property="baseToolType" />
+		<result column="BASE_TOOL_CODE" jdbcType="VARCHAR" property="baseToolCode" />
 		<result column="BASE_TOOL_MODEL" jdbcType="VARCHAR" property="baseToolModel" />
 		<result column="BASE_TOOL_SPEC" jdbcType="DECIMAL" property="baseToolSpec" />
 		<result column="BASE_TOOL_REMARK" jdbcType="VARCHAR" property="baseToolRemark" />
+		<result column="BASE_TOOL_NAME" jdbcType="VARCHAR" property="baseToolName" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		BASE_TOOL_ID, BASE_TOOL_TYPE_ID, TOOL_DEMAND_ID, MAN_ID,
+		BASE_TOOL_ID, BASE_TOOL_TYPE, MAN_ID,BASE_TOOL_CODE,
 		BASE_TOOL_MODEL, BASE_TOOL_SPEC,
-		BASE_TOOL_REMARK,BASE_TOOL_TYPE_NAME,BASE_TOOL_NAME,
-		BASE_TOOL_MANUFACTURER_NAME,BASE_TOOL_EARTH_WIRE
+		BASE_TOOL_REMARK,BASE_TOOL_NAME,
+		BASE_TOOL_MANUFACTURER_NAME
 	</sql>
 	<select id="selectBaseToolForObject" parameterType="com.bpbj.entity.BaseTool"
 		resultType="java.util.HashMap">
 		select
 		<include refid="Base_Column_List" />
-		from VIEW_GQJ_BASE_TOOL
+		from VIEW_BPBJ_BASE_TOOL
 		<where>
 			<if test="baseToolId != null">
 				AND BASE_TOOL_ID = #{baseToolId}
+			</if>
+			<if test="baseToolType != null">
+				AND BASE_TOOL_TYPE = #{baseToolType}
 			</if>
 		</where>
 		order by BASE_TOOL_ID DESC
@@ -33,10 +37,13 @@
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select
 		<include refid="Base_Column_List" />
-		from VIEW_GQJ_BASE_TOOL
+		from VIEW_BPBJ_BASE_TOOL
 		<where>
 			<if test="keyWord != null">
 				AND BASE_TOOL_NAME like '%${keyWord}%'
+			</if>
+			<if test="baseToolType != null">
+				AND BASE_TOOL_TYPE = #{baseToolType}
 			</if>
 		</where>
 		order by BASE_TOOL_ID DESC
@@ -46,7 +53,7 @@
 	</select>
 	<select id="selectCountOfBaseToolsForPage" parameterType="com.bpbj.entity.BaseTool"
 		resultType="java.lang.Integer">
-		select count(t.BASE_TOOL_ID) from VIEW_GQJ_BASE_TOOL t
+		select count(t.BASE_TOOL_ID) from VIEW_BPBJ_BASE_TOOL t
 		<where>
 			<if test="keyWord != null">
 				AND BASE_TOOL_NAME like '%${keyWord}%'
@@ -58,7 +65,7 @@
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select
 		<include refid="Base_Column_List" />
-		from VIEW_GQJ_BASE_TOOL
+		from VIEW_BPBJ_BASE_TOOL
 		<where>
 			<if test="keyWord != null">
 				AND BASE_TOOL_NAME like '%${keyWord}%'
@@ -86,7 +93,7 @@
 	</select>
 	<select id="selectCountOfBaseToolsForPageWithMap" parameterType="java.util.HashMap"
 		resultType="java.lang.Integer">
-		select count(t.BASE_TOOL_ID) from VIEW_GQJ_BASE_TOOL t
+		select count(t.BASE_TOOL_ID) from VIEW_BPBJ_BASE_TOOL t
 		<where>
 			<if test="keyWord != null">
 				AND BASE_TOOL_NAME like '%${keyWord}%'
@@ -110,17 +117,17 @@
 	</select>
 	<delete id="deleteByPrimaryKeys" parameterType="com.bpbj.entity.BaseTool">
 		delete from
-		GQJ_BASE_TOOL
+		BPBJ_BASE_TOOL
 		where BASE_TOOL_ID in (${ids})
 	</delete>
 	<insert id="insertSelective" parameterType="com.bpbj.entity.BaseTool">
-		insert into GQJ_BASE_TOOL
+		insert into BPBJ_BASE_TOOL
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="baseToolId != null">
 				BASE_TOOL_ID,
 			</if>
-			<if test="toolDemandId != null">
-				TOOL_DEMAND_ID,
+			<if test="baseToolType != null">
+				BASE_TOOL_TYPE,
 			</if>
 			<if test="manId != null">
 				MAN_ID,
@@ -137,16 +144,16 @@
 			<if test="baseToolName != null">
 				BASE_TOOL_NAME,
 			</if>
-			<if test="baseToolEarthWire != null">
-				BASE_TOOL_EARTH_WIRE,
+			<if test="baseToolCode != null">
+				BASE_TOOL_CODE,
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="baseToolId != null">
-				GQJ_BASE_TOOL_SEQ.nextval,
+				BPBJ_BASE_TOOL_SEQ.nextval,
 			</if>
-			<if test="toolDemandId != null">
-				#{toolDemandId,jdbcType=DECIMAL},
+			<if test="baseToolType != null">
+				#{baseToolType,jdbcType=DECIMAL},
 			</if>
 			<if test="manId != null">
 				#{manId,jdbcType=DECIMAL},
@@ -163,19 +170,22 @@
 			<if test="baseToolName != null">
 				#{baseToolName,jdbcType=VARCHAR},
 			</if>
-			<if test="baseToolEarthWire != null">
-				#{baseToolEarthWire,jdbcType=VARCHAR},
+			<if test="baseToolCode != null">
+				#{baseToolCode,jdbcType=VARCHAR},
 			</if>
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.BaseTool">
-		update GQJ_BASE_TOOL
+		update BPBJ_BASE_TOOL
 		<set>
-			<if test="toolDemandId != null">
-				TOOL_DEMAND_ID = #{toolDemandId,jdbcType=DECIMAL},
+			<if test="baseToolType != null">
+				BASE_TOOL_TYPE = #{baseToolType,jdbcType=DECIMAL},
 			</if>
 			<if test="manId != null">
 				MAN_ID = #{manId,jdbcType=DECIMAL},
+			</if>
+			<if test="baseToolCode != null">
+				BASE_TOOL_CODE = #{baseToolCode,jdbcType=VARCHAR},
 			</if>
 			<if test="baseToolModel != null">
 				BASE_TOOL_MODEL = #{baseToolModel,jdbcType=VARCHAR},
@@ -188,9 +198,6 @@
 			</if>
 			<if test="baseToolName != null">
 				BASE_TOOL_NAME = #{baseToolName,jdbcType=VARCHAR},
-			</if>
-			<if test="baseToolEarthWire != null">
-				BASE_TOOL_EARTH_WIRE = #{baseToolEarthWire,jdbcType=VARCHAR},
 			</if>
 		</set>
 		where BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL}

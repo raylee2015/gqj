@@ -5,9 +5,11 @@ import com.base.entity.Base;
 public class BaseTool extends Base {
 	private Long baseToolId;
 
-	private Long toolDemandId;
-
 	private Long manId;
+
+	private Long baseToolType;
+
+	private String baseToolCode;
 
 	private String baseToolModel;
 
@@ -17,14 +19,20 @@ public class BaseTool extends Base {
 
 	private String baseToolName;
 
-	private String baseToolEarthWire;
-
-	public String getBaseToolEarthWire() {
-		return baseToolEarthWire;
+	public Long getBaseToolType() {
+		return baseToolType;
 	}
 
-	public void setBaseToolEarthWire(String baseToolEarthWire) {
-		this.baseToolEarthWire = baseToolEarthWire;
+	public void setBaseToolType(Long baseToolType) {
+		this.baseToolType = baseToolType;
+	}
+
+	public String getBaseToolCode() {
+		return baseToolCode;
+	}
+
+	public void setBaseToolCode(String baseToolCode) {
+		this.baseToolCode = baseToolCode;
 	}
 
 	public String getBaseToolName() {
@@ -33,14 +41,6 @@ public class BaseTool extends Base {
 
 	public void setBaseToolName(String baseToolName) {
 		this.baseToolName = baseToolName;
-	}
-
-	public Long getToolDemandId() {
-		return toolDemandId;
-	}
-
-	public void setToolDemandId(Long toolDemandId) {
-		this.toolDemandId = toolDemandId;
 	}
 
 	public Long getBaseToolId() {
