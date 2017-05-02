@@ -9,6 +9,16 @@ public class Zone extends Base {
 
 	private String zoneName;
 
+	private Long zoneType;
+
+	public Long getZoneType() {
+		return zoneType;
+	}
+
+	public void setZoneType(Long zoneType) {
+		this.zoneType = zoneType;
+	}
+
 	public Long getStationId() {
 		return stationId;
 	}

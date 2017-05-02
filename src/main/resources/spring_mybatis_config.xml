@@ -57,9 +57,7 @@
 
 	<bean id="transactionTemplate"
 		class="org.springframework.transaction.support.TransactionTemplate">
-		<property name="transactionManager">
-			<ref local="txManager" />
-		</property>
+		<property name="transactionManager" ref="txManager" />
 	</bean>
 
 	<!-- 声明式事务 -->

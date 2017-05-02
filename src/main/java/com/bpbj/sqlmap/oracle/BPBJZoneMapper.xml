@@ -3,10 +3,12 @@
 <mapper namespace="com.bpbj.dao.BPBJZoneMapper">
 	<resultMap id="BaseResultMap" type="com.bpbj.entity.Zone">
 		<id column="ZONE_ID" jdbcType="DECIMAL" property="zoneId" />
+		<id column="STATION_ID" jdbcType="DECIMAL" property="stationId" />
 		<result column="ZONE_NAME" jdbcType="VARCHAR" property="zoneName" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		ZONE_ID, ZONE_NAME,STATION_ID,STATION_NAME
+		ZONE_ID,
+		ZONE_NAME,STATION_ID,STATION_NAME,ZONE_TYPE_NAME,ZONE_TYPE
 	</sql>
 	<select id="selectZonesForPage" parameterType="com.bpbj.entity.Zone"
 		resultType="java.util.HashMap">
@@ -18,8 +20,8 @@
 			<if test="keyWord != null">
 				AND ZONE_NAME like '%${keyWord}%'
 			</if>
-			<if test="STATION_ID != null">
-				AND STATION_ID =#{STATION_ID}
+			<if test="stationId != null and stationId != ''">
+				AND STATION_ID =#{stationId}
 			</if>
 		</where>
 		order by ZONE_ID
@@ -34,8 +36,8 @@
 			<if test="keyWord != null">
 				AND ZONE_NAME like '%${keyWord}%'
 			</if>
-			<if test="STATION_ID != null">
-				AND STATION_ID =#{STATION_ID}
+			<if test="stationId != null and stationId != ''">
+				AND STATION_ID =#{stationId}
 			</if>
 		</where>
 	</select>
@@ -53,6 +55,12 @@
 			<if test="zoneName != null">
 				ZONE_NAME,
 			</if>
+			<if test="zoneType != null">
+				ZONE_TYPE,
+			</if>
+			<if test="stationId != null">
+				STATION_ID,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="zoneId != null">
@@ -61,6 +69,12 @@
 			<if test="zoneName != null">
 				#{zoneName,jdbcType=VARCHAR},
 			</if>
+			<if test="zoneType != null">
+				#{zoneType,jdbcType=DECIMAL},
+			</if>
+			<if test="stationId != null">
+				#{stationId,jdbcType=DECIMAL},
+			</if>
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.Zone">
@@ -68,6 +82,12 @@
 		<set>
 			<if test="zoneName != null">
 				ZONE_NAME = #{zoneName,jdbcType=VARCHAR},
+			</if>
+			<if test="zoneType != null">
+				ZONE_TYPE = #{zoneType,jdbcType=VARCHAR},
+			</if>
+			<if test="stationId != null">
+				STATION_ID = #{stationId,jdbcType=VARCHAR},
 			</if>
 		</set>
 		where ZONE_ID = #{zoneId,jdbcType=DECIMAL}
