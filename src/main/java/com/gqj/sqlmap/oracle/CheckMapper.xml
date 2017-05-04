@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gqj.dao.CheckMapper">
+  <resultMap id="BaseResultMap" type="com.gqj.entity.Check">
+    <result column="CHECK_ID" jdbcType="DECIMAL" property="checkId" />
+    <result column="CHECK_DEPT_ID" jdbcType="DECIMAL" property="checkDeptId" />
+    <result column="CHECK_CODE" jdbcType="VARCHAR" property="checkCode" />
+    <result column="CHECK_STATUS" jdbcType="DECIMAL" property="checkStatus" />
+    <result column="CHECK_CREATE_USER_ID" jdbcType="DECIMAL" property="checkCreateUserId" />
+    <result column="CHECK_CREATE_DATE" jdbcType="TIMESTAMP" property="checkCreateDate" />
+    <result column="PLAN_REMARK" jdbcType="VARCHAR" property="planRemark" />
+    <result column="CHECK_CREATE_USER_NAME" jdbcType="VARCHAR" property="checkCreateUserName" />
+    <result column="CHECK_DEPT_NAME" jdbcType="VARCHAR" property="checkDeptName" />
+    <result column="CHECK_STATUS_NAME" jdbcType="VARCHAR" property="checkStatusName" />
+  </resultMap>
+  <insert id="insert" parameterType="com.gqj.entity.Check">
+    insert into VIEW_GQJ_CHECK (CHECK_ID, CHECK_DEPT_ID, CHECK_CODE, 
+      CHECK_STATUS, CHECK_CREATE_USER_ID, CHECK_CREATE_DATE, 
+      PLAN_REMARK, CHECK_CREATE_USER_NAME, CHECK_DEPT_NAME, 
+      CHECK_STATUS_NAME)
+    values (#{checkId,jdbcType=DECIMAL}, #{checkDeptId,jdbcType=DECIMAL}, #{checkCode,jdbcType=VARCHAR}, 
+      #{checkStatus,jdbcType=DECIMAL}, #{checkCreateUserId,jdbcType=DECIMAL}, #{checkCreateDate,jdbcType=TIMESTAMP}, 
+      #{planRemark,jdbcType=VARCHAR}, #{checkCreateUserName,jdbcType=VARCHAR}, #{checkDeptName,jdbcType=VARCHAR}, 
+      #{checkStatusName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.gqj.entity.Check">
+    insert into VIEW_GQJ_CHECK
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="checkId != null">
+        CHECK_ID,
+      </if>
+      <if test="checkDeptId != null">
+        CHECK_DEPT_ID,
+      </if>
+      <if test="checkCode != null">
+        CHECK_CODE,
+      </if>
+      <if test="checkStatus != null">
+        CHECK_STATUS,
+      </if>
+      <if test="checkCreateUserId != null">
+        CHECK_CREATE_USER_ID,
+      </if>
+      <if test="checkCreateDate != null">
+        CHECK_CREATE_DATE,
+      </if>
+      <if test="planRemark != null">
+        PLAN_REMARK,
+      </if>
+      <if test="checkCreateUserName != null">
+        CHECK_CREATE_USER_NAME,
+      </if>
+      <if test="checkDeptName != null">
+        CHECK_DEPT_NAME,
+      </if>
+      <if test="checkStatusName != null">
+        CHECK_STATUS_NAME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="checkId != null">
+        #{checkId,jdbcType=DECIMAL},
+      </if>
+      <if test="checkDeptId != null">
+        #{checkDeptId,jdbcType=DECIMAL},
+      </if>
+      <if test="checkCode != null">
+        #{checkCode,jdbcType=VARCHAR},
+      </if>
+      <if test="checkStatus != null">
+        #{checkStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="checkCreateUserId != null">
+        #{checkCreateUserId,jdbcType=DECIMAL},
+      </if>
+      <if test="checkCreateDate != null">
+        #{checkCreateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="planRemark != null">
+        #{planRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="checkCreateUserName != null">
+        #{checkCreateUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="checkDeptName != null">
+        #{checkDeptName,jdbcType=VARCHAR},
+      </if>
+      <if test="checkStatusName != null">
+        #{checkStatusName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>
