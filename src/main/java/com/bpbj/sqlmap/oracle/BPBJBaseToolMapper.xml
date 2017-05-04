@@ -10,12 +10,14 @@
 		<result column="BASE_TOOL_SPEC" jdbcType="DECIMAL" property="baseToolSpec" />
 		<result column="BASE_TOOL_REMARK" jdbcType="VARCHAR" property="baseToolRemark" />
 		<result column="BASE_TOOL_NAME" jdbcType="VARCHAR" property="baseToolName" />
+		<result column="BASE_TOOL_UNIT" jdbcType="VARCHAR" property="baseToolUnit" />
+		<result column="BASE_TOOL_STATION" jdbcType="VARCHAR" property="baseToolStation" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		BASE_TOOL_ID, BASE_TOOL_TYPE, MAN_ID,BASE_TOOL_CODE,
 		BASE_TOOL_MODEL, BASE_TOOL_SPEC,
 		BASE_TOOL_REMARK,BASE_TOOL_NAME,
-		BASE_TOOL_MANUFACTURER_NAME
+		BASE_TOOL_MANUFACTURER_NAME,BASE_TOOL_UNIT,BASE_TOOL_STATION
 	</sql>
 	<select id="selectBaseToolForObject" parameterType="com.bpbj.entity.BaseTool"
 		resultType="java.util.HashMap">
@@ -28,6 +30,9 @@
 			</if>
 			<if test="baseToolType != null">
 				AND BASE_TOOL_TYPE = #{baseToolType}
+			</if>
+			<if test="baseToolCode != null">
+				AND BASE_TOOL_CODE = #{baseToolCode}
 			</if>
 		</where>
 		order by BASE_TOOL_ID DESC
@@ -43,7 +48,16 @@
 				AND BASE_TOOL_NAME like '%${keyWord}%'
 			</if>
 			<if test="baseToolType != null">
-				AND BASE_TOOL_TYPE = #{baseToolType}
+				AND BASE_TOOL_TYPE = ${baseToolType}
+			</if>
+			<if test="manId != null and manId !=''">
+				AND MAN_ID = #{manId}
+			</if>
+			<if test="baseToolModel != null">
+				AND BASE_TOOL_MODEL like '%${baseToolModel}%'
+			</if>
+			<if test="baseToolSpec != null">
+				AND BASE_TOOL_SPEC like '%${baseToolSpec}%'
 			</if>
 		</where>
 		order by BASE_TOOL_ID DESC
@@ -58,60 +72,17 @@
 			<if test="keyWord != null">
 				AND BASE_TOOL_NAME like '%${keyWord}%'
 			</if>
-		</where>
-	</select>
-	<select id="selectBaseToolsForPageWithMap" parameterType="java.util.HashMap"
-		resultType="java.util.HashMap">
-		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
-		select
-		<include refid="Base_Column_List" />
-		from VIEW_BPBJ_BASE_TOOL
-		<where>
-			<if test="keyWord != null">
-				AND BASE_TOOL_NAME like '%${keyWord}%'
+			<if test="baseToolType != null">
+				AND BASE_TOOL_TYPE = ${baseToolType}
+			</if>
+			<if test="manId != null and manId !=''">
+				AND MAN_ID = #{manId}
 			</if>
 			<if test="baseToolModel != null">
 				AND BASE_TOOL_MODEL like '%${baseToolModel}%'
 			</if>
 			<if test="baseToolSpec != null">
 				AND BASE_TOOL_SPEC like '%${baseToolSpec}%'
-			</if>
-			<if test="baseToolTypeId != null and baseToolTypeId != ''">
-				AND BASE_TOOL_TYPE_ID = #{baseToolTypeId}
-			</if>
-			<if test="manufacturerId != null and manufacturerId != ''">
-				AND MAN_ID = #{manufacturerId}
-			</if>
-			<if test="baseToolEarthWire != null and baseToolEarthWire != ''">
-				AND BASE_TOOL_EARTH_WIRE = #{baseToolEarthWire}
-			</if>
-		</where>
-		order by BASE_TOOL_ID DESC
-		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
-		) WHERE num<![CDATA[>=]]>
-		(1+(${currPage}-1)*${pageSize})
-	</select>
-	<select id="selectCountOfBaseToolsForPageWithMap" parameterType="java.util.HashMap"
-		resultType="java.lang.Integer">
-		select count(t.BASE_TOOL_ID) from VIEW_BPBJ_BASE_TOOL t
-		<where>
-			<if test="keyWord != null">
-				AND BASE_TOOL_NAME like '%${keyWord}%'
-			</if>
-			<if test="baseToolModel != null">
-				AND BASE_TOOL_MODEL like '%${baseToolModel}%'
-			</if>
-			<if test="baseToolSpec != null">
-				AND BASE_TOOL_SPEC like '%${baseToolSpec}%'
-			</if>
-			<if test="baseToolTypeId != null and baseToolTypeId != ''">
-				AND BASE_TOOL_TYPE_ID = #{baseToolTypeId}
-			</if>
-			<if test="manufacturerId != null and manufacturerId != ''">
-				AND MAN_ID = #{manufacturerId}
-			</if>
-			<if test="baseToolEarthWire != null and baseToolEarthWire != ''">
-				AND BASE_TOOL_EARTH_WIRE = #{baseToolEarthWire}
 			</if>
 		</where>
 	</select>
@@ -147,6 +118,12 @@
 			<if test="baseToolCode != null">
 				BASE_TOOL_CODE,
 			</if>
+			<if test="baseToolUnit != null">
+				BASE_TOOL_UNIT,
+			</if>
+			<if test="baseToolStation != null">
+				BASE_TOOL_STATION,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="baseToolId != null">
@@ -173,6 +150,12 @@
 			<if test="baseToolCode != null">
 				#{baseToolCode,jdbcType=VARCHAR},
 			</if>
+			<if test="baseToolUnit != null">
+				#{baseToolUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolStation != null">
+				#{baseToolStation,jdbcType=VARCHAR},
+			</if>
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.BaseTool">
@@ -198,6 +181,12 @@
 			</if>
 			<if test="baseToolName != null">
 				BASE_TOOL_NAME = #{baseToolName,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolUnit != null">
+				BASE_TOOL_UNIT = #{baseToolUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolStation != null">
+				BASE_TOOL_STATION = #{baseToolStation,jdbcType=VARCHAR},
 			</if>
 		</set>
 		where BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL}

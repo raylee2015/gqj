@@ -17,27 +17,21 @@ import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
 import com.bpbj.entity.BaseTool;
 import com.bpbj.entity.Manufacturer;
-import com.bpbj.entity.ToolDemand;
 import com.bpbj.entity.ToolType;
 import com.bpbj.service.IBPBJBaseToolService;
 import com.bpbj.service.IBPBJManufacturerService;
-import com.bpbj.service.IBPBJToolDemandService;
 import com.bpbj.service.IBPBJToolTypeService;
 
 @Controller
 @RequestMapping("/bpbj/base_tool")
 public class BPBJBaseToolController extends BaseController {
-	public static final Logger LOGGER = Logger
-			.getLogger(BPBJBaseToolController.class);
+	public static final Logger LOGGER = Logger.getLogger(BPBJBaseToolController.class);
 
 	@Autowired
 	private IBPBJBaseToolService baseToolService;
 
 	@Autowired
 	private IBPBJManufacturerService manufacturerService;
-
-	@Autowired
-	private IBPBJToolDemandService toolDemandService;
 
 	@Autowired
 	private IBPBJToolTypeService toolTypeService;
@@ -52,32 +46,28 @@ public class BPBJBaseToolController extends BaseController {
 	 */
 	@RequestMapping("/addNewBaseTool.do")
 	@ResponseBody
-	public Map<String, Object> addNewBaseTool(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public Map<String, Object> addNewBaseTool(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String baseManId = request.getParameter("MAN_ID");
-		String baseToolCode = request
-				.getParameter("BASE_TOOL_CODE");
-		String baseToolType = request
-				.getParameter("BASE_TOOL_TYPE");
-		String baseToolModel = request
-				.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request
-				.getParameter("BASE_TOOL_SPEC");
-		String baseToolRemark = request
-				.getParameter("BASE_TOOL_REMARK");
-		String baseToolName = request
-				.getParameter("BASE_TOOL_NAME");
+		String baseToolCode = request.getParameter("BASE_TOOL_CODE");
+		String baseToolType = request.getParameter("BASE_TOOL_TYPE");
+		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
+		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
+		String baseToolRemark = request.getParameter("BASE_TOOL_REMARK");
+		String baseToolName = request.getParameter("BASE_TOOL_NAME");
+		String baseToolUnit = request.getParameter("BASE_TOOL_UNIT");
+		String baseToolStation = request.getParameter("BASE_TOOL_STATION");
 		BaseTool baseTool = new BaseTool();
 		baseTool.setBaseToolId(-1l);
 		baseTool.setBaseToolCode(baseToolCode);
 		baseTool.setBaseToolModel(baseToolModel);
 		baseTool.setBaseToolRemark(baseToolRemark);
 		baseTool.setBaseToolSpec(baseToolSpec);
-		baseTool.setBaseToolType(
-				BaseUtil.strToLong(baseToolType));
+		baseTool.setBaseToolType(BaseUtil.strToLong(baseToolType));
 		baseTool.setManId(BaseUtil.strToLong(baseManId));
 		baseTool.setBaseToolName(baseToolName);
+		baseTool.setBaseToolUnit(baseToolUnit);
+		baseTool.setBaseToolStation(baseToolStation);
 		return baseToolService.addNewBaseTool(baseTool);
 	}
 
@@ -91,11 +81,8 @@ public class BPBJBaseToolController extends BaseController {
 	 */
 	@RequestMapping("/delBaseTools.do")
 	@ResponseBody
-	public Map<String, Object> delBaseTools(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String baseToolIds = request
-				.getParameter("BASE_TOOL_IDS");
+	public Map<String, Object> delBaseTools(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String baseToolIds = request.getParameter("BASE_TOOL_IDS");
 		BaseTool baseTool = new BaseTool();
 		baseTool.setIds(baseToolIds);
 		return baseToolService.deleteBaseTools(baseTool);
@@ -107,9 +94,7 @@ public class BPBJBaseToolController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(
-			HttpServletRequest request,
-			HttpServletResponse response) {
+	public ModelAndView openEditUI(HttpServletRequest request, HttpServletResponse response) {
 		return new ModelAndView("/bpbj/base_tool/editUI");
 	}
 
@@ -123,22 +108,18 @@ public class BPBJBaseToolController extends BaseController {
 	 */
 	@RequestMapping("/queryBaseToolsPage.do")
 	@ResponseBody
-	public Map<String, Object> queryBaseToolsPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public Map<String, Object> queryBaseToolsPage(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
-		String baseToolType = request
-				.getParameter("BASE_TOOL_TYPE");
+		String baseToolType = request.getParameter("BASE_TOOL_TYPE");
 		BaseTool baseTool = new BaseTool();
 		baseTool.setCurrPage(Integer.parseInt(page));
 		baseTool.setPageSize(Integer.parseInt(rows));
 		baseTool.setKeyWord(keyWord);
-		baseTool.setBaseToolType(
-				BaseUtil.strToLong(baseToolType));
-		return baseToolService
-				.selectBaseToolsForPage(baseTool);
+		baseTool.setBaseToolType(BaseUtil.strToLong(baseToolType));
+		return baseToolService.selectBaseToolsForPage(baseTool);
 	}
 
 	/**
@@ -151,9 +132,8 @@ public class BPBJBaseToolController extends BaseController {
 	 */
 	@RequestMapping("/queryManufacturersPage.do")
 	@ResponseBody
-	public Map<String, Object> queryManufacturersPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public Map<String, Object> queryManufacturersPage(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -161,36 +141,7 @@ public class BPBJBaseToolController extends BaseController {
 		manufacturer.setCurrPage(Integer.parseInt(page));
 		manufacturer.setPageSize(Integer.parseInt(rows));
 		manufacturer.setKeyWord(keyWord);
-		return manufacturerService
-				.selectManufacturersForPage(manufacturer);
-	}
-
-	/**
-	 * 分页查询工器具列表
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryToolDemandsPage.do")
-	@ResponseBody
-	public Map<String, Object> queryToolDemandsPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String page = request.getParameter("page");
-		String rows = request.getParameter("rows");
-		String keyWord = request.getParameter("keyWord");
-		String toolTypeId = request
-				.getParameter("TOOL_TYPE_ID");
-		ToolDemand toolDemand = new ToolDemand();
-		toolDemand
-				.setTypeId(BaseUtil.strToLong(toolTypeId));
-		toolDemand.setCurrPage(Integer.parseInt(page));
-		toolDemand.setPageSize(Integer.parseInt(rows));
-		toolDemand.setKeyWord(keyWord);
-		return toolDemandService
-				.selectToolDemandsForPage(toolDemand);
+		return manufacturerService.selectManufacturersForPage(manufacturer);
 	}
 
 	/**
@@ -202,11 +153,8 @@ public class BPBJBaseToolController extends BaseController {
 	 */
 	@RequestMapping("/queryToolDemandTypeDropList.do")
 	@ResponseBody
-	public void queryToolDemandTypeDropList(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		response.getWriter().print(toolTypeService
-				.selectToolTypesForList(new ToolType()));
+	public void queryToolDemandTypeDropList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		response.getWriter().print(toolTypeService.selectToolTypesForList(new ToolType()));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -231,35 +179,29 @@ public class BPBJBaseToolController extends BaseController {
 	 */
 	@RequestMapping("/updateBaseTool.do")
 	@ResponseBody
-	public Map<String, Object> updateBaseTool(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String baseToolId = request
-				.getParameter("BASE_TOOL_ID");
-		String baseToolCode = request
-				.getParameter("BASE_TOOL_CODE");
-		String baseToolType = request
-				.getParameter("BASE_TOOL_TYPE");
+	public Map<String, Object> updateBaseTool(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String baseToolId = request.getParameter("BASE_TOOL_ID");
+		String baseToolCode = request.getParameter("BASE_TOOL_CODE");
+		String baseToolType = request.getParameter("BASE_TOOL_TYPE");
 		String baseManId = request.getParameter("MAN_ID");
-		String baseToolModel = request
-				.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request
-				.getParameter("BASE_TOOL_SPEC");
-		String baseToolRemark = request
-				.getParameter("BASE_TOOL_REMARK");
-		String baseToolName = request
-				.getParameter("BASE_TOOL_NAME");
+		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
+		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
+		String baseToolRemark = request.getParameter("BASE_TOOL_REMARK");
+		String baseToolName = request.getParameter("BASE_TOOL_NAME");
+		String baseToolUnit = request.getParameter("BASE_TOOL_UNIT");
+		String baseToolStation = request.getParameter("BASE_TOOL_STATION");
 		BaseTool baseTool = new BaseTool();
-		baseTool.setBaseToolId(
-				BaseUtil.strToLong(baseToolId));
-		baseTool.setBaseToolType(
-				BaseUtil.strToLong(baseToolType));
+		baseTool.setBaseToolId(BaseUtil.strToLong(baseToolId));
+		baseTool.setBaseToolType(BaseUtil.strToLong(baseToolType));
 		baseTool.setBaseToolCode(baseToolCode);
 		baseTool.setBaseToolModel(baseToolModel);
 		baseTool.setBaseToolRemark(baseToolRemark);
 		baseTool.setBaseToolSpec(baseToolSpec);
 		baseTool.setManId(BaseUtil.strToLong(baseManId));
 		baseTool.setBaseToolName(baseToolName);
+		baseTool.setBaseToolUnit(baseToolUnit);
+		baseTool.setBaseToolStation(baseToolStation);
 		return baseToolService.updateBaseTool(baseTool);
 	}
 

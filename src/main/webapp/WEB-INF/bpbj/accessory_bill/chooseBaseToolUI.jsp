@@ -1,13 +1,12 @@
-<%@ page language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type"
-	content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -25,8 +24,7 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript"
-	src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//页面加载完
 	$(document).ready(
@@ -49,8 +47,8 @@
 	//查询
 	function queryBaseTools() {
 		var params = {
-			BASE_TOOL_TYPE_ID : getComboBoxValue('baseToolTypeComboBox'),
-			MANUFACTURER_ID : getComboBoxValue('baseToolManufacturerComboBox'),
+			BASE_TOOL_TYPE : 1,
+			MAN_ID : getComboBoxValue('baseToolManufacturerComboBox'),
 			keyWord : getTextBoxValue('keyWordForBaseToolTextInput'),
 			BASE_TOOL_MODEL : getTextBoxValue('baseToolModelTextBox'),
 			BASE_TOOL_SPEC : getTextBoxValue('baseToolSpecTextBox'),
@@ -71,7 +69,7 @@
 				.datagrid(
 						{
 							url : 'queryBaseToolsPage.do',
-							idField : 'TOOL_ID',
+							idField : 'BASE_TOOL_ID',
 							rownumbers : true,
 							toolbar : '#toolbarForBaseTool',
 							pagination : true,
@@ -84,8 +82,8 @@
 								field : 'ck',
 								checkbox : true
 							}, {
-								field : 'BASE_TOOL_TYPE_NAME',
-								title : '工器具类型',
+								field : 'BASE_TOOL_CODE',
+								title : '工器具编码',
 								width : 100
 							}, {
 								field : 'BASE_TOOL_NAME',
@@ -106,8 +104,8 @@
 							} ] ],
 							onBeforeLoad : function(param) {
 								param.keyWord = getTextBoxValue('keyWordForBaseToolTextInput');
-								param.BASE_TOOL_TYPE_ID = getComboBoxValue('baseToolTypeComboBox');
-								param.MANUFACTURER_ID = getComboBoxValue('baseToolManufacturerComboBox');
+								param.BASE_TOOL_TYPE = 1;
+								param.MAN_ID = getComboBoxValue('baseToolManufacturerComboBox');
 								param.BASE_TOOL_MODEL = getTextBoxValue('baseToolModelTextBox');
 								param.BASE_TOOL_SPEC = getTextBoxValue('baseToolSpecTextBox');
 							},
@@ -117,13 +115,13 @@
 						});
 	}
 	//关闭编辑窗口
-	function closeChooseBaseToolUIForMaterialBill() {
-		parent.closeChooseBaseToolUIForMaterialBill();
+	function closeChooseBaseToolUIForAccessoryBill() {
+		parent.closeChooseBaseToolUIForAccessoryBill();
 	}
 
 	function choose() {
 		var selectedItems = $('#datagridForBaseTool').datagrid('getChecked');
-		var data = parent.$('#datagridForMaterialBillDetail').datagrid(
+		var data = parent.$('#datagridForAccessoryBillDetail').datagrid(
 				'getData');
 		if (data.rows.length == 0) {
 			data = selectedItems;
@@ -141,8 +139,8 @@
 				data.rows.push(selectedItems[j]);
 			}
 		}
-		parent.$('#datagridForMaterialBillDetail').datagrid('loadData', data);
-		closeChooseBaseToolUIForMaterialBill();
+		parent.$('#datagridForAccessoryBillDetail').datagrid('loadData', data);
+		closeChooseBaseToolUIForAccessoryBill();
 	}
 </script>
 </head>
@@ -154,14 +152,12 @@
 			<div id="toolbarForBaseTool">
 				<table style="width: 100%">
 					<tr>
-						<td><a class="easyui-linkbutton"
-							iconCls="icon-ok" href="javascript:void(0)"
-							onclick="choose()">选择</a> <a
+						<td><a class="easyui-linkbutton" iconCls="icon-ok"
+							href="javascript:void(0)" onclick="choose()">选择</a> <a
 							class="easyui-linkbutton" iconCls="icon-cancel"
 							href="javascript:void(0)"
 							onclick="closeChooseBaseToolUIForTemplate()">关闭</a></td>
-						<td align="right"><input
-							id="keyWordForBaseToolTextInput"
+						<td align="right"><input id="keyWordForBaseToolTextInput"
 							class="easyui-textbox"
 							data-options="prompt:'工器具名称',validType:'length[0,25]'"
 							style="width: 200px"> <a href="#"
@@ -169,15 +165,6 @@
 							onclick="queryBaseToolPagesForSearch()">查询</a>
 					</tr>
 					<tr>
-						<td>类型: <input id="baseToolTypeComboBox"
-							data-options="valueField : 'ID',textField : 'TEXT',require : true,
-							panelHeight : 'auto',	prompt : '工器具类型',
-							url : 'queryBaseToolTypeDropList.do',
-							onChange : function(newValue, oldValue){
-								queryBaseTools();
-							}
-							"
-							class="easyui-combobox" style="width: 200px;"></td>
 						<td>厂家: <input id="baseToolManufacturerComboBox"
 							data-options="valueField : 'ID',textField : 'TEXT',require : true,
 							panelHeight : 'auto',	prompt : '厂家',
@@ -187,8 +174,6 @@
 							}
 							"
 							class="easyui-combobox" style="width: 200px;"></td>
-					</tr>
-					<tr>
 						<td>型号: <input id="baseToolModelTextBox"
 							data-options="prompt : '型号'" class="easyui-textbox"
 							style="width: 200px;"></td>

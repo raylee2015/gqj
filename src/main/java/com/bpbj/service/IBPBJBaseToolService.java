@@ -1,6 +1,5 @@
 package com.bpbj.service;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.bpbj.entity.BaseTool;
@@ -12,13 +11,8 @@ public interface IBPBJBaseToolService {
 
 	Map<String, Object> updateBaseTool(BaseTool baseTool);
 
-	Map<String, Object> selectBaseToolsForPage(
-			BaseTool baseTool);
-	
-	Map<String, Object> selectBaseToolForObject(
-			BaseTool baseTool);
+	Map<String, Object> selectBaseToolsForPage(BaseTool baseTool);
 
-	Map<String, Object> selectBaseToolsForPage(
-			HashMap<String, Object> param);
+	Map<String, Object> selectBaseToolForObject(BaseTool baseTool);
 
 }

@@ -18,6 +18,24 @@ public class BaseTool extends Base {
 	private String baseToolRemark;
 
 	private String baseToolName;
+	private String baseToolUnit;
+	private String baseToolStation;
+
+	public String getBaseToolUnit() {
+		return baseToolUnit;
+	}
+
+	public void setBaseToolUnit(String baseToolUnit) {
+		this.baseToolUnit = baseToolUnit;
+	}
+
+	public String getBaseToolStation() {
+		return baseToolStation;
+	}
+
+	public void setBaseToolStation(String baseToolStation) {
+		this.baseToolStation = baseToolStation;
+	}
 
 	public Long getBaseToolType() {
 		return baseToolType;
@@ -64,8 +82,7 @@ public class BaseTool extends Base {
 	}
 
 	public void setBaseToolModel(String baseToolModel) {
-		this.baseToolModel = baseToolModel == null ? null
-				: baseToolModel.trim();
+		this.baseToolModel = baseToolModel == null ? null : baseToolModel.trim();
 	}
 
 	public String getBaseToolSpec() {
@@ -81,7 +98,6 @@ public class BaseTool extends Base {
 	}
 
 	public void setBaseToolRemark(String baseToolRemark) {
-		this.baseToolRemark = baseToolRemark == null ? null
-				: baseToolRemark.trim();
+		this.baseToolRemark = baseToolRemark == null ? null : baseToolRemark.trim();
 	}
 }

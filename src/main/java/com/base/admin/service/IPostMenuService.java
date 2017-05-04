@@ -1,5 +1,6 @@
 package com.base.admin.service;
 
+import java.sql.SQLException;
 import java.util.Map;
 
 import com.base.admin.entity.Post;
@@ -14,8 +15,8 @@ public interface IPostMenuService {
 
 	String selectDeptsForTree();
 
-	String querySelectedMenusForTree(PostMenu postMenu);
+	String querySelectedMenusForTree(PostMenu postMenu) throws SQLException;
 
-	String queryUnSelectedMenusForTree();
+	String queryUnSelectedMenusForTree() throws SQLException;
 
 }

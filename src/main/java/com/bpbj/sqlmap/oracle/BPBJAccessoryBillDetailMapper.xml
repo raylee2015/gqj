@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bpbj.dao.BPBJAccessoryBillDetailMapper">
+	<resultMap id="BaseResultMap" type="com.bpbj.entity.AccessoryBillDetail">
+		<id column="DETAIL_ID" jdbcType="DECIMAL" property="detailId" />
+		<result column="BASE_TOOL_ID" jdbcType="DECIMAL" property="baseToolId" />
+		<result column="BILL_ID" jdbcType="DECIMAL" property="billId" />
+		<result column="DETAIL_BILL_AMOUNT" jdbcType="DECIMAL"
+			property="detailBillAmount" />
+		<result column="DETAIL_REMARK" jdbcType="VARCHAR" property="detailRemark" />
+		<result column="POS_ID" jdbcType="DECIMAL" property="posId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		DETAIL_ID,BILL_ID,DETAIL_BILL_AMOUNT,DETAIL_REMARK,POS_ID,
+		BASE_TOOL_ID,MAN_ID,BASE_TOOL_TYPE,BASE_TOOL_CODE,BASE_TOOL_MODEL,
+		BASE_TOOL_SPEC,BASE_TOOL_REMARK,BASE_TOOL_NAME,BASE_MANUFACTURER_NAME,
+		POS_NAME
+	</sql>
+	<select id="selectAccessoryBillDetailsForPage" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from
+		VIEW_BPBJ_ACC_BILL_DETAIL t
+		<where>
+			<if test="billId != null">
+				AND BILL_ID = #{billId}
+			</if>
+		</where>
+		order by DETAIL_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfAccessoryBillDetailsForPage"
+		parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		select count(*)
+		from
+		VIEW_BPBJ_ACC_BILL_DETAIL
+		<where>
+			<if test="billId != null">
+				AND BILL_ID = #{billId}
+			</if>
+		</where>
+		order by DETAIL_ID
+	</select>
+	<select id="selectAccessoryBillDetailsForList" parameterType="com.bpbj.entity.AccessoryBill"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from
+		VIEW_BPBJ_ACC_BILL_DETAIL
+		<where>
+			<if test="billId != null">
+				AND BILL_ID = #{billId}
+			</if>
+			<if test="ids != null">
+				AND BILL_ID in (${ids})
+			</if>
+		</where>
+		order by DETAIL_ID
+	</select>
+	<delete id="deleteByAccessoryBill" parameterType="com.bpbj.entity.AccessoryBill">
+		delete from
+		BPBJ_ACCESSORY_BILL_DETAIL
+		where BILL_ID in (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.bpbj.entity.AccessoryBillDetail">
+		insert into BPBJ_ACCESSORY_BILL_DETAIL
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="detailId != null">
+				DETAIL_ID,
+			</if>
+			<if test="baseToolId != null">
+				BASE_TOOL_ID,
+			</if>
+			<if test="billId != null">
+				BILL_ID,
+			</if>
+			<if test="detailBillAmount != null">
+				DETAIL_BILL_AMOUNT,
+			</if>
+			<if test="detailRemark != null">
+				DETAIL_REMARK,
+			</if>
+			<if test="posId != null">
+				POS_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="detailId != null">
+				BPBJ_ACCESSORY_BILL_DETAIL_SEQ.nextval,
+			</if>
+			<if test="baseToolId != null">
+				#{baseToolId,jdbcType=DECIMAL},
+			</if>
+			<if test="billId != null">
+				#{billId,jdbcType=DECIMAL},
+			</if>
+			<if test="detailBillAmount != null">
+				#{detailBillAmount,jdbcType=DECIMAL},
+			</if>
+			<if test="detailRemark != null">
+				#{detailRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="posId != null">
+				#{posId,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.AccessoryBillDetail">
+		update BPBJ_ACCESSORY_BILL_DETAIL
+		<set>
+			<if test="baseToolId != null">
+				BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL},
+			</if>
+			<if test="billId != null">
+				BILL_ID = #{billId,jdbcType=DECIMAL},
+			</if>
+			<if test="detailBillAmount != null">
+				DETAIL_BILL_AMOUNT =
+				#{detailBillAmount,jdbcType=DECIMAL},
+			</if>
+			<if test="detailRemark != null">
+				DETAIL_REMARK = #{detailRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="posId != null">
+				POS_ID = #{posId,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where DETAIL_ID = #{detailId,jdbcType=DECIMAL}
+	</update>
+</mapper>

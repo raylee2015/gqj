@@ -1,13 +1,12 @@
-<%@ page language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type"
-	content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -25,8 +24,7 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript"
-	src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	// 关闭编辑窗口
 	function closeEditUIForBaseTool() {
@@ -44,7 +42,7 @@
 	// 编辑窗口变小
 	function makeEditUISmaller() {
 		$('#editUIForBaseTool').panel('resize', {
-			height : 300
+			height : 365
 		});
 		$('#editUIForBaseTool').window('center');
 	}
@@ -53,8 +51,8 @@
 	function openAddUIForBaseTool() {
 		createModalDialog("editUIForBaseTool",
 				"openEditUI.do?opType=add&BASE_TOOL_TYPE="
-						+ getTextBoxValue('baseToolTypeTextBox'), "添加工器具基础信息",
-				500, 300);
+						+ getTextBoxValue('baseToolTypeTextBox'), "添加基础信息",
+				500, 365);
 		openEditUI('editUIForBaseTool');
 	}
 
@@ -63,21 +61,21 @@
 		var rowData = getRowDataOfSelfDataGrid('datagridForBaseTool', rowIndex);
 		var url = "openEditUI.do?opType=edit&rowIndex=" + rowIndex
 				+ '&BASE_TOOL_TYPE=' + getTextBoxValue('baseToolTypeTextBox');
-		createModalDialog("editUIForBaseTool", url, ("修改工器具\""
-				+ rowData.BASE_TOOL_NAME + "\"的基础信息"), 500, 300);
+		createModalDialog("editUIForBaseTool", url, ("修改\""
+				+ rowData.BASE_TOOL_NAME + "\"的基础信息"), 500, 365);
 		openEditUI('editUIForBaseTool');
 	}
 
 	//删除
 	function delBaseTools() {
-		if (checkSelectedItems('datagridForBaseTool', '请选择工器具基础信息')) {
+		if (checkSelectedItems('datagridForBaseTool', '请选择基础信息')) {
 			var ids = getIdsOfSelectedItems('datagridForBaseTool',
 					'BASE_TOOL_ID');
 			if (ids != null && ids != '') {
 				var params = {
 					BASE_TOOL_IDS : ids
 				};
-				showMessageBox(params, 'delBaseTools.do', '是否删除所选工器具基础信息?',
+				showMessageBox(params, 'delBaseTools.do', '是否删除所选基础信息?',
 						successFunctionForOption);
 			}
 		}
@@ -127,6 +125,13 @@
 
 	//初始化列表元素
 	function initDataGridForBaseTool() {
+		var baseToolType = getTextBoxValue('baseToolTypeTextBox');
+		var baseToolTitle = "";
+		if (baseToolType == '1') {
+			baseToolTitle = "配件";
+		} else {
+			baseToolTitle = "插件";
+		}
 		$('#datagridForBaseTool')
 				.datagrid(
 						{
@@ -158,28 +163,36 @@
 										}
 									}, {
 										field : 'BASE_TOOL_CODE',
-										title : '工器具编码',
+										title : baseToolTitle + '编码',
 										width : 150,
 										hidden : true
 									}, {
 										field : 'BASE_TOOL_NAME',
-										title : '工器具名称',
+										title : baseToolTitle + '名称',
 										width : 150,
 									}, {
 										field : 'BASE_TOOL_MANUFACTURER_NAME',
-										title : '工器具厂家',
+										title : baseToolTitle + '厂家',
 										width : 150,
 									}, {
 										field : 'BASE_TOOL_MODEL',
-										title : '工器具型号',
+										title : baseToolTitle + '型号',
 										width : 150,
 									}, {
 										field : 'BASE_TOOL_SPEC',
-										title : '工器具规格参数',
+										title : baseToolTitle + '规格参数',
 										width : 150,
 									}, {
+										field : 'BASE_TOOL_UNIT',
+										title : baseToolTitle + '单位',
+										width : 100,
+									}, {
+										field : 'BASE_TOOL_STATION',
+										title : baseToolTitle + '适用站点',
+										width : 100,
+									}, {
 										field : 'BASE_TOOL_REMARK',
-										title : '备注',
+										title : baseToolTitle + '备注',
 										width : 150,
 									} ] ],
 							onBeforeLoad : function(param) {
@@ -208,16 +221,14 @@
 					<tr>
 						<td><a href="#" class="easyui-linkbutton"
 							iconCls="icon-reload" plain="true"
-							onclick="refreshDataGrid('datagridForBaseTool')">刷新</a>
-							<a href="#" class="easyui-linkbutton"
-							iconCls="icon-add" plain="true"
-							onclick="openAddUIForBaseTool()">添加</a> <a href="#"
-							class="easyui-linkbutton" iconCls="icon-remove"
-							plain="true" onclick="delBaseTools()">删除</a></td>
-						<td align="right"><input
-							id="keyWordForBaseToolTextInput"
+							onclick="refreshDataGrid('datagridForBaseTool')">刷新</a> <a
+							href="#" class="easyui-linkbutton" iconCls="icon-add"
+							plain="true" onclick="openAddUIForBaseTool()">添加</a> <a href="#"
+							class="easyui-linkbutton" iconCls="icon-remove" plain="true"
+							onclick="delBaseTools()">删除</a></td>
+						<td align="right"><input id="keyWordForBaseToolTextInput"
 							class="easyui-textbox"
-							data-options="prompt:'工器具基础名称',validType:'length[0,25]'"
+							data-options="prompt:'名称',validType:'length[0,25]'"
 							style="width: 200px"> <a href="#"
 							class="easyui-linkbutton" iconCls="icon-search"
 							onclick="queryBaseToolPagesForSearch()">查询</a>

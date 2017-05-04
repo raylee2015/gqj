@@ -1,13 +1,12 @@
-<%@ page language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type"
-	content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -25,46 +24,57 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript"
-	src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//记录增加和修改的地址
 	var url = "";
 
 	// 保存数据
-	function saveManufacturer() {
-		var params = {
-			STATION_ID : getTextBoxValue('manufacturerIdTextBox'),
-			STATION_NAME : getTextBoxValue('manufacturerNameTextBox'),
-		};
-		save(params, url, successFunctionForSaveManufacturer);
+	function add() {
+		setTimeout(addAccessory, 300);
 	}
 
-	function successFunctionForSaveManufacturer(result) {
-		parent.successFunctionForOption(result);
-		closeScanUIForAccessory();
+	// 保存数据
+	function addAccessory() {
+		var params = {
+			BASE_TOOL_CODE : getTextBoxValue('baseToolCodeTextBox'),
+		};
+		save(params, "queryBaseToolForObject.do",
+				successFunctionForSaveAccessory);
+	}
+
+	function successFunctionForSaveAccessory(result) {
+		var data = parent.$('#datagridForAccessoryBillDetail').datagrid(
+				'getData');
+		if (result == null) {
+			alert("没有该物资，请查证");
+		} else {
+			for (var i = 0; i < data.rows.length; i++) {
+				if (result.BASE_TOOL_ID == data.rows[i].BASE_TOOL_ID) {
+					result.data_is_have = true;
+					if (data.rows[i].DETAIL_BILL_AMOUNT == null) {
+						data.rows[i].DETAIL_BILL_AMOUNT = 1;
+					} else {
+						data.rows[i].DETAIL_BILL_AMOUNT += 1;
+					}
+					break;
+				}
+			}
+			if (result.data_is_have == null) {
+				result.DETAIL_BILL_AMOUNT = 0;
+				setTextBoxText('baseToolCodeTextBox', '');
+				setTextBoxValue('baseToolCodeTextBox', '');
+				data.rows.push(result);
+			}
+		}
+		parent.$('#datagridForAccessoryBillDetail').datagrid('loadData', data);
 	}
 
 	//页面加载完
 	$(document).ready(function() {
 		closeCache();
-		initManufacturerForm();
+		registerKeyPressForTextInput('baseToolCodeTextBox', add);
 	});
-
-	//初始化表单
-	function initManufacturerForm() {
-		var opType = getTextBoxValue('opType');
-		var postId = getTextBoxValue('manufacturerIdTextBox');
-		if (opType == 'edit') {
-			url = "updateManufacturer.do";
-			var rowIndex = getTextBoxValue('rowIndex');
-			var rowData = getRowDataOfParentDataGrid('datagridForManufacturer',
-					rowIndex);
-			$('#manufacturerForm').form('load', rowData);
-		} else if (opType == 'add') {
-			url = "addNewManufacturer.do";
-		}
-	}
 
 	//关闭编辑界面
 	function closeScanUIForAccessory() {
@@ -75,21 +85,12 @@
 <body>
 	<div class="easyui-layout" data-options="fit:true">
 		<div data-options="fit:true,border:false,region:'north'">
-			<form id="manufacturerForm" method="post"
-				style="width: 100%;">
-				<div style="display: none">
-					<input id="opType" class="easyui-textbox"
-						value="<%=request.getParameter("opType")%>" /> <input
-						id="manufacturerIdTextBox" class="easyui-textbox"
-						name="STATION_ID" /> <input id="rowIndex"
-						class="easyui-textbox"
-						value="<%=request.getParameter("rowIndex")%>" />
-				</div>
+			<form id="accessoryForm" method="post" style="width: 100%;">
 				<table width="100%">
 					<tr>
 						<td width="22%">配件编码:</td>
-						<td><input id="manufacturerNameTextBox"
-							name="STATION_NAME" class="easyui-textbox"
+						<td><input id="baseToolCodeTextBox" name="BASE_TOOL_CODE"
+							class="easyui-textbox"
 							data-options="prompt:'配件编码',required:true,validType:'length[0,20]'"
 							style="width: 100%; height: 32px" /></td>
 					</tr>
@@ -99,10 +100,9 @@
 		<div region="south" border="false"
 			style="text-align: right; height: 30px">
 			<a class="easyui-linkbutton" iconCls="icon-ok"
-				href="javascript:void(0)" onclick="saveManufacturer()">添加</a>
-			<a class="easyui-linkbutton" iconCls="icon-cancel"
-				href="javascript:void(0)"
-				onclick="closeScanUIForAccessory()">关闭</a>
+				href="javascript:void(0)" onclick="addAccessory()">添加</a> <a
+				class="easyui-linkbutton" iconCls="icon-cancel"
+				href="javascript:void(0)" onclick="closeScanUIForAccessory()">关闭</a>
 		</div>
 	</div>
 </body>

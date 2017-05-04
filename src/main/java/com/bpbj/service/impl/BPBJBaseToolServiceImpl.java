@@ -46,30 +46,9 @@ public class BPBJBaseToolServiceImpl implements IBPBJBaseToolService {
 	}
 
 	@Override
-	public Map<String, Object> selectBaseToolsForPage(
-			BaseTool baseTool) {
-		List<Map<String, Object>> baseTools = baseToolMapper
-				.selectBaseToolsForPage(baseTool);
-		for (Map<String, Object> item : baseTools) {
-			if ("1".equals(item.get("BASE_TOOL_EARTH_WIRE"))) {
-				item.put("BASE_TOOL_EARTH_WIRE_NAME", "是");
-			}
-		}
-		int count = baseToolMapper
-				.selectCountOfBaseToolsForPage(baseTool);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("rows", baseTools);
-		map.put("total", count);
-		return map;
-	}
-
-	@Override
-	public Map<String, Object> selectBaseToolsForPage(
-			HashMap<String, Object> param) {
-		List<Map<String, Object>> baseTools = baseToolMapper
-				.selectBaseToolsForPageWithMap(param);
-		int count = baseToolMapper
-				.selectCountOfBaseToolsForPageWithMap(param);
+	public Map<String, Object> selectBaseToolsForPage(BaseTool baseTool) {
+		List<Map<String, Object>> baseTools = baseToolMapper.selectBaseToolsForPage(baseTool);
+		int count = baseToolMapper.selectCountOfBaseToolsForPage(baseTool);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", baseTools);
 		map.put("total", count);
@@ -91,8 +70,7 @@ public class BPBJBaseToolServiceImpl implements IBPBJBaseToolService {
 	}
 
 	@Override
-	public Map<String, Object> selectBaseToolForObject(
-			BaseTool baseTool) {
+	public Map<String, Object> selectBaseToolForObject(BaseTool baseTool) {
 		return baseToolMapper.selectBaseToolForObject(baseTool);
 	}
 

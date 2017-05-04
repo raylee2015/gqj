@@ -4,7 +4,7 @@
 	<select id="selectSequence" statementType="CALLABLE"
 		parameterType="java.util.HashMap" resultType="java.util.HashMap">
 <![CDATA[
-    {call P_SCGQJ_SEQUENCE 
+    {call P_BASE_SEQUENCE 
     (
     #{rule1,mode=IN,jdbcType=VARCHAR},
     #{rule2,mode=IN,jdbcType=VARCHAR},

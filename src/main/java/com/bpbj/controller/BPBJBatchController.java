@@ -24,6 +24,7 @@ import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
 import com.base.util.DateStyle;
 import com.base.util.DateUtil;
+import com.bpbj.entity.BaseTool;
 import com.bpbj.entity.Batch;
 import com.bpbj.entity.Manufacturer;
 import com.bpbj.entity.Position;
@@ -111,14 +112,14 @@ public class BPBJBatchController extends BaseController {
 				.getParameter("BATCH_TAKE_DEPT_ID");
 		String toolCode = request.getParameter("TOOL_CODE");
 		String toolBox = request.getParameter("TOOL_BOX");
-		String toolTestDate = request.getParameter("TOOL_TEST_DATE");
+		String toolDate = request.getParameter("TOOL_TEST_DATE");
 		String toolRejectDate = request
 				.getParameter("TOOL_REJECT_DATE");
 		String toolManufactureDate = request
 				.getParameter("TOOL_MANUFACTURE_DATE");
 		String toolPurchaseDate = request
 				.getParameter("TOOL_PURCHASE_DATE");
-		String toolTestDateCircle = request
+		String toolDateCircle = request
 				.getParameter("TOOL_TEST_DATE_CIRCLE");
 		Batch batch = new Batch();
 		batch.setBatchCode(batchCode);
@@ -145,21 +146,21 @@ public class BPBJBatchController extends BaseController {
 		}
 		tool.setToolDeptId(
 				getSessionUser(request, response).getUserDeptId());
-		if (toolTestDate != null && toolTestDate != "") {
-			tool.setToolTestDate(DateUtil.StringToDate(toolTestDate,
+		if (toolDate != null && toolDate != "") {
+			tool.setToolTestDate(DateUtil.StringToDate(toolDate,
 					DateStyle.YYYY_MM_DD));
 		}
 		if (toolRejectDate != null && toolRejectDate != "") {
 			tool.setToolRejectDate(DateUtil.StringToDate(toolRejectDate,
 					DateStyle.YYYY_MM_DD));
 		}
-		if (toolTestDateCircle != null && toolTestDateCircle != "") {
+		if (toolDateCircle != null && toolDateCircle != "") {
 			tool.setToolTestDateCircle(
-					Double.parseDouble(toolTestDateCircle));
+					Double.parseDouble(toolDateCircle));
 			tool.setToolNextTestDate(DateUtil.addMonth(
-					DateUtil.StringToDate(toolTestDate,
+					DateUtil.StringToDate(toolDate,
 							DateStyle.YYYY_MM_DD),
-					Integer.parseInt(toolTestDateCircle)));
+					Integer.parseInt(toolDateCircle)));
 		}
 		if (toolManufactureDate != null && toolManufactureDate != "") {
 			tool.setToolManufactureDate(DateUtil.StringToDate(
@@ -192,21 +193,21 @@ public class BPBJBatchController extends BaseController {
 		if (baseToolId != null && baseToolId != "") {
 			toolTrack.setBaseToolId(BaseUtil.strToLong(baseToolId));
 		}
-		if (toolTestDate != null && toolTestDate != "") {
+		if (toolDate != null && toolDate != "") {
 			toolTrack.setToolTestDate(DateUtil
-					.StringToDate(toolTestDate, DateStyle.YYYY_MM_DD));
+					.StringToDate(toolDate, DateStyle.YYYY_MM_DD));
 		}
 		if (toolRejectDate != null && toolRejectDate != "") {
 			toolTrack.setToolRejectDate(DateUtil.StringToDate(
 					toolRejectDate, DateStyle.YYYY_MM_DD));
 		}
-		if (toolTestDateCircle != null && toolTestDateCircle != "") {
+		if (toolDateCircle != null && toolDateCircle != "") {
 			toolTrack.setToolTestDateCircle(
-					Double.parseDouble(toolTestDateCircle));
+					Double.parseDouble(toolDateCircle));
 			toolTrack.setToolNextTestDate(DateUtil.addMonth(
-					DateUtil.StringToDate(toolTestDate,
+					DateUtil.StringToDate(toolDate,
 							DateStyle.YYYY_MM_DD),
-					Integer.parseInt(toolTestDateCircle)));
+					Integer.parseInt(toolDateCircle)));
 		}
 		if (baseToolId != null && baseToolId != "") {
 			toolTrack.setBaseToolName(baseToolName);
@@ -394,20 +395,19 @@ public class BPBJBatchController extends BaseController {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
-		String baseToolTypeId = request
-				.getParameter("BASE_TOOL_TYPE_ID");
-		String manufacturerId = request.getParameter("MANUFACTURER_ID");
 		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
 		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
-		HashMap<String, Object> param = new HashMap<String, Object>();
-		param.put("keyWord", keyWord);
-		param.put("currPage", page);
-		param.put("pageSize", rows);
-		param.put("baseToolTypeId", baseToolTypeId);
-		param.put("manufacturerId", manufacturerId);
-		param.put("baseToolModel", baseToolModel);
-		param.put("baseToolSpec", baseToolSpec);
-		return baseToolService.selectBaseToolsForPage(param);
+		String baseToolType = request.getParameter("BASE_TOOL_TYPE");
+		String manId = request.getParameter("MAN_ID");
+		BaseTool baseTool = new BaseTool();
+		baseTool.setCurrPage(Integer.parseInt(page));
+		baseTool.setPageSize(Integer.parseInt(rows));
+		baseTool.setKeyWord(keyWord);
+		baseTool.setBaseToolType(BaseUtil.strToLong(baseToolType));
+		baseTool.setBaseToolModel(baseToolModel);
+		baseTool.setBaseToolSpec(baseToolSpec);
+		baseTool.setManId(BaseUtil.strToLong(manId));
+		return baseToolService.selectBaseToolsForPage(baseTool);
 	}
 
 	/**

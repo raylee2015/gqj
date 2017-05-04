@@ -32,49 +32,49 @@
 	$(document).ready(
 			function() {
 				closeCache();
-				initDataGridForMaterialInventory();
+				initDataGridForAccessoryInventory();
 				registerKeyPressForTextInput(
-						'keyWordForMaterialInventoryTextInput',
-						queryMaterialInventoryPagesForSearch);
+						'keyWordForAccessoryInventoryTextInput',
+						queryAccessoryInventoryPagesForSearch);
 				registerKeyPressForTextInput('baseToolSpecTextBox',
-						queryMaterialInventoryPagesForSearch);
+						queryAccessoryInventoryPagesForSearch);
 				registerKeyPressForTextInput('baseToolModelTextBox',
-						queryMaterialInventoryPagesForSearch);
+						queryAccessoryInventoryPagesForSearch);
 			});
 
 	//用在点击查询按钮的时候
-	function queryMaterialInventoryPagesForSearch() {
-		queryMaterialInventorys();
+	function queryAccessoryInventoryPagesForSearch() {
+		queryAccessoryInventorys();
 	}
 
 	//查询
-	function queryMaterialInventorys() {
+	function queryAccessoryInventorys() {
 		var params = {
 			BASE_TOOL_TYPE_ID : getComboBoxValue('baseToolTypeComboBox'),
 			MANUFACTURER_ID : getComboBoxValue('baseToolManufacturerComboBox'),
-			keyWord : getTextBoxValue('keyWordForMaterialInventoryTextInput'),
+			keyWord : getTextBoxValue('keyWordForAccessoryInventoryTextInput'),
 			BASE_TOOL_MODEL : getTextBoxValue('baseToolModelTextBox'),
 			BASE_TOOL_SPEC : getTextBoxValue('baseToolSpecTextBox'),
 			page : 1,
-			rows : getPageSizeOfDataGrid('datagridForMaterialInventory')
+			rows : getPageSizeOfDataGrid('datagridForAccessoryInventory')
 		};
-		query(params, 'queryMaterialInventorysPage.do', successFunctionForQuery);
+		query(params, 'queryAccessoryInventorysPage.do', successFunctionForQuery);
 	}
 
 	//回调函数，查询成功后调用
 	function successFunctionForQuery(result) {
-		dataGridLoadData('datagridForMaterialInventory', result);
+		dataGridLoadData('datagridForAccessoryInventory', result);
 	}
 
 	//初始化列表元素
-	function initDataGridForMaterialInventory() {
-		$('#datagridForMaterialInventory')
+	function initDataGridForAccessoryInventory() {
+		$('#datagridForAccessoryInventory')
 				.datagrid(
 						{
-							url : 'queryMaterialInventorysPage.do',
+							url : 'queryAccessoryInventorysPage.do',
 							idField : 'BASE_TOOL_ID',
 							rownumbers : true,
-							toolbar : '#toolbarForMaterialInventory',
+							toolbar : '#toolbarForAccessoryInventory',
 							pagination : true,
 							pageSize : 30,
 							pageNumber : 1,
@@ -118,7 +118,7 @@
 								width : 100
 							} ] ],
 							onBeforeLoad : function(param) {
-								param.keyWord = getTextBoxValue('keyWordForMaterialInventoryTextInput');
+								param.keyWord = getTextBoxValue('keyWordForAccessoryInventoryTextInput');
 								param.BASE_TOOL_TYPE_ID = getComboBoxValue('baseToolTypeComboBox');
 								param.MANUFACTURER_ID = getComboBoxValue('baseToolManufacturerComboBox');
 								param.BASE_TOOL_MODEL = getTextBoxValue('baseToolModelTextBox');
@@ -130,14 +130,14 @@
 						});
 	}
 	//关闭编辑窗口
-	function closeChooseMaterialInventoryUIForMaterialBill() {
-		parent.closeChooseMaterialInventoryUIForMaterialBill();
+	function closeChooseAccessoryInventoryUIForAccessoryBill() {
+		parent.closeChooseAccessoryInventoryUIForAccessoryBill();
 	}
 
 	function choose() {
-		var selectedItems = $('#datagridForMaterialInventory').datagrid(
+		var selectedItems = $('#datagridForAccessoryInventory').datagrid(
 				'getChecked');
-		var data = parent.$('#datagridForMaterialBillDetail').datagrid(
+		var data = parent.$('#datagridForAccessoryBillDetail').datagrid(
 				'getData');
 		if (data.rows.length == 0) {
 			data = selectedItems;
@@ -155,18 +155,18 @@
 				data.rows.push(selectedItems[j]);
 			}
 		}
-		parent.$('#datagridForMaterialBillDetail').datagrid('loadData', data);
-		closeChooseMaterialInventoryUIForMaterialBill();
+		parent.$('#datagridForAccessoryBillDetail').datagrid('loadData', data);
+		closeChooseAccessoryInventoryUIForAccessoryBill();
 	}
 </script>
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit:true">
 		<div region="north" fit="true" border="false">
-			<table id="datagridForMaterialInventory"
+			<table id="datagridForAccessoryInventory"
 				class="easyui-datagrid">
 			</table>
-			<div id="toolbarForMaterialInventory">
+			<div id="toolbarForAccessoryInventory">
 				<table style="width: 100%">
 					<tr>
 						<td><a class="easyui-linkbutton"
@@ -174,14 +174,14 @@
 							onclick="choose()">选择</a> <a
 							class="easyui-linkbutton" iconCls="icon-cancel"
 							href="javascript:void(0)"
-							onclick="closeChooseMaterialInventoryUIForTemplate()">关闭</a></td>
+							onclick="closeChooseAccessoryInventoryUIForTemplate()">关闭</a></td>
 						<td align="right"><input
-							id="keyWordForMaterialInventoryTextInput"
+							id="keyWordForAccessoryInventoryTextInput"
 							class="easyui-textbox"
 							data-options="prompt:'工器具名称',validType:'length[0,25]'"
 							style="width: 200px"> <a href="#"
 							class="easyui-linkbutton" iconCls="icon-search"
-							onclick="queryMaterialInventoryPagesForSearch()">查询</a>
+							onclick="queryAccessoryInventoryPagesForSearch()">查询</a>
 					</tr>
 					<tr>
 						<td>类型: <input id="baseToolTypeComboBox"
@@ -189,7 +189,7 @@
 							panelHeight : 'auto',	prompt : '工器具类型',
 							url : 'queryBaseToolTypeDropList.do',
 							onChange : function(newValue, oldValue){
-								queryMaterialInventorys();
+								queryAccessoryInventorys();
 							}
 							"
 							class="easyui-combobox" style="width: 200px;"></td>
@@ -198,7 +198,7 @@
 							panelHeight : 'auto',	prompt : '厂家',
 							url : 'queryBaseToolManufacturerDropList.do',
 							onChange : function(newValue, oldValue){
-								queryMaterialInventorys();
+								queryAccessoryInventorys();
 							}
 							"
 							class="easyui-combobox" style="width: 200px;"></td>

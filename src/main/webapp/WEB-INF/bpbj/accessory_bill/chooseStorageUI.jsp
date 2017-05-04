@@ -1,13 +1,12 @@
-<%@ page language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type"
-	content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -25,8 +24,7 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript"
-	src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//页面加载完
 	$(document).ready(
@@ -87,8 +85,8 @@
 		});
 	}
 	//关闭编辑窗口
-	function closeChooseStorageUIForMaterialBill() {
-		parent.closeChooseStorageUIForMaterialBill();
+	function closeChooseStorageUIForAccessoryBill() {
+		parent.closeChooseStorageUIForAccessoryBill();
 	}
 
 	function choose() {
@@ -108,7 +106,7 @@
 			text : selectedItems[0].STORE_NAME,
 			width : 200
 		});
-		closeChooseStorageUIForMaterialBill();
+		closeChooseStorageUIForAccessoryBill();
 	}
 </script>
 </head>
@@ -120,14 +118,12 @@
 			<div id="toolbarForStorage">
 				<table style="width: 100%">
 					<tr>
-						<td><a class="easyui-linkbutton"
-							iconCls="icon-ok" href="javascript:void(0)"
-							onclick="choose()">选择</a> <a
+						<td><a class="easyui-linkbutton" iconCls="icon-ok"
+							href="javascript:void(0)" onclick="choose()">选择</a> <a
 							class="easyui-linkbutton" iconCls="icon-cancel"
 							href="javascript:void(0)"
-							onclick="closeChooseStorageUIForTemplate()">关闭</a></td>
-						<td align="right"><input
-							id="keyWordForStorageTextInput"
+							onclick="closeChooseStorageUIForAccessoryBill()">关闭</a></td>
+						<td align="right"><input id="keyWordForStorageTextInput"
 							class="easyui-textbox"
 							data-options="prompt:'仓库名称',validType:'length[0,25]'"
 							style="width: 200px"> <a href="#"

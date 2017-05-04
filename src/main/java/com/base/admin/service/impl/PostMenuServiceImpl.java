@@ -1,5 +1,7 @@
 package com.base.admin.service.impl;
 
+import java.sql.Clob;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +22,7 @@ import com.base.util.BaseUtil;
 import net.sf.json.JSONArray;
 
 @Service
-public class PostMenuServiceImpl
-		implements IPostMenuService {
+public class PostMenuServiceImpl implements IPostMenuService {
 
 	@Autowired
 	private IPostService postService;
@@ -36,17 +37,14 @@ public class PostMenuServiceImpl
 	private IMenuService menuService;
 
 	@Override
-	public Map<String, Object> selectPostsForPage(
-			Post post) {
+	public Map<String, Object> selectPostsForPage(Post post) {
 		return postService.selectPostsForPage(post);
 	}
 
 	@Override
-	public Map<String, Object> deleteByPrimaryKeys(
-			PostMenu postMenu) {
+	public Map<String, Object> deleteByPrimaryKeys(PostMenu postMenu) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = postMenuMapper
-				.deleteByPrimaryKeys(postMenu);
+		int bool = postMenuMapper.deleteByPrimaryKeys(postMenu);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -70,8 +68,7 @@ public class PostMenuServiceImpl
 			PostMenu temp = new PostMenu();
 			temp.setPostId(postMenu.getPostId());
 			temp.setMenuId(BaseUtil.strToLong(menuId));
-			if (postMenuMapper
-					.selectCountByPrimaryKey(temp) == 0) {
+			if (postMenuMapper.selectCountByPrimaryKey(temp) == 0) {
 				result = postMenuMapper.insert(temp);
 			}
 		}
@@ -92,20 +89,33 @@ public class PostMenuServiceImpl
 	}
 
 	@Override
-	public String querySelectedMenusForTree(
-			PostMenu postMenu) {
-		List<Map<String, Object>> menus = postMenuMapper
-				.selectSelectedMenusForTree(postMenu);
+	public String querySelectedMenusForTree(PostMenu postMenu) throws SQLException {
+		List<Map<String, Object>> menus = postMenuMapper.selectSelectedMenusForTree(postMenu);
+		for (Map<String, Object> item : menus) {
+			if (item.get("VIEW_MENU_UP_INNER_CODE") instanceof Clob) {
+				Clob clob = (Clob) item.get("VIEW_MENU_UP_INNER_CODE");
+				String viewMenuUpInnerCode = "";
+				if (clob != null) {
+					viewMenuUpInnerCode = clob.getSubString((long) 1, (int) clob.length());
+					item.put("VIEW_MENU_UP_INNER_CODE", viewMenuUpInnerCode);
+				}
+			}
+			if (item.get("VIEW_MENU_INNER_CODE") instanceof Clob) {
+				Clob clob = (Clob) item.get("VIEW_MENU_INNER_CODE");
+				String viewMenuInnerCode = "";
+				if (clob != null) {
+					viewMenuInnerCode = clob.getSubString((long) 1, (int) clob.length());
+					item.put("VIEW_MENU_INNER_CODE", viewMenuInnerCode);
+				}
+			}
+		}
 		JSONArray menuArr = JSONArray.fromObject(menus);
-		String tree = BaseUtil
-				.list2Tree(menuArr, -1, "id", "up_menu_id",
-						"children")
-				.toString().toLowerCase();
+		String tree = BaseUtil.list2Tree(menuArr, -1, "id", "up_menu_id", "children").toString().toLowerCase();
 		return tree;
 	}
 
 	@Override
-	public String queryUnSelectedMenusForTree() {
+	public String queryUnSelectedMenusForTree() throws SQLException {
 		return menuService.queryMenusForTree(new Menu());
 	}
 

@@ -90,13 +90,13 @@
 						});
 	}
 	//关闭编辑窗口
-	function closeChoosePositionUIForMaterialBill() {
-		parent.closeChoosePositionUIForMaterialBill();
+	function closeChoosePositionUIForAccessoryBill() {
+		parent.closeChoosePositionUIForAccessoryBill();
 	}
 
 	function choose() {
 		var selectedItems = $('#datagridForPosition').datagrid('getChecked');
-		var data = parent.$('#datagridForMaterialBillDetail').datagrid(
+		var data = parent.$('#datagridForAccessoryBillDetail').datagrid(
 				'getData');
 		if (selectedItems.length == 0) {
 			alert("请选择仓位");
@@ -113,9 +113,9 @@
 				break;
 			}
 		}
-		parent.$('#datagridForMaterialBillDetail').datagrid('loadData', data);
-		parent.$('#datagridForMaterialBillDetail').datagrid('unselectAll');
-		closeChoosePositionUIForMaterialBill();
+		parent.$('#datagridForAccessoryBillDetail').datagrid('loadData', data);
+		parent.$('#datagridForAccessoryBillDetail').datagrid('unselectAll');
+		closeChoosePositionUIForAccessoryBill();
 	}
 </script>
 </head>

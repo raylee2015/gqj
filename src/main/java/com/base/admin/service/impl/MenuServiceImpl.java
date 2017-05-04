@@ -1,5 +1,7 @@
 package com.base.admin.service.impl;
 
+import java.sql.Clob;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,12 +54,9 @@ public class MenuServiceImpl implements IMenuService {
 	}
 
 	@Override
-	public Map<String, Object> queryMenusForPage(
-			Menu menu) {
-		List<Map<String, Object>> menus = menuMapper
-				.queryMenusForPage(menu);
-		int count = menuMapper
-				.queryCountOfMenusForPage(menu);
+	public Map<String, Object> queryMenusForPage(Menu menu) {
+		List<Map<String, Object>> menus = menuMapper.queryMenusForPage(menu);
+		int count = menuMapper.queryCountOfMenusForPage(menu);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", menus);
 		map.put("total", count);
@@ -65,34 +64,64 @@ public class MenuServiceImpl implements IMenuService {
 	}
 
 	@Override
-	public Map<String, Object> queryMenusForObject(
-			Menu menu) {
+	public Map<String, Object> queryMenusForObject(Menu menu) {
 		return menuMapper.queryMenusForObject(menu);
 	}
 
 	@Override
-	public List<Map<String, Object>> queryMenusForList(
-			User user) {
-		return menuMapper.queryMenusForList(user);
+	public List<Map<String, Object>> queryMenusForList(User user) throws SQLException {
+		List<Map<String, Object>> menus = menuMapper.queryMenusForList(user);
+		for (Map<String, Object> item : menus) {
+			if (item.get("VIEW_MENU_UP_INNER_CODE") instanceof Clob) {
+				Clob clob = (Clob) item.get("VIEW_MENU_UP_INNER_CODE");
+				String viewMenuUpInnerCode = "";
+				if (clob != null) {
+					viewMenuUpInnerCode = clob.getSubString((long) 1, (int) clob.length());
+					item.put("VIEW_MENU_UP_INNER_CODE", viewMenuUpInnerCode);
+				}
+			}
+			if (item.get("VIEW_MENU_INNER_CODE") instanceof Clob) {
+				Clob clob = (Clob) item.get("VIEW_MENU_INNER_CODE");
+				String viewMenuInnerCode = "";
+				if (clob != null) {
+					viewMenuInnerCode = clob.getSubString((long) 1, (int) clob.length());
+					item.put("VIEW_MENU_INNER_CODE", viewMenuInnerCode);
+				}
+			}
+		}
+		return menus;
 	}
 
 	@Override
-	public String queryMenusForTree(Menu menu) {
-		List<Map<Object, Object>> menus = menuMapper
-				.queryMenusForTree(menu);
+	public String queryMenusForTree(Menu menu) throws SQLException {
+		List<Map<String, Object>> menus = menuMapper.queryMenusForTree(menu);
+		for (Map<String, Object> item : menus) {
+			if (item.get("VIEW_MENU_UP_INNER_CODE") instanceof Clob) {
+				Clob clob = (Clob) item.get("VIEW_MENU_UP_INNER_CODE");
+				String viewMenuUpInnerCode = "";
+				if (clob != null) {
+					viewMenuUpInnerCode = clob.getSubString((long) 1, (int) clob.length());
+					item.put("VIEW_MENU_UP_INNER_CODE", viewMenuUpInnerCode);
+				}
+			}
+			if (item.get("VIEW_MENU_INNER_CODE") instanceof Clob) {
+				Clob clob = (Clob) item.get("VIEW_MENU_INNER_CODE");
+				String viewMenuInnerCode = "";
+				if (clob != null) {
+					viewMenuInnerCode = clob.getSubString((long) 1, (int) clob.length());
+					item.put("VIEW_MENU_INNER_CODE", viewMenuInnerCode);
+				}
+			}
+		}
 		JSONArray menuArr = JSONArray.fromObject(menus);
-		String tree = BaseUtil
-				.list2Tree(menuArr, -1, "id", "up_menu_id",
-						"children")
-				.toString().toLowerCase();
+		String tree = BaseUtil.list2Tree(menuArr, -1, "id", "up_menu_id", "children").toString().toLowerCase();
 		return tree;
 	}
 
 	@Override
 	public Map<String, Object> updateMenu(Menu menu) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = menuMapper
-				.updateByPrimaryKeySelective(menu);
+		int bool = menuMapper.updateByPrimaryKeySelective(menu);
 		bool = menuMapper.updataInnerData();
 		if (bool == 0) {
 			map.put("success", false);

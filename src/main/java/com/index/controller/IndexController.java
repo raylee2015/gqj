@@ -1,6 +1,5 @@
 package com.index.controller;
 
-import java.sql.Clob;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,32 +65,6 @@ public class IndexController {
 				.getAttribute("user");
 		List<Map<String, Object>> menus = menuService
 				.queryMenusForList(user);
-		for (Map<String, Object> item : menus) {
-			if (item.get(
-					"VIEW_MENU_UP_INNER_CODE") instanceof Clob) {
-				Clob clob = (Clob) item
-						.get("VIEW_MENU_UP_INNER_CODE");
-				String viewMenuUpInnerCode = "";
-				if (clob != null) {
-					viewMenuUpInnerCode = clob.getSubString(
-							(long) 1, (int) clob.length());
-					item.put("VIEW_MENU_UP_INNER_CODE",
-							viewMenuUpInnerCode);
-				}
-			}
-			if (item.get(
-					"VIEW_MENU_INNER_CODE") instanceof Clob) {
-				Clob clob = (Clob) item
-						.get("VIEW_MENU_INNER_CODE");
-				String viewMenuInnerCode = "";
-				if (clob != null) {
-					viewMenuInnerCode = clob.getSubString(
-							(long) 1, (int) clob.length());
-					item.put("VIEW_MENU_INNER_CODE",
-							viewMenuInnerCode);
-				}
-			}
-		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", menus);
 		return map;

@@ -87,8 +87,8 @@
 		});
 	}
 	//关闭编辑窗口
-	function closeChooseDeptUIForMaterialBill() {
-		parent.closeChooseDeptUIForMaterialBill();
+	function closeChooseDeptUIForAccessoryBill() {
+		parent.closeChooseDeptUIForAccessoryBill();
 	}
 
 	function choose() {
@@ -108,7 +108,7 @@
 			text : selectedItems[0].DEPT_NAME,
 			width : 200
 		});
-		closeChooseDeptUIForMaterialBill();
+		closeChooseDeptUIForAccessoryBill();
 	}
 </script>
 </head>
