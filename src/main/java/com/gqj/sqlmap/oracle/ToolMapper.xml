@@ -70,6 +70,9 @@
 			<if test="batchId != null">
 				AND BATCH_ID=#{batchId}
 			</if>
+			<if test="toolDeptId != null">
+				AND TOOL_DEPT_ID=#{toolDeptId}
+			</if>
 		</where>
 		order by TOOL_ID
 	</select>

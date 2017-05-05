@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gqj.dao.CheckBillDetailMapper">
+	<sql id="Base_Column_List">
+		DETAIL_ID,BILL_ID,BASE_TOOL_CODE,BASE_TOOL_STATUS,
+		BASE_TOOL_ID,TOOL_DEMAND_ID,MAN_ID,BASE_TOOL_MODEL,
+		BASE_TOOL_SPEC,BASE_TOOL_REMARK,BASE_TOOL_NAME,
+		BASE_TOOL_EARTH_WIRE,MAN_NAME,BASE_TOOL_STATUS_NAME,
+		BASE_TOOL_NORMAL_FLAG,BASE_TOOL_NORMAL_FLAG_NAME
+	</sql>
+	<select id="selectCheckBillDetailsForPage" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from
+		VIEW_GQJ_CHECK_BILL_DETAIL
+		<where>
+			<if test="keyWord != null">
+				AND BASE_TOOL_CODE like '%${keyWord}%'
+			</if>
+			<if test="billId != null">
+				AND BILL_ID = #{billId}
+			</if>
+			<if test="baseToolStatus != null and baseToolStatus !=''">
+				AND BASE_TOOL_STATUS = #{baseToolStatus}
+			</if>
+			<if test="baseToolNormalFlag != null and baseToolNormalFlag !=''">
+				AND BASE_TOOL_NORMAL_FLAG = #{baseToolNormalFlag}
+			</if>
+		</where>
+		order by DETAIL_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfCheckBillDetailsForPage" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+		select count(*)
+		from
+		VIEW_GQJ_CHECK_BILL_DETAIL
+		<where>
+			<if test="keyWord != null">
+				AND BASE_TOOL_CODE like '%${keyWord}%'
+			</if>
+			<if test="billId != null">
+				AND BILL_ID = #{billId}
+			</if>
+			<if test="baseToolStatus != null and baseToolStatus !=''">
+				AND BASE_TOOL_STATUS = #{baseToolStatus}
+			</if>
+			<if test="baseToolNormalFlag != null and baseToolNormalFlag !=''">
+				AND BASE_TOOL_NORMAL_FLAG = #{baseToolNormalFlag}
+			</if>
+		</where>
+		order by DETAIL_ID
+	</select>
+	<select id="selectCheckBillDetailsForList" parameterType="com.gqj.entity.CheckBill"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from
+		VIEW_GQJ_CHECK_BILL_DETAIL
+		<where>
+			<if test="billId != null">
+				AND BILL_ID = #{billId}
+			</if>
+			<if test="ids != null">
+				AND BILL_ID in (${ids})
+			</if>
+		</where>
+		order by DETAIL_ID
+	</select>
+	<delete id="deleteByCheckBill" parameterType="com.gqj.entity.CheckBill">
+		delete from
+		GQJ_CHECK_BILL_DETAIL
+		where BILL_ID in (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.gqj.entity.CheckBillDetail">
+		insert into GQJ_CHECK_BILL_DETAIL
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="detailId != null">
+				DETAIL_ID,
+			</if>
+			<if test="baseToolId != null">
+				BASE_TOOL_ID,
+			</if>
+			<if test="billId != null">
+				BILL_ID,
+			</if>
+			<if test="baseToolCode != null">
+				BASE_TOOL_CODE,
+			</if>
+			<if test="baseToolStatus != null">
+				BASE_TOOL_STATUS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="detailId != null">
+				GQJ_CHECK_BILL_DETAIL_SEQ.nextval,
+			</if>
+			<if test="baseToolId != null">
+				#{baseToolId,jdbcType=DECIMAL},
+			</if>
+			<if test="billId != null">
+				#{billId,jdbcType=DECIMAL},
+			</if>
+			<if test="baseToolCode != null">
+				#{baseToolCode,jdbcType=VARCHAR},
+			</if>
+			<if test="baseToolStatus != null">
+				#{baseToolStatus,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.CheckBillDetail">
+		update GQJ_CHECK_BILL_DETAIL
+		<set>
+			<if test="baseToolRemark != null">
+				BASE_TOOL_REMARK = #{baseToolRemark,jdbcType=DECIMAL},
+			</if>
+			<if test="baseToolNormalFlag != null">
+				BASE_TOOL_NORMAL_FLAG = #{baseToolNormalFlag,jdbcType=DECIMAL},
+			</if>
+			<if test="baseToolStatus != null">
+				BASE_TOOL_STATUS = #{baseToolStatus,jdbcType=DECIMAL},
+			</if>
+		</set>
+		<where>
+			<if test="baseToolCode != null">
+				AND BASE_TOOL_CODE=#{baseToolCode}
+			</if>
+		</where>
+	</update>
+</mapper>

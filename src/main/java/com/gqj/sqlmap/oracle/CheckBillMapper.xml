@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gqj.dao.CheckBillMapper">
+	<sql id="Base_Column_List">
+		BILL_ID, BILL_CODE,
+		BILL_CREATE_USER_ID, BILL_DEPT_ID,
+		BILL_CREATE_TIME,BILL_STATUS,		
+		BILL_CREATE_USER_NAME,
+		BILL_DEPT_NAME,BILL_STATUS_NAME
+	</sql>
+	<select id="selectCheckBillForObject" parameterType="com.gqj.entity.CheckBill"
+		resultType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_CHECK_BILL
+		<where>
+			<if test="billId != null">
+				AND BILL_ID = #{billId}
+			</if>
+		</where>
+		order by BILL_ID DESC
+	</select>
+	<select id="selectCheckBillsForPage" parameterType="com.gqj.entity.CheckBill"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_GQJ_CHECK_BILL
+		<where>
+			<if test="keyWord != null">
+				AND BILL_CODE like '%${keyWord}%'
+			</if>
+			<if test="billDeptId != null">
+				AND BILL_DEPT_ID =#{billDeptId}
+			</if>
+		</where>
+		order by BILL_ID DESC
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfCheckBillsForPage" parameterType="com.gqj.entity.CheckBill"
+		resultType="java.lang.Integer">
+		select count(t.BILL_ID) from VIEW_GQJ_CHECK_BILL t
+		<where>
+			<if test="keyWord != null">
+				AND BILL_CODE like '%${keyWord}%'
+			</if>
+			<if test="billDeptId != null">
+				AND BILL_DEPT_ID =#{billDeptId}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="com.gqj.entity.CheckBill">
+		delete from
+		GQJ_CHECK_BILL
+		where BILL_ID in (${ids})
+	</delete>
+	<insert id="insertSelective" parameterType="com.gqj.entity.CheckBill">
+		<selectKey resultType="java.lang.Long" order="BEFORE"
+			keyProperty="billId">
+			select GQJ_CHECK_BILL_SEQ.nextval from dual
+		</selectKey>
+		insert into GQJ_CHECK_BILL
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="billId != null">
+				BILL_ID,
+			</if>
+			<if test="billCode != null">
+				BILL_CODE,
+			</if>
+			<if test="billCreateUserId != null">
+				BILL_CREATE_USER_ID,
+			</if>
+			<if test="billDeptId != null">
+				BILL_DEPT_ID,
+			</if>
+			<if test="billCreateTime != null">
+				BILL_CREATE_TIME,
+			</if>
+			<if test="billStatus != null">
+				BILL_STATUS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="billId != null">
+				#{billId},
+			</if>
+			<if test="billCode != null">
+				#{billCode,jdbcType=VARCHAR},
+			</if>
+			<if test="billCreateUserId != null">
+				#{billCreateUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="billDeptId != null">
+				#{billDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="billCreateTime != null">
+				#{billCreateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="billStatus != null">
+				#{billStatus,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.gqj.entity.CheckBill">
+		update GQJ_CHECK_BILL
+		<set>
+			<if test="billCode != null">
+				BILL_CODE = #{billCode,jdbcType=VARCHAR},
+			</if>
+			<if test="billCreateUserId != null">
+				BILL_CREATE_USER_ID =
+				#{billCreateUserId,jdbcType=DECIMAL},
+			</if>
+			<if test="billDeptId != null">
+				BILL_DEPT_ID = #{billDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="billCreateTime != null">
+				BILL_CREATE_TIME = #{billCreateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="billStatus != null">
+				BILL_STATUS = #{billStatus,jdbcType=DECIMAL},
+			</if>
+		</set>
+		<where>
+			<if test="billId != null">
+				AND BILL_ID =#{billId}
+			</if>
+			<if test="ids != null">
+				AND BILL_ID in (${ids})
+			</if>
+		</where>
+	</update>
+</mapper>
