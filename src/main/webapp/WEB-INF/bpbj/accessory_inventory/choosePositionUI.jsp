@@ -90,8 +90,8 @@
 						});
 	}
 	//关闭编辑窗口
-	function closeChoosePositionUIForMaterialBill() {
-		parent.closeChoosePositionUIForMaterialBill();
+	function closeChoosePositionUIForAccessoryBill() {
+		parent.closeChoosePositionUIForAccessoryBill();
 	}
 
 	function choose() {
@@ -110,8 +110,8 @@
 			text : selectedItems[0].POS_NAME,
 			width : 200
 		});
-		parent.queryMaterialInventorys();
-		closeChoosePositionUIForMaterialBill();
+		parent.queryAccessoryInventorys();
+		closeChoosePositionUIForAccessoryBill();
 	}
 </script>
 </head>
@@ -135,7 +135,7 @@
 							onclick="choose()">选择</a> <a
 							class="easyui-linkbutton" iconCls="icon-cancel"
 							href="javascript:void(0)"
-							onclick="closeChoosePositionUIForMaterialBill()">关闭</a></td>
+							onclick="closeChoosePositionUIForAccessoryBill()">关闭</a></td>
 						<td align="right"><input
 							id="keyWordForPositionTextInput"
 							class="easyui-textbox"

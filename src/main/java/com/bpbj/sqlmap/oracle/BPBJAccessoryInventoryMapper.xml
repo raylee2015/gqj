@@ -52,7 +52,10 @@
 			<if test="baseToolSpec != null">
 				AND BASE_TOOL_SPEC like '%${baseToolSpec}%'
 			</if>
-			<if test="storeDeptId != null">
+			<if test="baseToolStation != null">
+				AND BASE_TOOL_STATION like '%${baseToolStation}%'
+			</if>
+			<if test="storeDeptId != null and storeDeptId != ''">
 				and STORE_DEPT_ID =
 				#{storeDeptId,jdbcType=DECIMAL}
 			</if>
@@ -88,7 +91,10 @@
 			<if test="baseToolSpec != null">
 				AND BASE_TOOL_SPEC like '%${baseToolSpec}%'
 			</if>
-			<if test="storeDeptId != null">
+			<if test="baseToolStation != null">
+				AND BASE_TOOL_STATION like '%${baseToolStation}%'
+			</if>
+			<if test="storeDeptId != null and storeDeptId != ''">
 				and STORE_DEPT_ID =
 				#{storeDeptId,jdbcType=DECIMAL}
 			</if>

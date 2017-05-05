@@ -14,7 +14,7 @@
 		DETAIL_ID,BILL_ID,DETAIL_BILL_AMOUNT,DETAIL_REMARK,POS_ID,
 		BASE_TOOL_ID,MAN_ID,BASE_TOOL_TYPE,BASE_TOOL_CODE,BASE_TOOL_MODEL,
 		BASE_TOOL_SPEC,BASE_TOOL_REMARK,BASE_TOOL_NAME,BASE_MANUFACTURER_NAME,
-		POS_NAME
+		POS_NAME,STORE_ID,STORE_NAME,BILL_CODE
 	</sql>
 	<select id="selectAccessoryBillDetailsForPage" parameterType="java.util.HashMap"
 		resultType="java.util.HashMap">
@@ -26,6 +26,9 @@
 		<where>
 			<if test="billId != null">
 				AND BILL_ID = #{billId}
+			</if>
+			<if test="baseToolId != null">
+				AND BASE_TOOL_ID = #{baseToolId}
 			</if>
 		</where>
 		order by DETAIL_ID
@@ -41,6 +44,9 @@
 		<where>
 			<if test="billId != null">
 				AND BILL_ID = #{billId}
+			</if>
+			<if test="baseToolId != null">
+				AND BASE_TOOL_ID = #{baseToolId}
 			</if>
 		</where>
 		order by DETAIL_ID

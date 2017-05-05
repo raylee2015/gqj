@@ -87,8 +87,8 @@
 		});
 	}
 	//关闭编辑窗口
-	function closeChooseStorageUIForMaterialBill() {
-		parent.closeChooseStorageUIForMaterialBill();
+	function closeChooseStorageUIForAccessoryBill() {
+		parent.closeChooseStorageUIForAccessoryBill();
 	}
 
 	function choose() {
@@ -108,8 +108,8 @@
 			text : selectedItems[0].STORE_NAME,
 			width : 200
 		});
-		parent.queryMaterialInventorys();
-		closeChooseStorageUIForMaterialBill();
+		parent.queryAccessoryInventorys();
+		closeChooseStorageUIForAccessoryBill();
 	}
 </script>
 </head>
@@ -126,7 +126,7 @@
 							onclick="choose()">选择</a> <a
 							class="easyui-linkbutton" iconCls="icon-cancel"
 							href="javascript:void(0)"
-							onclick="closeChooseStorageUIForMaterialBill()">关闭</a></td>
+							onclick="closeChooseStorageUIForAccessoryBill()">关闭</a></td>
 						<td align="right"><input
 							id="keyWordForStorageTextInput"
 							class="easyui-textbox"

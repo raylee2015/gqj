@@ -31,60 +31,60 @@
 	src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//关闭选择仓库窗口
-	function closeChooseStorageUIForMaterialBill() {
-		closeUI('chooseStorageUIForMaterialBill');
+	function closeChooseStorageUIForAccessoryBill() {
+		closeUI('chooseStorageUIForAccessoryBill');
 	}
 
 	//打开选择仓库窗口
-	function openChooseStorageUIForMaterialBill() {
-		createModalDialog("chooseStorageUIForMaterialBill",
+	function openChooseStorageUIForAccessoryBill() {
+		createModalDialog("chooseStorageUIForAccessoryBill",
 				"openChooseStorageUI.do?opType=add", "选择仓库", 500, 500);
-		openUI('chooseStorageUIForMaterialBill');
+		openUI('chooseStorageUIForAccessoryBill');
 	}
 
 	//关闭选择仓位窗口
-	function closeChoosePositionUIForMaterialBill() {
-		closeUI('choosePositionUIForMaterialBill');
+	function closeChoosePositionUIForAccessoryBill() {
+		closeUI('choosePositionUIForAccessoryBill');
 	}
 
 	//打开选择仓位窗口
-	function openChoosePositionUIForMaterialBill(rowIndex, storeId) {
+	function openChoosePositionUIForAccessoryBill(rowIndex, storeId) {
 		var storeId = getTextBoxValue('storageIdTextInput');
 		if (storeId == null || storeId == '') {
 			alert("请选择仓库");
 			return;
 		}
-		createModalDialog("choosePositionUIForMaterialBill",
+		createModalDialog("choosePositionUIForAccessoryBill",
 				"openChoosePositionUI.do?rowIndex=" + rowIndex + "&STORE_ID="
 						+ storeId, "选择仓库", 500, 500);
-		openUI('choosePositionUIForMaterialBill');
+		openUI('choosePositionUIForAccessoryBill');
 	}
 
 	//用在点击查询按钮的时候
-	function queryMaterialInventoryPagesForSearch() {
-		queryMaterialInventorys();
+	function queryAccessoryInventoryPagesForSearch() {
+		queryAccessoryInventorys();
 	}
 
 	//查询
-	function queryMaterialInventorys() {
+	function queryAccessoryInventorys() {
 		var params = {
-			BASE_TOOL_TYPE_ID : getComboBoxValue('baseToolTypeComboBox'),
-			MANUFACTURER_ID : getComboBoxValue('baseToolManufacturerComboBox'),
+			MAN_ID : getComboBoxValue('baseToolManufacturerComboBox'),
 			BASE_TOOL_MODEL : getTextBoxValue('baseToolModelTextBox'),
 			BASE_TOOL_SPEC : getTextBoxValue('baseToolSpecTextBox'),
+			BASE_TOOL_STATION : getTextBoxValue('baseToolStationTextBox'),
 			POS_ID : getTextBoxValue('posIdTextInput'),
 			STORE_ID : getTextBoxValue('storageIdTextInput'),
-			keyWord : getTextBoxValue('keyWordForMaterialInventoryTextInput'),
+			keyWord : getTextBoxValue('keyWordForAccessoryInventoryTextInput'),
 			page : 1,
-			rows : getPageSizeOfDataGrid('datagridForMaterialInventory')
+			rows : getPageSizeOfDataGrid('datagridForAccessoryInventory')
 		};
-		query(params, 'queryMaterialInventorysPage.do',
-				successFunctionForQueryMaterialInventorys);
+		query(params, 'queryAccessoryInventorysPage.do',
+				successFunctionForQueryAccessoryInventorys);
 	}
 
 	//回调函数，查询成功后调用
-	function successFunctionForQueryMaterialInventorys(result) {
-		dataGridLoadData('datagridForMaterialInventory', result);
+	function successFunctionForQueryAccessoryInventorys(result) {
+		dataGridLoadData('datagridForAccessoryInventory', result);
 	}
 
 	//页面加载完
@@ -92,33 +92,27 @@
 			function() {
 				closeCache();
 				registerKeyPressForTextInput(
-						'keyWordForMaterialInventoryTextInput',
-						queryMaterialInventoryPagesForSearch);
+						'keyWordForAccessoryInventoryTextInput',
+						queryAccessoryInventoryPagesForSearch);
 				registerKeyPressForTextInput('baseToolSpecTextBox',
-						queryMaterialInventoryPagesForSearch);
+						queryAccessoryInventoryPagesForSearch);
 				registerKeyPressForTextInput('baseToolModelTextBox',
-						queryMaterialInventoryPagesForSearch);
-				initDataGridForMaterialInventory();
-				initDataGridForMaterialBillDetail();
-
-				var deptType = getTextBoxValue('deptTypeTextInput');
-				if (deptType == 'ALL') {
-					$('#datagridForMaterialInventory').datagrid('showColumn',
-							'DEPT_NAME');
-				}
+						queryAccessoryInventoryPagesForSearch);
+				registerKeyPressForTextInput('baseToolStationTextBox',
+						queryAccessoryInventoryPagesForSearch);
+				initDataGridForAccessoryInventory();
+				initDataGridForAccessoryBillDetail();
 			});
 
 	//初始化列表元素
-	function initDataGridForMaterialInventory() {
-		$('#datagridForMaterialInventory')
+	function initDataGridForAccessoryInventory() {
+		$('#datagridForAccessoryInventory')
 				.datagrid(
 						{
-							//url : 'queryMaterialInventorysPage.do?DEPT_TYPE='
-							//		+ getTextBoxValue('deptTypeTextInput'),
-							url : 'data.json',
-							idField : 'ACCESSORY_ID',
+							url : 'queryAccessoryInventorysPage.do',
+							idField : 'BASE_TOOL_ID',
 							rownumbers : true,
-							toolbar : '#toolbarForMaterialInventory',
+							toolbar : '#toolbarForAccessoryInventory',
 							pagination : true,
 							pageSize : 30,
 							pageNumber : 1,
@@ -139,7 +133,7 @@
 											return btn;
 										}
 									}, {
-										field : 'ACCESSORY_NAME',
+										field : 'BASE_TOOL_NAME',
 										title : '名称',
 										width : 150,
 									}, {
@@ -147,19 +141,19 @@
 										title : '厂家',
 										width : 150,
 									}, {
-										field : 'ACCESSORY_MODEL',
+										field : 'BASE_TOOL_MODEL',
 										title : '装置型号',
 										width : 150,
 									}, {
-										field : 'ACCESSORY_SPEC',
+										field : 'BASE_TOOL_SPEC',
 										title : '具体参数',
 										width : 150,
 									}, {
-										field : 'ACCESSORY_UNIT',
+										field : 'BASE_TOOL_UNIT',
 										title : '单位',
 										width : 100,
 									}, {
-										field : 'ACCESSORY_STATION',
+										field : 'BASE_TOOL_STATION',
 										title : '适用站',
 										width : 150,
 									}, {
@@ -187,11 +181,11 @@
 							onBeforeLoad : function(param) {
 								param.POS_ID = getTextBoxValue('posIdTextInput');
 								param.STORE_ID = getTextBoxValue('storageIdTextInput');
-								param.keyWord = getTextBoxValue('keyWordForMaterialInventoryTextInput');
-								param.BASE_TOOL_TYPE_ID = getComboBoxValue('baseToolTypeComboBox');
-								param.MANUFACTURER_ID = getComboBoxValue('baseToolManufacturerComboBox');
+								param.keyWord = getTextBoxValue('keyWordForAccessoryInventoryTextInput');
+								param.MAN_ID = getComboBoxValue('baseToolManufacturerComboBox');
 								param.BASE_TOOL_MODEL = getTextBoxValue('baseToolModelTextBox');
 								param.BASE_TOOL_SPEC = getTextBoxValue('baseToolSpecTextBox');
+								param.BASE_TOOL_STATION = getTextBoxValue('baseToolStationTextBox');
 							},
 							onLoadError : function() {
 								errorFunctionForQuery();
@@ -200,17 +194,16 @@
 	}
 
 	//初始化列表元素
-	function initDataGridForMaterialBillDetail() {
-		$('#datagridForMaterialBillDetail').datagrid({
+	function initDataGridForAccessoryBillDetail() {
+		$('#datagridForAccessoryBillDetail').datagrid({
 			idField : 'DETAIL_ID',
 			rownumbers : true,
-			toolbar : '#toolbarForMaterialBillDetail',
+			toolbar : '#toolbarForAccessoryBillDetail',
 			pageSize : 30,
 			pageNumber : 1,
 			pagination : true,
 			checkOnSelect : false,
 			fit : true,
-			url:'data2.json',
 			method : 'get',
 			columns : [ [ {
 				field : 'BILL_CODE',
@@ -240,40 +233,40 @@
 	//编辑界面
 	function toDetail(rowIndex) {
 		rowIndexOfDataGrid = rowIndex;
-		var rowData = getRowDataOfSelfDataGrid('datagridForMaterialInventory',
+		var rowData = getRowDataOfSelfDataGrid('datagridForAccessoryInventory',
 				rowIndex);
 		setTextBoxText('baseToolNameTextInput', rowData.BASE_TOOL_NAME);
-		//queryMaterialBillDetailsForPage(rowData);
-		$('#materialInventoryListUI').panel('collapse');
-		$('#materialBillDetailUI').panel('expand');
+		queryAccessoryBillDetailsForPage(rowData);
+		$('#accessoryInventoryListUI').panel('collapse');
+		$('#accessoryBillDetailUI').panel('expand');
 	}
 
 	//根据模板id查询明细
-	function queryMaterialBillDetailsForPage(rowData) {
+	function queryAccessoryBillDetailsForPage(rowData) {
 		var params = {
 			BASE_TOOL_ID : rowData.BASE_TOOL_ID,
 			STORE_ID : rowData.STORE_ID,
 			POS_ID : rowData.POS_ID,
 			page : 1,
-			rows : getPageSizeOfDataGrid('datagridForMaterialBillDetail')
+			rows : getPageSizeOfDataGrid('datagridForAccessoryBillDetail')
 		};
-		query(params, 'queryMaterialBillDetailsForPage.do',
-				successFunctionForQueryMaterialBillDetails);
+		query(params, 'queryAccessoryBillDetailsForPage.do',
+				successFunctionForQueryAccessoryBillDetails);
 	}
 
 	//回调函数，查询成功后调用
-	function successFunctionForQueryMaterialBillDetails(result) {
-		dataGridLoadData('datagridForMaterialBillDetail', result);
+	function successFunctionForQueryAccessoryBillDetails(result) {
+		dataGridLoadData('datagridForAccessoryBillDetail', result);
 	}
 
 	//列表界面
 	function toList() {
-		$('#materialInventoryListUI').panel('expand');
-		$('#materialBillDetailUI').panel('collapse');
+		$('#accessoryInventoryListUI').panel('expand');
+		$('#accessoryBillDetailUI').panel('collapse');
 		rowIndexOfDataGrid = 0;
 		setTextBoxText('baseToolNameTextInput', '');
 		//清空明细列表
-		dataGridLoadData('datagridForMaterialBillDetail', {
+		dataGridLoadData('datagridForAccessoryBillDetail', {
 			total : 0,
 			rows : []
 		});
@@ -285,30 +278,30 @@
 		<input id="deptTypeTextInput" class="easyui-textbox"
 			value="<%=request.getParameter("DEPT_TYPE")%>" />
 	</div>
-	<div id="materialInventoryListUI" class="easyui-panel"
+	<div id="accessoryInventoryListUI" class="easyui-panel"
 		data-options="fit:true,border:false">
 		<!-- 列表页面 -->
 		<div class="easyui-layout"
 			data-options="fit:true,border:false">
 			<div data-options="fit:true,border:false,region:'center'">
-				<table id="datagridForMaterialInventory"
+				<table id="datagridForAccessoryInventory"
 					class="easyui-datagrid">
 				</table>
-				<div id="toolbarForMaterialInventory">
+				<div id="toolbarForAccessoryInventory">
 					<table style="width: 100%">
 						<tr>
 							<td><a href="#" class="easyui-linkbutton"
 								iconCls="icon-reload" plain="true"
-								onclick="refreshDataGrid('datagridForMaterialInventory')">刷新</a>
+								onclick="refreshDataGrid('datagridForAccessoryInventory')">刷新</a>
 							</td>
 							<td></td>
 							<td align="right"><input
-								id="keyWordForMaterialInventoryTextInput"
+								id="keyWordForAccessoryInventoryTextInput"
 								class="easyui-textbox"
 								data-options="prompt:'工器具',validType:'length[0,50]'"
 								style="width: 200px"> <a href="#"
 								class="easyui-linkbutton" iconCls="icon-search"
-								onclick="queryMaterialInventoryPagesForSearch()">查询</a>
+								onclick="queryAccessoryInventoryPagesForSearch()">查询</a>
 						</tr>
 						<tr>
 							<td align="left">
@@ -317,7 +310,7 @@
 										class="easyui-textbox" />
 								</div> 仓库：<a href="#" id="storageNameBtn"
 								class="easyui-linkbutton" style="width: 200px;"
-								onclick="openChooseStorageUIForMaterialBill()">
+								onclick="openChooseStorageUIForAccessoryBill()">
 									选择仓库</a>
 							</td>
 							<td>
@@ -325,18 +318,12 @@
 									<input id="posIdTextInput" class="easyui-textbox" />
 								</div> 仓位：<a href="#" id="posNameBtn"
 								class="easyui-linkbutton" style="width: 200px;"
-								onclick="openChoosePositionUIForMaterialBill()">
+								onclick="openChoosePositionUIForAccessoryBill()">
 									选择仓位</a>
 							</td>
-							<td>类型: <input id="baseToolTypeComboBox"
-								data-options="valueField : 'ID',textField : 'TEXT',require : true,
-							panelHeight : 'auto',	prompt : '工器具类型',
-							url : 'queryBaseToolTypeDropList.do',
-							onChange : function(newValue, oldValue){
-								queryMaterialInventorys();
-							}
-							"
-								class="easyui-combobox" style="width: 200px;"></td>
+							<td>适用站: <input id="baseToolStationTextBox"
+								data-options="prompt : '适用站'" class="easyui-textbox"
+								style="width: 200px;"></td>
 						</tr>
 						<tr>
 							<td>厂家: <input id="baseToolManufacturerComboBox"
@@ -344,7 +331,7 @@
 							panelHeight : 'auto',	prompt : '厂家',
 							url : 'queryBaseToolManufacturerDropList.do',
 							onChange : function(newValue, oldValue){
-								queryMaterialInventorys();
+								queryAccessoryInventorys();
 							}
 							"
 								class="easyui-combobox" style="width: 200px;"></td>
@@ -360,12 +347,12 @@
 			</div>
 		</div>
 	</div>
-	<div id="materialBillDetailUI" class="easyui-panel"
+	<div id="accessoryBillDetailUI" class="easyui-panel"
 		data-options="fit:true,border:false">
-		<table id="datagridForMaterialBillDetail"
+		<table id="datagridForAccessoryBillDetail"
 			class="easyui-datagrid">
 		</table>
-		<div id="toolbarForMaterialBillDetail">
+		<div id="toolbarForAccessoryBillDetail">
 			<div>
 				<a href="#" class="easyui-linkbutton" plain="true"
 					iconCls="icon-arrow_left" onclick="toList()">返回</a>

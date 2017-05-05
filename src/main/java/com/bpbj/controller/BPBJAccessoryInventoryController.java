@@ -45,8 +45,7 @@ public class BPBJAccessoryInventoryController extends BaseController {
 
 	@Autowired
 	private IBPBJManufacturerService manufacturerService;
-
-
+	
 	/**
 	 * 查询下拉列表
 	 * 
@@ -156,18 +155,10 @@ public class BPBJAccessoryInventoryController extends BaseController {
 			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		long storageDeptId = getSessionUser(request, response)
-				.getUserDeptId();
 		String keyWord = request.getParameter("keyWord");
-		String deptType = request.getParameter("DEPT_TYPE");
 		Storage storage = new Storage();
 		storage.setCurrPage(BaseUtil.strToInt(page));
 		storage.setPageSize(BaseUtil.strToInt(rows));
-		if ("ALL".equals(deptType)) {
-
-		} else if ("MY".equals(deptType)) {
-			storage.setStoreDeptId(storageDeptId);
-		}
 		storage.setKeyWord(keyWord);
 		return storageService.selectStoragesForPage(storage);
 	}
@@ -193,22 +184,17 @@ public class BPBJAccessoryInventoryController extends BaseController {
 		String manufacturerId = request.getParameter("MAN_ID");
 		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
 		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
-		String deptType = request.getParameter("DEPT_TYPE");
+		String baseToolStation = request.getParameter("BASE_TOOL_STATION");
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		param.put("currPage", page);
 		param.put("pageSize", rows);
 		param.put("keyWord", keyWord);
 		param.put("storeId", storeId);
 		param.put("posId", posId);
-		if ("ALL".equals(deptType)) {
-
-		} else if ("MY".equals(deptType)) {
-			param.put("storeDeptId",
-					getSessionUser(request, response).getUserDeptId());
-		}
-		param.put("manufacturerId", manufacturerId);
+		param.put("manId", manufacturerId);
 		param.put("baseToolModel", baseToolModel);
 		param.put("baseToolSpec", baseToolSpec);
+		param.put("baseToolStation", baseToolStation);
 		return accessoryInventoryService
 				.selectAccessoryInventorysForPage(param);
 	}
