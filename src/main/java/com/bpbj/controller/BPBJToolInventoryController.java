@@ -21,7 +21,7 @@ import com.base.util.DateUtil;
 import com.bpbj.entity.Manufacturer;
 import com.bpbj.entity.Position;
 import com.bpbj.entity.Storage;
-import com.bpbj.entity.ToolTrack;
+import com.bpbj.entity.PlugInTrack;
 import com.bpbj.entity.ToolType;
 import com.bpbj.service.IBPBJManufacturerService;
 import com.bpbj.service.IBPBJPositionService;
@@ -166,7 +166,7 @@ public class BPBJToolInventoryController
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
 		String toolId = request.getParameter("TOOL_ID");
-		ToolTrack toolTrack = new ToolTrack();
+		PlugInTrack toolTrack = new PlugInTrack();
 		toolTrack.setCurrPage(BaseUtil.strToInt(page));
 		toolTrack.setPageSize(BaseUtil.strToInt(rows));
 		toolTrack.setKeyWord(keyWord);

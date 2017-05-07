@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.base.util.DateUtil;
 import com.bpbj.dao.BPBJToolTrackMapper;
-import com.bpbj.entity.ToolTrack;
+import com.bpbj.entity.PlugInTrack;
 import com.bpbj.service.IBPBJToolTrackService;
 
 @Service
@@ -19,7 +19,7 @@ public class BPBJToolTrackServiceImpl implements IBPBJToolTrackService {
 	private BPBJToolTrackMapper toolTrackMapper;
 
 	@Override
-	public Map<String, Object> deleteToolTracks(ToolTrack toolTrack) {
+	public Map<String, Object> deleteToolTracks(PlugInTrack toolTrack) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = toolTrackMapper.deleteByPrimaryKeys(toolTrack);
 		if (bool == 0) {
@@ -33,7 +33,7 @@ public class BPBJToolTrackServiceImpl implements IBPBJToolTrackService {
 	}
 
 	@Override
-	public Map<String, Object> addNewToolTrack(ToolTrack toolTrack) {
+	public Map<String, Object> addNewToolTrack(PlugInTrack toolTrack) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = toolTrackMapper.insertSelective(toolTrack);
 		if (bool == 0) {
@@ -48,7 +48,7 @@ public class BPBJToolTrackServiceImpl implements IBPBJToolTrackService {
 
 	@Override
 	public Map<String, Object> selectToolTracksForPage(
-			ToolTrack toolTrack) {
+			PlugInTrack toolTrack) {
 		List<Map<String, Object>> toolTracks = toolTrackMapper
 				.selectToolTracksForPage(toolTrack);
 		for (Map<String, Object> item : toolTracks) {
@@ -66,7 +66,7 @@ public class BPBJToolTrackServiceImpl implements IBPBJToolTrackService {
 	}
 
 	@Override
-	public Map<String, Object> updateToolTrack(ToolTrack toolTrack) {
+	public Map<String, Object> updateToolTrack(PlugInTrack toolTrack) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = toolTrackMapper
 				.updateByPrimaryKeySelective(toolTrack);
@@ -81,13 +81,13 @@ public class BPBJToolTrackServiceImpl implements IBPBJToolTrackService {
 	}
 
 	@Override
-	public ToolTrack selectToolTracksForObject(ToolTrack toolTrack) {
+	public PlugInTrack selectToolTracksForObject(PlugInTrack toolTrack) {
 		return toolTrackMapper.selectToolTracksForObject(toolTrack);
 	}
 
 	@Override
-	public List<ToolTrack> selectToolTracksForList(
-			ToolTrack toolTrack) {
+	public List<PlugInTrack> selectToolTracksForList(
+			PlugInTrack toolTrack) {
 		return toolTrackMapper.selectToolTracksForList(toolTrack);
 	}
 

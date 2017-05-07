@@ -29,8 +29,8 @@ import com.bpbj.entity.Batch;
 import com.bpbj.entity.Manufacturer;
 import com.bpbj.entity.Position;
 import com.bpbj.entity.Storage;
-import com.bpbj.entity.Tool;
-import com.bpbj.entity.ToolTrack;
+import com.bpbj.entity.PlugIn;
+import com.bpbj.entity.PlugInTrack;
 import com.bpbj.entity.ToolType;
 import com.bpbj.service.IBPBJBaseToolService;
 import com.bpbj.service.IBPBJBatchService;
@@ -133,7 +133,7 @@ public class BPBJBatchController extends BaseController {
 		batch.setBatchRemark(batchRemark);
 		batch.setBatchReturnUserId(
 				BaseUtil.strToLong(batchReturnUserId));
-		Tool tool = new Tool();
+		PlugIn tool = new PlugIn();
 		tool.setToolCode(toolCode);
 		if (storeId != null && storeId != "") {
 			tool.setStoreId(BaseUtil.strToLong(storeId));
@@ -175,7 +175,7 @@ public class BPBJBatchController extends BaseController {
 		}
 		tool.setToolRemark(batchRemark);
 
-		ToolTrack toolTrack = new ToolTrack();
+		PlugInTrack toolTrack = new PlugInTrack();
 		toolTrack.setBatchCode(batchCode);
 		toolTrack.setToolCode(toolCode);
 		if (storeId != null && storeId != "") {
@@ -238,12 +238,12 @@ public class BPBJBatchController extends BaseController {
 		if (BaseUtil.strToLong(batchType) == BatchType.RETURN
 				|| BaseUtil.strToLong(batchType) == BatchType.SELF_RETURN) {
 			// 查询工器具的本部门最早入库的位置
-			ToolTrack temp = new ToolTrack();
+			PlugInTrack temp = new PlugInTrack();
 			temp.setToolCode(toolCode);
 			temp.setToolDeptId(
 					getSessionUser(request, response).getUserDeptId());
 			temp.setToolStatus(ToolStatus.CHECK_IN);
-			List<ToolTrack> track = toolTrackService
+			List<PlugInTrack> track = toolTrackService
 					.selectToolTracksForList(temp);
 			tool.setStoreId(track.get(0).getStoreId());
 			toolTrack.setStoreId(track.get(0).getStoreId());
@@ -315,9 +315,9 @@ public class BPBJBatchController extends BaseController {
 		String toolId = request.getParameter("TOOL_ID");
 		String trackId = request.getParameter("TRACK_ID");
 		String batchId = request.getParameter("BATCH_ID");
-		Tool tool = new Tool();
+		PlugIn tool = new PlugIn();
 		tool.setToolId(BaseUtil.strToLong(toolId));
-		ToolTrack toolTrack = new ToolTrack();
+		PlugInTrack toolTrack = new PlugInTrack();
 		toolTrack.setTrackId(BaseUtil.strToLong(trackId));
 		toolTrack.setToolId(BaseUtil.strToLong(toolId));
 		Batch batch = new Batch();
@@ -477,7 +477,7 @@ public class BPBJBatchController extends BaseController {
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
 		String batchId = request.getParameter("BATCH_ID");
-		ToolTrack toolTrack = new ToolTrack();
+		PlugInTrack toolTrack = new PlugInTrack();
 		toolTrack.setCurrPage(Integer.parseInt(page));
 		toolTrack.setPageSize(Integer.parseInt(rows));
 		toolTrack.setKeyWord(keyWord);

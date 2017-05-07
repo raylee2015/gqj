@@ -23,7 +23,7 @@ import com.bpbj.entity.BaseTool;
 import com.bpbj.entity.Manufacturer;
 import com.bpbj.entity.Position;
 import com.bpbj.entity.Storage;
-import com.bpbj.entity.Tool;
+import com.bpbj.entity.PlugIn;
 import com.bpbj.entity.ToolType;
 import com.bpbj.service.IBPBJBaseToolService;
 import com.bpbj.service.IBPBJManufacturerService;
@@ -163,7 +163,7 @@ public class BPBJToolController extends BaseController {
 		String positionId = request.getParameter("POS_ID");
 		String toolBox = request.getParameter("TOOL_BOX");
 		String toolRemark = request.getParameter("TOOL_REMARK");
-		Tool tool = new Tool();
+		PlugIn tool = new PlugIn();
 		tool.setToolId(BaseUtil.strToLong(toolId));
 		tool.setToolCode(toolCode);
 		tool.setToolTestDate(DateUtil.StringToDate(toolTestDate));

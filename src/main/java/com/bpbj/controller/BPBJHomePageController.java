@@ -23,8 +23,8 @@ import com.base.util.BaseUtil;
 import com.base.util.DateStyle;
 import com.base.util.DateUtil;
 import com.bpbj.entity.Batch;
-import com.bpbj.entity.Tool;
-import com.bpbj.entity.ToolTrack;
+import com.bpbj.entity.PlugIn;
+import com.bpbj.entity.PlugInTrack;
 import com.bpbj.service.IBPBJBatchService;
 import com.bpbj.service.IBPBJHomePageService;
 import com.bpbj.service.IBPBJSequenceService;
@@ -189,7 +189,7 @@ public class BPBJHomePageController extends BaseController {
 		batch.setBatchRemark(batchRemark);
 		batch.setBatchReturnUserId(
 				BaseUtil.strToLong(batchReturnUserId));
-		Tool tool = new Tool();
+		PlugIn tool = new PlugIn();
 		tool.setToolCode(toolCode);
 		if (storeId != null && storeId != "") {
 			tool.setStoreId(BaseUtil.strToLong(storeId));
@@ -231,7 +231,7 @@ public class BPBJHomePageController extends BaseController {
 		}
 		tool.setToolRemark(batchRemark);
 
-		ToolTrack toolTrack = new ToolTrack();
+		PlugInTrack toolTrack = new PlugInTrack();
 		toolTrack.setBatchCode(batchCode);
 		toolTrack.setToolCode(toolCode);
 		if (storeId != null && storeId != "") {
@@ -293,12 +293,12 @@ public class BPBJHomePageController extends BaseController {
 
 		if (BaseUtil.strToLong(batchType) == BatchType.RETURN) {
 			// 查询工器具的本部门最早入库的位置
-			ToolTrack temp = new ToolTrack();
+			PlugInTrack temp = new PlugInTrack();
 			temp.setToolCode(toolCode);
 			temp.setToolDeptId(
 					getSessionUser(request, response).getUserDeptId());
 			temp.setToolStatus(ToolStatus.CHECK_IN);
-			List<ToolTrack> track = toolTrackService
+			List<PlugInTrack> track = toolTrackService
 					.selectToolTracksForList(temp);
 			tool.setStoreId(track.get(0).getStoreId());
 			toolTrack.setStoreId(track.get(0).getStoreId());

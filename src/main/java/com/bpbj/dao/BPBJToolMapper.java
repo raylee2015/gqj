@@ -4,24 +4,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.bpbj.entity.Tool;
+import com.bpbj.entity.PlugIn;
 
 public interface BPBJToolMapper {
-	int deleteByPrimaryKeys(Tool tool);
+	int deleteByPrimaryKeys(PlugIn tool);
 
 	List<Map<String, Object>> selectToolsForPage(
 			HashMap<String, Object> param);
 
-	Tool selectToolForObject(Tool tool);
+	PlugIn selectToolForObject(PlugIn tool);
 
-	List<Tool> selectToolsForList(Tool tool);
+	List<PlugIn> selectToolsForList(PlugIn tool);
 
 	int selectCountOfToolsForPage(
 			HashMap<String, Object> param);
 
-	int insertSelective(Tool tool);
+	int insertSelective(PlugIn tool);
 
-	int updateByPrimaryKeySelective(Tool tool);
+	int updateByPrimaryKeySelective(PlugIn tool);
 
-	int updateToolByBatch(Tool tool);
+	int updateToolByBatch(PlugIn tool);
 }

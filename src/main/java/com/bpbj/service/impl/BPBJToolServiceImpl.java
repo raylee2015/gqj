@@ -17,8 +17,8 @@ import com.bpbj.dao.BPBJToolMapper;
 import com.bpbj.dao.BPBJToolTrackMapper;
 import com.bpbj.entity.BaseTool;
 import com.bpbj.entity.Batch;
-import com.bpbj.entity.Tool;
-import com.bpbj.entity.ToolTrack;
+import com.bpbj.entity.PlugIn;
+import com.bpbj.entity.PlugInTrack;
 import com.bpbj.service.IBPBJBaseToolService;
 import com.bpbj.service.IBPBJToolService;
 import com.bpbj.util.ToolStatus;
@@ -39,7 +39,7 @@ public class BPBJToolServiceImpl implements IBPBJToolService {
 	private BPBJToolTrackMapper toolTrackMapper;
 
 	@Override
-	public Map<String, Object> addNewTool(Tool tool) {
+	public Map<String, Object> addNewTool(PlugIn tool) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = toolMapper.insertSelective(tool);
 		if (bool == 0) {
@@ -54,9 +54,9 @@ public class BPBJToolServiceImpl implements IBPBJToolService {
 
 	@Override
 	public Map<String, Object> checkInTool(Batch batch,
-			Tool tool, ToolTrack toolTrack) {
+			PlugIn tool, PlugInTrack toolTrack) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		Tool temp = toolMapper.selectToolForObject(tool);
+		PlugIn temp = toolMapper.selectToolForObject(tool);
 		int bool = 0;
 		String msg = "";
 		if (temp == null) {
@@ -82,7 +82,7 @@ public class BPBJToolServiceImpl implements IBPBJToolService {
 				map.put("msg", msg);
 			} else if (toolStatus == ToolStatus.CHECK_OUT
 					|| toolStatus == ToolStatus.BORROW) {
-				Tool toolFromSearch = toolMapper
+				PlugIn toolFromSearch = toolMapper
 						.selectToolForObject(tool);
 				toolFromSearch.setPosId(tool.getPosId());
 				toolFromSearch
@@ -174,45 +174,45 @@ public class BPBJToolServiceImpl implements IBPBJToolService {
 
 	@Override
 	public Map<String, Object> exchangeTool(Batch batch,
-			Tool toolParam, ToolTrack toolTrack) {
+			PlugIn toolParam, PlugInTrack toolTrack) {
 		return checkOutTool(batch, toolParam, toolTrack);
 	}
 	
 	@Override
 	public Map<String, Object> useTool(Batch batch,
-			Tool toolParam, ToolTrack toolTrack) {
+			PlugIn toolParam, PlugInTrack toolTrack) {
 		return checkOutTool(batch, toolParam, toolTrack);
 	}
 
 	@Override
 	public Map<String, Object> backTool(Batch batch,
-			Tool toolParam, ToolTrack toolTrack) {
+			PlugIn toolParam, PlugInTrack toolTrack) {
 		return checkInTool(batch, toolParam, toolTrack);
 	}
 	
 	@Override
 	public Map<String, Object> selfRetrunTool(Batch batch,
-			Tool toolParam, ToolTrack toolTrack) {
+			PlugIn toolParam, PlugInTrack toolTrack) {
 		return checkInTool(batch, toolParam, toolTrack);
 	}
 
 	@Override
 	public Map<String, Object> rejectTool(Batch batch,
-			Tool toolParam, ToolTrack toolTrack) {
+			PlugIn toolParam, PlugInTrack toolTrack) {
 		return checkOutTool(batch, toolParam, toolTrack);
 	}
 
 	@Override
 	public Map<String, Object> borrowTool(Batch batch,
-			Tool toolParam, ToolTrack toolTrack) {
+			PlugIn toolParam, PlugInTrack toolTrack) {
 		return checkOutTool(batch, toolParam, toolTrack);
 	}
 
 	@Override
 	public Map<String, Object> checkOutTool(Batch batch,
-			Tool toolParam, ToolTrack toolTrack) {
+			PlugIn toolParam, PlugInTrack toolTrack) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		Tool toolFromSearch = toolMapper
+		PlugIn toolFromSearch = toolMapper
 				.selectToolForObject(toolParam);
 		int bool = 0;
 		String msg = "";
@@ -315,7 +315,7 @@ public class BPBJToolServiceImpl implements IBPBJToolService {
 	}
 
 	@Override
-	public Map<String, Object> deleteTools(Tool tool) {
+	public Map<String, Object> deleteTools(PlugIn tool) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = toolMapper.deleteByPrimaryKeys(tool);
 		if (bool == 0) {
@@ -329,18 +329,18 @@ public class BPBJToolServiceImpl implements IBPBJToolService {
 	}
 
 	@Override
-	public Map<String, Object> resetTool(Tool tool,
-			ToolTrack toolTrack) {
+	public Map<String, Object> resetTool(PlugIn tool,
+			PlugInTrack toolTrack) {
 		int bool = 1;
 		// 查询track的条数
-		List<ToolTrack> toolTracks = toolTrackMapper
+		List<PlugInTrack> toolTracks = toolTrackMapper
 				.selectToolTracksForList(toolTrack);
 		if (toolTracks.size() == 1) {// 1.=1，删掉tool与track
 			bool = toolTrackMapper
 					.deleteByPrimaryKeys(toolTrack);
 			bool = toolMapper.deleteByPrimaryKeys(tool);
 		} else {// 2.>1，删掉track，然后用tooltrack的状态替换当前tool的状态
-			ToolTrack temp = toolTracks.get(1);
+			PlugInTrack temp = toolTracks.get(1);
 			tool.setPosId(temp.getPosId());
 			tool.setStoreId(temp.getStoreId());
 			tool.setToolDeptId(temp.getToolDeptId());
@@ -366,7 +366,7 @@ public class BPBJToolServiceImpl implements IBPBJToolService {
 	}
 
 	@Override
-	public List<Tool> selectToolsForList(Tool tool) {
+	public List<PlugIn> selectToolsForList(PlugIn tool) {
 		return toolMapper.selectToolsForList(tool);
 	}
 
@@ -459,7 +459,7 @@ public class BPBJToolServiceImpl implements IBPBJToolService {
 	}
 
 	@Override
-	public Map<String, Object> updateTool(Tool tool) {
+	public Map<String, Object> updateTool(PlugIn tool) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = toolMapper
 				.updateByPrimaryKeySelective(tool);
@@ -475,7 +475,7 @@ public class BPBJToolServiceImpl implements IBPBJToolService {
 
 	@Override
 	public Map<String, Object> updateToolByBatch(
-			Tool tool) {
+			PlugIn tool) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = toolMapper.updateToolByBatch(tool);
 		if (bool == 0) {

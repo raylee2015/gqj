@@ -12,8 +12,8 @@ import com.base.util.BaseUtil;
 import com.base.util.DateUtil;
 import com.bpbj.dao.BPBJBatchMapper;
 import com.bpbj.entity.Batch;
-import com.bpbj.entity.Tool;
-import com.bpbj.entity.ToolTrack;
+import com.bpbj.entity.PlugIn;
+import com.bpbj.entity.PlugInTrack;
 import com.bpbj.service.IBPBJBatchService;
 import com.bpbj.service.IBPBJToolService;
 import com.bpbj.service.IBPBJToolTrackService;
@@ -39,15 +39,15 @@ public class BPBJBatchServiceImpl implements IBPBJBatchService {
 		String[] batchId_arr = batchIds.split(",");
 		int bool = 1;
 		for (String batchId : batchId_arr) {
-			Tool tool = new Tool();
+			PlugIn tool = new PlugIn();
 			tool.setBatchId(BaseUtil.strToLong(batchId));
 			// 查询tool
-			List<Tool> tools = toolService
+			List<PlugIn> tools = toolService
 					.selectToolsForList(tool);
-			for (Tool item : tools) {
+			for (PlugIn item : tools) {
 				// 根据tool和相应的track来reset
 				tool = item;
-				ToolTrack toolTrack = new ToolTrack();
+				PlugInTrack toolTrack = new PlugInTrack();
 				toolTrack.setBatchId(
 						BaseUtil.strToLong(batchId));
 				toolTrack.setToolId(item.getToolId());
@@ -83,7 +83,7 @@ public class BPBJBatchServiceImpl implements IBPBJBatchService {
 		String[] batchId_arr = batchIds.split(",");
 		int bool = 1;
 		for (String batchId : batchId_arr) {
-			ToolTrack toolTrack = new ToolTrack();
+			PlugInTrack toolTrack = new PlugInTrack();
 			toolTrack.setBatchId(
 					BaseUtil.strToLong(batchId));
 			if (batch
@@ -117,7 +117,7 @@ public class BPBJBatchServiceImpl implements IBPBJBatchService {
 			toolTrack.setBatchConfirmUserId(
 					batch.getBatchConfirmUserId());
 			toolTrackService.updateToolTrack(toolTrack);
-			Tool tool = new Tool();
+			PlugIn tool = new PlugIn();
 			tool.setBatchId(BaseUtil.strToLong(batchId));
 			if (batch
 					.getBatchType() == BatchType.CHECK_IN) {
@@ -163,7 +163,7 @@ public class BPBJBatchServiceImpl implements IBPBJBatchService {
 
 	@Override
 	public synchronized Map<String, Object> addNewBatchsAndDetails(
-			Batch batch, Tool tool, ToolTrack toolTrack) {
+			Batch batch, PlugIn tool, PlugInTrack toolTrack) {
 		int bool = 0;
 		Batch temp = batchMapper
 				.selectBatchsForObject(batch);
@@ -325,8 +325,8 @@ public class BPBJBatchServiceImpl implements IBPBJBatchService {
 	}
 
 	@Override
-	public Map<String, Object> delToolAndTrack(Tool tool,
-			ToolTrack toolTrack, Batch batch) {
+	public Map<String, Object> delToolAndTrack(PlugIn tool,
+			PlugInTrack toolTrack, Batch batch) {
 		Map<String, Object> map = toolService
 				.resetTool(tool, toolTrack);
 		batch = batchMapper.selectBatchsForObject(batch);

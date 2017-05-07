@@ -3,25 +3,25 @@ package com.bpbj.service;
 import java.util.List;
 import java.util.Map;
 
-import com.bpbj.entity.ToolTrack;
+import com.bpbj.entity.PlugInTrack;
 
 public interface IBPBJToolTrackService {
 	Map<String, Object> deleteToolTracks(
-			ToolTrack toolTrack);
+			PlugInTrack toolTrack);
 
 	Map<String, Object> addNewToolTrack(
-			ToolTrack toolTrack);
+			PlugInTrack toolTrack);
 
 	Map<String, Object> updateToolTrack(
-			ToolTrack toolTrack);
+			PlugInTrack toolTrack);
 
 	Map<String, Object> selectToolTracksForPage(
-			ToolTrack toolTrack);
+			PlugInTrack toolTrack);
 
-	ToolTrack selectToolTracksForObject(
-			ToolTrack toolTrack);
+	PlugInTrack selectToolTracksForObject(
+			PlugInTrack toolTrack);
 
-	List<ToolTrack> selectToolTracksForList(
-			ToolTrack toolTrack);
+	List<PlugInTrack> selectToolTracksForList(
+			PlugInTrack toolTrack);
 
 }

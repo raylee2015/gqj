@@ -3,21 +3,21 @@ package com.bpbj.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.bpbj.entity.ToolTrack;
+import com.bpbj.entity.PlugInTrack;
 
 public interface BPBJToolTrackMapper {
-	int deleteByPrimaryKeys(ToolTrack toolTrack);
+	int deleteByPrimaryKeys(PlugInTrack toolTrack);
 
 	List<Map<String, Object>> selectToolTracksForPage(
-			ToolTrack toolTrack);
+			PlugInTrack toolTrack);
 
-	List<ToolTrack> selectToolTracksForList(ToolTrack toolTrack);
+	List<PlugInTrack> selectToolTracksForList(PlugInTrack toolTrack);
 
-	ToolTrack selectToolTracksForObject(ToolTrack toolTrack);
+	PlugInTrack selectToolTracksForObject(PlugInTrack toolTrack);
 
-	int selectCountOfToolTracksForPage(ToolTrack toolTrack);
+	int selectCountOfToolTracksForPage(PlugInTrack toolTrack);
 
-	int insertSelective(ToolTrack toolTrack);
+	int insertSelective(PlugInTrack toolTrack);
 
-	int updateByPrimaryKeySelective(ToolTrack toolTrack);
+	int updateByPrimaryKeySelective(PlugInTrack toolTrack);
 }

@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bpbj.dao.BPBJPlugInMapper">
+	<resultMap id="BaseResultMap" type="com.bpbj.entity.PlugIn">
+		<id column="PLUGIN_ID" jdbcType="DECIMAL" property="plugInId" />
+		<result column="PLUGIN_CODE" jdbcType="VARCHAR" property="plugInCode" />
+		<result column="STORE_ID" jdbcType="DECIMAL" property="storeId" />
+		<result column="POS_ID" jdbcType="DECIMAL" property="posId" />
+		<result column="PLUGIN_STATUS" jdbcType="DECIMAL" property="plugInStatus" />
+		<result column="PLUGIN_DEPT_ID" jdbcType="DECIMAL" property="plugInDeptId" />
+		<result column="PLUGIN_REMARK" jdbcType="VARCHAR" property="plugInRemark" />
+		<result column="PLUGIN_MAN_DATE" jdbcType="TIMESTAMP" property="plugInManDate" />
+		<result column="BASE_TOOL_ID" jdbcType="DECIMAL" property="baseToolId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		PLUGIN_ID, PLUGIN_CODE, STORE_ID, POS_ID,
+		PLUGIN_STATUS,
+		PLUGIN_DEPT_ID, PLUGIN_REMARK, BASE_TOOL_ID,
+		STORE_NAME,POS_NAME,BASE_TOOL_NAME, MAN_NAME,
+		BASE_TOOL_MODEL,BASE_TOOL_SPEC,BASE_TOOL_UNIT,BASE_TOOL_STATION
+	</sql>
+	<select id="selectPlugInForObject" parameterType="com.bpbj.entity.PlugIn"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from
+		BPBJ_PLUGIN
+		<where>
+			<if test="plugInCode != null">
+				AND PLUGIN_CODE=#{plugInCode}
+			</if>
+		</where>
+		order by PLUGIN_ID
+	</select>
+	<select id="selectPlugInsForList" parameterType="com.bpbj.entity.PlugIn"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from
+		VIEW_BPBJ_PLUGIN
+		<where>
+			<if test="batchId != null">
+				AND BATCH_ID=#{batchId}
+			</if>
+		</where>
+		order by PLUGIN_ID
+	</select>
+	<select id="selectPlugInsForPage" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_BPBJ_PLUGIN
+		<where>
+			<if test="keyWord != null">
+				AND PLUGIN_CODE like '%${keyWord}%'
+			</if>
+			<if test="storeId != null and storeId !=''">
+				and STORE_ID =
+				#{storeId,jdbcType=DECIMAL}
+			</if>
+			<if test="posId != null and posId != ''">
+				and POS_ID =
+				#{posId,jdbcType=DECIMAL}
+			</if>
+			<if test="basePlugInModel != null and basePlugInModel!=''">
+				AND BASE_PLUGIN_MODEL like '%${basePlugInModel}%'
+			</if>
+			<if test="basePlugInSpec != null and basePlugInSpec!=''">
+				AND BASE_PLUGIN_SPEC like '%${basePlugInSpec}%'
+			</if>
+			<if test="manId != null and manId''">
+				and MAN_ID =
+				#{manufacturerId,jdbcType=DECIMAL}
+			</if>
+			<if test="plugInDeptId != null">
+				and PLUGIN_DEPT_ID =
+				#{plugInDeptId,jdbcType=DECIMAL}
+			</if>
+			<if test="plugInStatus != null">
+				and PLUGIN_STATUS =
+				#{plugInStatus,jdbcType=DECIMAL}
+			</if>
+			<if test="overTestDays != null">
+				and to_date(#{overTestDays},'yyyy-mm-dd') >
+				PLUGIN_NEXT_TEST_DATE
+			</if>
+			<if test="overRejectDays != null">
+				and to_date(#{overRejectDays},'yyyy-mm-dd') >
+				PLUGIN_REJECT_DATE
+			</if>
+		</where>
+		order by PLUGIN_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfPlugInsForPage" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+		select count(t.PLUGIN_ID) from VIEW_BPBJ_PLUGIN t
+		<where>
+			<if test="keyWord != null">
+				AND PLUGIN_CODE like '%${keyWord}%'
+			</if>
+			<if test="storeId != null and storeId !=''">
+				and STORE_ID =
+				#{storeId,jdbcType=DECIMAL}
+			</if>
+			<if test="posId != null and posId != ''">
+				and POS_ID =
+				#{posId,jdbcType=DECIMAL}
+			</if>
+			<if test="basePlugInTypeId != null and basePlugInTypeId!=''">
+				and BASE_PLUGIN_TYPE_ID =
+				#{basePlugInTypeId,jdbcType=DECIMAL}
+			</if>
+			<if test="basePlugInModel != null and basePlugInModel!=''">
+				AND BASE_PLUGIN_MODEL like '%${basePlugInModel}%'
+			</if>
+			<if test="basePlugInSpec != null and basePlugInSpec!=''">
+				AND BASE_PLUGIN_SPEC like '%${basePlugInSpec}%'
+			</if>
+			<if test="manufacturerId != null and manufacturerId!=''">
+				and BASE_PLUGIN_MANUFACTURER_ID =
+				#{manufacturerId,jdbcType=DECIMAL}
+			</if>
+			<if test="plugInDeptId != null">
+				and PLUGIN_DEPT_ID =
+				#{plugInDeptId,jdbcType=DECIMAL}
+			</if>
+			<if test="plugInStatus != null">
+				and PLUGIN_STATUS =
+				#{plugInStatus,jdbcType=DECIMAL}
+			</if>
+			<if test="overTestDays != null">
+				and to_date(#{overTestDays},'yyyy-mm-dd') >
+				PLUGIN_NEXT_TEST_DATE
+			</if>
+			<if test="overRejectDays != null">
+				and to_date(#{overRejectDays},'yyyy-mm-dd') >
+				PLUGIN_REJECT_DATE
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKeys" parameterType="com.bpbj.entity.PlugIn">
+		delete from
+		BPBJ_PLUGIN
+		<where>
+			<if test="ids != null">
+				and PLUGIN_ID in (${ids})
+			</if>
+			<if test="plugInId != null">
+				AND PLUGIN_ID=#{plugInId}
+			</if>
+			<if test="batchId != null">
+				AND BATCH_ID=#{batchId}
+			</if>
+		</where>
+	</delete>
+	<insert id="insertSelective" parameterType="com.bpbj.entity.PlugIn">
+		<selectKey resultType="java.lang.Long" order="BEFORE"
+			keyProperty="plugInId">
+			select BPBJ_PLUGIN_SEQ.nextval from dual
+		</selectKey>
+		insert into BPBJ_PLUGIN
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="plugInId != null">
+				PLUGIN_ID,
+			</if>
+			<if test="plugInCode != null">
+				PLUGIN_CODE,
+			</if>
+			<if test="storeId != null">
+				STORE_ID,
+			</if>
+			<if test="posId != null">
+				POS_ID,
+			</if>
+			<if test="batchId != null">
+				BATCH_ID,
+			</if>
+			<if test="plugInBox != null">
+				PLUGIN_BOX,
+			</if>
+			<if test="plugInStatus != null">
+				PLUGIN_STATUS,
+			</if>
+			<if test="plugInDeptId != null">
+				PLUGIN_DEPT_ID,
+			</if>
+			<if test="plugInTestDate != null">
+				PLUGIN_TEST_DATE,
+			</if>
+			<if test="plugInRejectDate != null">
+				PLUGIN_REJECT_DATE,
+			</if>
+			<if test="plugInTestDateCircle != null">
+				PLUGIN_TEST_DATE_CIRCLE,
+			</if>
+			<if test="plugInPurchaseDate != null">
+				PLUGIN_PURCHASE_DATE,
+			</if>
+			<if test="plugInManufactureDate != null">
+				PLUGIN_MANUFACTURE_DATE,
+			</if>
+			<if test="plugInRemark != null">
+				PLUGIN_REMARK,
+			</if>
+			<if test="plugInNextTestDate != null">
+				PLUGIN_NEXT_TEST_DATE,
+			</if>
+			<if test="basePlugInId != null">
+				BASE_PLUGIN_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="plugInId != null">
+				#{plugInId},
+			</if>
+			<if test="plugInCode != null">
+				#{plugInCode,jdbcType=VARCHAR},
+			</if>
+			<if test="storeId != null">
+				#{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="posId != null">
+				#{posId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchId != null">
+				#{batchId,jdbcType=DECIMAL},
+			</if>
+			<if test="plugInBox != null">
+				#{plugInBox,jdbcType=VARCHAR},
+			</if>
+			<if test="plugInStatus != null">
+				#{plugInStatus,jdbcType=DECIMAL},
+			</if>
+			<if test="plugInDeptId != null">
+				#{plugInDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="plugInTestDate != null">
+				#{plugInTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="plugInRejectDate != null">
+				#{plugInRejectDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="plugInTestDateCircle != null">
+				#{plugInTestDateCircle,jdbcType=DECIMAL},
+			</if>
+			<if test="plugInPurchaseDate != null">
+				#{plugInPurchaseDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="plugInManufactureDate != null">
+				#{plugInManufactureDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="plugInRemark != null">
+				#{plugInRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="plugInNextTestDate != null">
+				#{plugInNextTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="basePlugInId != null">
+				#{basePlugInId,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.PlugIn">
+		update BPBJ_PLUGIN
+		<set>
+			<if test="plugInCode != null">
+				PLUGIN_CODE = #{plugInCode,jdbcType=VARCHAR},
+			</if>
+			<if test="storeId != null">
+				STORE_ID = #{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="posId != null">
+				POS_ID = #{posId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchId != null">
+				BATCH_ID = #{batchId,jdbcType=DECIMAL},
+			</if>
+			<if test="plugInBox != null">
+				PLUGIN_BOX = #{plugInBox,jdbcType=VARCHAR},
+			</if>
+			<if test="plugInStatus != null">
+				PLUGIN_STATUS = #{plugInStatus,jdbcType=DECIMAL},
+			</if>
+			<if test="plugInDeptId != null">
+				PLUGIN_DEPT_ID = #{plugInDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="plugInTestDate != null">
+				PLUGIN_TEST_DATE = #{plugInTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="plugInRejectDate != null">
+				PLUGIN_REJECT_DATE =
+				#{plugInRejectDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="plugInManufactureDate != null">
+				PLUGIN_MANUFACTURE_DATE =
+				#{plugInManufactureDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="plugInPurchaseDate != null">
+				PLUGIN_PURCHASE_DATE =
+				#{plugInPurchaseDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="plugInTestDateCircle != null">
+				PLUGIN_TEST_DATE_CIRCLE =
+				#{plugInTestDateCircle,jdbcType=DECIMAL},
+			</if>
+			<if test="plugInRemark != null">
+				PLUGIN_REMARK = #{plugInRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="plugInNextTestDate != null">
+				PLUGIN_NEXT_TEST_DATE =
+				#{plugInNextTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="basePlugInId != null">
+				BASE_PLUGIN_ID = #{basePlugInId,jdbcType=DECIMAL},
+			</if>
+		</set>
+		<where>
+			<if test="plugInId != null">
+				and PLUGIN_ID = #{plugInId}
+			</if>
+		</where>
+	</update>
+	<update id="updatePlugInByBatch" parameterType="com.bpbj.entity.PlugIn">
+		update BPBJ_PLUGIN
+		<set>
+			<if test="plugInCode != null">
+				PLUGIN_CODE = #{plugInCode,jdbcType=VARCHAR},
+			</if>
+			<if test="storeId != null">
+				STORE_ID = #{storeId,jdbcType=DECIMAL},
+			</if>
+			<if test="posId != null">
+				POS_ID = #{posId,jdbcType=DECIMAL},
+			</if>
+			<if test="batchId != null">
+				BATCH_ID = #{batchId,jdbcType=DECIMAL},
+			</if>
+			<if test="plugInBox != null">
+				PLUGIN_BOX = #{plugInBox,jdbcType=VARCHAR},
+			</if>
+			<if test="plugInStatus != null">
+				PLUGIN_STATUS = #{plugInStatus,jdbcType=DECIMAL},
+			</if>
+			<if test="plugInDeptId != null">
+				PLUGIN_DEPT_ID = #{plugInDeptId,jdbcType=DECIMAL},
+			</if>
+			<if test="plugInTestDate != null">
+				PLUGIN_TEST_DATE = #{plugInTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="plugInRejectDate != null">
+				PLUGIN_REJECT_DATE =
+				#{plugInRejectDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="plugInManufactureDate != null">
+				PLUGIN_MANUFACTURE_DATE =
+				#{plugInManufactureDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="plugInPurchaseDate != null">
+				PLUGIN_PURCHASE_DATE =
+				#{plugInPurchaseDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="plugInTestDateCircle != null">
+				PLUGIN_TEST_DATE_CIRCLE =
+				#{plugInTestDateCircle,jdbcType=DECIMAL},
+			</if>
+			<if test="plugInRemark != null">
+				PLUGIN_REMARK = #{plugInRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="plugInNextTestDate != null">
+				PLUGIN_NEXT_TEST_DATE =
+				#{plugInNextTestDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="basePlugInId != null">
+				BASE_PLUGIN_ID = #{basePlugInId,jdbcType=DECIMAL},
+			</if>
+		</set>
+		<where>
+			<if test="batchId != null">
+				and BATCH_ID = #{batchId}
+			</if>
+		</where>
+	</update>
+</mapper>
