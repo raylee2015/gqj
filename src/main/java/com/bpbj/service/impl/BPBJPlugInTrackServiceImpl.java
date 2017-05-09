@@ -8,20 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.base.util.DateUtil;
-import com.bpbj.dao.BPBJToolTrackMapper;
+import com.bpbj.dao.BPBJPlugInTrackMapper;
 import com.bpbj.entity.PlugInTrack;
-import com.bpbj.service.IBPBJToolTrackService;
+import com.bpbj.service.IBPBJPlugInTrackService;
 
 @Service
-public class BPBJToolTrackServiceImpl implements IBPBJToolTrackService {
+public class BPBJPlugInTrackServiceImpl implements IBPBJPlugInTrackService {
 
 	@Autowired
-	private BPBJToolTrackMapper toolTrackMapper;
+	private BPBJPlugInTrackMapper plugInTrackMapper;
 
 	@Override
-	public Map<String, Object> deleteToolTracks(PlugInTrack toolTrack) {
+	public Map<String, Object> deletePlugInTracks(PlugInTrack plugInTrack) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = toolTrackMapper.deleteByPrimaryKeys(toolTrack);
+		int bool = plugInTrackMapper.deleteByPrimaryKeys(plugInTrack);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");
@@ -33,9 +33,9 @@ public class BPBJToolTrackServiceImpl implements IBPBJToolTrackService {
 	}
 
 	@Override
-	public Map<String, Object> addNewToolTrack(PlugInTrack toolTrack) {
+	public Map<String, Object> addNewPlugInTrack(PlugInTrack plugInTrack) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = toolTrackMapper.insertSelective(toolTrack);
+		int bool = plugInTrackMapper.insertSelective(plugInTrack);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -47,29 +47,29 @@ public class BPBJToolTrackServiceImpl implements IBPBJToolTrackService {
 	}
 
 	@Override
-	public Map<String, Object> selectToolTracksForPage(
-			PlugInTrack toolTrack) {
-		List<Map<String, Object>> toolTracks = toolTrackMapper
-				.selectToolTracksForPage(toolTrack);
-		for (Map<String, Object> item : toolTracks) {
+	public Map<String, Object> selectPlugInTracksForPage(
+			PlugInTrack plugInTrack) {
+		List<Map<String, Object>> plugInTracks = plugInTrackMapper
+				.selectPlugInTracksForPage(plugInTrack);
+		for (Map<String, Object> item : plugInTracks) {
 			if (item.get("TRACK_CREATE_TIME") != null) {
 				item.put("TRACK_CREATE_TIME", DateUtil.getDate(
 						item.get("TRACK_CREATE_TIME").toString()));
 			}
 		}
-		int count = toolTrackMapper
-				.selectCountOfToolTracksForPage(toolTrack);
+		int count = plugInTrackMapper
+				.selectCountOfPlugInTracksForPage(plugInTrack);
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("rows", toolTracks);
+		map.put("rows", plugInTracks);
 		map.put("total", count);
 		return map;
 	}
 
 	@Override
-	public Map<String, Object> updateToolTrack(PlugInTrack toolTrack) {
+	public Map<String, Object> updatePlugInTrack(PlugInTrack plugInTrack) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = toolTrackMapper
-				.updateByPrimaryKeySelective(toolTrack);
+		int bool = plugInTrackMapper
+				.updateByPrimaryKeySelective(plugInTrack);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -81,14 +81,14 @@ public class BPBJToolTrackServiceImpl implements IBPBJToolTrackService {
 	}
 
 	@Override
-	public PlugInTrack selectToolTracksForObject(PlugInTrack toolTrack) {
-		return toolTrackMapper.selectToolTracksForObject(toolTrack);
+	public PlugInTrack selectPlugInTracksForObject(PlugInTrack plugInTrack) {
+		return plugInTrackMapper.selectPlugInTracksForObject(plugInTrack);
 	}
 
 	@Override
-	public List<PlugInTrack> selectToolTracksForList(
-			PlugInTrack toolTrack) {
-		return toolTrackMapper.selectToolTracksForList(toolTrack);
+	public List<PlugInTrack> selectPlugInTracksForList(
+			PlugInTrack plugInTrack) {
+		return plugInTrackMapper.selectPlugInTracksForList(plugInTrack);
 	}
 
 }

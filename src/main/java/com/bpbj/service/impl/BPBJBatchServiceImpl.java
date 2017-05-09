@@ -15,10 +15,10 @@ import com.bpbj.entity.Batch;
 import com.bpbj.entity.PlugIn;
 import com.bpbj.entity.PlugInTrack;
 import com.bpbj.service.IBPBJBatchService;
-import com.bpbj.service.IBPBJToolService;
-import com.bpbj.service.IBPBJToolTrackService;
+import com.bpbj.service.IBPBJPlugInService;
+import com.bpbj.service.IBPBJPlugInTrackService;
 import com.bpbj.util.BatchType;
-import com.bpbj.util.ToolStatus;
+import com.bpbj.util.PlugInStatus;
 
 @Service
 public class BPBJBatchServiceImpl implements IBPBJBatchService {
@@ -27,10 +27,10 @@ public class BPBJBatchServiceImpl implements IBPBJBatchService {
 	private BPBJBatchMapper batchMapper;
 
 	@Autowired
-	private IBPBJToolService toolService;
+	private IBPBJPlugInService toolService;
 
 	@Autowired
-	private IBPBJToolTrackService toolTrackService;
+	private IBPBJPlugInTrackService toolTrackService;
 
 	@Override
 	public Map<String, Object> deleteBatchs(Batch batch) {
@@ -89,29 +89,29 @@ public class BPBJBatchServiceImpl implements IBPBJBatchService {
 			if (batch
 					.getBatchType() == BatchType.CHECK_IN) {
 				toolTrack
-						.setToolStatus(ToolStatus.CHECK_IN);
+						.setToolStatus(PlugInStatus.CHECK_IN);
 			} else if (batch
 					.getBatchType() == BatchType.CHECK_OUT) {
 				toolTrack.setToolStatus(
-						ToolStatus.CHECK_OUT);
+						PlugInStatus.CHECK_OUT);
 			} else if (batch
 					.getBatchType() == BatchType.EXCHANGE) {
 				toolTrack.setToolStatus(
-						ToolStatus.CHECK_OUT);
+						PlugInStatus.CHECK_OUT);
 			} else if (batch
 					.getBatchType() == BatchType.BACK) {
 				toolTrack
-						.setToolStatus(ToolStatus.CHECK_IN);
+						.setToolStatus(PlugInStatus.CHECK_IN);
 			} else if (batch
 					.getBatchType() == BatchType.REJECT) {
-				toolTrack.setToolStatus(ToolStatus.REJECT);
+				toolTrack.setToolStatus(PlugInStatus.REJECT);
 			} else if (batch
 					.getBatchType() == BatchType.BORROW) {
-				toolTrack.setToolStatus(ToolStatus.BORROW);
+				toolTrack.setToolStatus(PlugInStatus.BORROW);
 			} else if (batch
 					.getBatchType() == BatchType.RETURN) {
 				toolTrack
-						.setToolStatus(ToolStatus.CHECK_IN);
+						.setToolStatus(PlugInStatus.CHECK_IN);
 			}
 			toolTrack.setBatchConfirmTime(new Date());
 			toolTrack.setBatchConfirmUserId(
@@ -121,25 +121,25 @@ public class BPBJBatchServiceImpl implements IBPBJBatchService {
 			tool.setBatchId(BaseUtil.strToLong(batchId));
 			if (batch
 					.getBatchType() == BatchType.CHECK_IN) {
-				tool.setToolStatus(ToolStatus.CHECK_IN);
+				tool.setToolStatus(PlugInStatus.CHECK_IN);
 			} else if (batch
 					.getBatchType() == BatchType.CHECK_OUT) {
-				tool.setToolStatus(ToolStatus.CHECK_OUT);
+				tool.setToolStatus(PlugInStatus.CHECK_OUT);
 			} else if (batch
 					.getBatchType() == BatchType.EXCHANGE) {
-				tool.setToolStatus(ToolStatus.CHECK_OUT);
+				tool.setToolStatus(PlugInStatus.CHECK_OUT);
 			} else if (batch
 					.getBatchType() == BatchType.BACK) {
-				tool.setToolStatus(ToolStatus.CHECK_IN);
+				tool.setToolStatus(PlugInStatus.CHECK_IN);
 			} else if (batch
 					.getBatchType() == BatchType.REJECT) {
-				tool.setToolStatus(ToolStatus.REJECT);
+				tool.setToolStatus(PlugInStatus.REJECT);
 			} else if (batch
 					.getBatchType() == BatchType.BORROW) {
-				tool.setToolStatus(ToolStatus.BORROW);
+				tool.setToolStatus(PlugInStatus.BORROW);
 			} else if (batch
 					.getBatchType() == BatchType.RETURN) {
-				tool.setToolStatus(ToolStatus.CHECK_IN);
+				tool.setToolStatus(PlugInStatus.CHECK_IN);
 			}
 			toolService.updateToolByBatch(tool);
 			Batch paramBatch = new Batch();
@@ -180,40 +180,40 @@ public class BPBJBatchServiceImpl implements IBPBJBatchService {
 		tool.setBatchId(batch.getBatchId());
 		if (batchType == BatchType.CHECK_IN) {
 			tool.setToolId(-1L);
-			tool.setToolStatus(ToolStatus.CHECK_IN_COMING);
+			tool.setToolStatus(PlugInStatus.CHECK_IN_COMING);
 			resultMap = toolService.checkInTool(batch, tool,
 					toolTrack);
 
 		} else if (batchType == BatchType.CHECK_OUT) {
-			tool.setToolStatus(ToolStatus.CHECK_OUT_COMING);
+			tool.setToolStatus(PlugInStatus.CHECK_OUT_COMING);
 			resultMap = toolService.checkOutTool(batch,
 					tool, toolTrack);
 		} else if (batchType == BatchType.EXCHANGE) {
-			tool.setToolStatus(ToolStatus.CHECK_OUT_COMING);
+			tool.setToolStatus(PlugInStatus.CHECK_OUT_COMING);
 			resultMap = toolService.exchangeTool(batch,
 					tool, toolTrack);
 		} else if (batchType == BatchType.BACK) {
-			tool.setToolStatus(ToolStatus.CHECK_IN_COMING);
+			tool.setToolStatus(PlugInStatus.CHECK_IN_COMING);
 			resultMap = toolService.backTool(batch, tool,
 					toolTrack);
 		} else if (batchType == BatchType.REJECT) {
-			tool.setToolStatus(ToolStatus.REJECT_COMING);
+			tool.setToolStatus(PlugInStatus.REJECT_COMING);
 			resultMap = toolService.rejectTool(batch, tool,
 					toolTrack);
 		} else if (batchType == BatchType.BORROW) {
-			tool.setToolStatus(ToolStatus.BORROW_COMING);
+			tool.setToolStatus(PlugInStatus.BORROW_COMING);
 			resultMap = toolService.borrowTool(batch, tool,
 					toolTrack);
 		} else if (batchType == BatchType.RETURN) {
-			tool.setToolStatus(ToolStatus.CHECK_IN_COMING);
+			tool.setToolStatus(PlugInStatus.CHECK_IN_COMING);
 			resultMap = toolService.checkInTool(batch, tool,
 					toolTrack);
 		} else if (batchType == BatchType.USE) {
-			tool.setToolStatus(ToolStatus.CHECK_OUT);
+			tool.setToolStatus(PlugInStatus.CHECK_OUT);
 			resultMap = toolService.useTool(batch, tool,
 					toolTrack);
 		} else if (batchType == BatchType.SELF_RETURN) {
-			tool.setToolStatus(ToolStatus.CHECK_IN_COMING);
+			tool.setToolStatus(PlugInStatus.CHECK_IN_COMING);
 			resultMap = toolService.selfRetrunTool(batch,
 					tool, toolTrack);
 		}

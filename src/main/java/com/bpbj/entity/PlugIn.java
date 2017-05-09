@@ -9,6 +9,8 @@ public class PlugIn extends Base {
 
 	private String plugInCode;
 
+	private Long batchId;
+
 	private Long storeId;
 
 	private Long posId;
@@ -22,6 +24,14 @@ public class PlugIn extends Base {
 	private Date plugInManDate;
 
 	private Long baseToolId;
+
+	public Long getBatchId() {
+		return batchId;
+	}
+
+	public void setBatchId(Long batchId) {
+		this.batchId = batchId;
+	}
 
 	public Long getPlugInId() {
 		return plugInId;

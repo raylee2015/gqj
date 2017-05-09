@@ -1,6 +1,6 @@
 package com.bpbj.util;
 
-public class ToolStatus {
+public class PlugInStatus {
 
 	/**
 	 * 入库打单

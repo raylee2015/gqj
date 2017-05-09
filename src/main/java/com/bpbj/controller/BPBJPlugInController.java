@@ -14,29 +14,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.base.admin.service.IParamService;
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
-import com.base.util.DateStyle;
 import com.base.util.DateUtil;
 import com.bpbj.entity.BaseTool;
 import com.bpbj.entity.Manufacturer;
+import com.bpbj.entity.PlugIn;
 import com.bpbj.entity.Position;
 import com.bpbj.entity.Storage;
-import com.bpbj.entity.PlugIn;
-import com.bpbj.entity.ToolType;
 import com.bpbj.service.IBPBJBaseToolService;
 import com.bpbj.service.IBPBJManufacturerService;
+import com.bpbj.service.IBPBJPlugInService;
 import com.bpbj.service.IBPBJPositionService;
 import com.bpbj.service.IBPBJStorageService;
-import com.bpbj.service.IBPBJToolService;
-import com.bpbj.service.IBPBJToolTypeService;
-import com.bpbj.util.ToolStatus;
 
 @Controller
-@RequestMapping("/bpbj/tool")
-public class BPBJToolController extends BaseController {
-	public static final Logger LOGGER = Logger.getLogger(BPBJToolController.class);
+@RequestMapping("/bpbj/plugIn")
+public class BPBJPlugInController extends BaseController {
+	public static final Logger LOGGER = Logger.getLogger(BPBJPlugInController.class);
 
 	@Autowired
 	private IBPBJPositionService positionService;
@@ -45,17 +40,11 @@ public class BPBJToolController extends BaseController {
 	private IBPBJStorageService storageService;
 
 	@Autowired
-	private IBPBJToolService toolService;
+	private IBPBJPlugInService plugInService;
 
 	@Autowired
 	private IBPBJManufacturerService manufacturerService;
 
-	@Autowired
-	private IBPBJToolTypeService toolTypeService;
-
-	@Autowired
-	private IParamService paramService;
-
 	/**
 	 * 查询下拉列表
 	 * 
@@ -63,24 +52,9 @@ public class BPBJToolController extends BaseController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryBaseToolTypeDropList.do")
+	@RequestMapping("/queryBasePlugInManufacturerDropList.do")
 	@ResponseBody
-	public void queryBaseToolTypeDropList(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		response.getWriter().print(toolTypeService.selectToolTypesForList(new ToolType()));
-		response.getWriter().flush();
-		response.getWriter().close();
-	}
-
-	/**
-	 * 查询下拉列表
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryBaseToolManufacturerDropList.do")
-	@ResponseBody
-	public void queryBaseToolManufacturerDropList(HttpServletRequest request, HttpServletResponse response)
+	public void queryBasePlugInManufacturerDropList(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		response.getWriter().print(manufacturerService.selectManufacturersForList(new Manufacturer()));
 		response.getWriter().flush();
@@ -94,7 +68,7 @@ public class BPBJToolController extends BaseController {
 	 */
 	@RequestMapping(value = "/openChoosePositionUI.do", method = RequestMethod.GET)
 	public ModelAndView openChoosePositionUI(HttpServletRequest request, HttpServletResponse response) {
-		return new ModelAndView("/bpbj/tool/choosePositionUI");
+		return new ModelAndView("/bpbj/plugIn/choosePositionUI");
 	}
 
 	/**
@@ -102,9 +76,9 @@ public class BPBJToolController extends BaseController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/openEditToolUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditToolUI(HttpServletRequest request, HttpServletResponse response) {
-		return new ModelAndView("/bpbj/tool/editToolUI");
+	@RequestMapping(value = "/openEditPlugInUI.do", method = RequestMethod.GET)
+	public ModelAndView openEditPlugInUI(HttpServletRequest request, HttpServletResponse response) {
+		return new ModelAndView("/bpbj/plugIn/editPlugInUI");
 	}
 
 	@Autowired
@@ -125,17 +99,17 @@ public class BPBJToolController extends BaseController {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
-		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
-		String baseToolType = request.getParameter("BASE_TOOL_TYPE");
+		String basePlugInModel = request.getParameter("BASE_TOOL_MODEL");
+		String basePlugInSpec = request.getParameter("BASE_TOOL_SPEC");
 		String manId = request.getParameter("MAN_ID");
 		BaseTool baseTool = new BaseTool();
 		baseTool.setCurrPage(Integer.parseInt(page));
 		baseTool.setPageSize(Integer.parseInt(rows));
 		baseTool.setKeyWord(keyWord);
-		baseTool.setBaseToolType(BaseUtil.strToLong(baseToolType));
-		baseTool.setBaseToolModel(baseToolModel);
-		baseTool.setBaseToolSpec(baseToolSpec);
+		// 只是选择插件一类的信息
+		baseTool.setBaseToolType(1L);
+		baseTool.setBaseToolModel(basePlugInModel);
+		baseTool.setBaseToolSpec(basePlugInSpec);
 		baseTool.setManId(BaseUtil.strToLong(manId));
 		return baseToolService.selectBaseToolsForPage(baseTool);
 	}
@@ -148,37 +122,25 @@ public class BPBJToolController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/updateTool.do")
+	@RequestMapping("/updatePlugIn.do")
 	@ResponseBody
-	public Map<String, Object> updateTool(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String toolId = request.getParameter("TOOL_ID");
-		String toolCode = request.getParameter("TOOL_CODE");
-		String toolTestDate = request.getParameter("TOOL_TEST_DATE");
-		String toolRejectDate = request.getParameter("TOOL_REJECT_DATE");
-		String toolManufactureDate = request.getParameter("TOOL_MANUFACTURE_DATE");
-		String toolPurchaseDate = request.getParameter("TOOL_PURCHASE_DATE");
-		String toolTestDateCircle = request.getParameter("TOOL_TEST_DATE_CIRCLE");
+	public Map<String, Object> updatePlugIn(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String plugInId = request.getParameter("PLUGIN_ID");
+		String plugInCode = request.getParameter("PLUGIN_CODE");
+		String plugInManufactureDate = request.getParameter("PLUGIN_MAN_DATE");
 		String baseToolId = request.getParameter("BASE_TOOL_ID");
 		String storeId = request.getParameter("STORE_ID");
 		String positionId = request.getParameter("POS_ID");
-		String toolBox = request.getParameter("TOOL_BOX");
-		String toolRemark = request.getParameter("TOOL_REMARK");
-		PlugIn tool = new PlugIn();
-		tool.setToolId(BaseUtil.strToLong(toolId));
-		tool.setToolCode(toolCode);
-		tool.setToolTestDate(DateUtil.StringToDate(toolTestDate));
-		tool.setToolRejectDate(DateUtil.StringToDate(toolRejectDate));
-		tool.setToolManufactureDate(DateUtil.StringToDate(toolManufactureDate));
-		tool.setToolPurchaseDate(DateUtil.StringToDate(toolPurchaseDate));
-		tool.setToolTestDateCircle(BaseUtil.strToDouble(toolTestDateCircle));
-		tool.setBaseToolId(BaseUtil.strToLong(baseToolId));
-		tool.setStoreId(BaseUtil.strToLong(storeId));
-		tool.setPosId(BaseUtil.strToLong(positionId));
-		tool.setToolBox(toolBox);
-		tool.setToolRemark(toolRemark);
-		tool.setToolNextTestDate(DateUtil.addMonth(DateUtil.StringToDate(toolTestDate, DateStyle.YYYY_MM_DD),
-				Integer.parseInt(toolTestDateCircle)));
-		return toolService.updateTool(tool);
+		String plugInRemark = request.getParameter("PLUGIN_REMARK");
+		PlugIn plugIn = new PlugIn();
+		plugIn.setPlugInId(BaseUtil.strToLong(plugInId));
+		plugIn.setPlugInCode(plugInCode);
+		plugIn.setPlugInManDate(DateUtil.StringToDate(plugInManufactureDate));
+		plugIn.setBaseToolId(BaseUtil.strToLong(baseToolId));
+		plugIn.setStoreId(BaseUtil.strToLong(storeId));
+		plugIn.setPosId(BaseUtil.strToLong(positionId));
+		plugIn.setPlugInRemark(plugInRemark);
+		return plugInService.updatePlugIn(plugIn);
 	}
 
 	/**
@@ -188,7 +150,7 @@ public class BPBJToolController extends BaseController {
 	 */
 	@RequestMapping(value = "/openChooseStorageUI.do", method = RequestMethod.GET)
 	public ModelAndView openChooseStorageUI(HttpServletRequest request, HttpServletResponse response) {
-		return new ModelAndView("/bpbj/tool/chooseStorageUI");
+		return new ModelAndView("/bpbj/plugIn/chooseStorageUI");
 	}
 
 	/**
@@ -247,46 +209,31 @@ public class BPBJToolController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryToolInventorysPage.do")
+	@RequestMapping("/queryPlugInInventorysPage.do")
 	@ResponseBody
-	public Map<String, Object> queryToolInventorysPage(HttpServletRequest request, HttpServletResponse response)
+	public Map<String, Object> queryPlugInInventorysPage(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		long toolDeptId = getSessionUser(request, response).getUserDeptId();
+		long plugInDeptId = getSessionUser(request, response).getUserDeptId();
 		String keyWord = request.getParameter("keyWord");
-		String dateType = request.getParameter("DATE_TYPE");
 		String storeId = request.getParameter("STORE_ID");
 		String posId = request.getParameter("POS_ID");
-		String baseToolTypeId = request.getParameter("BASE_TOOL_TYPE_ID");
-		String manufacturerId = request.getParameter("MANUFACTURER_ID");
-		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
+		String manufacturerId = request.getParameter("MAN_ID");
+		String basePlugInModel = request.getParameter("BASE_TOOL_MODEL");
+		String basePlugInSpec = request.getParameter("BASE_TOOL_SPEC");
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		param.put("storeId", storeId);
 		param.put("posId", posId);
 		param.put("keyWord", keyWord);
 		param.put("currPage", page);
 		param.put("pageSize", rows);
-		param.put("toolDeptId", toolDeptId);
-		param.put("baseToolTypeId", baseToolTypeId);
+		param.put("plugInDeptId", plugInDeptId);
+		param.put("basePlugInTypeId", 1);
 		param.put("manufacturerId", manufacturerId);
-		param.put("baseToolModel", baseToolModel);
-		param.put("baseToolSpec", baseToolSpec);
-		if ("ALL".equals(dateType)) {
-			// 不设置参数
-		} else if ("OVER_TEST".equals(dateType)) {
-			param.put("toolStatus", ToolStatus.CHECK_IN);
-			// 计算超期的日期
-			int days = BaseUtil.strToInt(paramService.queryParamsForMap("BEFORE_TEST_DAYS"));
-			String date = DateUtil.addDay(DateUtil.getNow(), days);
-			param.put("overTestDays", date);
-		} else if ("OVER_REJECT".equals(dateType)) {
-			param.put("toolStatus", ToolStatus.CHECK_IN);
-			// 当天日期
-			param.put("overRejectDays", DateUtil.getNow());
-		}
-		return toolService.selectToolsForPage(param);
+		param.put("basePlugInModel", basePlugInModel);
+		param.put("basePlugInSpec", basePlugInSpec);
+		return plugInService.selectPlugInsForPage(param);
 	}
 
 	/**
@@ -296,7 +243,7 @@ public class BPBJToolController extends BaseController {
 	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
-		return new ModelAndView("/bpbj/tool/index");
+		return new ModelAndView("/bpbj/plugIn/index");
 	}
 
 }

@@ -28,10 +28,10 @@ import com.bpbj.entity.PlugInTrack;
 import com.bpbj.service.IBPBJBatchService;
 import com.bpbj.service.IBPBJHomePageService;
 import com.bpbj.service.IBPBJSequenceService;
-import com.bpbj.service.IBPBJToolService;
-import com.bpbj.service.IBPBJToolTrackService;
+import com.bpbj.service.IBPBJPlugInService;
+import com.bpbj.service.IBPBJPlugInTrackService;
 import com.bpbj.util.BatchType;
-import com.bpbj.util.ToolStatus;
+import com.bpbj.util.PlugInStatus;
 
 @Controller
 @RequestMapping("/bpbj/homepage")
@@ -61,7 +61,7 @@ public class BPBJHomePageController extends BaseController {
 	}
 	
 	@Autowired
-	private IBPBJToolService toolService;
+	private IBPBJPlugInService toolService;
 	
 	@Autowired
 	private IParamService paramService;
@@ -96,7 +96,7 @@ public class BPBJHomePageController extends BaseController {
 			param.put("toolDeptId", toolDeptId);
 		} else if ("OVER_TEST".equals(dateType)) {
 			param.put("toolDeptId", toolDeptId);
-			param.put("toolStatus", ToolStatus.CHECK_IN);
+			param.put("toolStatus", PlugInStatus.CHECK_IN);
 			// 计算超期的日期
 			int days = BaseUtil.strToInt(paramService
 					.queryParamsForMap("BEFORE_TEST_DAYS"));
@@ -105,7 +105,7 @@ public class BPBJHomePageController extends BaseController {
 			param.put("overDays", date);
 		} else if ("OVER_REJECT".equals(dateType)) {
 			param.put("toolDeptId", toolDeptId);
-			param.put("toolStatus", ToolStatus.CHECK_IN);
+			param.put("toolStatus", PlugInStatus.CHECK_IN);
 			// 当天日期
 			param.put("overRejectDays", DateUtil.getNow());
 		}
@@ -130,7 +130,7 @@ public class BPBJHomePageController extends BaseController {
 	private IBPBJBatchService batchService;
 
 	@Autowired
-	private IBPBJToolTrackService toolTrackService;
+	private IBPBJPlugInTrackService toolTrackService;
 
 	/**
 	 * 添加仓位信息
@@ -297,7 +297,7 @@ public class BPBJHomePageController extends BaseController {
 			temp.setToolCode(toolCode);
 			temp.setToolDeptId(
 					getSessionUser(request, response).getUserDeptId());
-			temp.setToolStatus(ToolStatus.CHECK_IN);
+			temp.setToolStatus(PlugInStatus.CHECK_IN);
 			List<PlugInTrack> track = toolTrackService
 					.selectToolTracksForList(temp);
 			tool.setStoreId(track.get(0).getStoreId());

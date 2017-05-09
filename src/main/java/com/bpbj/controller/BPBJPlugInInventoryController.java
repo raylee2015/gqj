@@ -14,50 +14,40 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.base.admin.service.IParamService;
 import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
-import com.base.util.DateUtil;
 import com.bpbj.entity.Manufacturer;
+import com.bpbj.entity.PlugInTrack;
 import com.bpbj.entity.Position;
 import com.bpbj.entity.Storage;
-import com.bpbj.entity.PlugInTrack;
-import com.bpbj.entity.ToolType;
 import com.bpbj.service.IBPBJManufacturerService;
+import com.bpbj.service.IBPBJPlugInService;
+import com.bpbj.service.IBPBJPlugInTrackService;
 import com.bpbj.service.IBPBJPositionService;
 import com.bpbj.service.IBPBJStorageService;
-import com.bpbj.service.IBPBJToolService;
-import com.bpbj.service.IBPBJToolTrackService;
-import com.bpbj.service.IBPBJToolTypeService;
-import com.bpbj.util.ToolStatus;
 
 @Controller
-@RequestMapping("/bpbj/tool_inventory")
-public class BPBJToolInventoryController
+@RequestMapping("/bpbj/plugIn_inventory")
+public class BPBJPlugInInventoryController
 		extends BaseController {
 	public static final Logger LOGGER = Logger
-			.getLogger(BPBJToolInventoryController.class);
+			.getLogger(BPBJPlugInInventoryController.class);
 
 	@Autowired
 	private IBPBJPositionService positionService;
 
 	@Autowired
-	private IBPBJToolTrackService toolTrackService;
+	private IBPBJPlugInTrackService plugInTrackService;
 
 	@Autowired
 	private IBPBJStorageService storageService;
 
 	@Autowired
-	private IBPBJToolService toolService;
+	private IBPBJPlugInService plugInService;
 
 	@Autowired
 	private IBPBJManufacturerService manufacturerService;
 
-	@Autowired
-	private IBPBJToolTypeService toolTypeService;
-
-	@Autowired
-	private IParamService paramService;
 
 	/**
 	 * 查询下拉列表
@@ -66,27 +56,9 @@ public class BPBJToolInventoryController
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryBaseToolTypeDropList.do")
+	@RequestMapping("/queryBasePlugInManufacturerDropList.do")
 	@ResponseBody
-	public void queryBaseToolTypeDropList(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		response.getWriter().print(toolTypeService
-				.selectToolTypesForList(new ToolType()));
-		response.getWriter().flush();
-		response.getWriter().close();
-	}
-
-	/**
-	 * 查询下拉列表
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryBaseToolManufacturerDropList.do")
-	@ResponseBody
-	public void queryBaseToolManufacturerDropList(
+	public void queryBasePlugInManufacturerDropList(
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		response.getWriter()
@@ -107,7 +79,7 @@ public class BPBJToolInventoryController
 			HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView(
-				"/bpbj/tool_inventory/choosePositionUI");
+				"/bpbj/plugIn_inventory/choosePositionUI");
 	}
 
 	/**
@@ -120,7 +92,7 @@ public class BPBJToolInventoryController
 			HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView(
-				"/bpbj/tool_inventory/chooseStorageUI");
+				"/bpbj/plugIn_inventory/chooseStorageUI");
 	}
 
 	/**
@@ -157,22 +129,22 @@ public class BPBJToolInventoryController
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryToolTracksForPage.do")
+	@RequestMapping("/queryPlugInTracksForPage.do")
 	@ResponseBody
-	public Map<String, Object> queryToolTracksForPage(
+	public Map<String, Object> queryPlugInTracksForPage(
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
-		String toolId = request.getParameter("TOOL_ID");
-		PlugInTrack toolTrack = new PlugInTrack();
-		toolTrack.setCurrPage(BaseUtil.strToInt(page));
-		toolTrack.setPageSize(BaseUtil.strToInt(rows));
-		toolTrack.setKeyWord(keyWord);
-		toolTrack.setToolId(BaseUtil.strToLong(toolId));
-		return toolTrackService
-				.selectToolTracksForPage(toolTrack);
+		String plugInId = request.getParameter("PLUGIN_ID");
+		PlugInTrack plugInTrack = new PlugInTrack();
+		plugInTrack.setCurrPage(BaseUtil.strToInt(page));
+		plugInTrack.setPageSize(BaseUtil.strToInt(rows));
+		plugInTrack.setKeyWord(keyWord);
+		plugInTrack.setPlugInId(BaseUtil.strToLong(plugInId));
+		return plugInTrackService
+				.selectPlugInTracksForPage(plugInTrack);
 	}
 
 	/**
@@ -190,17 +162,10 @@ public class BPBJToolInventoryController
 			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		String dateType = request.getParameter("DATE_TYPE");
 		String keyWord = request.getParameter("keyWord");
 		Storage storage = new Storage();
 		storage.setCurrPage(BaseUtil.strToInt(page));
 		storage.setPageSize(BaseUtil.strToInt(rows));
-		if (!"ALL".equals(dateType)) {
-			long storageDeptId = getSessionUser(request,
-					response).getUserDeptId();
-			storage.setStoreDeptId(storageDeptId);
-		}
-
 		storage.setKeyWord(keyWord);
 		return storageService
 				.selectStoragesForPage(storage);
@@ -214,26 +179,21 @@ public class BPBJToolInventoryController
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryToolInventorysPage.do")
+	@RequestMapping("/queryPlugInInventorysPage.do")
 	@ResponseBody
-	public Map<String, Object> queryToolInventorysPage(
+	public Map<String, Object> queryPlugInInventorysPage(
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		long toolDeptId = getSessionUser(request, response)
-				.getUserDeptId();
 		String keyWord = request.getParameter("keyWord");
-		String dateType = request.getParameter("DATE_TYPE");
 		String storeId = request.getParameter("STORE_ID");
 		String posId = request.getParameter("POS_ID");
-		String baseToolTypeId = request
-				.getParameter("BASE_TOOL_TYPE_ID");
 		String manufacturerId = request
-				.getParameter("MANUFACTURER_ID");
-		String baseToolModel = request
+				.getParameter("MAN_ID");
+		String basePlugInModel = request
 				.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request
+		String basePlugInSpec = request
 				.getParameter("BASE_TOOL_SPEC");
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		param.put("storeId", storeId);
@@ -241,31 +201,10 @@ public class BPBJToolInventoryController
 		param.put("keyWord", keyWord);
 		param.put("currPage", page);
 		param.put("pageSize", rows);
-
-		param.put("baseToolTypeId", baseToolTypeId);
 		param.put("manufacturerId", manufacturerId);
-		param.put("baseToolModel", baseToolModel);
-		param.put("baseToolSpec", baseToolSpec);
-		if ("ALL".equals(dateType)) {
-			// 不设置参数
-		} else if ("MY_DEPT".equals(dateType)) {
-			param.put("toolDeptId", toolDeptId);
-		} else if ("OVER_TEST".equals(dateType)) {
-			param.put("toolDeptId", toolDeptId);
-			param.put("toolStatus", ToolStatus.CHECK_IN);
-			// 计算超期的日期
-			int days = BaseUtil.strToInt(paramService
-					.queryParamsForMap("BEFORE_TEST_DAYS"));
-			String date = DateUtil.addDay(DateUtil.getNow(),
-					days);
-			param.put("overTestDays", date);
-		} else if ("OVER_REJECT".equals(dateType)) {
-			param.put("toolDeptId", toolDeptId);
-			param.put("toolStatus", ToolStatus.CHECK_IN);
-			// 当天日期
-			param.put("overRejectDays", DateUtil.getNow());
-		}
-		return toolService.selectToolsForPage(param);
+		param.put("basePlugInModel", basePlugInModel);
+		param.put("basePlugInSpec", basePlugInSpec);
+		return plugInService.selectPlugInsForPage(param);
 	}
 
 	/**
@@ -276,7 +215,7 @@ public class BPBJToolInventoryController
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
 		return new ModelAndView(
-				"/bpbj/tool_inventory/index");
+				"/bpbj/plugIn_inventory/index");
 	}
 
 }

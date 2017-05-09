@@ -38,10 +38,10 @@ import com.bpbj.service.IBPBJManufacturerService;
 import com.bpbj.service.IBPBJPositionService;
 import com.bpbj.service.IBPBJSequenceService;
 import com.bpbj.service.IBPBJStorageService;
-import com.bpbj.service.IBPBJToolTrackService;
+import com.bpbj.service.IBPBJPlugInTrackService;
 import com.bpbj.service.IBPBJToolTypeService;
 import com.bpbj.util.BatchType;
-import com.bpbj.util.ToolStatus;
+import com.bpbj.util.PlugInStatus;
 
 @Controller
 @RequestMapping("/bpbj/tool_batch")
@@ -56,7 +56,7 @@ public class BPBJBatchController extends BaseController {
 	private IBPBJBatchService batchService;
 
 	@Autowired
-	private IBPBJToolTrackService toolTrackService;
+	private IBPBJPlugInTrackService toolTrackService;
 
 	@Autowired
 	private IDeptService deptService;
@@ -242,7 +242,7 @@ public class BPBJBatchController extends BaseController {
 			temp.setToolCode(toolCode);
 			temp.setToolDeptId(
 					getSessionUser(request, response).getUserDeptId());
-			temp.setToolStatus(ToolStatus.CHECK_IN);
+			temp.setToolStatus(PlugInStatus.CHECK_IN);
 			List<PlugInTrack> track = toolTrackService
 					.selectToolTracksForList(temp);
 			tool.setStoreId(track.get(0).getStoreId());

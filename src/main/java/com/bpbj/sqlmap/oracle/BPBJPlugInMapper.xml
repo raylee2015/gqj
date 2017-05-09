@@ -24,7 +24,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from
-		BPBJ_PLUGIN
+		VIEW_BPBJ_PLUGIN
 		<where>
 			<if test="plugInCode != null">
 				AND PLUGIN_CODE=#{plugInCode}
