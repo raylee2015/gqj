@@ -61,7 +61,7 @@ public class BPBJHomePageController extends BaseController {
 	}
 	
 	@Autowired
-	private IBPBJPlugInService toolService;
+	private IBPBJPlugInService plugInService;
 	
 	@Autowired
 	private IParamService paramService;
@@ -74,14 +74,14 @@ public class BPBJHomePageController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryToolInventorysPage.do")
+	@RequestMapping("/queryPlugInInventorysPage.do")
 	@ResponseBody
-	public Map<String, Object> queryToolInventorysPage(
+	public Map<String, Object> queryPlugInInventorysPage(
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		long toolDeptId = getSessionUser(request, response)
+		long plugInDeptId = getSessionUser(request, response)
 				.getUserDeptId();
 		String keyWord = request.getParameter("keyWord");
 		String dateType = request.getParameter("DATE_TYPE");
@@ -93,10 +93,10 @@ public class BPBJHomePageController extends BaseController {
 		if ("ALL".equals(dateType)) {
 			// 不设置参数
 		} else if ("MY_DEPT".equals(dateType)) {
-			param.put("toolDeptId", toolDeptId);
+			param.put("plugInDeptId", plugInDeptId);
 		} else if ("OVER_TEST".equals(dateType)) {
-			param.put("toolDeptId", toolDeptId);
-			param.put("toolStatus", PlugInStatus.CHECK_IN);
+			param.put("plugInDeptId", plugInDeptId);
+			param.put("plugInStatus", PlugInStatus.CHECK_IN);
 			// 计算超期的日期
 			int days = BaseUtil.strToInt(paramService
 					.queryParamsForMap("BEFORE_TEST_DAYS"));
@@ -104,12 +104,12 @@ public class BPBJHomePageController extends BaseController {
 					days);
 			param.put("overDays", date);
 		} else if ("OVER_REJECT".equals(dateType)) {
-			param.put("toolDeptId", toolDeptId);
-			param.put("toolStatus", PlugInStatus.CHECK_IN);
+			param.put("plugInDeptId", plugInDeptId);
+			param.put("plugInStatus", PlugInStatus.CHECK_IN);
 			// 当天日期
 			param.put("overRejectDays", DateUtil.getNow());
 		}
-		return toolService.selectToolsForPage(param);
+		return plugInService.selectPlugInsForPage(param);
 	}
 
 	/**
@@ -117,10 +117,10 @@ public class BPBJHomePageController extends BaseController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/openAddToolsUI.do", method = RequestMethod.GET)
-	public String openAddToolsUI(HttpServletRequest request,
+	@RequestMapping(value = "/openAddPlugInsUI.do", method = RequestMethod.GET)
+	public String openAddPlugInsUI(HttpServletRequest request,
 			HttpServletResponse response) {
-		return "/bpbj/homepage/addToolsUIForReturn";
+		return "/bpbj/homepage/addPlugInsUIForReturn";
 	}
 
 	@Autowired
@@ -130,7 +130,7 @@ public class BPBJHomePageController extends BaseController {
 	private IBPBJBatchService batchService;
 
 	@Autowired
-	private IBPBJPlugInTrackService toolTrackService;
+	private IBPBJPlugInTrackService plugInTrackService;
 
 	/**
 	 * 添加仓位信息
@@ -153,29 +153,29 @@ public class BPBJHomePageController extends BaseController {
 		String posId = request.getParameter("POS_ID");
 		String storeName = request.getParameter("STORE_NAME");
 		String posName = request.getParameter("POS_NAME");
-		String baseToolId = request.getParameter("BASE_TOOL_ID");
-		String baseToolName = request.getParameter("BASE_TOOL_NAME");
-		String baseToolManName = request
+		String basePlugInId = request.getParameter("BASE_TOOL_ID");
+		String basePlugInName = request.getParameter("BASE_TOOL_NAME");
+		String basePlugInManName = request
 				.getParameter("BASE_TOOL_MANUFACTURER_NAME");
-		String baseToolTypeId = request
+		String basePlugInTypeId = request
 				.getParameter("BASE_TOOL_TYPE_ID");
-		String baseToolTypeName = request
+		String basePlugInTypeName = request
 				.getParameter("BASE_TOOL_TYPE_NAME");
-		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
+		String basePlugInModel = request.getParameter("BASE_TOOL_MODEL");
+		String basePlugInSpec = request.getParameter("BASE_TOOL_SPEC");
 		String batchRemark = request.getParameter("BATCH_REMARK");
 		String batchTakeDeptId = request
 				.getParameter("BATCH_TAKE_DEPT_ID");
-		String toolCode = request.getParameter("TOOL_CODE");
-		String toolBox = request.getParameter("TOOL_BOX");
-		String toolDate = request.getParameter("TOOL_TEST_DATE");
-		String toolRejectDate = request
+		String plugInCode = request.getParameter("TOOL_CODE");
+		String plugInBox = request.getParameter("TOOL_BOX");
+		String plugInDate = request.getParameter("TOOL_TEST_DATE");
+		String plugInRejectDate = request
 				.getParameter("TOOL_REJECT_DATE");
-		String toolManufactureDate = request
+		String plugInManufactureDate = request
 				.getParameter("TOOL_MANUFACTURE_DATE");
-		String toolPurchaseDate = request
+		String plugInPurchaseDate = request
 				.getParameter("TOOL_PURCHASE_DATE");
-		String toolDateCircle = request
+		String plugInDateCircle = request
 				.getParameter("TOOL_TEST_DATE_CIRCLE");
 		Batch batch = new Batch();
 		batch.setBatchCode(batchCode);
@@ -189,128 +189,27 @@ public class BPBJHomePageController extends BaseController {
 		batch.setBatchRemark(batchRemark);
 		batch.setBatchReturnUserId(
 				BaseUtil.strToLong(batchReturnUserId));
-		PlugIn tool = new PlugIn();
-		tool.setToolCode(toolCode);
+		PlugIn plugIn = new PlugIn();
+		plugIn.setPlugInCode(plugInCode);
 		if (storeId != null && storeId != "") {
-			tool.setStoreId(BaseUtil.strToLong(storeId));
+			plugIn.setStoreId(BaseUtil.strToLong(storeId));
 		}
 		if (posId != null && posId != "") {
-			tool.setPosId(BaseUtil.strToLong(posId));
+			plugIn.setPosId(BaseUtil.strToLong(posId));
 		}
-		if (toolBox != null && toolBox != "") {
-			tool.setToolBox(toolBox);
-		}
-		tool.setToolDeptId(
+		plugIn.setPlugInDeptId(
 				getSessionUser(request, response).getUserDeptId());
-		if (toolDate != null && toolDate != "") {
-			tool.setToolTestDate(DateUtil.StringToDate(toolDate,
-					DateStyle.YYYY_MM_DD));
-		}
-		if (toolRejectDate != null && toolRejectDate != "") {
-			tool.setToolRejectDate(DateUtil.StringToDate(toolRejectDate,
-					DateStyle.YYYY_MM_DD));
-		}
-		if (toolDateCircle != null && toolDateCircle != "") {
-			tool.setToolTestDateCircle(
-					Double.parseDouble(toolDateCircle));
-			tool.setToolNextTestDate(DateUtil.addMonth(
-					DateUtil.StringToDate(toolDate,
-							DateStyle.YYYY_MM_DD),
-					Integer.parseInt(toolDateCircle)));
-		}
-		if (toolManufactureDate != null && toolManufactureDate != "") {
-			tool.setToolManufactureDate(DateUtil.StringToDate(
-					toolManufactureDate, DateStyle.YYYY_MM_DD));
-		}
-		if (toolPurchaseDate != null && toolPurchaseDate != "") {
-			tool.setToolPurchaseDate(DateUtil.StringToDate(
-					toolPurchaseDate, DateStyle.YYYY_MM_DD));
-		}
-		if (baseToolId != null && baseToolId != "") {
-			tool.setBaseToolId(BaseUtil.strToLong(baseToolId));
-		}
-		tool.setToolRemark(batchRemark);
+		plugIn.setPlugInRemark(batchRemark);
 
-		PlugInTrack toolTrack = new PlugInTrack();
-		toolTrack.setBatchCode(batchCode);
-		toolTrack.setToolCode(toolCode);
+		PlugInTrack plugInTrack = new PlugInTrack();
 		if (storeId != null && storeId != "") {
-			toolTrack.setStoreId(BaseUtil.strToLong(storeId));
+			plugInTrack.setStoreId(BaseUtil.strToLong(storeId));
 		}
 		if (posId != null && posId != "") {
-			toolTrack.setPosId(BaseUtil.strToLong(posId));
+			plugInTrack.setPosId(BaseUtil.strToLong(posId));
 		}
-		if (toolBox != null && toolBox != "") {
-			toolTrack.setToolBox(toolBox);
-		}
-		toolTrack.setTrackCreateUserId(
-				getSessionUser(request, response).getUserId());
-		toolTrack.setTrackCreateTime(new Date());
-		if (baseToolId != null && baseToolId != "") {
-			toolTrack.setBaseToolId(BaseUtil.strToLong(baseToolId));
-		}
-		if (toolDate != null && toolDate != "") {
-			toolTrack.setToolTestDate(DateUtil
-					.StringToDate(toolDate, DateStyle.YYYY_MM_DD));
-		}
-		if (toolRejectDate != null && toolRejectDate != "") {
-			toolTrack.setToolRejectDate(DateUtil.StringToDate(
-					toolRejectDate, DateStyle.YYYY_MM_DD));
-		}
-		if (toolDateCircle != null && toolDateCircle != "") {
-			toolTrack.setToolTestDateCircle(
-					Double.parseDouble(toolDateCircle));
-			toolTrack.setToolNextTestDate(DateUtil.addMonth(
-					DateUtil.StringToDate(toolDate,
-							DateStyle.YYYY_MM_DD),
-					Integer.parseInt(toolDateCircle)));
-		}
-		if (baseToolId != null && baseToolId != "") {
-			toolTrack.setBaseToolName(baseToolName);
-			toolTrack.setBaseToolTypeId(
-					BaseUtil.strToLong(baseToolTypeId));
-			toolTrack.setBaseToolTypeName(baseToolTypeName);
-			toolTrack.setBaseToolModel(baseToolModel);
-			toolTrack.setBaseToolSpec(baseToolSpec);
-			toolTrack.setBaseToolManufacturerName(baseToolManName);
-		}
-		if (toolManufactureDate != null && toolManufactureDate != "") {
-			toolTrack.setToolManufactureDate(DateUtil.StringToDate(
-					toolManufactureDate, DateStyle.YYYY_MM_DD));
-		}
-		if (toolPurchaseDate != null && toolPurchaseDate != "") {
-			toolTrack.setToolPurchaseDate(DateUtil.StringToDate(
-					toolPurchaseDate, DateStyle.YYYY_MM_DD));
-		}
-		if (posName != null && posName != "") {
-			toolTrack.setPosName(posName);
-		}
-		if (storeName != null && storeName != "") {
-			toolTrack.setStoreName(storeName);
-		}
-		toolTrack.setToolDeptId(
-				getSessionUser(request, response).getUserDeptId());
-
-		if (BaseUtil.strToLong(batchType) == BatchType.RETURN) {
-			// 查询工器具的本部门最早入库的位置
-			PlugInTrack temp = new PlugInTrack();
-			temp.setToolCode(toolCode);
-			temp.setToolDeptId(
-					getSessionUser(request, response).getUserDeptId());
-			temp.setToolStatus(PlugInStatus.CHECK_IN);
-			List<PlugInTrack> track = toolTrackService
-					.selectToolTracksForList(temp);
-			tool.setStoreId(track.get(0).getStoreId());
-			toolTrack.setStoreId(track.get(0).getStoreId());
-			tool.setPosId(track.get(0).getPosId());
-			toolTrack.setPosId(track.get(0).getPosId());
-			toolTrack.setStoreName(track.get(0).getStoreName());
-			toolTrack.setPosName(track.get(0).getPosName());
-			tool.setToolBox(track.get(0).getToolBox());
-			toolTrack.setToolBox(track.get(0).getToolBox());
-		}
-		return batchService.addNewBatchsAndDetails(batch, tool,
-				toolTrack);
+		return batchService.addNewBatchsAndDetails(batch, plugIn,
+				plugInTrack);
 	}
 
 	/**
@@ -348,29 +247,5 @@ public class BPBJHomePageController extends BaseController {
 
 	@Autowired
 	private IBPBJHomePageService homePageService;
-
-	/**
-	 * 查询需要归还的工器具
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryNeedReturnTools.do")
-	@ResponseBody
-	public Map<String, Object> queryNeedReturnTools(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		String page = request.getParameter("page");
-		String rows = request.getParameter("rows");
-		String keyWord = request.getParameter("keyWord");
-		HashMap<String, Object> param = new HashMap<String, Object>();
-		param.put("keyWord", keyWord);
-		param.put("currPage", page);
-		param.put("pageSize", rows);
-		param.put("tool_dept_id",
-				getSessionUser(request, response).getUserDeptId());
-		return homePageService.selectNeedReturnToolsForPage(param);
-	}
 
 }

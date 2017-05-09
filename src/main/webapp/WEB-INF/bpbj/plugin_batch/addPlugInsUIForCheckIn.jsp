@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java"
+	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
 	String batchType = request.getParameter("BATCH_TYPE");
@@ -12,7 +12,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type"
+	content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=8">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -30,15 +31,13 @@
 	src="<%=contextPath%>/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="<%=contextPath%>/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript" src="<%=contextPath%>/js/base.js"></script>
+<script type="text/javascript"
+	src="<%=contextPath%>/js/base.js"></script>
 <script type="text/javascript">
 	//页面加载完
 	$(document).ready(
 			function() {
 				closeCache();
-				initDataGridForUser();
-				registerKeyPressForTextInput('keyWordForUserTextInput',
-						queryUserPagesForSearch);
 
 				initDataGridForStorage();
 				registerKeyPressForTextInput('keyWordForStorageTextInput',
@@ -48,11 +47,7 @@
 				registerKeyPressForTextInput('keyWordForPositionTextInput',
 						queryPositionPagesForSearch);
 
-				initDataGridForDept();
-				registerKeyPressForTextInput('keyWordForDeptTextInput',
-						queryDeptPagesForSearch);
-
-				//queryNewBatchCode();
+				queryNewBatchCode();
 
 				initDataGridForBaseTool();
 				registerKeyPressForTextInput('keyWordForBaseToolTextInput',
@@ -62,9 +57,7 @@
 				registerKeyPressForTextInput('baseToolModelTextBox',
 						queryBaseToolPagesForSearch);
 
-				registerKeyPressForTextInput('toolCodeTextInput', saveBatch);
-
-				var batchType = getTextBoxValue('batchTypeTextInput');
+				registerKeyPressForTextInput('plugInCodeTextInput', saveBatch);
 			});
 
 	//查询批次编号
@@ -105,33 +98,13 @@
 		dataGridLoadData('datagridForStorage', result);
 	}
 
-	//用在点击查询按钮的时候
-	function queryUserPagesForSearch() {
-		queryUsers();
-	}
-
-	//查询
-	function queryUsers() {
-		var params = {
-			keyWord : getTextBoxValue('keyWordForUserTextInput'),
-			page : 1,
-			rows : getPageSizeOfDataGrid('datagridForUser')
-		};
-		query(params, 'queryUsersPage.do', successFunctionForQueryUsers);
-	}
-
-	//回调函数，查询成功后调用
-	function successFunctionForQueryUsers(result) {
-		dataGridLoadData('datagridForUser', result);
-	}
-
 	//初始化列表元素
 	function initDataGridForStorage() {
 		$('#datagridForStorage').datagrid({
-			//url : 'queryStoragesPage.do',
+			url : 'queryStoragesPage.do',
 			idField : 'STORE_ID',
 			rownumbers : true,
-			toolbar : '#toolbarForStorage',
+			toolbar : '#plugInbarForStorage',
 			pagination : true,
 			pageSize : 30,
 			pageNumber : 1,
@@ -148,40 +121,6 @@
 			} ] ],
 			onBeforeLoad : function(param) {
 				param.keyWord = getTextBoxValue('keyWordForStorageTextInput');
-			},
-			onLoadError : function() {
-				errorFunctionForQuery();
-			}
-		});
-	}
-
-	//初始化列表元素
-	function initDataGridForUser() {
-		$('#datagridForUser').datagrid({
-			//url : 'queryUsersPage.do',
-			idField : 'USER_ID',
-			rownumbers : true,
-			toolbar : '#toolbarForUser',
-			pagination : true,
-			pageSize : 30,
-			pageNumber : 1,
-			checkOnSelect : false,
-			fit : true,
-			method : 'get',
-			columns : [ [ {
-				field : 'ck',
-				checkbox : true
-			}, {
-				field : 'USER_NAME',
-				title : '人员名称',
-				width : 150
-			}, {
-				field : 'DEPT_NAME',
-				title : '所属部门',
-				width : 150
-			} ] ],
-			onBeforeLoad : function(param) {
-				param.keyWord = getTextBoxValue('keyWordForUserTextInput');
 			},
 			onLoadError : function() {
 				errorFunctionForQuery();
@@ -233,7 +172,7 @@
 		$('#datagridForPosition').datagrid({
 			idField : 'POS_ID',
 			rownumbers : true,
-			toolbar : '#toolbarForPosition',
+			toolbar : '#plugInbarForPosition',
 			pagination : true,
 			pageSize : 30,
 			pageNumber : 1,
@@ -283,8 +222,6 @@
 	//查询基础信息
 	function queryBaseTools() {
 		var params = {
-			BASE_TOOL_TYPE_ID : getComboBoxValue('baseToolTypeComboBox'),
-			MANUFACTURER_ID : getComboBoxValue('baseToolManufacturerComboBox'),
 			keyWord : getTextBoxValue('keyWordForBaseToolTextInput'),
 			BASE_TOOL_MODEL : getTextBoxValue('baseToolModelTextBox'),
 			BASE_TOOL_SPEC : getTextBoxValue('baseToolSpecTextBox'),
@@ -304,10 +241,10 @@
 		$('#datagridForBaseTool')
 				.datagrid(
 						{
-							//url : 'queryBaseToolsPage.do',
+							url : 'queryBaseToolsPage.do',
 							idField : 'TOOL_ID',
 							rownumbers : true,
-							toolbar : '#toolbarForBaseTool',
+							toolbar : '#plugInbarForBaseTool',
 							pagination : true,
 							pageSize : 30,
 							pageNumber : 1,
@@ -317,10 +254,6 @@
 							columns : [ [ {
 								field : 'ck',
 								checkbox : true
-							}, {
-								field : 'BASE_TOOL_TYPE_NAME',
-								title : '类型',
-								width : 100
 							}, {
 								field : 'BASE_TOOL_NAME',
 								title : '名称',
@@ -340,8 +273,7 @@
 							} ] ],
 							onBeforeLoad : function(param) {
 								param.keyWord = getTextBoxValue('keyWordForBaseToolTextInput');
-								param.BASE_TOOL_TYPE_ID = getComboBoxValue('baseToolTypeComboBox');
-								param.MANUFACTURER_ID = getComboBoxValue('baseToolManufacturerComboBox');
+								param.BASE_TOOL_TYPE = 0;
 								param.BASE_TOOL_MODEL = getTextBoxValue('baseToolModelTextBox');
 								param.BASE_TOOL_SPEC = getTextBoxValue('baseToolSpecTextBox');
 							},
@@ -354,19 +286,7 @@
 	function chooseBaseTool() {
 		var selectedItems = $('#datagridForBaseTool').datagrid('getChecked');
 		setTextBoxValue('baseToolIdTextInput', selectedItems[0].BASE_TOOL_ID);
-		setTextBoxValue('baseToolNameTextInput',
-				selectedItems[0].BASE_TOOL_NAME);
-		setTextBoxValue('baseToolTypeIdTextInput',
-				selectedItems[0].BASE_TOOL_TYPE_ID);
-		setTextBoxValue('baseToolTypeNameTextInput',
-				selectedItems[0].BASE_TOOL_TYPE_NAME);
-		setTextBoxValue('baseToolModelTextInput',
-				selectedItems[0].BASE_TOOL_MODEL);
-		setTextBoxValue('baseToolSpecTextInput',
-				selectedItems[0].BASE_TOOL_SPEC);
-		setTextBoxValue('baseToolManNameTextInput',
-				selectedItems[0].BASE_TOOL_MANUFACTURER_NAME);
-		$('#baseToolNameBtn').linkbutton({
+		$('#basePlugInNameBtn').linkbutton({
 			text : selectedItems[0].BASE_TOOL_NAME,
 		});
 		openFormPanel();
@@ -378,8 +298,6 @@
 		$('#chooseBaseToolPanel').panel('collapse');
 		$('#choosePositionPanel').panel('collapse');
 		$('#chooseStoragePanel').panel('collapse');
-		$('#chooseDeptPanel').panel('collapse');
-		$('#chooseUserPanel').panel('collapse');
 	}
 
 	//打开选择类型版面
@@ -388,7 +306,6 @@
 		$('#chooseBaseToolPanel').panel('expand');
 		$('#choosePositionPanel').panel('collapse');
 		$('#chooseStoragePanel').panel('collapse');
-		$('#chooseDeptPanel').panel('collapse');
 	}
 
 	//打开选择仓位版面
@@ -403,11 +320,6 @@
 		$('#chooseBaseToolPanel').panel('collapse');
 		$('#choosePositionPanel').panel('expand');
 		$('#chooseStoragePanel').panel('collapse');
-		$('#chooseDeptPanel').panel('collapse');
-		var batchType = getTextBoxValue('batchTypeTextInput');
-		if (batchType == 6) {
-			$('#chooseUserPanel').panel('collapse');
-		}
 	}
 
 	//打开选择仓库版面
@@ -416,11 +328,6 @@
 		$('#chooseBaseToolPanel').panel('collapse');
 		$('#choosePositionPanel').panel('collapse');
 		$('#chooseStoragePanel').panel('expand');
-		$('#chooseDeptPanel').panel('collapse');
-		var batchType = getTextBoxValue('batchTypeTextInput');
-		if (batchType == 6) {
-			$('#chooseUserPanel').panel('collapse');
-		}
 	}
 
 	//打开选择仓库版面
@@ -429,8 +336,6 @@
 		$('#chooseBaseToolPanel').panel('collapse');
 		$('#choosePositionPanel').panel('collapse');
 		$('#chooseStoragePanel').panel('collapse');
-		$('#chooseDeptPanel').panel('collapse');
-		$('#chooseUserPanel').panel('expand');
 	}
 
 	//打开选择领用部门版面
@@ -439,7 +344,6 @@
 		$('#chooseBaseToolPanel').panel('collapse');
 		$('#choosePositionPanel').panel('collapse');
 		$('#chooseStoragePanel').panel('collapse');
-		$('#chooseDeptPanel').panel('expand');
 	}
 
 	// 保存数据
@@ -449,43 +353,9 @@
 		var batchRemark = getTextBoxValue('batchRemarkTextInput');
 		var batchType = getTextBoxValue('batchTypeTextInput');
 		var opType = getTextBoxValue('opTypeTextInput');
-		var toolCode = getTextBoxValue('toolCodeTextInput');
-		var toolTestDateCircle = '';
-		var toolRejectDate = '';
-		var toolTestDate = '';
-		var toolManufactureDate = '';
-		var toolPurchaseDate = '';
-		var baseToolManName = '';
-		var baseToolName = '';
-		var baseToolTypeId = '';
-		var baseToolTypeName = '';
-		var baseToolModel = '';
-		var baseToolSpec = '';
-		var baseToolId = '';
-		var storeId = '';
-		var positionId = '';
-		var toolBox = '';
-		var storageName = '';
-		var positionName = '';
-		if (opType != "EXCHANGE_TO_CHECKIN") {
-			baseToolId = getTextBoxValue('baseToolIdTextInput');
-			baseToolName = getTextBoxValue('baseToolNameTextInput');
-			baseToolTypeId = getTextBoxValue('baseToolTypeIdTextInput');
-			baseToolTypeName = getTextBoxValue('baseToolTypeNameTextInput');
-			baseToolModel = getTextBoxValue('baseToolModelTextInput');
-			baseToolSpec = getTextBoxValue('baseToolSpecTextInput');
-			baseToolManName = getTextBoxValue('baseToolManNameTextInput');
-			toolTestDateCircle = getTextBoxValue('toolTestDateCircleTextInput');
-			toolRejectDate = getDateBoxValue('toolRejectDateBox');
-			toolTestDate = getDateBoxValue('toolTestDateBox');
-			toolManufactureDate = getDateBoxValue('toolManufactureDateBox');
-			toolPurchaseDate = getDateBoxValue('toolPurchaseDateBox');
-		}
-		storeId = getTextBoxValue('storageIdTextInput');
-		positionId = getTextBoxValue('positionIdTextInput');
-		toolBox = getTextBoxValue('toolBoxTextInput');
-		storageName = getTextBoxValue('storageNameTextInput');
-		positionName = getTextBoxValue('positionNameTextInput');
+		var plugInCode = getTextBoxValue('plugInCodeTextInput');
+		var storeId = getTextBoxValue('storageIdTextInput');
+		var positionId = getTextBoxValue('positionIdTextInput');
 		params = {
 			BATCH_CODE : batchCode,
 			BATCH_TYPE : batchType,
@@ -493,21 +363,21 @@
 			POS_ID : positionId,
 			STORE_NAME : storageName,
 			POS_NAME : positionName,
-			BASE_TOOL_ID : baseToolId,
-			BASE_TOOL_NAME : baseToolName,
-			BASE_TOOL_MANUFACTURER_NAME : baseToolManName,
-			BASE_TOOL_TYPE_ID : baseToolTypeId,
-			BASE_TOOL_TYPE_NAME : baseToolTypeName,
-			BASE_TOOL_MODEL : baseToolModel,
-			BASE_TOOL_SPEC : baseToolSpec,
+			BASE_TOOL_ID : basePlugInId,
+			BASE_TOOL_NAME : basePlugInName,
+			BASE_TOOL_MANUFACTURER_NAME : basePlugInManName,
+			BASE_TOOL_TYPE_ID : basePlugInTypeId,
+			BASE_TOOL_TYPE_NAME : basePlugInTypeName,
+			BASE_TOOL_MODEL : basePlugInModel,
+			BASE_TOOL_SPEC : basePlugInSpec,
 			BATCH_REMARK : batchRemark,
-			TOOL_CODE : toolCode,
-			TOOL_BOX : toolBox,
-			TOOL_TEST_DATE : toolTestDate,
-			TOOL_REJECT_DATE : toolRejectDate,
-			TOOL_MANUFACTURE_DATE : toolManufactureDate,
-			TOOL_PURCHASE_DATE : toolPurchaseDate,
-			TOOL_TEST_DATE_CIRCLE : toolTestDateCircle
+			TOOL_CODE : plugInCode,
+			TOOL_BOX : plugInBox,
+			TOOL_TEST_DATE : plugInTestDate,
+			TOOL_REJECT_DATE : plugInRejectDate,
+			TOOL_MANUFACTURE_DATE : plugInManufactureDate,
+			TOOL_PURCHASE_DATE : plugInPurchaseDate,
+			TOOL_TEST_DATE_CIRCLE : plugInTestDateCircle
 		};
 		url = "addNewBatchsAndDetails.do";
 		save(params, url, successFunctionForSave);
@@ -518,183 +388,99 @@
 		if (result.success) {
 			//更新提示
 			var count = result.count;
-			var toolCode = getTextBoxValue('toolCodeTextInput');
+			var plugInCode = getTextBoxValue('plugInCodeTextInput');
 			var opText = "扫描入库";
 			$("#tip1").empty();
 			$("#tip2").empty();
-			var tip1 = "<font color='#0000ff' >" + toolCode + " 已经" + opText
+			var tip1 = "<font color='#0000ff' >" + plugInCode + " 已经" + opText
 					+ "</font>";
 			var tip2 = "<font >已经" + opText + count + "个</font>";
 			$("#tip1").delay(200).html(tip1);
 			$("#tip2").delay(200).html(tip2);
-			setTextBoxText("toolCodeTextInput", "");
-			setTextBoxValue("toolCodeTextInput", "");
+			setTextBoxText("plugInCodeTextInput", "");
+			setTextBoxValue("plugInCodeTextInput", "");
 		} else {
 			alert(result.msg);
 		}
 	}
 
 	//关闭编辑窗口
-	function closeAddToolsUIForBatch() {
-		//parent.queryBatchs();
-		parent.closeAddToolsUIForBatch();
-	}
-
-	//用在点击查询按钮的时候
-	function queryDeptPagesForSearch() {
-		queryDepts();
-	}
-
-	//查询
-	function queryDepts() {
-		var params = {
-			keyWord : getTextBoxValue('keyWordForDeptTextInput'),
-			page : 1,
-			rows : getPageSizeOfDataGrid('datagridForDept')
-		};
-		query(params, 'queryDeptsPage.do', successFunctionForQuery);
-	}
-
-	//回调函数，查询成功后调用
-	function successFunctionForQuery(result) {
-		dataGridLoadData('datagridForDept', result);
-	}
-
-	//初始化列表元素
-	function initDataGridForDept() {
-		$('#datagridForDept').datagrid({
-			//url : 'queryDeptsPage.do',
-			idField : 'DEPT_ID',
-			rownumbers : true,
-			toolbar : '#toolbarForDept',
-			pagination : true,
-			pageSize : 30,
-			pageNumber : 1,
-			checkOnSelect : false,
-			fit : true,
-			method : 'get',
-			columns : [ [ {
-				field : 'ck',
-				checkbox : true
-			}, {
-				field : 'DEPT_NAME',
-				title : '部门名称',
-				width : 250
-			} ] ],
-			onBeforeLoad : function(param) {
-				param.keyWord = getTextBoxValue('keyWordForDeptTextInput');
-			},
-			onLoadError : function() {
-				errorFunctionForQuery();
-			}
-		});
-	}
-
-	function chooseDept() {
-		var selectedItems = $('#datagridForDept').datagrid('getChecked');
-		if (selectedItems.length == 0) {
-			alert("请选择部门");
-			return;
-		} else if (selectedItems.length > 1) {
-			alert("只能选择一个部门");
-			return;
-		}
-		setTextBoxText('deptIdTextInput', selectedItems[0].DEPT_ID);
-		setTextBoxValue('deptIdTextInput', selectedItems[0].DEPT_ID);
-		$('#deptNameBtn').linkbutton({
-			text : selectedItems[0].DEPT_NAME,
-		});
-		openFormPanel();
-	}
-
-	function chooseUser() {
-		var selectedItems = $('#datagridForUser').datagrid('getChecked');
-		if (selectedItems.length == 0) {
-			alert("请选择人员");
-			return;
-		} else if (selectedItems.length > 1) {
-			alert("只能选择一个人员");
-			return;
-		}
-		setTextBoxText('userIdTextInput', selectedItems[0].USER_ID);
-		setTextBoxValue('userIdTextInput', selectedItems[0].USER_ID);
-		$('#userNameBtn').linkbutton({
-			text : selectedItems[0].USER_NAME,
-		});
-		openFormPanel();
+	function closeAddPlugInsUIForBatch() {
+		parent.queryBatchs();
+		parent.closeAddPlugInsUIForBatch();
 	}
 </script>
 </head>
 <body>
-	<div id="formPanel" class="easyui-panel" data-options="fit:true">
+	<div id="formPanel" class="easyui-panel"
+		data-options="fit:true">
 		<div style="display: none">
 			<input id="batchTypeTextInput" class="easyui-textbox"
 				value="<%=request.getParameter("BATCH_TYPE")%>" /><input
 				id="opTypeTextInput" class="easyui-textbox"
 				value="<%=request.getParameter("OP_TYPE")%>" /> <input
 				id="storageIdTextInput" class="easyui-textbox" /> <input
-				id="storageNameTextInput" class="easyui-textbox" /> <input
 				id="positionIdTextInput" class="easyui-textbox" /><input
-				id="positionNameTextInput" class="easyui-textbox" /><input
-				id="baseToolIdTextInput" class="easyui-textbox" /><input
-				id="baseToolNameTextInput" class="easyui-textbox" /><input
-				id="baseToolTypeIdTextInput" class="easyui-textbox" /><input
-				id="baseToolTypeNameTextInput" class="easyui-textbox" /><input
-				id="baseToolModelTextInput" class="easyui-textbox" /><input
-				id="baseToolSpecTextInput" class="easyui-textbox" /><input
-				id="baseToolManNameTextInput" class="easyui-textbox" /> <input
-				id="userIdTextInput" class="easyui-textbox" />
+				id="baseToolIdTextInput" class="easyui-textbox" />
 		</div>
 		<table style="width: 100%">
 			<tr>
 				<td width="18%">批次编号:</td>
-				<td><input id="batchCodeTextInput" value="<%=batchCode%>"
-					class="easyui-textbox" data-options="required:true,disabled:true"
+				<td><input id="batchCodeTextInput"
+					value="<%=batchCode%>" class="easyui-textbox"
+					data-options="required:true,disabled:true"
 					style="width: 100%; height: 32px" /></td>
 			</tr>
 			<tr>
 				<td width="18%">选择仓库:</td>
-				<td><a href="#" id="storageNameBtn" class="easyui-linkbutton"
+				<td><a href="#" id="storageNameBtn"
+					class="easyui-linkbutton"
 					data-options="required:true,prompt:'选择仓库'"
 					onclick="openChooseStoragePanel()"
 					style="width: 100%; height: 32px">选择仓库</a></td>
 			</tr>
 			<tr>
 				<td width="18%">选择仓位:</td>
-				<td><a href="#" id="positionNameBtn" class="easyui-linkbutton"
+				<td><a href="#" id="positionNameBtn"
+					class="easyui-linkbutton"
 					data-options="required:true,prompt:'选择仓位'"
 					onclick="openChoosePositionPanel()"
 					style="width: 100%; height: 32px">选择仓位</a></td>
 			</tr>
 			<tr>
 				<td width="18%">类型:</td>
-				<td><a href="#" id="baseToolNameBtn" class="easyui-linkbutton"
+				<td><a href="#" id="basePlugInNameBtn"
+					class="easyui-linkbutton"
 					data-options="required:true,prompt:'选择类型'"
 					onclick="openChooseBaseToolPanel()"
 					style="width: 100%; height: 32px">选择类型</a></td>
 			</tr>
 			<tr>
 				<td width="18%">生产日期:</td>
-				<td><input id="toolManufactureDateBox" class="easyui-datebox"
-					data-options="required:true" style="width: 100%; height: 32px" /></td>
+				<td><input id="plugInManufactureDateBox"
+					class="easyui-datebox" data-options="required:true"
+					style="width: 100%; height: 32px" /></td>
 			</tr>
 			<tr>
 				<td width="18%">备注:</td>
-				<td><input id="batchRemarkTextInput" class="easyui-textbox"
+				<td><input id="batchRemarkTextInput"
+					class="easyui-textbox"
 					data-options="validType:'length[0,200]'"
 					style="width: 100%; height: 32px" /></td>
 			</tr>
 			<tr>
 				<td width="18%">编号:</td>
-				<td><input id="toolCodeTextInput" class="easyui-textbox"
+				<td><input id="plugInCodeTextInput"
+					class="easyui-textbox"
 					data-options="required:true,validType:'length[0,50]'"
 					style="width: 100%; height: 32px" /></td>
 			</tr>
 			<tr>
-				<td width="100%" align="right" colspan="2"><a href="#"
-					id="saveBtn" class="easyui-linkbutton" onclick="saveBatch()"
-					style="width: 60px; height: 32px">入库</a><a href="#" id="closeBtn"
-					class="easyui-linkbutton" onclick="closeAddToolsUIForBatch()"
+				<td width="100%" align="right" colspan="2"><a
+					href="#" id="saveBtn" class="easyui-linkbutton"
+					onclick="saveBatch()" style="width: 60px; height: 32px">入库</a><a
+					href="#" id="closeBtn" class="easyui-linkbutton"
+					onclick="closeAddPlugInsUIForBatch()"
 					style="width: 100px; height: 32px">关闭并刷新列表</a></td>
 			</tr>
 			<tr>
@@ -712,14 +498,15 @@
 		data-options="fit:true">
 		<table id="datagridForBaseTool" class="easyui-datagrid">
 		</table>
-		<div id="toolbarForBaseTool">
+		<div id="plugInbarForBaseTool">
 			<table style="width: 100%">
 				<tr>
 					<td><a class="easyui-linkbutton" iconCls="icon-ok"
-						href="javascript:void(0)" onclick="chooseBaseTool()">选择</a> <a
-						class="easyui-linkbutton" iconCls="icon-cancel"
+						href="javascript:void(0)" onclick="chooseBaseTool()">选择</a>
+						<a class="easyui-linkbutton" iconCls="icon-cancel"
 						href="javascript:void(0)" onclick="openFormPanel()">返回</a></td>
-					<td align="right"><input id="keyWordForBaseToolTextInput"
+					<td align="right"><input
+						id="keyWordForBaseToolTextInput"
 						class="easyui-textbox"
 						data-options="prompt:'名称',validType:'length[0,25]'"
 						style="width: 200px"> <a href="#"
@@ -727,34 +514,12 @@
 						onclick="queryBaseToolPagesForSearch()">查询</a>
 				</tr>
 				<tr>
-<!-- 				url : 'queryBaseToolTypeDropList.do', -->
-					<td>类型: <input id="baseToolTypeComboBox"
-						data-options="valueField : 'ID',textField : 'TEXT',require : true,
-							panelHeight : 'auto',	prompt : '类型',
-							
-							onChange : function(newValue, oldValue){
-								queryBaseTools();
-							}
-							"
-						class="easyui-combobox" style="width: 200px;"></td>
-<!-- 						url : 'queryBaseToolManufacturerDropList.do', -->
-					<td>厂家: <input id="baseToolManufacturerComboBox"
-						data-options="valueField : 'ID',textField : 'TEXT',require : true,
-							panelHeight : 'auto',	prompt : '厂家',
-							
-							onChange : function(newValue, oldValue){
-								queryBaseTools();
-							}
-							"
-						class="easyui-combobox" style="width: 200px;"></td>
-				</tr>
-				<tr>
 					<td>型号: <input id="baseToolModelTextBox"
 						data-options="prompt : '型号'" class="easyui-textbox"
-						style="width: 200px;"></td>
+						style="width: 150px;"></td>
 					<td>规格: <input id="baseToolSpecTextBox"
 						data-options="prompt : '规格'" class="easyui-textbox"
-						style="width: 200px;"></td>
+						style="width: 150px;"></td>
 				</tr>
 			</table>
 		</div>
@@ -763,14 +528,15 @@
 		data-options="fit:true">
 		<table id="datagridForPosition" class="easyui-datagrid">
 		</table>
-		<div id="toolbarForPosition">
+		<div id="plugInbarForPosition">
 			<table style="width: 100%">
 				<tr>
 					<td><a class="easyui-linkbutton" iconCls="icon-ok"
-						href="javascript:void(0)" onclick="choosePosition()">选择</a> <a
-						class="easyui-linkbutton" iconCls="icon-cancel"
+						href="javascript:void(0)" onclick="choosePosition()">选择</a>
+						<a class="easyui-linkbutton" iconCls="icon-cancel"
 						href="javascript:void(0)" onclick="openFormPanel()">返回</a></td>
-					<td align="right"><input id="keyWordForPositionTextInput"
+					<td align="right"><input
+						id="keyWordForPositionTextInput"
 						class="easyui-textbox"
 						data-options="prompt:'仓位名称',validType:'length[0,25]'"
 						style="width: 200px"> <a href="#"
@@ -784,59 +550,19 @@
 		data-options="fit:true">
 		<table id="datagridForStorage" class="easyui-datagrid">
 		</table>
-		<div id="toolbarForStorage">
+		<div id="plugInbarForStorage">
 			<table style="width: 100%">
 				<tr>
 					<td><a class="easyui-linkbutton" iconCls="icon-ok"
-						href="javascript:void(0)" onclick="chooseStorage()">选择</a> <a
-						class="easyui-linkbutton" iconCls="icon-cancel"
+						href="javascript:void(0)" onclick="chooseStorage()">选择</a>
+						<a class="easyui-linkbutton" iconCls="icon-cancel"
 						href="javascript:void(0)" onclick="openFormPanel()">返回</a></td>
-					<td align="right"><input id="keyWordForStorageTextInput"
-						class="easyui-textbox"
+					<td align="right"><input
+						id="keyWordForStorageTextInput" class="easyui-textbox"
 						data-options="prompt:'仓库名称',validType:'length[0,25]'"
 						style="width: 200px"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-search"
 						onclick="queryStoragePagesForSearch()">查询</a>
-				</tr>
-			</table>
-		</div>
-	</div>
-	<div id="chooseUserPanel" class="easyui-panel" data-options="fit:true">
-		<table id="datagridForUser" class="easyui-datagrid">
-		</table>
-		<div id="toolbarForUser">
-			<table style="width: 100%">
-				<tr>
-					<td><a class="easyui-linkbutton" iconCls="icon-ok"
-						href="javascript:void(0)" onclick="chooseUser()">选择</a> <a
-						class="easyui-linkbutton" iconCls="icon-cancel"
-						href="javascript:void(0)" onclick="openFormPanel()">返回</a></td>
-					<td align="right"><input id="keyWordForUserTextInput"
-						class="easyui-textbox"
-						data-options="prompt:'人员名称',validType:'length[0,25]'"
-						style="width: 200px"> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-search"
-						onclick="queryUserPagesForSearch()">查询</a>
-				</tr>
-			</table>
-		</div>
-	</div>
-	<div id="chooseDeptPanel" class="easyui-panel" data-options="fit:true">
-		<table id="datagridForDept" class="easyui-datagrid">
-		</table>
-		<div id="toolbarForDept">
-			<table style="width: 100%">
-				<tr>
-					<td><a class="easyui-linkbutton" iconCls="icon-ok"
-						href="javascript:void(0)" onclick="chooseDept()">选择</a> <a
-						class="easyui-linkbutton" iconCls="icon-cancel"
-						href="javascript:void(0)" onclick="openFormPanel()">返回</a></td>
-					<td align="right"><input id="keyWordForDeptTextInput"
-						class="easyui-textbox"
-						data-options="prompt:'部门名称',validType:'length[0,25]'"
-						style="width: 200px"> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-search"
-						onclick="queryDeptPagesForSearch()">查询</a>
 				</tr>
 			</table>
 		</div>

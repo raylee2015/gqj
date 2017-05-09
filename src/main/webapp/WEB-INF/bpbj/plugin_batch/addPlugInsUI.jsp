@@ -46,7 +46,7 @@
 
 				queryNewBatchCode();
 
-				registerKeyPressForTextInput('toolCodeTextInput', saveBatch);
+				registerKeyPressForTextInput('plugInCodeTextInput', saveBatch);
 
 				var batchType = getTextBoxValue('batchTypeTextInput');
 				var saveBtnName = "";
@@ -117,7 +117,7 @@
 			url : 'queryUsersPage.do',
 			idField : 'USER_ID',
 			rownumbers : true,
-			toolbar : '#toolbarForUser',
+			plugInbar : '#plugInbarForUser',
 			pagination : true,
 			pageSize : 30,
 			pageNumber : 1,
@@ -173,7 +173,7 @@
 		var batchRemark = getTextBoxValue('batchRemarkTextInput');
 		var batchType = getTextBoxValue('batchTypeTextInput');
 		var opType = getTextBoxValue('opTypeTextInput');
-		var toolCode = getTextBoxValue('toolCodeTextInput');
+		var plugInCode = getTextBoxValue('plugInCodeTextInput');
 
 		var batchReturnUserId = '';
 		if (batchType == 6) {
@@ -189,7 +189,7 @@
 			BATCH_RETURN_USER_ID : batchReturnUserId,
 			BATCH_REMARK : batchRemark,
 			BATCH_TAKE_DEPT_ID : batchTakeDeptId,
-			TOOL_CODE : toolCode
+			TOOL_CODE : plugInCode
 		};
 		url = "addNewBatchsAndDetails.do";
 		save(params, url, successFunctionForSave);
@@ -200,7 +200,7 @@
 		if (result.success) {
 			//更新提示
 			var count = result.count;
-			var toolCode = getTextBoxValue('toolCodeTextInput');
+			var plugInCode = getTextBoxValue('plugInCodeTextInput');
 			var opText = "";
 			var batchType = getTextBoxValue('batchTypeTextInput');
 			if (batchType == 1) {
@@ -218,22 +218,22 @@
 			}
 			$("#tip1").empty();
 			$("#tip2").empty();
-			var tip1 = "<font color='#0000ff' >" + toolCode + " 已经" + opText
+			var tip1 = "<font color='#0000ff' >" + plugInCode + " 已经" + opText
 					+ "</font>";
 			var tip2 = "<font >已经" + opText + count + "个工器具</font>";
 			$("#tip1").delay(200).html(tip1);
 			$("#tip2").delay(200).html(tip2);
-			setTextBoxText("toolCodeTextInput", "");
-			setTextBoxValue("toolCodeTextInput", "");
+			setTextBoxText("plugInCodeTextInput", "");
+			setTextBoxValue("plugInCodeTextInput", "");
 		} else {
 			alert(result.msg);
 		}
 	}
 
 	//关闭编辑窗口
-	function closeAddToolsUIForBatch() {
+	function closeAddPlugInsUIForBatch() {
 		parent.queryBatchs();
-		parent.closeAddToolsUIForBatch();
+		parent.closeAddPlugInsUIForBatch();
 	}
 
 	//用在点击查询按钮的时候
@@ -262,7 +262,7 @@
 			url : 'queryDeptsPage.do',
 			idField : 'DEPT_ID',
 			rownumbers : true,
-			toolbar : '#toolbarForDept',
+			plugInbar : '#plugInbarForDept',
 			pagination : true,
 			pageSize : 30,
 			pageNumber : 1,
@@ -373,7 +373,7 @@
 			%>
 			<tr>
 				<td width="18%">工器具编号:</td>
-				<td><input id="toolCodeTextInput" class="easyui-textbox"
+				<td><input id="plugInCodeTextInput" class="easyui-textbox"
 					data-options="required:true,validType:'length[0,50]'"
 					style="width: 100%; height: 32px" /></td>
 			</tr>
@@ -381,7 +381,7 @@
 				<td width="100%" align="right" colspan="2"><a href="#"
 					id="saveBtn" class="easyui-linkbutton" onclick="saveBatch()"
 					style="height: 32px">入库</a><a href="#" id="closeBtn"
-					class="easyui-linkbutton" onclick="closeAddToolsUIForBatch()"
+					class="easyui-linkbutton" onclick="closeAddPlugInsUIForBatch()"
 					style="width: 100px; height: 32px">关闭并刷新列表</a></td>
 			</tr>
 			<tr>
@@ -398,7 +398,7 @@
 	<div id="chooseUserPanel" class="easyui-panel" data-options="fit:true">
 		<table id="datagridForUser" class="easyui-datagrid">
 		</table>
-		<div id="toolbarForUser">
+		<div id="plugInbarForUser">
 			<table style="width: 100%">
 				<tr>
 					<td><a class="easyui-linkbutton" iconCls="icon-ok"
@@ -418,7 +418,7 @@
 	<div id="chooseDeptPanel" class="easyui-panel" data-options="fit:true">
 		<table id="datagridForDept" class="easyui-datagrid">
 		</table>
-		<div id="toolbarForDept">
+		<div id="plugInbarForDept">
 			<table style="width: 100%">
 				<tr>
 					<td><a class="easyui-linkbutton" iconCls="icon-ok"

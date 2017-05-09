@@ -10,7 +10,7 @@ public interface IBPBJBatchService {
 	Map<String, Object> deleteBatchs(Batch batch);
 
 	Map<String, Object> addNewBatchsAndDetails(Batch batch,
-			PlugIn tool, PlugInTrack toolTrack);
+			PlugIn plugIn, PlugInTrack plugInTrack);
 
 	Map<String, Object> updateBatch(Batch batch);
 
@@ -18,8 +18,8 @@ public interface IBPBJBatchService {
 
 	Batch selectBatchsForObject(Batch batch);
 
-	Map<String, Object> delToolAndTrack(PlugIn tool,
-			PlugInTrack toolTrack, Batch batch);
+	Map<String, Object> delPlugInAndTrack(PlugIn plugIn,
+			PlugInTrack plugInTrack, Batch batch);
 
 	Map<String, Object> confirmBatchs(Batch batch);
 

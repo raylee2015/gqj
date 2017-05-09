@@ -31,7 +31,6 @@ import com.bpbj.entity.Position;
 import com.bpbj.entity.Storage;
 import com.bpbj.entity.PlugIn;
 import com.bpbj.entity.PlugInTrack;
-import com.bpbj.entity.ToolType;
 import com.bpbj.service.IBPBJBaseToolService;
 import com.bpbj.service.IBPBJBatchService;
 import com.bpbj.service.IBPBJManufacturerService;
@@ -39,12 +38,11 @@ import com.bpbj.service.IBPBJPositionService;
 import com.bpbj.service.IBPBJSequenceService;
 import com.bpbj.service.IBPBJStorageService;
 import com.bpbj.service.IBPBJPlugInTrackService;
-import com.bpbj.service.IBPBJToolTypeService;
 import com.bpbj.util.BatchType;
 import com.bpbj.util.PlugInStatus;
 
 @Controller
-@RequestMapping("/bpbj/tool_batch")
+@RequestMapping("/bpbj/plugin_batch")
 public class BPBJBatchController extends BaseController {
 	public static final Logger LOGGER = Logger
 			.getLogger(BPBJBatchController.class);
@@ -56,7 +54,7 @@ public class BPBJBatchController extends BaseController {
 	private IBPBJBatchService batchService;
 
 	@Autowired
-	private IBPBJPlugInTrackService toolTrackService;
+	private IBPBJPlugInTrackService plugInTrackService;
 
 	@Autowired
 	private IDeptService deptService;
@@ -73,9 +71,6 @@ public class BPBJBatchController extends BaseController {
 	@Autowired
 	private IBPBJStorageService storageService;
 
-	@Autowired
-	private IBPBJToolTypeService toolTypeService;
-
 	/**
 	 * 添加仓位信息
 	 * 
@@ -87,175 +82,88 @@ public class BPBJBatchController extends BaseController {
 	@RequestMapping("/addNewBatchsAndDetails.do")
 	@ResponseBody
 	public Map<String, Object> addNewBatchsAndDetails(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		String batchCode = request.getParameter("BATCH_CODE");
-		String batchType = request.getParameter("BATCH_TYPE");
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String batchCode = request
+				.getParameter("BATCH_CODE");
+		String batchType = request
+				.getParameter("BATCH_TYPE");
 		String storeId = request.getParameter("STORE_ID");
 		String batchReturnUserId = request
 				.getParameter("BATCH_RETURN_USER_ID");
 		String posId = request.getParameter("POS_ID");
-		String storeName = request.getParameter("STORE_NAME");
+		String storeName = request
+				.getParameter("STORE_NAME");
 		String posName = request.getParameter("POS_NAME");
-		String baseToolId = request.getParameter("BASE_TOOL_ID");
-		String baseToolName = request.getParameter("BASE_TOOL_NAME");
-		String baseToolManName = request
-				.getParameter("BASE_TOOL_MANUFACTURER_NAME");
-		String baseToolTypeId = request
+		String basePlugInId = request
+				.getParameter("BASE_TOOL_ID");
+		String basePlugInName = request
+				.getParameter("BASE_TOOL_NAME");
+		String basePlugInManName = request.getParameter(
+				"BASE_TOOL_MANUFACTURER_NAME");
+		String basePlugInTypeId = request
 				.getParameter("BASE_TOOL_TYPE_ID");
-		String baseToolTypeName = request
+		String basePlugInTypeName = request
 				.getParameter("BASE_TOOL_TYPE_NAME");
-		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
-		String batchRemark = request.getParameter("BATCH_REMARK");
+		String basePlugInModel = request
+				.getParameter("BASE_TOOL_MODEL");
+		String basePlugInSpec = request
+				.getParameter("BASE_TOOL_SPEC");
+		String batchRemark = request
+				.getParameter("BATCH_REMARK");
 		String batchTakeDeptId = request
 				.getParameter("BATCH_TAKE_DEPT_ID");
-		String toolCode = request.getParameter("TOOL_CODE");
-		String toolBox = request.getParameter("TOOL_BOX");
-		String toolDate = request.getParameter("TOOL_TEST_DATE");
-		String toolRejectDate = request
+		String plugInCode = request
+				.getParameter("TOOL_CODE");
+		String plugInBox = request.getParameter("TOOL_BOX");
+		String plugInDate = request
+				.getParameter("TOOL_TEST_DATE");
+		String plugInRejectDate = request
 				.getParameter("TOOL_REJECT_DATE");
-		String toolManufactureDate = request
+		String plugInManufactureDate = request
 				.getParameter("TOOL_MANUFACTURE_DATE");
-		String toolPurchaseDate = request
+		String plugInPurchaseDate = request
 				.getParameter("TOOL_PURCHASE_DATE");
-		String toolDateCircle = request
+		String plugInDateCircle = request
 				.getParameter("TOOL_TEST_DATE_CIRCLE");
 		Batch batch = new Batch();
 		batch.setBatchCode(batchCode);
 		batch.setBatchType(BaseUtil.strToLong(batchType));
 		batch.setBatchDeptId(
-				getSessionUser(request, response).getUserDeptId());
+				getSessionUser(request, response)
+						.getUserDeptId());
 		batch.setBatchCreateUserId(
-				getSessionUser(request, response).getUserId());
+				getSessionUser(request, response)
+						.getUserId());
 		batch.setBatchCreateTime(new Date());
-		batch.setBatchTakeDeptId(BaseUtil.strToLong(batchTakeDeptId));
+		batch.setBatchTakeDeptId(
+				BaseUtil.strToLong(batchTakeDeptId));
 		batch.setBatchRemark(batchRemark);
 		batch.setBatchReturnUserId(
 				BaseUtil.strToLong(batchReturnUserId));
-		PlugIn tool = new PlugIn();
-		tool.setToolCode(toolCode);
+		PlugIn plugIn = new PlugIn();
+		plugIn.setPlugInCode(plugInCode);
 		if (storeId != null && storeId != "") {
-			tool.setStoreId(BaseUtil.strToLong(storeId));
+			plugIn.setStoreId(BaseUtil.strToLong(storeId));
 		}
 		if (posId != null && posId != "") {
-			tool.setPosId(BaseUtil.strToLong(posId));
+			plugIn.setPosId(BaseUtil.strToLong(posId));
 		}
-		if (toolBox != null && toolBox != "") {
-			tool.setToolBox(toolBox);
-		}
-		tool.setToolDeptId(
-				getSessionUser(request, response).getUserDeptId());
-		if (toolDate != null && toolDate != "") {
-			tool.setToolTestDate(DateUtil.StringToDate(toolDate,
-					DateStyle.YYYY_MM_DD));
-		}
-		if (toolRejectDate != null && toolRejectDate != "") {
-			tool.setToolRejectDate(DateUtil.StringToDate(toolRejectDate,
-					DateStyle.YYYY_MM_DD));
-		}
-		if (toolDateCircle != null && toolDateCircle != "") {
-			tool.setToolTestDateCircle(
-					Double.parseDouble(toolDateCircle));
-			tool.setToolNextTestDate(DateUtil.addMonth(
-					DateUtil.StringToDate(toolDate,
-							DateStyle.YYYY_MM_DD),
-					Integer.parseInt(toolDateCircle)));
-		}
-		if (toolManufactureDate != null && toolManufactureDate != "") {
-			tool.setToolManufactureDate(DateUtil.StringToDate(
-					toolManufactureDate, DateStyle.YYYY_MM_DD));
-		}
-		if (toolPurchaseDate != null && toolPurchaseDate != "") {
-			tool.setToolPurchaseDate(DateUtil.StringToDate(
-					toolPurchaseDate, DateStyle.YYYY_MM_DD));
-		}
-		if (baseToolId != null && baseToolId != "") {
-			tool.setBaseToolId(BaseUtil.strToLong(baseToolId));
-		}
-		tool.setToolRemark(batchRemark);
+		plugIn.setPlugInDeptId(
+				getSessionUser(request, response)
+						.getUserDeptId());
+		plugIn.setPlugInRemark(batchRemark);
 
-		PlugInTrack toolTrack = new PlugInTrack();
-		toolTrack.setBatchCode(batchCode);
-		toolTrack.setToolCode(toolCode);
+		PlugInTrack plugInTrack = new PlugInTrack();
 		if (storeId != null && storeId != "") {
-			toolTrack.setStoreId(BaseUtil.strToLong(storeId));
+			plugInTrack.setStoreId(
+					BaseUtil.strToLong(storeId));
 		}
 		if (posId != null && posId != "") {
-			toolTrack.setPosId(BaseUtil.strToLong(posId));
+			plugInTrack.setPosId(BaseUtil.strToLong(posId));
 		}
-		if (toolBox != null && toolBox != "") {
-			toolTrack.setToolBox(toolBox);
-		}
-		toolTrack.setTrackCreateUserId(
-				getSessionUser(request, response).getUserId());
-		toolTrack.setTrackCreateTime(new Date());
-		if (baseToolId != null && baseToolId != "") {
-			toolTrack.setBaseToolId(BaseUtil.strToLong(baseToolId));
-		}
-		if (toolDate != null && toolDate != "") {
-			toolTrack.setToolTestDate(DateUtil
-					.StringToDate(toolDate, DateStyle.YYYY_MM_DD));
-		}
-		if (toolRejectDate != null && toolRejectDate != "") {
-			toolTrack.setToolRejectDate(DateUtil.StringToDate(
-					toolRejectDate, DateStyle.YYYY_MM_DD));
-		}
-		if (toolDateCircle != null && toolDateCircle != "") {
-			toolTrack.setToolTestDateCircle(
-					Double.parseDouble(toolDateCircle));
-			toolTrack.setToolNextTestDate(DateUtil.addMonth(
-					DateUtil.StringToDate(toolDate,
-							DateStyle.YYYY_MM_DD),
-					Integer.parseInt(toolDateCircle)));
-		}
-		if (baseToolId != null && baseToolId != "") {
-			toolTrack.setBaseToolName(baseToolName);
-			toolTrack.setBaseToolTypeId(
-					BaseUtil.strToLong(baseToolTypeId));
-			toolTrack.setBaseToolTypeName(baseToolTypeName);
-			toolTrack.setBaseToolModel(baseToolModel);
-			toolTrack.setBaseToolSpec(baseToolSpec);
-			toolTrack.setBaseToolManufacturerName(baseToolManName);
-		}
-		if (toolManufactureDate != null && toolManufactureDate != "") {
-			toolTrack.setToolManufactureDate(DateUtil.StringToDate(
-					toolManufactureDate, DateStyle.YYYY_MM_DD));
-		}
-		if (toolPurchaseDate != null && toolPurchaseDate != "") {
-			toolTrack.setToolPurchaseDate(DateUtil.StringToDate(
-					toolPurchaseDate, DateStyle.YYYY_MM_DD));
-		}
-		if (posName != null && posName != "") {
-			toolTrack.setPosName(posName);
-		}
-		if (storeName != null && storeName != "") {
-			toolTrack.setStoreName(storeName);
-		}
-		toolTrack.setToolDeptId(
-				getSessionUser(request, response).getUserDeptId());
-
-		if (BaseUtil.strToLong(batchType) == BatchType.RETURN
-				|| BaseUtil.strToLong(batchType) == BatchType.SELF_RETURN) {
-			// 查询工器具的本部门最早入库的位置
-			PlugInTrack temp = new PlugInTrack();
-			temp.setToolCode(toolCode);
-			temp.setToolDeptId(
-					getSessionUser(request, response).getUserDeptId());
-			temp.setToolStatus(PlugInStatus.CHECK_IN);
-			List<PlugInTrack> track = toolTrackService
-					.selectToolTracksForList(temp);
-			tool.setStoreId(track.get(0).getStoreId());
-			toolTrack.setStoreId(track.get(0).getStoreId());
-			tool.setPosId(track.get(0).getPosId());
-			toolTrack.setPosId(track.get(0).getPosId());
-			toolTrack.setStoreName(track.get(0).getStoreName());
-			toolTrack.setPosName(track.get(0).getPosName());
-			tool.setToolBox(track.get(0).getToolBox());
-			toolTrack.setToolBox(track.get(0).getToolBox());
-		}
-		return batchService.addNewBatchsAndDetails(batch, tool,
-				toolTrack);
+		return batchService.addNewBatchsAndDetails(batch,
+				plugIn, plugInTrack);
 	}
 
 	/**
@@ -268,7 +176,8 @@ public class BPBJBatchController extends BaseController {
 	 */
 	@RequestMapping("/delBatchs.do")
 	@ResponseBody
-	public Map<String, Object> delBatchs(HttpServletRequest request,
+	public Map<String, Object> delBatchs(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String batchIds = request.getParameter("BATCH_IDS");
 		Batch batch = new Batch();
@@ -286,16 +195,19 @@ public class BPBJBatchController extends BaseController {
 	 */
 	@RequestMapping("/confirmBatchs.do")
 	@ResponseBody
-	public Map<String, Object> confirmBatchs(HttpServletRequest request,
+	public Map<String, Object> confirmBatchs(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String batchIds = request.getParameter("BATCH_IDS");
-		String batchType = request.getParameter("BATCH_TYPE");
+		String batchType = request
+				.getParameter("BATCH_TYPE");
 		Batch batch = new Batch();
 		batch.setBatchType(BaseUtil.strToLong(batchType));
 		batch.setIds(batchIds);
 		batch.setBatchCreateTime(new Date());
 		batch.setBatchConfirmUserId(
-				getSessionUser(request, response).getUserId());
+				getSessionUser(request, response)
+						.getUserId());
 		return batchService.confirmBatchs(batch);
 	}
 
@@ -307,22 +219,24 @@ public class BPBJBatchController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/delToolAndTrack.do")
+	@RequestMapping("/delPlugInAndTrack.do")
 	@ResponseBody
-	public Map<String, Object> delToolAndTrack(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		String toolId = request.getParameter("TOOL_ID");
+	public Map<String, Object> delPlugInAndTrack(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String plugInId = request.getParameter("TOOL_ID");
 		String trackId = request.getParameter("TRACK_ID");
 		String batchId = request.getParameter("BATCH_ID");
-		PlugIn tool = new PlugIn();
-		tool.setToolId(BaseUtil.strToLong(toolId));
-		PlugInTrack toolTrack = new PlugInTrack();
-		toolTrack.setTrackId(BaseUtil.strToLong(trackId));
-		toolTrack.setToolId(BaseUtil.strToLong(toolId));
+		PlugIn plugIn = new PlugIn();
+		plugIn.setPlugInId(BaseUtil.strToLong(plugInId));
+		PlugInTrack plugInTrack = new PlugInTrack();
+		plugInTrack.setTrackId(BaseUtil.strToLong(trackId));
+		plugInTrack
+				.setPlugInId(BaseUtil.strToLong(plugInId));
 		Batch batch = new Batch();
 		batch.setBatchId(BaseUtil.strToLong(batchId));
-		return batchService.delToolAndTrack(tool, toolTrack, batch);
+		return batchService.delPlugInAndTrack(plugIn,
+				plugInTrack, batch);
 	}
 
 	/**
@@ -330,22 +244,28 @@ public class BPBJBatchController extends BaseController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/openAddToolsUI.do", method = RequestMethod.GET)
-	public ModelAndView openAddToolsUI(HttpServletRequest request,
+	@RequestMapping(value = "/openAddPlugInsUI.do", method = RequestMethod.GET)
+	public ModelAndView openAddPlugInsUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
 		String batchId = request.getParameter("BATCH_ID");
 		if (batchId != null && !"".equals(batchId)) {
 			Batch param = new Batch();
 			param.setBatchId(BaseUtil.strToLong(batchId));
-			Batch batch = batchService.selectBatchsForObject(param);
-			request.setAttribute("BATCH_CODE", batch.getBatchCode());
+			Batch batch = batchService
+					.selectBatchsForObject(param);
+			request.setAttribute("BATCH_CODE",
+					batch.getBatchCode());
 		}
-		String batchType = request.getParameter("BATCH_TYPE");
+		String batchType = request
+				.getParameter("BATCH_TYPE");
 		ModelAndView mv = new ModelAndView();
 		if ("0".equals(batchType)) {
-			mv.setViewName("/bpbj/tool_batch/addToolsUIForCheckIn");
+			mv.setViewName(
+					"/bpbj/plugin_batch/addPlugInsUIForCheckIn");
 		} else {
-			mv.setViewName("/bpbj/tool_batch/addToolsUI");
+			mv.setViewName(
+					"/bpbj/plugin_batch/addPlugInsUI");
 		}
 		return mv;
 	}
@@ -356,9 +276,11 @@ public class BPBJBatchController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/openEditUI.do", method = RequestMethod.GET)
-	public ModelAndView openEditUI(HttpServletRequest request,
+	public ModelAndView openEditUI(
+			HttpServletRequest request,
 			HttpServletResponse response) {
-		return new ModelAndView("/bpbj/tool_batch/editUI");
+		return new ModelAndView(
+				"/bpbj/plugIn_batch/editUI");
 	}
 
 	/**
@@ -368,13 +290,15 @@ public class BPBJBatchController extends BaseController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryBaseToolManufacturerDropList.do")
+	@RequestMapping("/queryBasePlugInManufacturerDropList.do")
 	@ResponseBody
-	public void queryBaseToolManufacturerDropList(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		response.getWriter().print(manufacturerService
-				.selectManufacturersForList(new Manufacturer()));
+	public void queryBasePlugInManufacturerDropList(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.getWriter()
+				.print(manufacturerService
+						.selectManufacturersForList(
+								new Manufacturer()));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -390,41 +314,27 @@ public class BPBJBatchController extends BaseController {
 	@RequestMapping("/queryBaseToolsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryBaseToolsPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
-		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
-		String baseToolType = request.getParameter("BASE_TOOL_TYPE");
-		String manId = request.getParameter("MAN_ID");
+		String basePlugInModel = request
+				.getParameter("BASE_TOOL_MODEL");
+		String basePlugInSpec = request
+				.getParameter("BASE_TOOL_SPEC");
+		String baseToolType = request
+				.getParameter("BASE_TOOL_TYPE");
 		BaseTool baseTool = new BaseTool();
 		baseTool.setCurrPage(Integer.parseInt(page));
 		baseTool.setPageSize(Integer.parseInt(rows));
 		baseTool.setKeyWord(keyWord);
-		baseTool.setBaseToolType(BaseUtil.strToLong(baseToolType));
-		baseTool.setBaseToolModel(baseToolModel);
-		baseTool.setBaseToolSpec(baseToolSpec);
-		baseTool.setManId(BaseUtil.strToLong(manId));
-		return baseToolService.selectBaseToolsForPage(baseTool);
-	}
-
-	/**
-	 * 查询下拉列表
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryBaseToolTypeDropList.do")
-	@ResponseBody
-	public void queryBaseToolTypeDropList(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		response.getWriter().print(
-				toolTypeService.selectToolTypesForList(new ToolType()));
-		response.getWriter().flush();
-		response.getWriter().close();
+		baseTool.setBaseToolType(
+				BaseUtil.strToLong(baseToolType));
+		baseTool.setBaseToolModel(basePlugInModel);
+		baseTool.setBaseToolSpec(basePlugInSpec);
+		return baseToolService
+				.selectBaseToolsForPage(baseTool);
 	}
 
 	/**
@@ -438,23 +348,27 @@ public class BPBJBatchController extends BaseController {
 	@RequestMapping("/queryBatchsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryBatchsPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
-		String batchType = request.getParameter("BATCH_TYPE");
+		String batchType = request
+				.getParameter("BATCH_TYPE");
 		Batch batch = new Batch();
 		batch.setCurrPage(Integer.parseInt(page));
 		batch.setPageSize(Integer.parseInt(rows));
 		batch.setKeyWord(keyWord);
 		if ("7".equals(batchType)) {
 			batch.setBatchTakeDeptId(
-					getSessionUser(request, response).getUserDeptId());
+					getSessionUser(request, response)
+							.getUserDeptId());
 		} else {
 			batch.setBatchDeptId(
-					getSessionUser(request, response).getUserDeptId());
-			batch.setBatchType(BaseUtil.strToLong(batchType));
+					getSessionUser(request, response)
+							.getUserDeptId());
+			batch.setBatchType(
+					BaseUtil.strToLong(batchType));
 		}
 
 		return batchService.selectBatchsForPage(batch);
@@ -468,22 +382,22 @@ public class BPBJBatchController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/queryToolTracksPage.do")
+	@RequestMapping("/queryPlugInTracksPage.do")
 	@ResponseBody
-	public Map<String, Object> queryToolTracksPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Map<String, Object> queryPlugInTracksPage(
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
 		String batchId = request.getParameter("BATCH_ID");
-		PlugInTrack toolTrack = new PlugInTrack();
-		toolTrack.setCurrPage(Integer.parseInt(page));
-		toolTrack.setPageSize(Integer.parseInt(rows));
-		toolTrack.setKeyWord(keyWord);
-		toolTrack.setToolCode(keyWord);
-		toolTrack.setBatchId(BaseUtil.strToLong(batchId));
-		return toolTrackService.selectToolTracksForPage(toolTrack);
+		PlugInTrack plugInTrack = new PlugInTrack();
+		plugInTrack.setCurrPage(Integer.parseInt(page));
+		plugInTrack.setPageSize(Integer.parseInt(rows));
+		plugInTrack.setKeyWord(keyWord);
+		plugInTrack.setBatchId(BaseUtil.strToLong(batchId));
+		return plugInTrackService
+				.selectPlugInTracksForPage(plugInTrack);
 	}
 
 	/**
@@ -497,8 +411,8 @@ public class BPBJBatchController extends BaseController {
 	@RequestMapping("/queryDeptsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryDeptsPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -518,9 +432,11 @@ public class BPBJBatchController extends BaseController {
 	 */
 	@RequestMapping("/queryNewBatchCode.do")
 	@ResponseBody
-	public String queryNewBatchCode(HttpServletRequest request,
+	public String queryNewBatchCode(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String batchType = request.getParameter("BATCH_TYPE");
+		String batchType = request
+				.getParameter("BATCH_TYPE");
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		String rule1 = "";
 		if ("0".equals(batchType)) {
@@ -562,8 +478,8 @@ public class BPBJBatchController extends BaseController {
 	@RequestMapping("/queryPositionsPage.do")
 	@ResponseBody
 	public Map<String, Object> queryPositionsPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -573,7 +489,8 @@ public class BPBJBatchController extends BaseController {
 		position.setPageSize(BaseUtil.strToInt(rows));
 		position.setKeyWord(keyWord);
 		position.setStoreId(BaseUtil.strToLong(storeId));
-		return positionService.selectPositionsForPage(position);
+		return positionService
+				.selectPositionsForPage(position);
 	}
 
 	/**
@@ -587,19 +504,20 @@ public class BPBJBatchController extends BaseController {
 	@RequestMapping("/queryStoragesPage.do")
 	@ResponseBody
 	public Map<String, Object> queryStoragesPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
-		long storageDeptId = getSessionUser(request, response)
-				.getUserDeptId();
+		long storageDeptId = getSessionUser(request,
+				response).getUserDeptId();
 		String keyWord = request.getParameter("keyWord");
 		Storage storage = new Storage();
 		storage.setCurrPage(BaseUtil.strToInt(page));
 		storage.setPageSize(BaseUtil.strToInt(rows));
 		storage.setStoreDeptId(storageDeptId);
 		storage.setKeyWord(keyWord);
-		return storageService.selectStoragesForPage(storage);
+		return storageService
+				.selectStoragesForPage(storage);
 	}
 
 	@Autowired
@@ -616,8 +534,8 @@ public class BPBJBatchController extends BaseController {
 	@RequestMapping("/queryUsersPage.do")
 	@ResponseBody
 	public Map<String, Object> queryUsersPage(
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -635,7 +553,7 @@ public class BPBJBatchController extends BaseController {
 	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
-		return new ModelAndView("/bpbj/tool_batch/index");
+		return new ModelAndView("/bpbj/plugin_batch/index");
 	}
 
 	/**
@@ -648,7 +566,8 @@ public class BPBJBatchController extends BaseController {
 	 */
 	@RequestMapping("/updateBatch.do")
 	@ResponseBody
-	public Map<String, Object> updateBatch(HttpServletRequest request,
+	public Map<String, Object> updateBatch(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		Batch batch = new Batch();
 		return batchService.updateBatch(batch);
@@ -664,14 +583,16 @@ public class BPBJBatchController extends BaseController {
 	 */
 	@RequestMapping("/takeBatchs.do")
 	@ResponseBody
-	public Map<String, Object> takeBatchs(HttpServletRequest request,
+	public Map<String, Object> takeBatchs(
+			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String batchIds = request.getParameter("BATCH_IDS");
 		Batch batch = new Batch();
 		batch.setIds(batchIds);
 		batch.setBatchTakeTime(new Date());
 		batch.setBatchTakeUserId(
-				getSessionUser(request, response).getUserId());
+				getSessionUser(request, response)
+						.getUserId());
 		return batchService.updateBatchs(batch);
 	}
 
