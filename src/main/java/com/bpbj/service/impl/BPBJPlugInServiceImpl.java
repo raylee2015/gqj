@@ -288,4 +288,14 @@ public class BPBJPlugInServiceImpl implements IBPBJPlugInService {
 		return map;
 	}
 
+	@Override
+	public Map<String, Object> selectPlugInsForPageByBaseTool(HashMap<String, Object> param) {
+		List<Map<String, Object>> plugIns = plugInMapper.selectPlugInsForPageByBaseTool(param);
+		int count = plugInMapper.selectCountOfPlugInsForPageByBaseTool(param);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("rows", plugIns);
+		map.put("total", count);
+		return map;
+	}
+
 }

@@ -28,10 +28,8 @@ import com.bpbj.service.IBPBJStorageService;
 
 @Controller
 @RequestMapping("/bpbj/plugin_inventory")
-public class BPBJPlugInInventoryController
-		extends BaseController {
-	public static final Logger LOGGER = Logger
-			.getLogger(BPBJPlugInInventoryController.class);
+public class BPBJPlugInInventoryController extends BaseController {
+	public static final Logger LOGGER = Logger.getLogger(BPBJPlugInInventoryController.class);
 
 	@Autowired
 	private IBPBJPositionService positionService;
@@ -48,7 +46,6 @@ public class BPBJPlugInInventoryController
 	@Autowired
 	private IBPBJManufacturerService manufacturerService;
 
-
 	/**
 	 * 查询下拉列表
 	 * 
@@ -58,13 +55,9 @@ public class BPBJPlugInInventoryController
 	 */
 	@RequestMapping("/queryBasePlugInManufacturerDropList.do")
 	@ResponseBody
-	public void queryBasePlugInManufacturerDropList(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		response.getWriter()
-				.print(manufacturerService
-						.selectManufacturersForList(
-								new Manufacturer()));
+	public void queryBasePlugInManufacturerDropList(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		response.getWriter().print(manufacturerService.selectManufacturersForList(new Manufacturer()));
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
@@ -75,11 +68,8 @@ public class BPBJPlugInInventoryController
 	 * @return
 	 */
 	@RequestMapping(value = "/openChoosePositionUI.do", method = RequestMethod.GET)
-	public ModelAndView openChoosePositionUI(
-			HttpServletRequest request,
-			HttpServletResponse response) {
-		return new ModelAndView(
-				"/bpbj/plugin_inventory/choosePositionUI");
+	public ModelAndView openChoosePositionUI(HttpServletRequest request, HttpServletResponse response) {
+		return new ModelAndView("/bpbj/plugin_inventory/choosePositionUI");
 	}
 
 	/**
@@ -88,11 +78,8 @@ public class BPBJPlugInInventoryController
 	 * @return
 	 */
 	@RequestMapping(value = "/openChooseStorageUI.do", method = RequestMethod.GET)
-	public ModelAndView openChooseStorageUI(
-			HttpServletRequest request,
-			HttpServletResponse response) {
-		return new ModelAndView(
-				"/bpbj/plugin_inventory/chooseStorageUI");
+	public ModelAndView openChooseStorageUI(HttpServletRequest request, HttpServletResponse response) {
+		return new ModelAndView("/bpbj/plugin_inventory/chooseStorageUI");
 	}
 
 	/**
@@ -105,9 +92,8 @@ public class BPBJPlugInInventoryController
 	 */
 	@RequestMapping("/queryPositionsPage.do")
 	@ResponseBody
-	public Map<String, Object> queryPositionsPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public Map<String, Object> queryPositionsPage(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -117,8 +103,7 @@ public class BPBJPlugInInventoryController
 		position.setPageSize(BaseUtil.strToInt(rows));
 		position.setKeyWord(keyWord);
 		position.setStoreId(BaseUtil.strToLong(storeId));
-		return positionService
-				.selectPositionsForPage(position);
+		return positionService.selectPositionsForPage(position);
 	}
 
 	/**
@@ -131,9 +116,8 @@ public class BPBJPlugInInventoryController
 	 */
 	@RequestMapping("/queryPlugInTracksForPage.do")
 	@ResponseBody
-	public Map<String, Object> queryPlugInTracksForPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public Map<String, Object> queryPlugInTracksForPage(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -143,8 +127,7 @@ public class BPBJPlugInInventoryController
 		plugInTrack.setPageSize(BaseUtil.strToInt(rows));
 		plugInTrack.setKeyWord(keyWord);
 		plugInTrack.setPlugInId(BaseUtil.strToLong(plugInId));
-		return plugInTrackService
-				.selectPlugInTracksForPage(plugInTrack);
+		return plugInTrackService.selectPlugInTracksForPage(plugInTrack);
 	}
 
 	/**
@@ -157,9 +140,8 @@ public class BPBJPlugInInventoryController
 	 */
 	@RequestMapping("/queryStoragesPage.do")
 	@ResponseBody
-	public Map<String, Object> queryStoragesPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public Map<String, Object> queryStoragesPage(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
@@ -167,8 +149,7 @@ public class BPBJPlugInInventoryController
 		storage.setCurrPage(BaseUtil.strToInt(page));
 		storage.setPageSize(BaseUtil.strToInt(rows));
 		storage.setKeyWord(keyWord);
-		return storageService
-				.selectStoragesForPage(storage);
+		return storageService.selectStoragesForPage(storage);
 	}
 
 	/**
@@ -181,20 +162,16 @@ public class BPBJPlugInInventoryController
 	 */
 	@RequestMapping("/queryPlugInInventorysPage.do")
 	@ResponseBody
-	public Map<String, Object> queryPlugInInventorysPage(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public Map<String, Object> queryPlugInInventorysPage(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String page = request.getParameter("page");
 		String rows = request.getParameter("rows");
 		String keyWord = request.getParameter("keyWord");
 		String storeId = request.getParameter("STORE_ID");
 		String posId = request.getParameter("POS_ID");
-		String manufacturerId = request
-				.getParameter("MAN_ID");
-		String baseToolModel = request
-				.getParameter("BASE_TOOL_MODEL");
-		String baseToolSpec = request
-				.getParameter("BASE_TOOL_SPEC");
+		String manufacturerId = request.getParameter("MAN_ID");
+		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
+		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		param.put("storeId", storeId);
 		param.put("posId", posId);
@@ -208,14 +185,51 @@ public class BPBJPlugInInventoryController
 	}
 
 	/**
+	 * 分页查询仓库列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryPlugInInventorysPageByBaseTool.do")
+	@ResponseBody
+	public Map<String, Object> queryPlugInInventorysPageByBaseTool(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String keyWord = request.getParameter("keyWord");
+		String manufacturerId = request.getParameter("MAN_ID");
+		String baseToolModel = request.getParameter("BASE_TOOL_MODEL");
+		String baseToolSpec = request.getParameter("BASE_TOOL_SPEC");
+		HashMap<String, Object> param = new HashMap<String, Object>();
+		param.put("keyWord", keyWord);
+		param.put("currPage", page);
+		param.put("pageSize", rows);
+		param.put("manId", manufacturerId);
+		param.put("baseToolModel", baseToolModel);
+		param.put("baseToolSpec", baseToolSpec);
+		return plugInService.selectPlugInsForPageByBaseTool(param);
+	}
+
+	/**
 	 * 跳转到库存查询首页
 	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
-		return new ModelAndView(
-				"/bpbj/plugin_inventory/index");
+		return new ModelAndView("/bpbj/plugin_inventory/index");
+	}
+
+	/**
+	 * 跳转到库存查询首页
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/index2.do", method = RequestMethod.GET)
+	public ModelAndView toIndex2() {
+		return new ModelAndView("/bpbj/plugin_inventory/index2");
 	}
 
 }

@@ -24,4 +24,8 @@ public interface BPBJPlugInMapper {
 	int updateByPrimaryKeySelective(PlugIn plugIn);
 
 	int updatePlugInByBatch(PlugIn plugIn);
+
+	List<Map<String, Object>> selectPlugInsForPageByBaseTool(HashMap<String, Object> param);
+
+	int selectCountOfPlugInsForPageByBaseTool(HashMap<String, Object> param);
 }

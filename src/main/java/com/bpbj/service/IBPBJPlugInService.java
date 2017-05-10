@@ -51,4 +51,6 @@ public interface IBPBJPlugInService {
 
 	PlugIn selectPlugInForObject(PlugIn plugIn);
 
+	Map<String, Object> selectPlugInsForPageByBaseTool(HashMap<String, Object> param);
+
 }

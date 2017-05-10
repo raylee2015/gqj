@@ -46,6 +46,68 @@
 		</where>
 		order by PLUGIN_ID
 	</select>
+	<select id="selectPlugInsForPageByBaseTool" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		a.base_tool_amount,bt.*,m.man_name from (
+		select t.base_tool_id ,count(*) as
+		base_tool_amount from BPBJ_PLUGIN t
+		<where>
+			<if test="plugin_dept_id != null and plugin_dept_id != ''">
+				and PLUGIN_DEPT_ID =
+				#{plugin_dept_id,jdbcType=DECIMAL}
+			</if>
+		</where>
+		group by t.base_tool_id) a
+		left join bpbj_base_tool bt on
+		bt.base_tool_id = a.base_tool_id
+		left join bpbj_manufacturer m on m.man_id = bt.man_id
+		<where>
+			<if test="baseToolModel != null and baseToolModel!=''">
+				AND bt.BASE_TOOL_MODEL like '%${baseToolModel}%'
+			</if>
+			<if test="baseToolSpec != null and baseToolSpec!=''">
+				AND bt.BASE_TOOL_SPEC like '%${baseToolSpec}%'
+			</if>
+			<if test="manId != null and manId != ''">
+				and bt.MAN_ID =
+				#{manId,jdbcType=DECIMAL}
+			</if>
+		</where>
+		order by bt.BASE_TOOL_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfPlugInsForPageByBaseTool"
+		parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		select count(*) from (
+		select t.base_tool_id ,count(*) as
+		base_tool_amount from BPBJ_PLUGIN t
+		<where>
+			<if test="plugin_dept_id != null and plugin_dept_id != ''">
+				and PLUGIN_DEPT_ID =
+				#{plugin_dept_id,jdbcType=DECIMAL}
+			</if>
+		</where>
+		group by t.base_tool_id) a
+		left join bpbj_base_tool bt on
+		bt.base_tool_id = a.base_tool_id
+		left join bpbj_manufacturer m on m.man_id = bt.man_id
+		<where>
+			<if test="baseToolModel != null and baseToolModel!=''">
+				AND bt.BASE_TOOL_MODEL like '%${baseToolModel}%'
+			</if>
+			<if test="baseToolSpec != null and baseToolSpec!=''">
+				AND bt.BASE_TOOL_SPEC like '%${baseToolSpec}%'
+			</if>
+			<if test="manId != null and manId != ''">
+				and bt.MAN_ID =
+				#{manId,jdbcType=DECIMAL}
+			</if>
+		</where>
+	</select>
 	<select id="selectPlugInsForPage" parameterType="java.util.HashMap"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (

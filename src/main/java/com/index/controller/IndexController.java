@@ -19,37 +19,34 @@ import com.base.admin.entity.Menu;
 import com.base.admin.entity.User;
 import com.base.admin.service.IMenuService;
 import com.base.admin.service.IUserService;
+import com.base.controller.BaseController;
 import com.base.util.BaseUtil;
 import com.index.util.BaseSysParam;
 
 @Controller
 @RequestMapping("/")
-public class IndexController {
+public class IndexController extends BaseController {
 
-	public static final Logger LOGGER = Logger
-			.getLogger(IndexController.class);
+	public static final Logger LOGGER = Logger.getLogger(IndexController.class);
 
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
-	public String toIndex(HttpServletRequest request,
-			Model model) {
+	public String toIndex(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 		Menu menu = new Menu();
 		menu.setMenuId(66L);
-		Map<String, Object> result = menuService
-				.queryMenusForObject(menu);
-		String url = request.getContextPath()
-				+ "/homePage.do";
-		if (result.get("MENU_URL") != null && !"-".equals(
-				result.get("MENU_URL").toString())) {
-			url = request.getContextPath()
-					+ result.get("MENU_URL").toString();
+		String url = request.getContextPath() + "/homePage.do";
+		User user = getSessionUser(request, response);
+		String deptCode = user.getUserDeptCode();
+		if ("JBYB".equals(deptCode) || "JBEB".equals(deptCode) || "JBSB".equals(deptCode)) {
+			url = "/bpbj/homepage/index.do";
+		} else if ("GLRY".equals(deptCode) || "WYZ".equals(deptCode) || "AFZ".equals(deptCode)) {
+			url = "/gqj/homepage/index.do";
 		}
 		request.setAttribute("url", url);
 		return "/index";
 	}
 
 	@RequestMapping(value = "/homePage.do", method = RequestMethod.GET)
-	public String toHomePage(HttpServletRequest request,
-			Model model) {
+	public String toHomePage(HttpServletRequest request, Model model) {
 		return "/homepage";
 	}
 
@@ -58,13 +55,10 @@ public class IndexController {
 
 	@RequestMapping("/queryMenuList.do")
 	@ResponseBody
-	public Map<String, Object> queryMenuList(
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		User user = (User) request.getSession()
-				.getAttribute("user");
-		List<Map<String, Object>> menus = menuService
-				.queryMenusForList(user);
+	public Map<String, Object> queryMenuList(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		User user = (User) request.getSession().getAttribute("user");
+		List<Map<String, Object>> menus = menuService.queryMenusForList(user);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", menus);
 		return map;
@@ -74,41 +68,29 @@ public class IndexController {
 	private IUserService userService;
 
 	@RequestMapping("/login.do")
-	public String login(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String sysRootPath = request.getSession()
-				.getServletContext().getRealPath("");
+	public String login(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String sysRootPath = request.getSession().getServletContext().getRealPath("");
 		BaseSysParam.setSysRootPath(sysRootPath);
 		// 查询用户
 		String userCode = request.getParameter("userCode");
-		String userPassWord = request
-				.getParameter("userPassWord");
-		if (userCode != null && !"".equals(userCode)
-				&& userPassWord != null
-				&& !"".equals(userPassWord)) {
+		String userPassWord = request.getParameter("userPassWord");
+		if (userCode != null && !"".equals(userCode) && userPassWord != null && !"".equals(userPassWord)) {
 
-			userPassWord = BaseUtil.MD5(userPassWord)
-					.substring(0, 20);
+			userPassWord = BaseUtil.MD5(userPassWord).substring(0, 20);
 			User user = new User();
 			user.setUserCode(userCode);
 			user.setUserPassWord(userPassWord);
 			user = userService.queryUserForSession(user);
 			if (user != null) {
 				// 设置session
-				request.getSession().setAttribute("user",
-						user);
+				request.getSession().setAttribute("user", user);
 				// 跳转
-				Menu menu = new Menu();
-				menu.setMenuId(66L);
-				Map<String, Object> result = menuService
-						.queryMenusForObject(menu);
-				String url = request.getContextPath()
-						+ "/homePage.do";
-				if (result.get("MENU_URL") != null && !"-"
-						.equals(result.get("MENU_URL")
-								.toString())) {
-					url = request.getContextPath() + result
-							.get("MENU_URL").toString();
+				String url = "";
+				String deptCode = user.getUserDeptCode();
+				if ("JBYB".equals(deptCode) || "JBEB".equals(deptCode) || "JBSB".equals(deptCode)) {
+					url = "/gqj/bpbj/plugin_inventory/index2.do";
+				} else if ("GLRY".equals(deptCode) || "WYZ".equals(deptCode) || "AFZ".equals(deptCode)) {
+					url = "/gqj/gqj/homepage/index.do";
 				}
 				request.setAttribute("url", url);
 				return "/index";
@@ -121,8 +103,7 @@ public class IndexController {
 	}
 
 	@RequestMapping("/logout.do")
-	public String logout(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public String logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		request.getSession().removeAttribute("user");
 		return "/login";
 	}
