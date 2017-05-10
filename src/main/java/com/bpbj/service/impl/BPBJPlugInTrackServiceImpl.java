@@ -52,9 +52,9 @@ public class BPBJPlugInTrackServiceImpl implements IBPBJPlugInTrackService {
 		List<Map<String, Object>> plugInTracks = plugInTrackMapper
 				.selectPlugInTracksForPage(plugInTrack);
 		for (Map<String, Object> item : plugInTracks) {
-			if (item.get("TRACK_CREATE_TIME") != null) {
-				item.put("TRACK_CREATE_TIME", DateUtil.getDate(
-						item.get("TRACK_CREATE_TIME").toString()));
+			if (item.get("PLUGIN_MAN_DATE") != null) {
+				item.put("PLUGIN_MAN_DATE", DateUtil.getDate(
+						item.get("PLUGIN_MAN_DATE").toString()));
 			}
 		}
 		int count = plugInTrackMapper

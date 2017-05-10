@@ -27,7 +27,7 @@ import com.bpbj.service.IBPBJPositionService;
 import com.bpbj.service.IBPBJStorageService;
 
 @Controller
-@RequestMapping("/bpbj/plugIn_inventory")
+@RequestMapping("/bpbj/plugin_inventory")
 public class BPBJPlugInInventoryController
 		extends BaseController {
 	public static final Logger LOGGER = Logger
@@ -79,7 +79,7 @@ public class BPBJPlugInInventoryController
 			HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView(
-				"/bpbj/plugIn_inventory/choosePositionUI");
+				"/bpbj/plugin_inventory/choosePositionUI");
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class BPBJPlugInInventoryController
 			HttpServletRequest request,
 			HttpServletResponse response) {
 		return new ModelAndView(
-				"/bpbj/plugIn_inventory/chooseStorageUI");
+				"/bpbj/plugin_inventory/chooseStorageUI");
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class BPBJPlugInInventoryController
 	}
 
 	/**
-	 * 分页查询工器具批次列表
+	 * 分页查询插件批次列表
 	 * 
 	 * @param request
 	 * @param response
@@ -191,9 +191,9 @@ public class BPBJPlugInInventoryController
 		String posId = request.getParameter("POS_ID");
 		String manufacturerId = request
 				.getParameter("MAN_ID");
-		String basePlugInModel = request
+		String baseToolModel = request
 				.getParameter("BASE_TOOL_MODEL");
-		String basePlugInSpec = request
+		String baseToolSpec = request
 				.getParameter("BASE_TOOL_SPEC");
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		param.put("storeId", storeId);
@@ -201,9 +201,9 @@ public class BPBJPlugInInventoryController
 		param.put("keyWord", keyWord);
 		param.put("currPage", page);
 		param.put("pageSize", rows);
-		param.put("manufacturerId", manufacturerId);
-		param.put("basePlugInModel", basePlugInModel);
-		param.put("basePlugInSpec", basePlugInSpec);
+		param.put("manId", manufacturerId);
+		param.put("baseToolModel", baseToolModel);
+		param.put("baseToolSpec", baseToolSpec);
 		return plugInService.selectPlugInsForPage(param);
 	}
 
@@ -215,7 +215,7 @@ public class BPBJPlugInInventoryController
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView toIndex() {
 		return new ModelAndView(
-				"/bpbj/plugIn_inventory/index");
+				"/bpbj/plugin_inventory/index");
 	}
 
 }

@@ -185,10 +185,7 @@ public class BPBJHomePageController extends BaseController {
 		batch.setBatchCreateUserId(
 				getSessionUser(request, response).getUserId());
 		batch.setBatchCreateTime(new Date());
-		batch.setBatchTakeDeptId(BaseUtil.strToLong(batchTakeDeptId));
 		batch.setBatchRemark(batchRemark);
-		batch.setBatchReturnUserId(
-				BaseUtil.strToLong(batchReturnUserId));
 		PlugIn plugIn = new PlugIn();
 		plugIn.setPlugInCode(plugInCode);
 		if (storeId != null && storeId != "") {

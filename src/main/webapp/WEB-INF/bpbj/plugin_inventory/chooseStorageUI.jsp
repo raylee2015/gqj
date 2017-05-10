@@ -64,7 +64,7 @@
 			url : 'queryStoragesPage.do',
 			idField : 'STORE_ID',
 			rownumbers : true,
-			toolbar : '#toolbarForStorage',
+			toolbar : '#plugInbarForStorage',
 			pagination : true,
 			pageSize : 30,
 			pageNumber : 1,
@@ -81,7 +81,6 @@
 			} ] ],
 			onBeforeLoad : function(param) {
 				param.keyWord = getTextBoxValue('keyWordForStorageTextInput');
-				param.DATE_TYPE = getTextBoxValue("dateTypeTextInput");
 			},
 			onLoadError : function() {
 				errorFunctionForQuery();
@@ -89,8 +88,8 @@
 		});
 	}
 	//关闭编辑窗口
-	function closeChooseStorageUIForToolBatch() {
-		parent.closeChooseStorageUIForToolBatch();
+	function closeChooseStorageUIForPlugInBatch() {
+		parent.closeChooseStorageUIForPlugInBatch();
 	}
 
 	function choose() {
@@ -110,8 +109,8 @@
 			text : selectedItems[0].STORE_NAME,
 			width : 200
 		});
-		parent.queryToolInventorys();
-		closeChooseStorageUIForToolBatch();
+		parent.queryPlugInInventorys();
+		closeChooseStorageUIForPlugInBatch();
 	}
 </script>
 </head>
@@ -124,7 +123,7 @@
 		<div region="north" fit="true" border="false">
 			<table id="datagridForStorage" class="easyui-datagrid">
 			</table>
-			<div id="toolbarForStorage">
+			<div id="plugInbarForStorage">
 				<table style="width: 100%">
 					<tr>
 						<td><a class="easyui-linkbutton"
@@ -132,7 +131,7 @@
 							onclick="choose()">选择</a> <a
 							class="easyui-linkbutton" iconCls="icon-cancel"
 							href="javascript:void(0)"
-							onclick="closeChooseStorageUIForToolBatch()">关闭</a></td>
+							onclick="closeChooseStorageUIForPlugInBatch()">关闭</a></td>
 						<td align="right"><input
 							id="keyWordForStorageTextInput"
 							class="easyui-textbox"
