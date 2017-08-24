@@ -3,85 +3,48 @@
 <mapper namespace="com.bpbj.dao.BPBJPlugInTrackMapper">
 	<resultMap id="BaseResultMap" type="com.bpbj.entity.PlugInTrack">
 		<id column="TRACK_ID" jdbcType="DECIMAL" property="trackId" />
-		<result column="PLUGIN_ID" jdbcType="DECIMAL" property="toolId" />
+		<result column="PLUGIN_ID" jdbcType="DECIMAL" property="plugInId" />
 		<result column="STORE_ID" jdbcType="DECIMAL" property="storeId" />
 		<result column="POS_ID" jdbcType="DECIMAL" property="posId" />
 		<result column="BATCH_ID" jdbcType="DECIMAL" property="batchId" />
-		<result column="BASE_PLUGIN_ID" jdbcType="DECIMAL" property="basePlugInId" />
-		<result column="PLUGIN_BOX" jdbcType="VARCHAR" property="toolBox" />
-		<result column="PLUGIN_STATUS" jdbcType="DECIMAL" property="toolStatus" />
-		<result column="TRACK_CREATE_USER_ID" jdbcType="DECIMAL"
-			property="trackCreateUserId" />
-		<result column="TRACK_CREATE_TIME" jdbcType="TIMESTAMP"
-			property="trackCreateTime" />
-		<result column="PLUGIN_TEST_DATE" jdbcType="TIMESTAMP" property="toolTestDate" />
-		<result column="PLUGIN_REJECT_DATE" jdbcType="TIMESTAMP"
-			property="toolRejectDate" />
-		<result column="PLUGIN_TEST_DATE_CIRCLE" jdbcType="DECIMAL"
-			property="toolTestDateCircle" />
-		<result column="PLUGIN_NEXT_TEST_DATE" jdbcType="TIMESTAMP"
-			property="toolNextTestDate" />
-		<result column="PLUGIN_CODE" jdbcType="VARCHAR" property="toolCode" />
-		<result column="STORE_NAME" jdbcType="VARCHAR" property="storeName" />
-		<result column="POS_NAME" jdbcType="VARCHAR" property="posName" />
-		<result column="BATCH_CODE" jdbcType="VARCHAR" property="batchCode" />
-		<result column="BASE_PLUGIN_NAME" jdbcType="VARCHAR" property="basePlugInName" />
-		<result column="BASE_PLUGIN_TYPE_ID" jdbcType="DECIMAL" property="basePlugInTypeId" />
-		<result column="BASE_PLUGIN_TYPE_NAME" jdbcType="VARCHAR"
-			property="basePlugInTypeName" />
-		<result column="BASE_PLUGIN_MODEL" jdbcType="VARCHAR" property="basePlugInModel" />
-		<result column="BASE_PLUGIN_SPEC" jdbcType="VARCHAR" property="basePlugInSpec" />
-		<result column="BASE_PLUGIN_MANUFACTURER_NAME" jdbcType="VARCHAR"
-			property="basePlugInManufacturerName" />
-		<result column="PLUGIN_DEPT_ID" jdbcType="VARCHAR" property="toolDeptId" />
+		<result column="PLUGIN_STATUS" jdbcType="DECIMAL" property="plugInStatus" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		TRACK_ID, PLUGIN_ID, STORE_ID, POS_ID, BATCH_ID,
-		BASE_PLUGIN_ID, PLUGIN_BOX,
-		PLUGIN_STATUS,
-		TRACK_CREATE_USER_ID,
-		TRACK_CREATE_TIME, PLUGIN_TEST_DATE, PLUGIN_REJECT_DATE,
-		PLUGIN_TEST_DATE_CIRCLE,
-		PLUGIN_NEXT_TEST_DATE, PLUGIN_CODE, STORE_NAME,
-		POS_NAME, BATCH_CODE, BASE_PLUGIN_NAME,
-		BASE_PLUGIN_TYPE_ID,
-		BASE_PLUGIN_TYPE_NAME, BASE_PLUGIN_MODEL,
-		BASE_PLUGIN_SPEC,BASE_PLUGIN_MANUFACTURER_NAME,PLUGIN_DEPT_ID,
-		PLUGIN_MANUFACTURE_DATE,PLUGIN_PURCHASE_DATE,BATCH_CONFIRM_USER_ID,
-		BATCH_CONFIRM_TIME
+		PLUGIN_STATUS, PLUGIN_CODE, STORE_NAME,
+		POS_NAME, BATCH_CODE,
+		BASE_TOOL_NAME, BASE_TOOL_MODEL,
+		BASE_TOOL_SPEC,PLUGIN_DEPT_ID,
+		PLUGIN_MAN_DATE,BATCH_CONFIRM_USER_ID,
+		BATCH_CONFIRM_TIME,MAN_NAME
+
 	</sql>
 	<select id="selectPlugInTracksForList" parameterType="com.bpbj.entity.PlugInTrack"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from GQJ_PLUGIN_TRACK
+		from VIEW_BPBJ_PLUGIN_TRACK
 		<where>
-			<if test="toolId != null">
-				and PLUGIN_ID = #{toolId}
+			<if test="plugInId != null">
+				and PLUGIN_ID = #{plugInId}
 			</if>
 			<if test="batchId != null">
 				and BATCH_ID = #{batchId}
 			</if>
-			<if test="toolCode != null">
-				and PLUGIN_CODE = #{toolCode}
-			</if>
-			<if test="toolDeptId != null">
-				and PLUGIN_DEPT_ID = #{toolDeptId}
-			</if>
-			<if test="toolStatus != null">
-				and PLUGIN_STATUS = #{toolStatus}
+			<if test="plugInStatus != null">
+				and PLUGIN_STATUS = #{plugInStatus}
 			</if>
 		</where>
-		order by TRACK_ID DESC
+		order by TRACK_ID 
 	</select>
 	<select id="selectPlugInTracksForObject" parameterType="com.bpbj.entity.PlugInTrack"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from GQJ_PLUGIN_TRACK
+		from VIEW_BPBJ_PLUGIN_TRACK
 		<where>
-			<if test="toolId != null">
-				and PLUGIN_ID = #{toolId}
+			<if test="plugInId != null">
+				and PLUGIN_ID = #{plugInId}
 			</if>
 			<if test="batchId != null">
 				and BATCH_ID = #{batchId}
@@ -94,16 +57,13 @@
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select
 		<include refid="Base_Column_List" />
-		from GQJ_PLUGIN_TRACK
+		from VIEW_BPBJ_PLUGIN_TRACK
 		<where>
-			<if test="toolId != null">
-				and PLUGIN_ID = #{toolId}
+			<if test="plugInId != null">
+				and PLUGIN_ID = #{plugInId}
 			</if>
 			<if test="batchId != null">
 				and BATCH_ID = #{batchId}
-			</if>
-			<if test="toolCode != null and toolCode != ''">
-				and PLUGIN_CODE like '%${toolCode}%'
 			</if>
 		</where>
 		order by TRACK_ID
@@ -113,25 +73,22 @@
 	</select>
 	<select id="selectCountOfPlugInTracksForPage" parameterType="com.bpbj.entity.PlugInTrack"
 		resultType="java.lang.Integer">
-		select count(t.TRACK_ID) from GQJ_PLUGIN_TRACK t
+		select count(t.TRACK_ID) from VIEW_BPBJ_PLUGIN_TRACK t
 		<where>
-			<if test="toolId != null">
-				and PLUGIN_ID = #{toolId}
+			<if test="plugInId != null">
+				and PLUGIN_ID = #{plugInId}
 			</if>
 			<if test="batchId != null">
 				and BATCH_ID = #{batchId}
-			</if>
-			<if test="toolCode != null and toolCode != ''">
-				and PLUGIN_CODE like '%${toolCode}%'
 			</if>
 		</where>
 	</select>
 	<delete id="deleteByPrimaryKeys" parameterType="com.bpbj.entity.PlugInTrack">
 		delete from
-		GQJ_PLUGIN_TRACK
+		BPBJ_PLUGIN_TRACK
 		<where>
-			<if test="toolId != null">
-				and PLUGIN_ID in (${toolId})
+			<if test="plugInId != null">
+				and PLUGIN_ID in (${plugInId})
 			</if>
 			<if test="trackId != null">
 				and TRACK_ID = #{trackId}
@@ -142,12 +99,12 @@
 		</where>
 	</delete>
 	<insert id="insertSelective" parameterType="com.bpbj.entity.PlugInTrack">
-		insert into GQJ_PLUGIN_TRACK
+		insert into BPBJ_PLUGIN_TRACK
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="trackId != null">
 				TRACK_ID,
 			</if>
-			<if test="toolId != null">
+			<if test="plugInId != null">
 				PLUGIN_ID,
 			</if>
 			<if test="storeId != null">
@@ -159,85 +116,16 @@
 			<if test="batchId != null">
 				BATCH_ID,
 			</if>
-			<if test="basePlugInId != null">
-				BASE_PLUGIN_ID,
-			</if>
-			<if test="toolBox != null">
-				PLUGIN_BOX,
-			</if>
-			<if test="toolStatus != null">
+			<if test="plugInStatus != null">
 				PLUGIN_STATUS,
-			</if>
-			<if test="trackCreateUserId != null">
-				TRACK_CREATE_USER_ID,
-			</if>
-			<if test="trackCreateTime != null">
-				TRACK_CREATE_TIME,
-			</if>
-			<if test="toolTestDate != null">
-				PLUGIN_TEST_DATE,
-			</if>
-			<if test="toolRejectDate != null">
-				PLUGIN_REJECT_DATE,
-			</if>
-			<if test="toolTestDateCircle != null">
-				PLUGIN_TEST_DATE_CIRCLE,
-			</if>
-			<if test="toolNextTestDate != null">
-				PLUGIN_NEXT_TEST_DATE,
-			</if>
-			<if test="toolCode != null">
-				PLUGIN_CODE,
-			</if>
-			<if test="storeName != null">
-				STORE_NAME,
-			</if>
-			<if test="posName != null">
-				POS_NAME,
-			</if>
-			<if test="batchCode != null">
-				BATCH_CODE,
-			</if>
-			<if test="basePlugInName != null">
-				BASE_PLUGIN_NAME,
-			</if>
-			<if test="basePlugInTypeId != null">
-				BASE_PLUGIN_TYPE_ID,
-			</if>
-			<if test="basePlugInTypeName != null">
-				BASE_PLUGIN_TYPE_NAME,
-			</if>
-			<if test="basePlugInModel != null">
-				BASE_PLUGIN_MODEL,
-			</if>
-			<if test="basePlugInSpec != null">
-				BASE_PLUGIN_SPEC,
-			</if>
-			<if test="basePlugInManufacturerName != null">
-				BASE_PLUGIN_MANUFACTURER_NAME,
-			</if>
-			<if test="toolDeptId != null">
-				PLUGIN_DEPT_ID,
-			</if>
-			<if test="batchConfirmUserId != null">
-				BATCH_CONFIRM_USER_ID,
-			</if>
-			<if test="batchConfirmTime != null">
-				BATCH_CONFIRM_TIME,
-			</if>
-			<if test="toolManufactureDate != null">
-				PLUGIN_MANUFACTURE_DATE,
-			</if>
-			<if test="toolPurchaseDate != null">
-				PLUGIN_PURCHASE_DATE,
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="trackId != null">
-				GQJ_PLUGIN_TRACK_SEQ.nextval,
+				BPBJ_PLUGIN_TRACK_SEQ.nextval,
 			</if>
-			<if test="toolId != null">
-				#{toolId,jdbcType=DECIMAL},
+			<if test="plugInId != null">
+				#{plugInId,jdbcType=DECIMAL},
 			</if>
 			<if test="storeId != null">
 				#{storeId,jdbcType=DECIMAL},
@@ -248,92 +136,17 @@
 			<if test="batchId != null">
 				#{batchId,jdbcType=DECIMAL},
 			</if>
-			<if test="basePlugInId != null">
-				#{basePlugInId,jdbcType=DECIMAL},
-			</if>
-			<if test="toolBox != null">
-				#{toolBox,jdbcType=VARCHAR},
-			</if>
-			<if test="toolStatus != null">
-				#{toolStatus,jdbcType=DECIMAL},
-			</if>
-			<if test="trackCreateUserId != null">
-				#{trackCreateUserId,jdbcType=DECIMAL},
-			</if>
-			<if test="trackCreateTime != null">
-				#{trackCreateTime,jdbcType=TIMESTAMP},
-			</if>
-			<if test="toolTestDate != null">
-				#{toolTestDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="toolRejectDate != null">
-				#{toolRejectDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="toolTestDateCircle != null">
-				#{toolTestDateCircle,jdbcType=DECIMAL},
-			</if>
-			<if test="toolNextTestDate != null">
-				#{toolNextTestDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="toolCode != null">
-				#{toolCode,jdbcType=VARCHAR},
-			</if>
-			<if test="storeName != null">
-				#{storeName,jdbcType=VARCHAR},
-			</if>
-			<if test="posName != null">
-				#{posName,jdbcType=VARCHAR},
-			</if>
-			<if test="batchCode != null">
-				#{batchCode,jdbcType=VARCHAR},
-			</if>
-			<if test="basePlugInName != null">
-				#{basePlugInName,jdbcType=VARCHAR},
-			</if>
-			<if test="basePlugInTypeId != null">
-				#{basePlugInTypeId,jdbcType=DECIMAL},
-			</if>
-			<if test="basePlugInTypeName != null">
-				#{basePlugInTypeName,jdbcType=VARCHAR},
-			</if>
-			<if test="basePlugInModel != null">
-				#{basePlugInModel,jdbcType=VARCHAR},
-			</if>
-			<if test="basePlugInSpec != null">
-				#{basePlugInSpec,jdbcType=VARCHAR},
-			</if>
-			<if test="basePlugInManufacturerName != null">
-				#{basePlugInManufacturerName,jdbcType=VARCHAR},
-			</if>
-			<if test="toolDeptId != null">
-				#{toolDeptId,jdbcType=DECIMAL},
-			</if>
-			<if test="batchConfirmUserId != null">
-				#{batchConfirmUserId,jdbcType=DECIMAL},
-			</if>
-			<if test="batchConfirmTime != null">
-				#{batchConfirmTime,jdbcType=TIMESTAMP},
-			</if>
-			<if test="toolManufactureDate != null">
-				#{toolManufactureDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="toolPurchaseDate != null">
-				#{toolPurchaseDate,jdbcType=TIMESTAMP},
+			<if test="plugInStatus != null">
+				#{plugInStatus,jdbcType=DECIMAL},
 			</if>
 		</trim>
 	</insert>
 
 	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.PlugInTrack">
-		update GQJ_PLUGIN_TRACK
+		update BPBJ_PLUGIN_TRACK
 		<set>
-			<if test="toolStatus != null">
-				PLUGIN_STATUS = #{toolStatus,jdbcType=DECIMAL},
-			</if>
-			<if test="batchConfirmUserId != null">
-				BATCH_CONFIRM_USER_ID=#{batchConfirmUserId,jdbcType=DECIMAL},
-			</if>
-			<if test="batchConfirmTime != null">
-				BATCH_CONFIRM_TIME=#{batchConfirmTime,jdbcType=TIMESTAMP},
+			<if test="plugInStatus != null">
+				PLUGIN_STATUS = #{plugInStatus,jdbcType=DECIMAL},
 			</if>
 		</set>
 		<where>

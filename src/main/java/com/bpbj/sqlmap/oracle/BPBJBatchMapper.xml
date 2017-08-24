@@ -5,8 +5,9 @@
 		<id column="BATCH_ID" jdbcType="DECIMAL" property="batchId" />
 		<result column="BATCH_CODE" jdbcType="VARCHAR" property="batchCode" />
 		<result column="BATCH_TYPE" jdbcType="DECIMAL" property="batchType" />
-		<result column="BATCH_COUNT" jdbcType="DECIMAL" property="batchCount" />
 		<result column="BATCH_DEPT_ID" jdbcType="DECIMAL" property="batchDeptId" />
+		<result column="STATION_ID" jdbcType="DECIMAL" property="stationId" />
+		<result column="ZONE_ID" jdbcType="DECIMAL" property="zoneId" />
 		<result column="BATCH_CREATE_USER_ID" jdbcType="DECIMAL"
 			property="batchCreateUserId" />
 		<result column="BATCH_CREATE_TIME" jdbcType="TIMESTAMP"
@@ -15,37 +16,24 @@
 			property="batchConfirmUserId" />
 		<result column="BATCH_CONFIRM_TIME" jdbcType="TIMESTAMP"
 			property="batchConfirmTime" />
-		<result column="BATCH_TAKE_DEPT_ID" jdbcType="DECIMAL"
-			property="batchTakeDeptId" />
-		<result column="BATCH_TAKE_USER_ID" jdbcType="DECIMAL"
-			property="batchTakeUserId" />
-		<result column="BATCH_TAKE_TIME" jdbcType="TIMESTAMP" property="batchTakeTime" />
 		<result column="BATCH_REMARK" jdbcType="VARCHAR" property="batchRemark" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		BATCH_ID, BATCH_CODE, BATCH_TYPE, BATCH_COUNT,
-		BATCH_DEPT_ID,
-		BATCH_CREATE_USER_ID,
-		BATCH_CREATE_TIME,
-		BATCH_CONFIRM_USER_ID, BATCH_CONFIRM_TIME, BATCH_TAKE_DEPT_ID,
-		BATCH_TAKE_USER_ID, BATCH_TAKE_TIME, BATCH_REMARK,
-		BATCH_DEPT_NAME,BATCH_CREATE_USER_NAME,
-		BATCH_CONFIRM_USER_NAME,BATCH_TAKE_USER_NAME,BATCH_TAKE_DEPT_NAME,
-		BATCH_RETURN_USER_ID,BATCH_RETURN_USER_NAME
-
-	</sql>
-	<select id="selectBatchsForObject" parameterType="com.bpbj.entity.Batch"
-		resultMap="BaseResultMap">
-		select
-		BATCH_ID, BATCH_CODE, BATCH_TYPE, BATCH_COUNT,
+		BATCH_ID, BATCH_CODE, BATCH_TYPE,
 		BATCH_DEPT_ID,
 		BATCH_CREATE_USER_ID,
 		BATCH_CREATE_TIME,
 		BATCH_CONFIRM_USER_ID,
-		BATCH_CONFIRM_TIME, BATCH_TAKE_DEPT_ID,
-		BATCH_TAKE_USER_ID,
-		BATCH_TAKE_TIME, BATCH_REMARK
-		from GQJ_BATCH
+		BATCH_CONFIRM_TIME,BATCH_REMARK,
+		BATCH_DEPT_NAME,BATCH_CREATE_USER_NAME,
+		BATCH_CONFIRM_USER_NAME,STATION_ID,STATION_NAME,
+		ZONE_ID,ZONE_NAME
+	</sql>
+	<select id="selectBatchsForObject" parameterType="com.bpbj.entity.Batch"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_BPBJ_BATCH
 		<where>
 			<if test="batchCode != null">
 				AND BATCH_CODE = #{batchCode}
@@ -61,13 +49,10 @@
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
 		select
 		<include refid="Base_Column_List" />
-		from VIEW_GQJ_BATCH
+		from VIEW_BPBJ_BATCH
 		<where>
 			<if test="batchDeptId != null">
 				and BATCH_DEPT_ID = #{batchDeptId}
-			</if>
-			<if test="batchTakeDeptId != null">
-				and BATCH_TAKE_DEPT_ID = #{batchTakeDeptId}
 			</if>
 			<if test="batchType != null">
 				and BATCH_TYPE = #{batchType}
@@ -86,13 +71,10 @@
 	</select>
 	<select id="selectCountOfBatchsForPage" parameterType="com.bpbj.entity.Batch"
 		resultType="java.lang.Integer">
-		select count(t.BATCH_ID) from VIEW_GQJ_BATCH t
+		select count(t.BATCH_ID) from VIEW_BPBJ_BATCH t
 		<where>
 			<if test="batchDeptId != null">
 				and BATCH_DEPT_ID = #{batchDeptId}
-			</if>
-			<if test="batchTakeDeptId != null">
-				and BATCH_TAKE_DEPT_ID = #{batchTakeDeptId}
 			</if>
 			<if test="batchType != null">
 				and BATCH_TYPE = #{batchType}
@@ -107,7 +89,7 @@
 	</select>
 	<delete id="deleteByPrimaryKeys" parameterType="com.bpbj.entity.Batch">
 		delete from
-		GQJ_BATCH
+		BPBJ_BATCH
 		<where>
 			<if test="ids != null">
 				and BATCH_ID in (${ids})
@@ -120,9 +102,9 @@
 	<insert id="insertSelective" parameterType="com.bpbj.entity.Batch">
 		<selectKey resultType="java.lang.Long" order="BEFORE"
 			keyProperty="batchId">
-			select GQJ_BATCH_SEQ.nextval from dual
+			select BPBJ_BATCH_SEQ.nextval from dual
 		</selectKey>
-		insert into GQJ_BATCH
+		insert into BPBJ_BATCH
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="batchId != null">
 				BATCH_ID,
@@ -132,9 +114,6 @@
 			</if>
 			<if test="batchType != null">
 				BATCH_TYPE,
-			</if>
-			<if test="batchCount != null">
-				BATCH_COUNT,
 			</if>
 			<if test="batchDeptId != null">
 				BATCH_DEPT_ID,
@@ -151,20 +130,14 @@
 			<if test="batchConfirmTime != null">
 				BATCH_CONFIRM_TIME,
 			</if>
-			<if test="batchTakeDeptId != null">
-				BATCH_TAKE_DEPT_ID,
-			</if>
-			<if test="batchTakeUserId != null">
-				BATCH_TAKE_USER_ID,
-			</if>
-			<if test="batchTakeTime != null">
-				BATCH_TAKE_TIME,
-			</if>
 			<if test="batchRemark != null">
 				BATCH_REMARK,
 			</if>
-			<if test="batchReturnUserId != null">
-				BATCH_RETURN_USER_ID,
+			<if test="stationId != null">
+				STATION_ID,
+			</if>
+			<if test="zoneId != null">
+				ZONE_ID,
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -176,9 +149,6 @@
 			</if>
 			<if test="batchType != null">
 				#{batchType,jdbcType=DECIMAL},
-			</if>
-			<if test="batchCount != null">
-				#{batchCount,jdbcType=DECIMAL},
 			</if>
 			<if test="batchDeptId != null">
 				#{batchDeptId,jdbcType=DECIMAL},
@@ -195,34 +165,25 @@
 			<if test="batchConfirmTime != null">
 				#{batchConfirmTime,jdbcType=TIMESTAMP},
 			</if>
-			<if test="batchTakeDeptId != null">
-				#{batchTakeDeptId,jdbcType=DECIMAL},
-			</if>
-			<if test="batchTakeUserId != null">
-				#{batchTakeUserId,jdbcType=DECIMAL},
-			</if>
-			<if test="batchTakeTime != null">
-				#{batchTakeTime,jdbcType=TIMESTAMP},
-			</if>
 			<if test="batchRemark != null">
 				#{batchRemark,jdbcType=VARCHAR},
 			</if>
-			<if test="batchReturnUserId != null">
-				#{batchReturnUserId,jdbcType=DECIMAL},
+			<if test="stationId != null">
+				#{stationId,jdbcType=DECIMAL},
+			</if>
+			<if test="zoneId != null">
+				#{zoneId,jdbcType=DECIMAL},
 			</if>
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.bpbj.entity.Batch">
-		update GQJ_BATCH
+		update BPBJ_BATCH
 		<set>
 			<if test="batchCode != null">
 				BATCH_CODE = #{batchCode,jdbcType=VARCHAR},
 			</if>
 			<if test="batchType != null">
 				BATCH_TYPE = #{batchType,jdbcType=DECIMAL},
-			</if>
-			<if test="batchCount != null">
-				BATCH_COUNT = #{batchCount,jdbcType=DECIMAL},
 			</if>
 			<if test="batchDeptId != null">
 				BATCH_DEPT_ID = #{batchDeptId,jdbcType=DECIMAL},
@@ -243,21 +204,14 @@
 				BATCH_CONFIRM_TIME =
 				#{batchConfirmTime,jdbcType=TIMESTAMP},
 			</if>
-			<if test="batchTakeDeptId != null">
-				BATCH_TAKE_DEPT_ID = #{batchTakeDeptId,jdbcType=DECIMAL},
-			</if>
-			<if test="batchTakeUserId != null">
-				BATCH_TAKE_USER_ID = #{batchTakeUserId,jdbcType=DECIMAL},
-			</if>
-			<if test="batchReturnUserId != null">
-				BATCH_RETURN_USER_ID =
-				#{batchReturnUserId,jdbcType=DECIMAL},
-			</if>
-			<if test="batchTakeTime != null">
-				BATCH_TAKE_TIME = #{batchTakeTime,jdbcType=TIMESTAMP},
-			</if>
 			<if test="batchRemark != null">
 				BATCH_REMARK = #{batchRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="stationId != null">
+				STATION_ID = #{stationId,jdbcType=DECIMAL},
+			</if>
+			<if test="zoneId != null">
+				ZONE_ID = #{zoneId,jdbcType=DECIMAL},
 			</if>
 		</set>
 		where BATCH_ID = #{batchId,jdbcType=DECIMAL}

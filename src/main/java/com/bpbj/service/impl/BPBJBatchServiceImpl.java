@@ -21,8 +21,7 @@ import com.bpbj.util.BatchType;
 import com.bpbj.util.PlugInStatus;
 
 @Service
-public class BPBJBatchServiceImpl
-		implements IBPBJBatchService {
+public class BPBJBatchServiceImpl implements IBPBJBatchService {
 
 	@Autowired
 	private BPBJBatchMapper batchMapper;
@@ -43,30 +42,21 @@ public class BPBJBatchServiceImpl
 			PlugIn plugIn = new PlugIn();
 			plugIn.setBatchId(BaseUtil.strToLong(batchId));
 			// 查询plugIn
-			List<PlugIn> plugIns = plugInService
-					.selectPlugInsForList(plugIn);
+			List<PlugIn> plugIns = plugInService.selectPlugInsForList(plugIn);
 			for (PlugIn item : plugIns) {
 				// 根据plugIn和相应的track来reset
 				plugIn = item;
 				PlugInTrack plugInTrack = new PlugInTrack();
-				plugInTrack.setBatchId(
-						BaseUtil.strToLong(batchId));
+				plugInTrack.setBatchId(BaseUtil.strToLong(batchId));
 				plugInTrack.setPlugInId(item.getPlugInId());
 				// 根据plugInID找出trackId
-				plugInTrack
-						.setTrackId(plugInTrackService
-								.selectPlugInTracksForObject(
-										plugInTrack)
-								.getTrackId());
+				plugInTrack.setTrackId(plugInTrackService.selectPlugInTracksForObject(plugInTrack).getTrackId());
 				plugInTrack.setBatchId(null);
-				plugInService.resetPlugIn(plugIn,
-						plugInTrack);
+				plugInService.resetPlugIn(plugIn, plugInTrack);
 			}
 			Batch paramBatch = new Batch();
-			paramBatch.setBatchId(
-					BaseUtil.strToLong(batchId));
-			bool = batchMapper
-					.deleteByPrimaryKeys(paramBatch);
+			paramBatch.setBatchId(BaseUtil.strToLong(batchId));
+			bool = batchMapper.deleteByPrimaryKeys(paramBatch);
 		}
 		if (bool == 0) {
 			map.put("success", false);
@@ -86,77 +76,46 @@ public class BPBJBatchServiceImpl
 		int bool = 1;
 		for (String batchId : batchId_arr) {
 			PlugInTrack plugInTrack = new PlugInTrack();
-			plugInTrack.setBatchId(
-					BaseUtil.strToLong(batchId));
-			if (batch
-					.getBatchType() == BatchType.CHECK_IN) {
-				plugInTrack.setPlugInStatus(
-						PlugInStatus.CHECK_IN);
-			} else if (batch
-					.getBatchType() == BatchType.CHECK_OUT) {
-				plugInTrack.setPlugInStatus(
-						PlugInStatus.CHECK_OUT);
-			} else if (batch
-					.getBatchType() == BatchType.EXCHANGE) {
-				plugInTrack.setPlugInStatus(
-						PlugInStatus.CHECK_OUT);
-			} else if (batch
-					.getBatchType() == BatchType.BACK) {
-				plugInTrack.setPlugInStatus(
-						PlugInStatus.CHECK_IN);
-			} else if (batch
-					.getBatchType() == BatchType.REJECT) {
-				plugInTrack.setPlugInStatus(
-						PlugInStatus.REJECT);
-			} else if (batch
-					.getBatchType() == BatchType.BORROW) {
-				plugInTrack.setPlugInStatus(
-						PlugInStatus.BORROW);
-			} else if (batch
-					.getBatchType() == BatchType.RETURN) {
-				plugInTrack.setPlugInStatus(
-						PlugInStatus.CHECK_IN);
+			plugInTrack.setBatchId(BaseUtil.strToLong(batchId));
+			if (batch.getBatchType() == BatchType.CHECK_IN) {
+				plugInTrack.setPlugInStatus(PlugInStatus.CHECK_IN);
+			} else if (batch.getBatchType() == BatchType.CHECK_OUT) {
+				plugInTrack.setPlugInStatus(PlugInStatus.CHECK_OUT);
+			} else if (batch.getBatchType() == BatchType.EXCHANGE) {
+				plugInTrack.setPlugInStatus(PlugInStatus.CHECK_OUT);
+			} else if (batch.getBatchType() == BatchType.BACK) {
+				plugInTrack.setPlugInStatus(PlugInStatus.CHECK_IN);
+			} else if (batch.getBatchType() == BatchType.REJECT) {
+				plugInTrack.setPlugInStatus(PlugInStatus.REJECT);
+			} else if (batch.getBatchType() == BatchType.BORROW) {
+				plugInTrack.setPlugInStatus(PlugInStatus.BORROW);
+			} else if (batch.getBatchType() == BatchType.RETURN) {
+				plugInTrack.setPlugInStatus(PlugInStatus.CHECK_IN);
 			}
-			plugInTrackService
-					.updatePlugInTrack(plugInTrack);
+			plugInTrackService.updatePlugInTrack(plugInTrack);
 			PlugIn plugIn = new PlugIn();
 			plugIn.setBatchId(BaseUtil.strToLong(batchId));
-			if (batch
-					.getBatchType() == BatchType.CHECK_IN) {
-				plugIn.setPlugInStatus(
-						PlugInStatus.CHECK_IN);
-			} else if (batch
-					.getBatchType() == BatchType.CHECK_OUT) {
-				plugIn.setPlugInStatus(
-						PlugInStatus.CHECK_OUT);
-			} else if (batch
-					.getBatchType() == BatchType.EXCHANGE) {
-				plugIn.setPlugInStatus(
-						PlugInStatus.CHECK_OUT);
-			} else if (batch
-					.getBatchType() == BatchType.BACK) {
-				plugIn.setPlugInStatus(
-						PlugInStatus.CHECK_IN);
-			} else if (batch
-					.getBatchType() == BatchType.REJECT) {
+			if (batch.getBatchType() == BatchType.CHECK_IN) {
+				plugIn.setPlugInStatus(PlugInStatus.CHECK_IN);
+			} else if (batch.getBatchType() == BatchType.CHECK_OUT) {
+				plugIn.setPlugInStatus(PlugInStatus.CHECK_OUT);
+			} else if (batch.getBatchType() == BatchType.EXCHANGE) {
+				plugIn.setPlugInStatus(PlugInStatus.CHECK_OUT);
+			} else if (batch.getBatchType() == BatchType.BACK) {
+				plugIn.setPlugInStatus(PlugInStatus.CHECK_IN);
+			} else if (batch.getBatchType() == BatchType.REJECT) {
 				plugIn.setPlugInStatus(PlugInStatus.REJECT);
-			} else if (batch
-					.getBatchType() == BatchType.BORROW) {
+			} else if (batch.getBatchType() == BatchType.BORROW) {
 				plugIn.setPlugInStatus(PlugInStatus.BORROW);
-			} else if (batch
-					.getBatchType() == BatchType.RETURN) {
-				plugIn.setPlugInStatus(
-						PlugInStatus.CHECK_IN);
+			} else if (batch.getBatchType() == BatchType.RETURN) {
+				plugIn.setPlugInStatus(PlugInStatus.CHECK_IN);
 			}
 			plugInService.updatePlugInByBatch(plugIn);
 			Batch paramBatch = new Batch();
-			paramBatch.setBatchId(
-					BaseUtil.strToLong(batchId));
+			paramBatch.setBatchId(BaseUtil.strToLong(batchId));
 			paramBatch.setBatchConfirmTime(new Date());
-			paramBatch.setBatchConfirmUserId(
-					batch.getBatchConfirmUserId());
-			bool = batchMapper.updateByPrimaryKeySelective(
-					paramBatch);
+			paramBatch.setBatchConfirmUserId(batch.getBatchConfirmUserId());
+			bool = batchMapper.updateByPrimaryKeySelective(paramBatch);
 		}
 		if (bool == 0) {
 			map.put("success", false);
@@ -169,15 +128,11 @@ public class BPBJBatchServiceImpl
 	}
 
 	@Override
-	public synchronized Map<String, Object> addNewBatchsAndDetails(
-			Batch batch, PlugIn plugIn,
+	public synchronized Map<String, Object> addNewBatchsAndDetails(Batch batch, PlugIn plugIn,
 			PlugInTrack plugInTrack) {
-		int bool = 0;
-		Batch temp = batchMapper
-				.selectBatchsForObject(batch);
+		Batch temp = batchMapper.selectBatchsForObject(batch);
 		if (temp == null) {
-			batch.setBatchCount(0L);
-			bool = batchMapper.insertSelective(batch);
+			batchMapper.insertSelective(batch);
 		} else {
 			batch = temp;
 		}
@@ -188,106 +143,48 @@ public class BPBJBatchServiceImpl
 		plugIn.setBatchId(batch.getBatchId());
 		if (batchType == BatchType.CHECK_IN) {
 			plugIn.setPlugInId(-1L);
-			plugIn.setPlugInStatus(
-					PlugInStatus.CHECK_IN_COMING);
-			resultMap = plugInService.checkInPlugIn(batch,
-					plugIn, plugInTrack);
-
+			plugIn.setPlugInStatus(PlugInStatus.CHECK_IN_COMING);
+			resultMap = plugInService.checkInPlugIn(batch, plugIn, plugInTrack);
 		} else if (batchType == BatchType.CHECK_OUT) {
-			plugIn.setPlugInStatus(
-					PlugInStatus.CHECK_OUT_COMING);
-			resultMap = plugInService.checkOutPlugIn(batch,
-					plugIn, plugInTrack);
-		} else if (batchType == BatchType.EXCHANGE) {
-			plugIn.setPlugInStatus(
-					PlugInStatus.CHECK_OUT_COMING);
-			resultMap = plugInService.exchangePlugIn(batch,
-					plugIn, plugInTrack);
+			plugIn.setPlugInStatus(PlugInStatus.CHECK_OUT_COMING);
+			resultMap = plugInService.checkOutPlugIn(batch, plugIn, plugInTrack);
 		} else if (batchType == BatchType.BACK) {
-			plugIn.setPlugInStatus(
-					PlugInStatus.CHECK_IN_COMING);
-			resultMap = plugInService.backPlugIn(batch,
-					plugIn, plugInTrack);
+			plugIn.setPlugInStatus(PlugInStatus.CHECK_IN_COMING);
+			resultMap = plugInService.backPlugIn(batch, plugIn, plugInTrack);
 		} else if (batchType == BatchType.REJECT) {
-			plugIn.setPlugInStatus(
-					PlugInStatus.REJECT_COMING);
-			resultMap = plugInService.rejectPlugIn(batch,
-					plugIn, plugInTrack);
-		} else if (batchType == BatchType.BORROW) {
-			plugIn.setPlugInStatus(
-					PlugInStatus.BORROW_COMING);
-			resultMap = plugInService.borrowPlugIn(batch,
-					plugIn, plugInTrack);
-		} else if (batchType == BatchType.RETURN) {
-			plugIn.setPlugInStatus(
-					PlugInStatus.CHECK_IN_COMING);
-			resultMap = plugInService.checkInPlugIn(batch,
-					plugIn, plugInTrack);
-		} else if (batchType == BatchType.USE) {
-			plugIn.setPlugInStatus(PlugInStatus.CHECK_OUT);
-			resultMap = plugInService.usePlugIn(batch,
-					plugIn, plugInTrack);
-		} else if (batchType == BatchType.SELF_RETURN) {
-			plugIn.setPlugInStatus(
-					PlugInStatus.CHECK_IN_COMING);
-			resultMap = plugInService.selfRetrunPlugIn(
-					batch, plugIn, plugInTrack);
+			plugIn.setPlugInStatus(PlugInStatus.REJECT_COMING);
+			resultMap = plugInService.rejectPlugIn(batch, plugIn, plugInTrack);
 		}
 		if (resultMap != null) {
-			success = Boolean.parseBoolean(
-					resultMap.get("success").toString());
+			success = Boolean.parseBoolean(resultMap.get("success").toString());
 			msg = resultMap.get("msg").toString();
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (success) {
-			// 批次更新数量
-			batch.setBatchCount(batch.getBatchCount() + 1);
-			bool = batchMapper
-					.updateByPrimaryKeySelective(batch);
-
-			if (bool == 0) {
-				map.put("success", false);
-				map.put("msg", "保存出错，请联系管理员");
-			} else {
-				map.put("success", true);
-				map.put("msg", "保存成功");
-				map.put("count", batch.getBatchCount());
-			}
+			map.put("success", true);
+			map.put("msg", "保存成功，请联系管理员");
 		} else {
 			map.put("success", false);
 			map.put("msg", msg);
 		}
-
 		return map;
 	}
 
 	@Override
-	public Map<String, Object> selectBatchsForPage(
-			Batch batch) {
-		List<Map<String, Object>> batchs = batchMapper
-				.selectBatchsForPage(batch);
+	public Map<String, Object> selectBatchsForPage(Batch batch) {
+		List<Map<String, Object>> batchs = batchMapper.selectBatchsForPage(batch);
 		for (Map<String, Object> item : batchs) {
 			if (item.get("BATCH_CREATE_TIME") != null) {
-				item.put("BATCH_CREATE_TIME",
-						DateUtil.getDate(item
-								.get("BATCH_CREATE_TIME")
-								.toString()));
+				item.put("BATCH_CREATE_TIME", DateUtil.getDate(item.get("BATCH_CREATE_TIME").toString()));
 			}
 			if (item.get("BATCH_CONFIRM_TIME") != null) {
-				item.put("BATCH_CONFIRM_TIME",
-						DateUtil.getDate(item
-								.get("BATCH_CONFIRM_TIME")
-								.toString()));
+				item.put("BATCH_CONFIRM_TIME", DateUtil.getDate(item.get("BATCH_CONFIRM_TIME").toString()));
 			}
 			if (item.get("BATCH_TAKE_TIME") != null) {
-				item.put("BATCH_TAKE_TIME",
-						DateUtil.getDate(
-								item.get("BATCH_TAKE_TIME")
-										.toString()));
+				item.put("BATCH_TAKE_TIME", DateUtil.getDate(item.get("BATCH_TAKE_TIME").toString()));
 			}
 		}
-		int count = batchMapper
-				.selectCountOfBatchsForPage(batch);
+		int count = batchMapper.selectCountOfBatchsForPage(batch);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rows", batchs);
 		map.put("total", count);
@@ -302,8 +199,7 @@ public class BPBJBatchServiceImpl
 	@Override
 	public Map<String, Object> updateBatch(Batch batch) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = batchMapper
-				.updateByPrimaryKeySelective(batch);
+		int bool = batchMapper.updateByPrimaryKeySelective(batch);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -322,11 +218,7 @@ public class BPBJBatchServiceImpl
 		for (String batchId : batchId_arr) {
 			Batch param = new Batch();
 			param.setBatchId(BaseUtil.strToLong(batchId));
-			param.setBatchTakeTime(new Date());
-			param.setBatchTakeUserId(
-					batch.getBatchTakeUserId());
-			bool = batchMapper
-					.updateByPrimaryKeySelective(param);
+			bool = batchMapper.updateByPrimaryKeySelective(param);
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -341,15 +233,10 @@ public class BPBJBatchServiceImpl
 	}
 
 	@Override
-	public Map<String, Object> delPlugInAndTrack(
-			PlugIn plugIn, PlugInTrack plugInTrack,
-			Batch batch) {
-		Map<String, Object> map = plugInService
-				.resetPlugIn(plugIn, plugInTrack);
+	public Map<String, Object> delPlugInAndTrack(PlugIn plugIn, PlugInTrack plugInTrack, Batch batch) {
+		Map<String, Object> map = plugInService.resetPlugIn(plugIn, plugInTrack);
 		batch = batchMapper.selectBatchsForObject(batch);
-		batch.setBatchCount(batch.getBatchCount() - 1);
-		int bool = batchMapper
-				.updateByPrimaryKeySelective(batch);
+		int bool = batchMapper.updateByPrimaryKeySelective(batch);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");

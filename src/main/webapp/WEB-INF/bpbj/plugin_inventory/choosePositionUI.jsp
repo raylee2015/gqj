@@ -66,7 +66,7 @@
 									+ getTextBoxValue('storageIdTextBox'),
 							idField : 'POS_ID',
 							rownumbers : true,
-							toolbar : '#toolbarForPosition',
+							toolbar : '#plugInbarForPosition',
 							pagination : true,
 							pageSize : 30,
 							pageNumber : 1,
@@ -90,8 +90,8 @@
 						});
 	}
 	//关闭编辑窗口
-	function closeChoosePositionUIForToolBatch() {
-		parent.closeChoosePositionUIForToolBatch();
+	function closeChoosePositionUIForPlugInBatch() {
+		parent.closeChoosePositionUIForPlugInBatch();
 	}
 
 	function choose() {
@@ -110,8 +110,8 @@
 			text : selectedItems[0].POS_NAME,
 			width : 200
 		});
-		parent.queryToolInventorys();
-		closeChoosePositionUIForToolBatch();
+		parent.queryPlugInInventorys();
+		closeChoosePositionUIForPlugInBatch();
 	}
 </script>
 </head>
@@ -127,7 +127,7 @@
 		<div region="north" fit="true" border="false">
 			<table id="datagridForPosition" class="easyui-datagrid">
 			</table>
-			<div id="toolbarForPosition">
+			<div id="plugInbarForPosition">
 				<table style="width: 100%">
 					<tr>
 						<td><a class="easyui-linkbutton"
@@ -135,7 +135,7 @@
 							onclick="choose()">选择</a> <a
 							class="easyui-linkbutton" iconCls="icon-cancel"
 							href="javascript:void(0)"
-							onclick="closeChoosePositionUIForToolBatch()">关闭</a></td>
+							onclick="closeChoosePositionUIForPlugInBatch()">关闭</a></td>
 						<td align="right"><input
 							id="keyWordForPositionTextInput"
 							class="easyui-textbox"

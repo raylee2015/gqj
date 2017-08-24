@@ -72,7 +72,7 @@ public class BPBJPlugInController extends BaseController {
 	}
 
 	/**
-	 * 弹出工器具信息管理操作页面
+	 * 弹出插件信息管理操作页面
 	 * 
 	 * @return
 	 */
@@ -85,7 +85,7 @@ public class BPBJPlugInController extends BaseController {
 	private IBPBJBaseToolService baseToolService;
 
 	/**
-	 * 分页查询工器具列表
+	 * 分页查询插件列表
 	 * 
 	 * @param request
 	 * @param response
@@ -115,7 +115,7 @@ public class BPBJPlugInController extends BaseController {
 	}
 
 	/**
-	 * 更新工器具信息
+	 * 更新插件信息
 	 * 
 	 * @param request
 	 * @param response

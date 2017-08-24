@@ -11,12 +11,9 @@ public class Batch extends Base {
 
 	private Long batchType;
 
-	private Long batchCount;
-
 	private Long batchDeptId;
 
 	private Long batchCreateUserId;
-	private Long batchReturnUserId;
 
 	private Date batchCreateTime;
 
@@ -24,20 +21,26 @@ public class Batch extends Base {
 
 	private Date batchConfirmTime;
 
-	private Long batchTakeDeptId;
-
-	private Long batchTakeUserId;
-
-	private Date batchTakeTime;
-
 	private String batchRemark;
 
-	public Long getBatchReturnUserId() {
-		return batchReturnUserId;
+	private Long stationId;
+
+	private Long zoneId;
+
+	public Long getStationId() {
+		return stationId;
 	}
 
-	public void setBatchReturnUserId(Long batchReturnUserId) {
-		this.batchReturnUserId = batchReturnUserId;
+	public void setStationId(Long stationId) {
+		this.stationId = stationId;
+	}
+
+	public Long getZoneId() {
+		return zoneId;
+	}
+
+	public void setZoneId(Long zoneId) {
+		this.zoneId = zoneId;
 	}
 
 	public Long getBatchId() {
@@ -62,14 +65,6 @@ public class Batch extends Base {
 
 	public void setBatchType(Long batchType) {
 		this.batchType = batchType;
-	}
-
-	public Long getBatchCount() {
-		return batchCount;
-	}
-
-	public void setBatchCount(Long batchCount) {
-		this.batchCount = batchCount;
 	}
 
 	public Long getBatchDeptId() {
@@ -112,36 +107,11 @@ public class Batch extends Base {
 		this.batchConfirmTime = batchConfirmTime;
 	}
 
-	public Long getBatchTakeDeptId() {
-		return batchTakeDeptId;
-	}
-
-	public void setBatchTakeDeptId(Long batchTakeDeptId) {
-		this.batchTakeDeptId = batchTakeDeptId;
-	}
-
-	public Long getBatchTakeUserId() {
-		return batchTakeUserId;
-	}
-
-	public void setBatchTakeUserId(Long batchTakeUserId) {
-		this.batchTakeUserId = batchTakeUserId;
-	}
-
-	public Date getBatchTakeTime() {
-		return batchTakeTime;
-	}
-
-	public void setBatchTakeTime(Date batchTakeTime) {
-		this.batchTakeTime = batchTakeTime;
-	}
-
 	public String getBatchRemark() {
 		return batchRemark;
 	}
 
 	public void setBatchRemark(String batchRemark) {
-		this.batchRemark = batchRemark == null ? null
-				: batchRemark.trim();
+		this.batchRemark = batchRemark == null ? null : batchRemark.trim();
 	}
 }

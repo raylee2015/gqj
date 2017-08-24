@@ -49,4 +49,8 @@ public interface IBPBJPlugInService {
 	Map<String, Object> selfRetrunPlugIn(Batch batch,
 			PlugIn plugInParam, PlugInTrack plugInTrack);
 
+	PlugIn selectPlugInForObject(PlugIn plugIn);
+
+	Map<String, Object> selectPlugInsForPageByBaseTool(HashMap<String, Object> param);
+
 }

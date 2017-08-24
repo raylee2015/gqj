@@ -17,7 +17,8 @@
 		PLUGIN_STATUS,
 		PLUGIN_DEPT_ID, PLUGIN_REMARK, BASE_TOOL_ID,
 		STORE_NAME,POS_NAME,BASE_TOOL_NAME, MAN_NAME,
-		BASE_TOOL_MODEL,BASE_TOOL_SPEC,BASE_TOOL_UNIT,BASE_TOOL_STATION
+		BASE_TOOL_MODEL,BASE_TOOL_SPEC,BASE_TOOL_UNIT,
+		BASE_TOOL_STATION,PLUGIN_MAN_DATE
 	</sql>
 	<select id="selectPlugInForObject" parameterType="com.bpbj.entity.PlugIn"
 		resultMap="BaseResultMap">
@@ -45,6 +46,68 @@
 		</where>
 		order by PLUGIN_ID
 	</select>
+	<select id="selectPlugInsForPageByBaseTool" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
+		select
+		a.base_tool_amount,bt.*,m.man_name from (
+		select t.base_tool_id ,count(*) as
+		base_tool_amount from BPBJ_PLUGIN t
+		<where>
+			<if test="plugin_dept_id != null and plugin_dept_id != ''">
+				and PLUGIN_DEPT_ID =
+				#{plugin_dept_id,jdbcType=DECIMAL}
+			</if>
+		</where>
+		group by t.base_tool_id) a
+		left join bpbj_base_tool bt on
+		bt.base_tool_id = a.base_tool_id
+		left join bpbj_manufacturer m on m.man_id = bt.man_id
+		<where>
+			<if test="baseToolModel != null and baseToolModel!=''">
+				AND bt.BASE_TOOL_MODEL like '%${baseToolModel}%'
+			</if>
+			<if test="baseToolSpec != null and baseToolSpec!=''">
+				AND bt.BASE_TOOL_SPEC like '%${baseToolSpec}%'
+			</if>
+			<if test="manId != null and manId != ''">
+				and bt.MAN_ID =
+				#{manId,jdbcType=DECIMAL}
+			</if>
+		</where>
+		order by bt.BASE_TOOL_ID
+		) A WHERE ROWNUM<![CDATA[<=]]>(${currPage}*${pageSize})
+		) WHERE num<![CDATA[>=]]>
+		(1+(${currPage}-1)*${pageSize})
+	</select>
+	<select id="selectCountOfPlugInsForPageByBaseTool"
+		parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		select count(*) from (
+		select t.base_tool_id ,count(*) as
+		base_tool_amount from BPBJ_PLUGIN t
+		<where>
+			<if test="plugin_dept_id != null and plugin_dept_id != ''">
+				and PLUGIN_DEPT_ID =
+				#{plugin_dept_id,jdbcType=DECIMAL}
+			</if>
+		</where>
+		group by t.base_tool_id) a
+		left join bpbj_base_tool bt on
+		bt.base_tool_id = a.base_tool_id
+		left join bpbj_manufacturer m on m.man_id = bt.man_id
+		<where>
+			<if test="baseToolModel != null and baseToolModel!=''">
+				AND bt.BASE_TOOL_MODEL like '%${baseToolModel}%'
+			</if>
+			<if test="baseToolSpec != null and baseToolSpec!=''">
+				AND bt.BASE_TOOL_SPEC like '%${baseToolSpec}%'
+			</if>
+			<if test="manId != null and manId != ''">
+				and bt.MAN_ID =
+				#{manId,jdbcType=DECIMAL}
+			</if>
+		</where>
+	</select>
 	<select id="selectPlugInsForPage" parameterType="java.util.HashMap"
 		resultType="java.util.HashMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
@@ -63,15 +126,15 @@
 				and POS_ID =
 				#{posId,jdbcType=DECIMAL}
 			</if>
-			<if test="basePlugInModel != null and basePlugInModel!=''">
-				AND BASE_PLUGIN_MODEL like '%${basePlugInModel}%'
+			<if test="baseToolModel != null and baseToolModel!=''">
+				AND BASE_TOOL_MODEL like '%${baseToolModel}%'
 			</if>
-			<if test="basePlugInSpec != null and basePlugInSpec!=''">
-				AND BASE_PLUGIN_SPEC like '%${basePlugInSpec}%'
+			<if test="baseToolSpec != null and baseToolSpec!=''">
+				AND BASE_TOOL_SPEC like '%${baseToolSpec}%'
 			</if>
-			<if test="manId != null and manId''">
+			<if test="manId != null and manId != ''">
 				and MAN_ID =
-				#{manufacturerId,jdbcType=DECIMAL}
+				#{manId,jdbcType=DECIMAL}
 			</if>
 			<if test="plugInDeptId != null">
 				and PLUGIN_DEPT_ID =
@@ -80,14 +143,6 @@
 			<if test="plugInStatus != null">
 				and PLUGIN_STATUS =
 				#{plugInStatus,jdbcType=DECIMAL}
-			</if>
-			<if test="overTestDays != null">
-				and to_date(#{overTestDays},'yyyy-mm-dd') >
-				PLUGIN_NEXT_TEST_DATE
-			</if>
-			<if test="overRejectDays != null">
-				and to_date(#{overRejectDays},'yyyy-mm-dd') >
-				PLUGIN_REJECT_DATE
 			</if>
 		</where>
 		order by PLUGIN_ID
@@ -110,18 +165,18 @@
 				and POS_ID =
 				#{posId,jdbcType=DECIMAL}
 			</if>
-			<if test="basePlugInTypeId != null and basePlugInTypeId!=''">
-				and BASE_PLUGIN_TYPE_ID =
-				#{basePlugInTypeId,jdbcType=DECIMAL}
+			<if test="baseToolTypeId != null and baseToolTypeId!=''">
+				and BASE_TOOL_TYPE_ID =
+				#{baseToolTypeId,jdbcType=DECIMAL}
 			</if>
-			<if test="basePlugInModel != null and basePlugInModel!=''">
-				AND BASE_PLUGIN_MODEL like '%${basePlugInModel}%'
+			<if test="baseToolModel != null and baseToolModel!=''">
+				AND BASE_TOOL_MODEL like '%${baseToolModel}%'
 			</if>
-			<if test="basePlugInSpec != null and basePlugInSpec!=''">
-				AND BASE_PLUGIN_SPEC like '%${basePlugInSpec}%'
+			<if test="baseToolSpec != null and baseToolSpec!=''">
+				AND BASE_TOOL_SPEC like '%${baseToolSpec}%'
 			</if>
-			<if test="manufacturerId != null and manufacturerId!=''">
-				and BASE_PLUGIN_MANUFACTURER_ID =
+			<if test="manId != null and manId != ''">
+				and MAN_ID =
 				#{manufacturerId,jdbcType=DECIMAL}
 			</if>
 			<if test="plugInDeptId != null">
@@ -131,14 +186,6 @@
 			<if test="plugInStatus != null">
 				and PLUGIN_STATUS =
 				#{plugInStatus,jdbcType=DECIMAL}
-			</if>
-			<if test="overTestDays != null">
-				and to_date(#{overTestDays},'yyyy-mm-dd') >
-				PLUGIN_NEXT_TEST_DATE
-			</if>
-			<if test="overRejectDays != null">
-				and to_date(#{overRejectDays},'yyyy-mm-dd') >
-				PLUGIN_REJECT_DATE
 			</if>
 		</where>
 	</select>
@@ -179,38 +226,20 @@
 			<if test="batchId != null">
 				BATCH_ID,
 			</if>
-			<if test="plugInBox != null">
-				PLUGIN_BOX,
-			</if>
 			<if test="plugInStatus != null">
 				PLUGIN_STATUS,
 			</if>
 			<if test="plugInDeptId != null">
 				PLUGIN_DEPT_ID,
 			</if>
-			<if test="plugInTestDate != null">
-				PLUGIN_TEST_DATE,
-			</if>
-			<if test="plugInRejectDate != null">
-				PLUGIN_REJECT_DATE,
-			</if>
-			<if test="plugInTestDateCircle != null">
-				PLUGIN_TEST_DATE_CIRCLE,
-			</if>
-			<if test="plugInPurchaseDate != null">
-				PLUGIN_PURCHASE_DATE,
-			</if>
-			<if test="plugInManufactureDate != null">
-				PLUGIN_MANUFACTURE_DATE,
+			<if test="plugInManDate != null">
+				PLUGIN_MAN_DATE,
 			</if>
 			<if test="plugInRemark != null">
 				PLUGIN_REMARK,
 			</if>
-			<if test="plugInNextTestDate != null">
-				PLUGIN_NEXT_TEST_DATE,
-			</if>
-			<if test="basePlugInId != null">
-				BASE_PLUGIN_ID,
+			<if test="baseToolId != null">
+				BASE_TOOL_ID,
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -229,38 +258,20 @@
 			<if test="batchId != null">
 				#{batchId,jdbcType=DECIMAL},
 			</if>
-			<if test="plugInBox != null">
-				#{plugInBox,jdbcType=VARCHAR},
-			</if>
 			<if test="plugInStatus != null">
 				#{plugInStatus,jdbcType=DECIMAL},
 			</if>
 			<if test="plugInDeptId != null">
 				#{plugInDeptId,jdbcType=DECIMAL},
 			</if>
-			<if test="plugInTestDate != null">
-				#{plugInTestDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="plugInRejectDate != null">
-				#{plugInRejectDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="plugInTestDateCircle != null">
-				#{plugInTestDateCircle,jdbcType=DECIMAL},
-			</if>
-			<if test="plugInPurchaseDate != null">
-				#{plugInPurchaseDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="plugInManufactureDate != null">
-				#{plugInManufactureDate,jdbcType=TIMESTAMP},
+			<if test="plugInManDate != null">
+				#{plugInManDate,jdbcType=TIMESTAMP},
 			</if>
 			<if test="plugInRemark != null">
 				#{plugInRemark,jdbcType=VARCHAR},
 			</if>
-			<if test="plugInNextTestDate != null">
-				#{plugInNextTestDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="basePlugInId != null">
-				#{basePlugInId,jdbcType=DECIMAL},
+			<if test="baseToolId != null">
+				#{baseToolId,jdbcType=DECIMAL},
 			</if>
 		</trim>
 	</insert>
@@ -279,43 +290,21 @@
 			<if test="batchId != null">
 				BATCH_ID = #{batchId,jdbcType=DECIMAL},
 			</if>
-			<if test="plugInBox != null">
-				PLUGIN_BOX = #{plugInBox,jdbcType=VARCHAR},
-			</if>
 			<if test="plugInStatus != null">
 				PLUGIN_STATUS = #{plugInStatus,jdbcType=DECIMAL},
 			</if>
 			<if test="plugInDeptId != null">
 				PLUGIN_DEPT_ID = #{plugInDeptId,jdbcType=DECIMAL},
 			</if>
-			<if test="plugInTestDate != null">
-				PLUGIN_TEST_DATE = #{plugInTestDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="plugInRejectDate != null">
-				PLUGIN_REJECT_DATE =
-				#{plugInRejectDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="plugInManufactureDate != null">
-				PLUGIN_MANUFACTURE_DATE =
-				#{plugInManufactureDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="plugInPurchaseDate != null">
-				PLUGIN_PURCHASE_DATE =
-				#{plugInPurchaseDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="plugInTestDateCircle != null">
-				PLUGIN_TEST_DATE_CIRCLE =
-				#{plugInTestDateCircle,jdbcType=DECIMAL},
+			<if test="plugInManDate != null">
+				PLUGIN_MAN_DATE =
+				#{plugInManDate,jdbcType=TIMESTAMP},
 			</if>
 			<if test="plugInRemark != null">
 				PLUGIN_REMARK = #{plugInRemark,jdbcType=VARCHAR},
 			</if>
-			<if test="plugInNextTestDate != null">
-				PLUGIN_NEXT_TEST_DATE =
-				#{plugInNextTestDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="basePlugInId != null">
-				BASE_PLUGIN_ID = #{basePlugInId,jdbcType=DECIMAL},
+			<if test="baseToolId != null">
+				BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL},
 			</if>
 		</set>
 		<where>
@@ -339,43 +328,21 @@
 			<if test="batchId != null">
 				BATCH_ID = #{batchId,jdbcType=DECIMAL},
 			</if>
-			<if test="plugInBox != null">
-				PLUGIN_BOX = #{plugInBox,jdbcType=VARCHAR},
-			</if>
 			<if test="plugInStatus != null">
 				PLUGIN_STATUS = #{plugInStatus,jdbcType=DECIMAL},
 			</if>
 			<if test="plugInDeptId != null">
 				PLUGIN_DEPT_ID = #{plugInDeptId,jdbcType=DECIMAL},
 			</if>
-			<if test="plugInTestDate != null">
-				PLUGIN_TEST_DATE = #{plugInTestDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="plugInRejectDate != null">
-				PLUGIN_REJECT_DATE =
-				#{plugInRejectDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="plugInManufactureDate != null">
-				PLUGIN_MANUFACTURE_DATE =
-				#{plugInManufactureDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="plugInPurchaseDate != null">
-				PLUGIN_PURCHASE_DATE =
-				#{plugInPurchaseDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="plugInTestDateCircle != null">
-				PLUGIN_TEST_DATE_CIRCLE =
-				#{plugInTestDateCircle,jdbcType=DECIMAL},
+			<if test="plugInManDate != null">
+				PLUGIN_MAN_DATE =
+				#{plugInManDate,jdbcType=TIMESTAMP},
 			</if>
 			<if test="plugInRemark != null">
 				PLUGIN_REMARK = #{plugInRemark,jdbcType=VARCHAR},
 			</if>
-			<if test="plugInNextTestDate != null">
-				PLUGIN_NEXT_TEST_DATE =
-				#{plugInNextTestDate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="basePlugInId != null">
-				BASE_PLUGIN_ID = #{basePlugInId,jdbcType=DECIMAL},
+			<if test="baseToolId != null">
+				BASE_TOOL_ID = #{baseToolId,jdbcType=DECIMAL},
 			</if>
 		</set>
 		<where>
