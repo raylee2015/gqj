@@ -3,7 +3,23 @@ package com.base.admin.entity;
 import com.base.entity.Base;
 
 public class User extends Base {
+	private String deptCode;
+
+	private Long deptId;
+
+	private String deptInnerCode;
+
+	private String deptInnerName;
+
+	private String deptName;
+
+	private Long deptSort;
+
+	private Long upDeptId;
+
 	private String userCode;
+
+	private String userDeptCode;
 
 	private Long userDeptId;
 
@@ -12,6 +28,8 @@ public class User extends Base {
 	private Long userId;
 
 	private String userLockFlag;
+
+	private String userLockFlagName;
 
 	private String userName;
 
@@ -23,18 +41,42 @@ public class User extends Base {
 
 	private String userUseFlag;
 
-	private String userDeptCode;
+	private String userUseFlagName;
 
-	public String getUserDeptCode() {
-		return userDeptCode;
+	public String getDeptCode() {
+		return deptCode;
 	}
 
-	public void setUserDeptCode(String userDeptCode) {
-		this.userDeptCode = userDeptCode;
+	public Long getDeptId() {
+		return deptId;
+	}
+
+	public String getDeptInnerCode() {
+		return deptInnerCode;
+	}
+
+	public String getDeptInnerName() {
+		return deptInnerName;
+	}
+
+	public String getDeptName() {
+		return deptName;
+	}
+
+	public Long getDeptSort() {
+		return deptSort;
+	}
+
+	public Long getUpDeptId() {
+		return upDeptId;
 	}
 
 	public String getUserCode() {
 		return userCode;
+	}
+
+	public String getUserDeptCode() {
+		return userDeptCode;
 	}
 
 	public Long getUserDeptId() {
@@ -51,6 +93,10 @@ public class User extends Base {
 
 	public String getUserLockFlag() {
 		return userLockFlag;
+	}
+
+	public String getUserLockFlagName() {
+		return userLockFlagName;
 	}
 
 	public String getUserName() {
@@ -73,8 +119,48 @@ public class User extends Base {
 		return userUseFlag;
 	}
 
+	public String getUserUseFlagName() {
+		return userUseFlagName;
+	}
+
+	public void setDeptCode(String deptCode) {
+		this.deptCode = deptCode;
+	}
+
+	public void setDeptId(Long deptId) {
+		this.deptId = deptId;
+	}
+
+	public void setDeptInnerCode(String deptInnerCode) {
+		this.deptInnerCode = deptInnerCode == null ? null
+				: deptInnerCode.trim();
+	}
+
+	public void setDeptInnerName(String deptInnerName) {
+		this.deptInnerName = deptInnerName == null ? null
+				: deptInnerName.trim();
+	}
+
+	public void setDeptName(String deptName) {
+		this.deptName = deptName == null ? null
+				: deptName.trim();
+	}
+
+	public void setDeptSort(Long deptSort) {
+		this.deptSort = deptSort;
+	}
+
+	public void setUpDeptId(Long upDeptId) {
+		this.upDeptId = upDeptId;
+	}
+
 	public void setUserCode(String userCode) {
-		this.userCode = userCode == null ? null : userCode.trim();
+		this.userCode = userCode == null ? null
+				: userCode.trim();
+	}
+
+	public void setUserDeptCode(String userDeptCode) {
+		this.userDeptCode = userDeptCode;
 	}
 
 	public void setUserDeptId(Long userDeptId) {
@@ -93,8 +179,14 @@ public class User extends Base {
 		this.userLockFlag = userLockFlag;
 	}
 
+	public void setUserLockFlagName(
+			String userLockFlagName) {
+		this.userLockFlagName = userLockFlagName;
+	}
+
 	public void setUserName(String userName) {
-		this.userName = userName == null ? null : userName.trim();
+		this.userName = userName == null ? null
+				: userName.trim();
 	}
 
 	public void setUserPassWord(String userPassWord) {
@@ -102,14 +194,20 @@ public class User extends Base {
 	}
 
 	public void setUserPhone(String userPhone) {
-		this.userPhone = userPhone == null ? null : userPhone.trim();
+		this.userPhone = userPhone == null ? null
+				: userPhone.trim();
 	}
 
 	public void setUserSort(String userSort) {
-		this.userSort = userSort == null ? null : userSort.trim();
+		this.userSort = userSort == null ? null
+				: userSort.trim();
 	}
 
 	public void setUserUseFlag(String userUseFlag) {
 		this.userUseFlag = userUseFlag;
+	}
+
+	public void setUserUseFlagName(String userUseFlagName) {
+		this.userUseFlagName = userUseFlagName;
 	}
 }

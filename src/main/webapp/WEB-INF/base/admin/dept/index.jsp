@@ -159,23 +159,23 @@
 											return btn;
 										}
 									}, {
-										field : 'DEPT_NAME',
+										field : 'deptName',
 										title : '部门名称',
 										width : 100,
 									}, {
-										field : 'UP_DEPT_NAME',
+										field : 'upDeptName',
 										title : '上级部门',
 										width : 100,
 									}, {
-										field : 'DEPT_CODE',
+										field : 'deptCode',
 										title : '部门编号',
 										width : 100,
 									}, {
-										field : 'DEPT_INNER_NAME',
+										field : 'deptInnerName',
 										title : '部门级联',
 										width : 250,
 									}, {
-										field : 'DEPT_SORT',
+										field : 'deptSort',
 										title : '排序号',
 										width : 100,
 									} ] ],

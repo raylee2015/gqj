@@ -16,9 +16,9 @@ public interface DeptMapper {
 
 	List<Map<Object, Object>> selectDeptsForTree();
 
-	List<Map<String, Object>> selectDeptsForPage(Dept dept);
+	List<Dept> selectDeptsForPage(Dept dept);
 
 	int selectCountOfDeptsForPage(Dept dept);
 
-	int updataInnerData();
+	int updataDeptInnerCodeAndInnerNames();
 }

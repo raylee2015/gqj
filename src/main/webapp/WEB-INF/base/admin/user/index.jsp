@@ -186,31 +186,31 @@
 											return btn;
 										}
 									}, {
-										field : 'USER_NAME',
+										field : 'userName',
 										title : '用户名称',
 										width : 100,
 									}, {
-										field : 'USER_CODE',
+										field : 'userCode',
 										title : '用户编号',
 										width : 100,
 									}, {
-										field : 'USER_DEPT_NAME',
+										field : 'deptName',
 										title : '所属部门',
 										width : 100,
 									}, {
-										field : 'USER_PHONE',
+										field : 'userPhone',
 										title : '手机号码',
 										width : 100,
 									}, {
-										field : 'USER_LOCK_FLAG_NAME',
+										field : 'userLockFlagName',
 										title : '是否锁定',
 										width : 100,
 									}, {
-										field : 'USER_USE_FLAG_NAME',
+										field : 'userUseFlagName',
 										title : '是否在用',
 										width : 100,
 									}, {
-										field : 'USER_SORT',
+										field : 'userSort',
 										title : '排序号',
 										width : 100,
 									} ] ],

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.base.admin.dao.UserMapper">
-	<resultMap id="BaseResultMap" type="com.base.admin.entity.User">
+	<resultMap id="UserMap" type="com.base.admin.entity.User">
 		<id column="USER_ID" jdbcType="DECIMAL" property="userId" />
 		<result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
 		<result column="USER_CODE" jdbcType="VARCHAR" property="userCode" />
@@ -12,14 +12,31 @@
 		<result column="USER_SORT" jdbcType="VARCHAR" property="userSort" />
 		<result column="USER_LOCK_FLAG" jdbcType="VARCHAR" property="userLockFlag" />
 		<result column="USER_USE_FLAG" jdbcType="VARCHAR" property="userUseFlag" />
+		<result column="USER_LOCK_FLAG_NAME" jdbcType="VARCHAR"
+			property="userLockFlagName" />
+		<result column="USER_USE_FLAG_NAME" jdbcType="VARCHAR"
+			property="userUseFlagName" />
+		<result column="DEPT_ID" jdbcType="DECIMAL" property="deptId" />
+		<result column="UP_DEPT_ID" jdbcType="DECIMAL" property="upDeptId" />
+		<result column="DEPT_NAME" jdbcType="VARCHAR" property="deptName" />
+		<result column="DEPT_SORT" jdbcType="DECIMAL" property="deptSort" />
+		<result column="DEPT_INNER_CODE" jdbcType="VARCHAR" property="deptInnerCode" />
+		<result column="DEPT_INNER_NAME" jdbcType="VARCHAR" property="deptInnerName" />
+		<result column="DEPT_CODE" jdbcType="VARCHAR" property="deptCode" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		USER_ID, USER_NAME, USER_CODE, USER_DEPT_ID, USER_PHONE,
-		USER_SORT,USER_PASS_WORD,USER_LOCK_FLAG,USER_USE_FLAG
+		USER_SORT,USER_PASS_WORD,USER_LOCK_FLAG,USER_USE_FLAG,
+		DEPT_ID,
+		UP_DEPT_ID, DEPT_NAME, DEPT_SORT,
+		DEPT_INNER_CODE,
+		DEPT_INNER_NAME,DEPT_CODE,USER_LOCK_FLAG_NAME,USER_USE_FLAG_NAME
 	</sql>
 	<select id="queryUsersForList" parameterType="com.base.admin.entity.User"
-		resultType="java.util.HashMap">
-		select * from VIEW_BASE_USER
+		resultMap="UserMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_BASE_USER
 		<where>
 			<if test="userId != null and userId !=''">
 				AND USER_ID = #{userId}
@@ -34,8 +51,10 @@
 		order by USER_SORT,USER_ID
 	</select>
 	<select id="queryUserForSession" parameterType="com.base.admin.entity.User"
-		resultMap="BaseResultMap">
-		select * from VIEW_BASE_USER
+		resultMap="UserMap">
+		select
+		<include refid="Base_Column_List" />
+		from VIEW_BASE_USER
 		<where>
 			<if test="userCode != null and userCode !=''">
 				AND USER_CODE = #{userCode}
@@ -46,12 +65,10 @@
 		</where>
 	</select>
 	<select id="queryUsersForPage" parameterType="com.base.admin.entity.User"
-		resultType="java.util.HashMap">
+		resultMap="UserMap">
 		SELECT * FROM ( SELECT A.*,ROWNUM num FROM (
-		select USER_ID, USER_NAME,
-		USER_CODE, USER_DEPT_ID, USER_PHONE,
-		USER_SORT,USER_DEPT_NAME,USER_PASS_WORD,USER_LOCK_FLAG,USER_USE_FLAG,
-		USER_LOCK_FLAG_NAME,USER_USE_FLAG_NAME
+		select
+		<include refid="Base_Column_List" />
 		from
 		VIEW_BASE_USER
 		<where>
@@ -87,9 +104,9 @@
 		delete from
 		BASE_USER
 		where USER_ID in
-		<foreach item="userId" index="index" collection="array" open="("
+		<foreach item="ids" index="index" collection="array" open="("
 			separator="," close=")">
-			#{userId}
+			#{ids}
 		</foreach>
 	</delete>
 	<insert id="insertSelective" parameterType="com.base.admin.entity.User">

@@ -1,6 +1,5 @@
 package com.base.admin.service.impl;
 
-import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +25,8 @@ public class DeptServiceImpl implements IDeptService {
 	public Map<String, Object> deleteDepts(Dept dept) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = deptMapper.deleteByPrimaryKeys(dept);
-		bool = deptMapper.updataInnerData();
+		bool = deptMapper
+				.updataDeptInnerCodeAndInnerNames();
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");
@@ -41,7 +41,8 @@ public class DeptServiceImpl implements IDeptService {
 	public Map<String, Object> addNewDept(Dept dept) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = deptMapper.insertSelective(dept);
-		bool = deptMapper.updataInnerData();
+		bool = deptMapper
+				.updataDeptInnerCodeAndInnerNames();
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");
@@ -60,34 +61,8 @@ public class DeptServiceImpl implements IDeptService {
 	@Override
 	public Map<String, Object> selectDeptsForPage(Dept dept)
 			throws SQLException {
-		List<Map<String, Object>> depts = deptMapper
+		List<Dept> depts = deptMapper
 				.selectDeptsForPage(dept);
-		for (Map<String, Object> item : depts) {
-			if (item.get(
-					"VIEW_DEPT_INNER_NAME") instanceof Clob) {
-				Clob clob = (Clob) item
-						.get("VIEW_DEPT_INNER_NAME");
-				String viewDeptInnerName = "";
-				if (clob != null) {
-					viewDeptInnerName = clob.getSubString(
-							(long) 1, (int) clob.length());
-					item.put("VIEW_DEPT_INNER_NAME",
-							viewDeptInnerName);
-				}
-			}
-			if (item.get(
-					"VIEW_DEPT_INNER_CODE") instanceof Clob) {
-				Clob clob = (Clob) item
-						.get("VIEW_DEPT_INNER_CODE");
-				String viewDeptInnerCode = "";
-				if (clob != null) {
-					viewDeptInnerCode = clob.getSubString(
-							(long) 1, (int) clob.length());
-					item.put("VIEW_DEPT_INNER_CODE",
-							viewDeptInnerCode);
-				}
-			}
-		}
 		int count = deptMapper
 				.selectCountOfDeptsForPage(dept);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -114,7 +89,8 @@ public class DeptServiceImpl implements IDeptService {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int bool = deptMapper
 				.updateByPrimaryKeySelective(dept);
-		bool = deptMapper.updataInnerData();
+		bool = deptMapper
+				.updataDeptInnerCodeAndInnerNames();
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "保存出错，请联系管理员");

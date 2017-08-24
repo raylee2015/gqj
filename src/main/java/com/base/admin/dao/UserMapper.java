@@ -1,16 +1,15 @@
 package com.base.admin.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import com.base.admin.entity.User;
 
 public interface UserMapper {
-	int deleteByPrimaryKeys(String[] userIds);
+	int deleteByPrimaryKeys(User user);
 
-	List<Map<String, Object>> queryUsersForPage(User user);
+	List<User> queryUsersForPage(User user);
 
-	List<Map<String, Object>> queryUsersForList(User user);
+	List<User> queryUsersForList(User user);
 
 	User queryUserForSession(User user);
 

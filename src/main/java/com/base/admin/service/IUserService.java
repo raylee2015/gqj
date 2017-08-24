@@ -5,7 +5,7 @@ import java.util.Map;
 import com.base.admin.entity.User;
 
 public interface IUserService {
-	Map<String, Object> deleteByPrimaryKeys(String[] userIds);
+	Map<String, Object> deleteByPrimaryKeys(User user);
 
 	Map<String, Object> queryUsersForPage(User user);
 
@@ -13,7 +13,7 @@ public interface IUserService {
 
 	Map<String, Object> updateByPrimaryKeysSelective(User user);
 
-	Map<String, Object> queryUserForObject(User user);
+	User queryUserForObject(User user);
 
 	User queryUserForSession(User user);
 }

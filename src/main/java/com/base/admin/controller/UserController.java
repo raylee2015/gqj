@@ -127,8 +127,9 @@ public class UserController {
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String userIds = request.getParameter("USER_IDS");
-		return userService
-				.deleteByPrimaryKeys(userIds.split(","));
+		User user = new User();
+		user.setIds(userIds);
+		return userService.deleteByPrimaryKeys(user);
 	}
 
 	/**

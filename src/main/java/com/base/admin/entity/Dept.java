@@ -4,6 +4,8 @@ import com.base.entity.Base;
 
 public class Dept extends Base {
 
+	private String deptCode;
+
 	private Long deptId;
 
 	private String deptInnerCode;
@@ -16,14 +18,10 @@ public class Dept extends Base {
 
 	private Long upDeptId;
 
-	private String deptCode;
+	private String upDeptName;
 
 	public String getDeptCode() {
 		return deptCode;
-	}
-
-	public void setDeptCode(String deptCode) {
-		this.deptCode = deptCode;
 	}
 
 	public Long getDeptId() {
@@ -50,6 +48,14 @@ public class Dept extends Base {
 		return upDeptId;
 	}
 
+	public String getUpDeptName() {
+		return upDeptName;
+	}
+
+	public void setDeptCode(String deptCode) {
+		this.deptCode = deptCode;
+	}
+
 	public void setDeptId(Long deptId) {
 		this.deptId = deptId;
 	}
@@ -65,7 +71,8 @@ public class Dept extends Base {
 	}
 
 	public void setDeptName(String deptName) {
-		this.deptName = deptName == null ? null : deptName.trim();
+		this.deptName = deptName == null ? null
+				: deptName.trim();
 	}
 
 	public void setDeptSort(Long deptSort) {
@@ -74,5 +81,9 @@ public class Dept extends Base {
 
 	public void setUpDeptId(Long upDeptId) {
 		this.upDeptId = upDeptId;
+	}
+
+	public void setUpDeptName(String upDeptName) {
+		this.upDeptName = upDeptName;
 	}
 }

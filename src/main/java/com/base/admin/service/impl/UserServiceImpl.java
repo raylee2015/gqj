@@ -19,9 +19,9 @@ public class UserServiceImpl implements IUserService {
 
 	@Override
 	public Map<String, Object> deleteByPrimaryKeys(
-			String[] userIds) {
+			User user) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int bool = userMapper.deleteByPrimaryKeys(userIds);
+		int bool = userMapper.deleteByPrimaryKeys(user);
 		if (bool == 0) {
 			map.put("success", false);
 			map.put("msg", "删除失败，请联系管理员");
@@ -35,7 +35,7 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public Map<String, Object> queryUsersForPage(
 			User user) {
-		List<Map<String, Object>> users = userMapper
+		List<User> users = userMapper
 				.queryUsersForPage(user);
 		int count = userMapper
 				.queryCountOfUsersForPage(user);
@@ -46,9 +46,15 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public Map<String, Object> queryUserForObject(
-			User user) {
-		return userMapper.queryUsersForList(user).get(0);
+	public User queryUserForObject(User user) {
+		List<User> users = userMapper
+				.queryUsersForList(user);
+		if (users.size() > 0) {
+			return userMapper.queryUsersForList(user)
+					.get(0);
+		} else {
+			return null;
+		}
 	}
 
 	@Override
